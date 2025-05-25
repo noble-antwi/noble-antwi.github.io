@@ -1,0 +1,16 @@
+title: Noble Antwi
+description: Cloud Security | Digital Forensics | Projects & Certifications
+theme: jekyll-theme-cayman
+show_downloads: false
+markdown: kramdown
+navigation:
+  - title: "Home"
+    url: "/"
+  - title: "Projects"
+    url: "/projects"
+  - title: "Certifications"
+    url: "/certifications"
+  - title: "Blog"
+    url: "/blog"
+  - title: "Contact"
+    url: "/contact"
