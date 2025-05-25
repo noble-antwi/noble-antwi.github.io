@@ -3,9 +3,17 @@ layout: default
 title: Home
 ---
 
+<p align="center">
+  <a href="/">Home</a> |
+  <a href="/projects">Projects</a> |
+  <a href="/certifications">Certifications</a> |
+  <a href="/blog">Blog</a> |
+  <a href="/contact">Contact</a>
+</p>
+
 <img src="assets/profile.jpg" alt="Profile Picture" width="150" style="border-radius: 50%; margin-bottom: 20px;"/>
 
-# 👋 Hey, I’m Noble  Antwi  
+# 👋 Hey, I’m Noble Antwi  
 ### 🚀 Cloud Engineer | 🔐 Cybersecurity Enthusiast | 📚 Lifelong Learner
 
 Welcome to my digital space. I specialize in **cloud security, system hardening, and digital forensics** — blending 4+ years of hands-on IT infrastructure experience with cutting-edge research in cybersecurity.
