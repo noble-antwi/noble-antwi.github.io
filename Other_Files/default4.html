@@ -15,33 +15,33 @@
     <!-- Custom CSS -->
     <style>
       :root {
-        --primary-color: #2d3436;
-        --secondary-color: #636e72;
-        --tertiary-color: #ddd6fe;
-        --accent-color: #6c5ce7;
-        --accent-secondary: #a29bfe;
-        --security-primary: #2d3748;
-        --security-accent: #667eea;
-        --cyber-blue: #74b9ff;
-        --cyber-green: #00b894;
-        --text-dark: #2d3436;
-        --text-light: #636e72;
+        --primary-color: #0a0e1a;
+        --secondary-color: #1a202c;
+        --tertiary-color: #2d3748;
+        --accent-color: #00d4ff;
+        --accent-secondary: #0099cc;
+        --security-primary: #001122;
+        --security-accent: #00ffff;
+        --cyber-blue: #0088ff;
+        --cyber-green: #00ff88;
+        --text-dark: #0a0e1a;
+        --text-light: #718096;
         --text-white: #ffffff;
-        --text-cyber: #f1f2f6;
-        --bg-light: #ffeaa7;
-        --bg-dark: #2d3436;
-        --bg-security: #341f97;
-        --border-color: #ddd6fe;
-        --border-cyber: #a29bfe;
-        --success-color: #00b894;
-        --warning-color: #fdcb6e;
-        --danger-color: #e84393;
-        --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --header-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6c5ce7 100%);
-        --card-gradient: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
-        --security-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6c5ce7 100%);
-        --hover-shadow: 0 20px 25px -5px rgba(108, 92, 231, 0.25), 0 10px 10px -5px rgba(108, 92, 231, 0.2);
-        --glow-effect: 0 0 20px rgba(108, 92, 231, 0.3);
+        --text-cyber: #e2e8f0;
+        --bg-light: #f7fafc;
+        --bg-dark: #0a0e1a;
+        --bg-security: #000811;
+        --border-color: #e2e8f0;
+        --border-cyber: #00d4ff;
+        --success-color: #00ff88;
+        --warning-color: #ffaa00;
+        --danger-color: #ff4757;
+        --gradient: linear-gradient(135deg, #0a0e1a 0%, #1a202c 50%, #2d3748 100%);
+        --header-gradient: linear-gradient(135deg, #001122 0%, #002244 50%, #003366 100%);
+        --card-gradient: linear-gradient(145deg, #ffffff 0%, #f7fafc 100%);
+        --security-gradient: linear-gradient(135deg, #000811 0%, #001122 50%, #001a33 100%);
+        --hover-shadow: 0 20px 25px -5px rgba(0, 212, 255, 0.2), 0 10px 10px -5px rgba(0, 212, 255, 0.15);
+        --glow-effect: 0 0 20px rgba(0, 212, 255, 0.3);
       }
       
       * {
@@ -94,7 +94,7 @@
         transform: translate(-50%, -50%);
         width: 300px;
         height: 300px;
-        background: radial-gradient(circle, rgba(108, 92, 231, 0.15) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
         border-radius: 50%;
         animation: pulse 4s ease-in-out infinite;
       }
@@ -123,11 +123,11 @@
       .header p {
         font-size: 1.4rem;
         font-weight: 600;
-        color: #f1f2f6;
+        color: var(--security-accent);
         text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
         text-transform: uppercase;
         letter-spacing: 1px;
-        filter: drop-shadow(0 0 8px rgba(108, 92, 231, 0.4));
+        filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4));
       }
       
       /* Navigation */
@@ -176,7 +176,7 @@
         background: var(--accent-color);
         color: white;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+        box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
       }
       
       .nav a:hover::before {
@@ -293,7 +293,7 @@
         right: 20px;
         width: 60px;
         height: 60px;
-        background: radial-gradient(circle, rgba(108, 92, 231, 0.1) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
         border-radius: 50%;
         opacity: 0;
         transition: opacity 0.3s ease;
@@ -329,7 +329,7 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         border: none;
         cursor: pointer;
-        box-shadow: 0 6px 20px rgba(108, 92, 231, 0.25);
+        box-shadow: 0 6px 20px rgba(6, 182, 212, 0.25);
         position: relative;
         overflow: hidden;
         text-transform: uppercase;
@@ -361,7 +361,7 @@
       
       .btn:hover {
         transform: translateY(-4px);
-        box-shadow: 0 12px 32px rgba(108, 92, 231, 0.4);
+        box-shadow: 0 12px 32px rgba(6, 182, 212, 0.4);
       }
       
       .btn:hover::before {
@@ -394,7 +394,7 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
-        border: 2px solid rgba(108, 92, 231, 0.2);
+        border: 2px solid rgba(6, 182, 212, 0.2);
       }
       
       .social-link::before {
@@ -408,7 +408,7 @@
       
       .social-link:hover {
         transform: translateY(-4px) rotate(5deg);
-        box-shadow: 0 12px 32px rgba(108, 92, 231, 0.3);
+        box-shadow: 0 12px 32px rgba(6, 182, 212, 0.3);
         border-color: var(--security-accent);
         color: white;
       }
@@ -592,8 +592,8 @@
       }
       
       @keyframes glow {
-        0%, 100% { box-shadow: 0 0 5px rgba(108, 92, 231, 0.3); }
-        50% { box-shadow: 0 0 20px rgba(108, 92, 231, 0.6); }
+        0%, 100% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.3); }
+        50% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.6); }
       }
       
       .card {
