@@ -1,8 +1,30 @@
-title: Noble Antwi
-description: Cloud Security | Digital Forensics | Projects & Certifications
+
+title: Noble Antwi - Cloud Security Engineer
+description: Cloud Security Specialist | Digital Forensics Expert | AWS & Azure Professional
+baseurl: ""
+url: ""
+
+# Theme
 theme: jekyll-theme-cayman
 show_downloads: false
 markdown: kramdown
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Social links
+social:
+  linkedin: noble-antwi-worlanyo
+  github: noble-antwi
+  email: amnworlanyo@gmail.com
+
+# SEO
+author: Noble Antwi
+lang: en_US
+
+# Navigation
 navigation:
   - title: "Home"
     url: "/"
