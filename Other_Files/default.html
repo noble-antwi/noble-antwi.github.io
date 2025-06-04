@@ -15,15 +15,33 @@
     <!-- Custom CSS -->
     <style>
       :root {
-        --primary-color: #2563eb;
-        --secondary-color: #1e40af;
-        --accent-color: #3b82f6;
-        --text-dark: #1f2937;
-        --text-light: #6b7280;
-        --bg-light: #f8fafc;
-        --border-color: #e5e7eb;
-        --success-color: #10b981;
+        --primary-color: #2d3436;
+        --secondary-color: #636e72;
+        --tertiary-color: #ddd6fe;
+        --accent-color: #6c5ce7;
+        --accent-secondary: #a29bfe;
+        --security-primary: #2d3748;
+        --security-accent: #667eea;
+        --cyber-blue: #74b9ff;
+        --cyber-green: #00b894;
+        --text-dark: #2d3436;
+        --text-light: #636e72;
+        --text-white: #ffffff;
+        --text-cyber: #f1f2f6;
+        --bg-light: #ffeaa7;
+        --bg-dark: #2d3436;
+        --bg-security: #341f97;
+        --border-color: #ddd6fe;
+        --border-cyber: #a29bfe;
+        --success-color: #00b894;
+        --warning-color: #fdcb6e;
+        --danger-color: #e84393;
         --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --header-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6c5ce7 100%);
+        --card-gradient: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+        --security-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6c5ce7 100%);
+        --hover-shadow: 0 20px 25px -5px rgba(108, 92, 231, 0.25), 0 10px 10px -5px rgba(108, 92, 231, 0.2);
+        --glow-effect: 0 0 20px rgba(108, 92, 231, 0.3);
       }
       
       * {
@@ -47,32 +65,81 @@
       
       /* Header */
       .header {
-        background: var(--gradient);
-        color: white;
-        padding: 2rem 0;
+        background: var(--header-gradient);
+        color: var(--text-white);
+        padding: 4rem 0;
         text-align: center;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 32px rgba(0, 212, 255, 0.25);
+        position: relative;
+        overflow: hidden;
+        border-bottom: 2px solid var(--border-cyber);
+      }
+      
+      .header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M 15 0 L 0 0 0 15" fill="none" stroke="rgba(0,212,255,0.15)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        opacity: 0.4;
+      }
+      
+      .header::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(108, 92, 231, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: pulse 4s ease-in-out infinite;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+        50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.1; }
+      }
+      
+      .header .container {
+        position: relative;
+        z-index: 2;
       }
       
       .header h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
+        font-size: 3.2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+        color: var(--text-white);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
       }
       
       .header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #f1f2f6;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        filter: drop-shadow(0 0 8px rgba(108, 92, 231, 0.4));
       }
       
       /* Navigation */
       .nav {
-        background: white;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
         padding: 1rem 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         position: sticky;
         top: 0;
         z-index: 100;
+        border-bottom: 1px solid var(--border-color);
       }
       
       .nav ul {
@@ -86,16 +153,34 @@
       .nav a {
         text-decoration: none;
         color: var(--text-dark);
-        font-weight: 500;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .nav a::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent);
+        transition: left 0.5s;
       }
       
       .nav a:hover {
         background: var(--accent-color);
         color: white;
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+      }
+      
+      .nav a:hover::before {
+        left: 100%;
       }
       
       /* Main Content */
@@ -127,6 +212,13 @@
         display: block;
         object-fit: cover;
         box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+      }
+      
+      .profile-img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        border-color: var(--secondary-color);
       }
       
       /* Typography */
@@ -138,7 +230,7 @@
       h1 {
         font-size: 2.5rem;
         font-weight: 700;
-        background: var(--gradient);
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -150,28 +242,72 @@
         border-bottom: 3px solid var(--accent-color);
         padding-bottom: 0.5rem;
         margin-bottom: 2rem;
+        position: relative;
+      }
+      
+      h2::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--security-accent);
       }
       
       h3 {
         font-size: 1.5rem;
-        font-weight: 500;
+        font-weight: 600;
         color: var(--accent-color);
       }
       
       /* Cards */
       .card {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
+        background: var(--card-gradient);
+        border-radius: 20px;
+        padding: 2.5rem;
         margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        border: 1px solid var(--border-color);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(6, 182, 212, 0.1);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-color), var(--security-accent), var(--cyber-blue));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      
+      .card::after {
+        content: '';
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(circle, rgba(108, 92, 231, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
       
       .card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transform: translateY(-8px);
+        box-shadow: var(--hover-shadow);
+        border-color: rgba(6, 182, 212, 0.3);
+      }
+      
+      .card:hover::before,
+      .card:hover::after {
+        opacity: 1;
       }
       
       .card h3 {
@@ -184,28 +320,63 @@
       /* Buttons and Links */
       .btn {
         display: inline-block;
-        background: var(--accent-color);
+        background: linear-gradient(135deg, var(--accent-color) 0%, var(--security-accent) 100%);
         color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
+        padding: 1rem 2rem;
+        border-radius: 12px;
         text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         border: none;
         cursor: pointer;
+        box-shadow: 0 6px 20px rgba(108, 92, 231, 0.25);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+      }
+      
+      .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+      }
+      
+      .btn::after {
+        content: '';
+        position: absolute;
+        inset: 2px;
+        background: linear-gradient(135deg, var(--cyber-blue) 0%, var(--accent-color) 100%);
+        border-radius: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
       }
       
       .btn:hover {
-        background: var(--secondary-color);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(108, 92, 231, 0.4);
+      }
+      
+      .btn:hover::before {
+        left: 100%;
+      }
+      
+      .btn:hover::after {
+        opacity: 1;
       }
       
       /* Social Links */
       .social-links {
         display: flex;
         justify-content: center;
-        gap: 1rem;
+        gap: 1.5rem;
         margin: 2rem 0;
       }
       
@@ -213,19 +384,42 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 50px;
-        height: 50px;
-        background: var(--accent-color);
-        color: white;
-        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--security-accent);
+        border-radius: 16px;
         text-decoration: none;
-        font-size: 1.2rem;
-        transition: all 0.3s ease;
+        font-size: 1.4rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        border: 2px solid rgba(108, 92, 231, 0.2);
+      }
+      
+      .social-link::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, var(--accent-color) 0%, var(--security-accent) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
       
       .social-link:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        transform: translateY(-4px) rotate(5deg);
+        box-shadow: 0 12px 32px rgba(108, 92, 231, 0.3);
+        border-color: var(--security-accent);
+        color: white;
+      }
+      
+      .social-link:hover::before {
+        opacity: 1;
+      }
+      
+      .social-link i {
+        position: relative;
+        z-index: 2;
       }
       
       /* Footer */
@@ -236,10 +430,75 @@
         padding: 2rem 0;
       }
       
+      /* Hide Jekyll Front Matter */
+      .content-body p:first-child {
+        display: none;
+      }
+      
+      .content-body hr:first-of-type {
+        display: none;
+      }
+      
+      /* Hide any front matter that might show */
+      .content-body > p:first-child:contains("layout:"),
+      .content-body > p:first-child:contains("title:"),
+      .content-body > p:first-child:contains("---") {
+        display: none !important;
+      }
+      
+      /* Security Engineer Professional Enhancements */
+      .card {
+        border-left: 4px solid var(--accent-color);
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        box-shadow: 0 8px 32px rgba(10, 14, 26, 0.08);
+        border: 1px solid rgba(0, 212, 255, 0.1);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      
+      .card:hover {
+        border-left-color: var(--security-accent);
+        box-shadow: var(--glow-effect), 0 12px 40px rgba(10, 14, 26, 0.15);
+        transform: translateY(-6px);
+      }
+      
+      /* Enhanced Typography for Professional Look */
+      h1 {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+      
+      h2 {
+        color: var(--primary-color);
+        border-bottom: 3px solid var(--accent-color);
+        position: relative;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      h2::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--security-accent), var(--cyber-blue));
+        box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+      }
+      
       /* Responsive */
       @media (max-width: 768px) {
         .header h1 {
-          font-size: 2rem;
+          font-size: 2.2rem;
+        }
+        
+        .header p {
+          font-size: 1.1rem;
         }
         
         .nav ul {
@@ -264,6 +523,62 @@
         }
       }
       
+      /* Front Matter Hiding - Multiple Methods */
+      .content-body > *:first-child {
+        display: block;
+      }
+      
+      .content-body > p:first-child {
+        display: none !important;
+      }
+      
+      .content-body > hr:first-child,
+      .content-body > hr:first-child + p {
+        display: none !important;
+      }
+      
+      /* Hide any text that contains front matter indicators */
+      .content-body p:contains("layout:"),
+      .content-body p:contains("title:"),
+      .content-body p:contains("---") {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      
+      /* Security Badge Effects */
+      .btn {
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 1px;
+        border: 2px solid transparent;
+        background: linear-gradient(135deg, var(--accent-color) 0%, var(--security-accent) 100%);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.6s;
+      }
+      
+      .btn:hover {
+        box-shadow: var(--glow-effect);
+        border-color: var(--security-accent);
+      }
+      
+      .btn:hover::before {
+        left: 100%;
+      }
+      
       /* Animations */
       @keyframes fadeInUp {
         from {
@@ -276,6 +591,11 @@
         }
       }
       
+      @keyframes glow {
+        0%, 100% { box-shadow: 0 0 5px rgba(108, 92, 231, 0.3); }
+        50% { box-shadow: 0 0 20px rgba(108, 92, 231, 0.6); }
+      }
+      
       .card {
         animation: fadeInUp 0.6s ease forwards;
       }
@@ -283,6 +603,10 @@
       .card:nth-child(2) { animation-delay: 0.1s; }
       .card:nth-child(3) { animation-delay: 0.2s; }
       .card:nth-child(4) { animation-delay: 0.3s; }
+      
+      .social-link:hover {
+        animation: glow 2s ease-in-out infinite;
+      }
     </style>
   </head>
   
@@ -307,7 +631,9 @@
     <main class="main-content">
       <div class="container">
         <div class="content-wrapper">
-          {{ content }}
+          <div class="content-body">
+            {{ content }}
+          </div>
         </div>
       </div>
     </main>
