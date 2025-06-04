@@ -19,14 +19,11 @@
         --secondary-color: #1e40af;
         --accent-color: #3b82f6;
         --text-dark: #1f2937;
-        --text-light: #64748b;
-        --bg-light: #f1f5f9;
-        --border-color: #e2e8f0;
-        --success-color: #059669;
-        --warning-color: #d97706;
+        --text-light: #6b7280;
+        --bg-light: #f8fafc;
+        --border-color: #e5e7eb;
+        --success-color: #10b981;
         --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --card-gradient: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-        --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
       }
       
       * {
@@ -130,13 +127,6 @@
         display: block;
         object-fit: cover;
         box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-        transition: all 0.3s ease;
-      }
-      
-      .profile-img:hover {
-        transform: scale(1.05);
-        box-shadow: 0 12px 24px rgba(0,0,0,0.2);
-        border-color: var(--secondary-color);
       }
       
       /* Typography */
@@ -170,36 +160,18 @@
       
       /* Cards */
       .card {
-        background: var(--card-gradient);
-        border-radius: 16px;
+        background: white;
+        border-radius: 12px;
         padding: 2rem;
         margin-bottom: 2rem;
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         border: 1px solid var(--border-color);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-      }
-      
-      .card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: var(--gradient);
-        opacity: 0;
-        transition: opacity 0.3s ease;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
       
       .card:hover {
-        transform: translateY(-6px);
-        box-shadow: var(--hover-shadow);
-      }
-      
-      .card:hover::before {
-        opacity: 1;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
       }
       
       .card h3 {
@@ -212,38 +184,21 @@
       /* Buttons and Links */
       .btn {
         display: inline-block;
-        background: var(--gradient);
+        background: var(--accent-color);
         color: white;
         padding: 0.75rem 1.5rem;
-        border-radius: 10px;
+        border-radius: 8px;
         text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 500;
+        transition: all 0.3s ease;
         border: none;
         cursor: pointer;
-        box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.2);
-        position: relative;
-        overflow: hidden;
-      }
-      
-      .btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        transition: left 0.5s;
       }
       
       .btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
-      }
-      
-      .btn:hover::before {
-        left: 100%;
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
       }
       
       /* Social Links */
