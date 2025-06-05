@@ -8,13 +8,6 @@
     <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon.png">
-    <link rel="shortcut icon" href="/assets/favicon.png">
-    <meta name="theme-color" content="#2563eb">
-    
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -172,15 +165,6 @@
       .nav-brand i {
         color: var(--accent-color);
         font-size: 1.8rem;
-      }
-      
-      .nav-brand img {
-        transition: transform 0.3s ease;
-        border-radius: 4px;
-      }
-      
-      .nav-brand:hover img {
-        transform: scale(1.1);
       }
       
       .nav-menu {
@@ -870,7 +854,7 @@
     <nav class="nav">
       <div class="nav-container">
         <a href="/" class="nav-brand">
-          <img src="/assets/favicon.png" alt="NA Logo" style="width: 32px; height: 32px; margin-right: 0.5rem;">
+          <i class="fas fa-shield-alt"></i>
           Noble Antwi
         </a>
         
