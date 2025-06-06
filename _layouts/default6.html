@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="{{ site.lang | default: 'en-US' }}">
   <head>
@@ -6,18 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
-
+    
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon.png">
     <link rel="shortcut icon" href="/assets/favicon.png">
     <meta name="theme-color" content="#2563eb">
-
+    
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+    
     <!-- Custom CSS -->
     <style>
       :root {
@@ -49,26 +50,26 @@
         --hover-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.25), 0 10px 10px -5px rgba(37, 99, 235, 0.2);
         --glow-effect: 0 0 20px rgba(37, 99, 235, 0.3);
       }
-
+      
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
+      
       body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         line-height: 1.6;
         color: var(--text-dark);
         background-color: #ffffff;
       }
-
+      
       .container {
         max-width: 1200px;
         margin: 0 auto;
         padding: 0 20px;
       }
-
+      
       /* Header */
       .header {
         background: var(--header-gradient);
@@ -80,7 +81,7 @@
         overflow: hidden;
         border-bottom: 2px solid var(--border-cyber);
       }
-
+      
       .header::before {
         content: '';
         position: absolute;
@@ -91,7 +92,7 @@
         background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M 15 0 L 0 0 0 15" fill="none" stroke="rgba(0,212,255,0.15)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
         opacity: 0.4;
       }
-
+      
       .header::after {
         content: '';
         position: absolute;
@@ -104,17 +105,17 @@
         border-radius: 50%;
         animation: pulse 4s ease-in-out infinite;
       }
-
+      
       @keyframes pulse {
         0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
         50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.1; }
       }
-
+      
       .header .container {
         position: relative;
         z-index: 2;
       }
-
+      
       .header h1 {
         font-size: 3.2rem;
         font-weight: 800;
@@ -125,7 +126,7 @@
         letter-spacing: 2px;
         filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
       }
-
+      
       .header p {
         font-size: 1.4rem;
         font-weight: 600;
@@ -135,7 +136,7 @@
         letter-spacing: 1px;
         filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.4));
       }
-
+      
       /* Navigation */
       .nav {
         background: rgba(255, 255, 255, 0.98);
@@ -147,7 +148,7 @@
         z-index: 1000;
         border-bottom: 1px solid var(--border-color);
       }
-
+      
       .nav-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -157,7 +158,7 @@
         justify-content: space-between;
         min-height: 70px;
       }
-
+      
       .nav-brand {
         font-size: 1.5rem;
         font-weight: 800;
@@ -167,21 +168,21 @@
         align-items: center;
         gap: 0.5rem;
       }
-
+      
       .nav-brand i {
         color: var(--accent-color);
         font-size: 1.8rem;
       }
-
+      
       .nav-brand img {
         transition: transform 0.3s ease;
         border-radius: 4px;
       }
-
+      
       .nav-brand:hover img {
         transform: scale(1.1);
       }
-
+      
       .nav-menu {
         display: flex;
         list-style: none;
@@ -189,11 +190,11 @@
         padding: 0;
         gap: 0;
       }
-
+      
       .nav-item {
         position: relative;
       }
-
+      
       .nav-link {
         display: flex;
         align-items: center;
@@ -209,7 +210,7 @@
         position: relative;
         overflow: hidden;
       }
-
+      
       .nav-link::before {
         content: '';
         position: absolute;
@@ -221,7 +222,7 @@
         transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: -1;
       }
-
+      
       .nav-link::after {
         content: '';
         position: absolute;
@@ -233,34 +234,34 @@
         background: var(--accent-color);
         transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
-
+      
       .nav-link:hover {
         color: white;
         transform: translateY(-2px);
       }
-
+      
       .nav-link:hover::before {
         width: 100%;
       }
-
+      
       .nav-link:hover::after {
         width: 80%;
       }
-
+      
       .nav-link i {
         font-size: 1.1rem;
         transition: transform 0.3s ease;
       }
-
+      
       .nav-link:hover i {
         transform: scale(1.1);
       }
-
+      
       /* Dropdown Menu */
       .dropdown {
         position: relative;
       }
-
+      
       .dropdown-menu {
         position: absolute;
         top: 100%;
@@ -277,13 +278,13 @@
         z-index: 1000;
         overflow: hidden;
       }
-
+      
       .dropdown:hover .dropdown-menu {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
       }
-
+      
       .dropdown-item {
         display: block;
         padding: 1rem 1.5rem;
@@ -296,11 +297,11 @@
         position: relative;
         overflow: hidden;
       }
-
+      
       .dropdown-item:last-child {
         border-bottom: none;
       }
-
+      
       .dropdown-item::before {
         content: '';
         position: absolute;
@@ -311,24 +312,24 @@
         background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.05), transparent);
         transition: left 0.5s;
       }
-
+      
       .dropdown-item:hover {
         background: var(--bg-light);
         color: var(--accent-color);
         padding-left: 2rem;
       }
-
+      
       .dropdown-item:hover::before {
         left: 100%;
       }
-
+      
       .dropdown-item i {
         margin-right: 0.8rem;
         color: var(--accent-color);
         width: 16px;
         text-align: center;
       }
-
+      
       /* Mobile Navigation */
       .nav-toggle {
         display: none;
@@ -341,12 +342,12 @@
         border-radius: 8px;
         transition: all 0.3s ease;
       }
-
+      
       .nav-toggle:hover {
         background: var(--bg-light);
         color: var(--accent-color);
       }
-
+      
       /* Search Box */
       .nav-search {
         display: flex;
@@ -358,13 +359,13 @@
         transition: all 0.3s ease;
         border: 2px solid transparent;
       }
-
+      
       .nav-search:focus-within {
         background: white;
         border-color: var(--accent-color);
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
       }
-
+      
       .nav-search input {
         border: none;
         background: none;
@@ -374,18 +375,18 @@
         font-size: 0.9rem;
         width: 180px;
       }
-
+      
       .nav-search i {
         color: var(--text-light);
         margin-right: 0.5rem;
       }
-
+      
       /* Main Content */
       .main-content {
         min-height: calc(100vh - 200px);
         padding: 3rem 0;
       }
-
+      
       .content-wrapper {
         background: white;
         border-radius: 12px;
@@ -393,13 +394,13 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         margin-bottom: 2rem;
       }
-
+      
       /* Profile Section */
       .profile-section {
         text-align: center;
         margin-bottom: 3rem;
       }
-
+      
       .profile-img {
         width: 200px;
         height: 200px;
@@ -411,19 +412,19 @@
         box-shadow: 0 8px 16px rgba(0,0,0,0.15);
         transition: all 0.3s ease;
       }
-
+      
       .profile-img:hover {
         transform: scale(1.05);
         box-shadow: 0 12px 24px rgba(0,0,0,0.2);
         border-color: var(--secondary-color);
       }
-
+      
       /* Typography */
       h1, h2, h3 {
         color: var(--text-dark);
         margin-bottom: 1rem;
       }
-
+      
       h1 {
         font-size: 2.5rem;
         font-weight: 700;
@@ -432,7 +433,7 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
       }
-
+      
       h2 {
         font-size: 2rem;
         font-weight: 600;
@@ -441,7 +442,7 @@
         margin-bottom: 2rem;
         position: relative;
       }
-
+      
       h2::after {
         content: '';
         position: absolute;
@@ -451,13 +452,13 @@
         height: 3px;
         background: var(--security-accent);
       }
-
+      
       h3 {
         font-size: 1.5rem;
         font-weight: 600;
         color: var(--accent-color);
       }
-
+      
       /* Cards */
       .card {
         background: var(--card-gradient);
@@ -470,7 +471,7 @@
         position: relative;
         overflow: hidden;
       }
-
+      
       .card::before {
         content: '';
         position: absolute;
@@ -482,7 +483,7 @@
         opacity: 0;
         transition: opacity 0.3s ease;
       }
-
+      
       .card::after {
         content: '';
         position: absolute;
@@ -495,25 +496,25 @@
         opacity: 0;
         transition: opacity 0.3s ease;
       }
-
+      
       .card:hover {
         transform: translateY(-8px);
         box-shadow: var(--hover-shadow);
         border-color: rgba(6, 182, 212, 0.3);
       }
-
+      
       .card:hover::before,
       .card:hover::after {
         opacity: 1;
       }
-
+      
       .card h3 {
         margin-bottom: 1rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
       }
-
+      
       /* Buttons and Links */
       .btn {
         display: inline-block;
@@ -533,7 +534,7 @@
         letter-spacing: 0.5px;
         font-size: 0.9rem;
       }
-
+      
       .btn::before {
         content: '';
         position: absolute;
@@ -544,7 +545,7 @@
         background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
         transition: left 0.5s;
       }
-
+      
       .btn::after {
         content: '';
         position: absolute;
@@ -555,20 +556,20 @@
         transition: opacity 0.3s ease;
         z-index: -1;
       }
-
+      
       .btn:hover {
         transform: translateY(-4px);
         box-shadow: 0 12px 32px rgba(108, 92, 231, 0.4);
       }
-
+      
       .btn:hover::before {
         left: 100%;
       }
-
+      
       .btn:hover::after {
         opacity: 1;
       }
-
+      
       /* Social Links */
       .social-links {
         display: flex;
@@ -576,7 +577,7 @@
         gap: 1.5rem;
         margin: 2rem 0;
       }
-
+      
       .social-link {
         display: inline-flex;
         align-items: center;
@@ -593,7 +594,7 @@
         overflow: hidden;
         border: 2px solid rgba(108, 92, 231, 0.2);
       }
-
+      
       .social-link::before {
         content: '';
         position: absolute;
@@ -602,23 +603,23 @@
         opacity: 0;
         transition: opacity 0.3s ease;
       }
-
+      
       .social-link:hover {
         transform: translateY(-4px) rotate(5deg);
         box-shadow: 0 12px 32px rgba(108, 92, 231, 0.3);
         border-color: var(--security-accent);
         color: white;
       }
-
+      
       .social-link:hover::before {
         opacity: 1;
       }
-
+      
       .social-link i {
         position: relative;
         z-index: 2;
       }
-
+      
       /* Footer */
       .footer {
         background: var(--text-dark);
@@ -626,23 +627,23 @@
         text-align: center;
         padding: 2rem 0;
       }
-
+      
       /* Hide Jekyll Front Matter */
       .content-body p:first-child {
         display: none;
       }
-
+      
       .content-body hr:first-of-type {
         display: none;
       }
-
+      
       /* Hide any front matter that might show */
       .content-body > p:first-child:contains("layout:"),
       .content-body > p:first-child:contains("title:"),
       .content-body > p:first-child:contains("---") {
         display: none !important;
       }
-
+      
       /* Security Engineer Professional Enhancements */
       .card {
         border-left: 4px solid var(--accent-color);
@@ -651,13 +652,13 @@
         border: 1px solid rgba(0, 212, 255, 0.1);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
-
+      
       .card:hover {
         border-left-color: var(--security-accent);
         box-shadow: var(--glow-effect), 0 12px 40px rgba(10, 14, 26, 0.15);
         transform: translateY(-6px);
       }
-
+      
       /* Enhanced Typography for Professional Look */
       h1 {
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
@@ -667,7 +668,7 @@
         font-weight: 800;
         letter-spacing: 1px;
       }
-
+      
       h2 {
         color: var(--primary-color);
         border-bottom: 3px solid var(--accent-color);
@@ -676,7 +677,7 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
-
+      
       h2::after {
         content: '';
         position: absolute;
@@ -687,35 +688,35 @@
         background: linear-gradient(90deg, var(--security-accent), var(--cyber-blue));
         box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
       }
-
+      
       /* Responsive */
       @media (max-width: 968px) {
         .nav-container {
           padding: 0 1rem;
         }
-
+        
         .nav-search {
           margin-left: 1rem;
         }
-
+        
         .nav-search input {
           width: 120px;
         }
       }
-
+      
       @media (max-width: 768px) {
         .header h1 {
           font-size: 2.2rem;
         }
-
+        
         .header p {
           font-size: 1.1rem;
         }
-
+        
         .nav-toggle {
           display: block;
         }
-
+        
         .nav-menu {
           display: none;
           position: absolute;
@@ -727,20 +728,20 @@
           box-shadow: 0 8px 32px rgba(37, 99, 235, 0.15);
           border-top: 1px solid var(--border-color);
         }
-
+        
         .nav-menu.active {
           display: flex;
         }
-
+        
         .nav-link {
           padding: 1rem 2rem;
           border-bottom: 1px solid var(--border-color);
         }
-
+        
         .nav-search {
           display: none;
         }
-
+        
         .dropdown-menu {
           position: static;
           opacity: 1;
@@ -752,39 +753,39 @@
           background: var(--bg-light);
           margin: 0 1rem;
         }
-
+        
         .profile-img {
           width: 150px;
           height: 150px;
         }
-
+        
         h1 {
           font-size: 2rem;
         }
-
+        
         h2 {
           font-size: 1.5rem;
         }
-
+        
         .content-wrapper {
           padding: 1.5rem;
         }
       }
-
+      
       /* Front Matter Hiding - Multiple Methods */
       .content-body > *:first-child {
         display: block;
       }
-
+      
       .content-body > p:first-child {
         display: none !important;
       }
-
+      
       .content-body > hr:first-child,
       .content-body > hr:first-child + p {
         display: none !important;
       }
-
+      
       /* Hide any text that contains front matter indicators */
       .content-body p:contains("layout:"),
       .content-body p:contains("title:"),
@@ -795,7 +796,7 @@
         margin: 0 !important;
         padding: 0 !important;
       }
-
+      
       /* Security Badge Effects */
       .btn {
         text-transform: uppercase;
@@ -806,7 +807,7 @@
         position: relative;
         overflow: hidden;
       }
-
+      
       .btn::before {
         content: '';
         position: absolute;
@@ -817,16 +818,16 @@
         background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
         transition: left 0.6s;
       }
-
+      
       .btn:hover {
         box-shadow: var(--glow-effect);
         border-color: var(--security-accent);
       }
-
+      
       .btn:hover::before {
         left: 100%;
       }
-
+      
       /* Animations */
       @keyframes fadeInUp {
         from {
@@ -838,26 +839,26 @@
           transform: translateY(0);
         }
       }
-
+      
       @keyframes glow {
         0%, 100% { box-shadow: 0 0 5px rgba(108, 92, 231, 0.3); }
         50% { box-shadow: 0 0 20px rgba(108, 92, 231, 0.6); }
       }
-
+      
       .card {
         animation: fadeInUp 0.6s ease forwards;
       }
-
+      
       .card:nth-child(2) { animation-delay: 0.1s; }
       .card:nth-child(3) { animation-delay: 0.2s; }
       .card:nth-child(4) { animation-delay: 0.3s; }
-
+      
       .social-link:hover {
         animation: glow 2s ease-in-out infinite;
       }
     </style>
   </head>
-
+  
   <body>
     <header class="header">
       <div class="container">
@@ -865,13 +866,13 @@
         <p>{{ site.description }}</p>
       </div>
     </header>
-
+    
     <nav class="nav">
       <div class="nav-container">
         <a href="/" class="nav-brand">
           <img src="/assets/logo.png" alt="NA Logo" style="width: 40px; height: 40px; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;">
         </a>
-
+        
         <ul class="nav-menu" id="nav-menu">
           <li class="nav-item">
             <a href="/" class="nav-link">
@@ -879,7 +880,7 @@
               Home
             </a>
           </li>
-
+          
           <li class="nav-item dropdown">
             <a href="/projects" class="nav-link">
               <i class="fas fa-code"></i>
@@ -905,7 +906,7 @@
               </a>
             </div>
           </li>
-
+          
           <li class="nav-item dropdown">
             <a href="/certifications" class="nav-link">
               <i class="fas fa-certificate"></i>
@@ -917,21 +918,21 @@
                 <i class="fas fa-award"></i>
                 All Certifications
               </a>
-              <a href="/cloud-certifications" class="dropdown-item">
-                <i class="fas fa-cloud"></i>
-                Cloud Certifications
+              <a href="/certifications#aws" class="dropdown-item">
+                <i class="fab fa-aws"></i>
+                AWS Certifications
               </a>
-              <a href="/security-certifications" class="dropdown-item">
+              <a href="/certifications#security" class="dropdown-item">
                 <i class="fas fa-shield-alt"></i>
-                Security Certifications
+                Security Certs
               </a>
-              <a href="/in-progress" class="dropdown-item">
+              <a href="/certifications#in-progress" class="dropdown-item">
                 <i class="fas fa-clock"></i>
                 In Progress
               </a>
             </div>
           </li>
-
+          
           <li class="nav-item dropdown">
             <a href="/blog" class="nav-link">
               <i class="fas fa-blog"></i>
@@ -957,7 +958,7 @@
               </a>
             </div>
           </li>
-
+          
           <li class="nav-item">
             <a href="/contact" class="nav-link">
               <i class="fas fa-envelope"></i>
@@ -965,24 +966,24 @@
             </a>
           </li>
         </ul>
-
+        
         <div class="nav-search">
           <i class="fas fa-search"></i>
           <input type="text" placeholder="Search...">
         </div>
-
+        
         <button class="nav-toggle" id="nav-toggle">
           <i class="fas fa-bars"></i>
         </button>
       </div>
     </nav>
-
+    
     <script>
       // Mobile navigation toggle
       document.getElementById('nav-toggle').addEventListener('click', function() {
         const navMenu = document.getElementById('nav-menu');
         navMenu.classList.toggle('active');
-
+        
         // Change icon
         const icon = this.querySelector('i');
         if (navMenu.classList.contains('active')) {
@@ -991,30 +992,30 @@
           icon.className = 'fas fa-bars';
         }
       });
-
+      
       // Close mobile menu when clicking outside
       document.addEventListener('click', function(e) {
         const navMenu = document.getElementById('nav-menu');
         const navToggle = document.getElementById('nav-toggle');
-
+        
         if (!navMenu.contains(e.target) && !navToggle.contains(e.target)) {
           navMenu.classList.remove('active');
           navToggle.querySelector('i').className = 'fas fa-bars';
         }
       });
-
+      
       // Search functionality placeholder
       document.querySelector('.nav-search input').addEventListener('focus', function() {
         this.style.width = '220px';
       });
-
+      
       document.querySelector('.nav-search input').addEventListener('blur', function() {
         if (!this.value) {
           this.style.width = '180px';
         }
       });
     </script>
-
+    
     <main class="main-content">
       <div class="container">
         <div class="content-wrapper">
@@ -1024,7 +1025,7 @@
         </div>
       </div>
     </main>
-
+    
     <footer class="footer">
       <div class="container">
         <p>&copy; {{ 'now' | date: "%Y" }} {{ site.title }}. Built with ❤️.</p>

@@ -1,61 +1,73 @@
 
 ---
 layout: default
-title: Certifications
+title: All Certifications
 ---
 
 <h1><i class="fas fa-certificate"></i> Professional Certifications</h1>
 
-<p style="text-align: center; font-size: 1.1rem; color: var(--text-light); margin-bottom: 3rem;">
-  These credentials reflect my commitment to continuous learning and cybersecurity excellence.
+<p style="text-align: center; font-size: 1.2rem; color: var(--text-light); margin-bottom: 3rem;">
+  A comprehensive overview of my professional certifications and continuous learning journey
 </p>
 
-<h2><i class="fas fa-check-circle" style="color: var(--success-color);"></i> Earned Certifications</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+  <div class="card" style="text-align: center;">
+    <i class="fas fa-cloud" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+    <h3>Cloud Certifications</h3>
+    <p>AWS, Multi-cloud networking, and container orchestration expertise</p>
+    <div style="margin: 1rem 0;">
+      <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">6 Certifications</span>
+    </div>
+    <a href="/cloud-certifications" class="btn">
+      <i class="fas fa-arrow-right"></i> View Details
+    </a>
+  </div>
 
-<div class="card">
-  <h3><i class="fab fa-aws"></i> AWS Certified Security – Specialty</h3>
-  <p><strong>Issuer:</strong> Amazon Web Services</p>
-  <p>Validates expertise in creating and implementing security solutions in the AWS Cloud. Demonstrates advanced knowledge of AWS security services and how to secure AWS workloads.</p>
-  <div style="margin-top: 1rem;">
-    <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Earned</span>
+  <div class="card" style="text-align: center;">
+    <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+    <h3>Security Certifications</h3>
+    <p>Cybersecurity expertise from foundational to advanced levels</p>
+    <div style="margin: 1rem 0;">
+      <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">2 Certifications</span>
+    </div>
+    <a href="/security-certifications" class="btn">
+      <i class="fas fa-arrow-right"></i> View Details
+    </a>
+  </div>
+
+  <div class="card" style="text-align: center;">
+    <i class="fas fa-clock" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+    <h3>In Progress</h3>
+    <p>Currently pursuing advanced certifications and continuous learning</p>
+    <div style="margin: 1rem 0;">
+      <span style="background: var(--accent-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">3 In Progress</span>
+    </div>
+    <a href="/in-progress" class="btn">
+      <i class="fas fa-arrow-right"></i> View Details
+    </a>
   </div>
 </div>
 
-<div class="card">
-  <h3><i class="fas fa-shield-alt"></i> CompTIA Security+</h3>
-  <p><strong>Issuer:</strong> CompTIA</p>
-  <p>Industry-standard certification covering essential cybersecurity skills including risk management, threat detection, and security controls implementation.</p>
-  <div style="margin-top: 1rem;">
-    <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Earned</span>
-  </div>
-</div>
+<h2><i class="fas fa-chart-line"></i> Certification Journey</h2>
 
 <div class="card">
-  <h3><i class="fab fa-google"></i> Google Cloud Digital Leader</h3>
-  <p><strong>Issuer:</strong> Google Cloud</p>
-  <p>Demonstrates understanding of cloud concepts and Google Cloud Platform services, with focus on digital transformation and cloud adoption strategies.</p>
-  <div style="margin-top: 1rem;">
-    <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Earned</span>
-  </div>
-</div>
-
-<h2><i class="fas fa-clock" style="color: var(--accent-color);"></i> In Progress</h2>
-
-<div class="card">
-  <h3><i class="fas fa-user-secret"></i> Certified Ethical Hacker (CEH)</h3>
-  <p><strong>Issuer:</strong> EC-Council</p>
-  <p>Advanced certification focusing on ethical hacking methodologies, penetration testing, and vulnerability assessment techniques.</p>
-  <div style="margin-top: 1rem;">
-    <span style="background: var(--accent-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">75% Complete</span>
-  </div>
-</div>
-
-<div class="card">
-  <h3><i class="fab fa-cisco"></i> Cisco Ethical Hacking Course</h3>
-  <p><strong>Issuer:</strong> Cisco Networking Academy</p>
-  <p>Comprehensive training in cybersecurity fundamentals, ethical hacking techniques, and network security assessment.</p>
-  <div style="margin-top: 1rem;">
-    <span style="background: var(--accent-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">60% Complete</span>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center;">
+    <div>
+      <h3 style="color: var(--accent-color); font-size: 2.5rem; margin-bottom: 0.5rem;">8</h3>
+      <p style="font-weight: 600; color: var(--text-dark);">Total Certifications</p>
+    </div>
+    <div>
+      <h3 style="color: var(--success-color); font-size: 2.5rem; margin-bottom: 0.5rem;">3</h3>
+      <p style="font-weight: 600; color: var(--text-dark);">AWS Certifications</p>
+    </div>
+    <div>
+      <h3 style="color: var(--warning-color); font-size: 2.5rem; margin-bottom: 0.5rem;">2</h3>
+      <p style="font-weight: 600; color: var(--text-dark);">Security Certifications</p>
+    </div>
+    <div>
+      <h3 style="color: var(--primary-color); font-size: 2.5rem; margin-bottom: 0.5rem;">3</h3>
+      <p style="font-weight: 600; color: var(--text-dark);">Multi-cloud & Networking</p>
+    </div>
   </div>
 </div>
 
