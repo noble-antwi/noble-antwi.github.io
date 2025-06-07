@@ -116,20 +116,14 @@
       }
 
       .header h1 {
-        font-size: 3.8rem;
-        font-weight: 900;
+        font-size: 3.2rem;
+        font-weight: 800;
         margin-bottom: 1rem;
-        color: #ffffff;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+        color: var(--text-white);
         text-transform: uppercase;
-        letter-spacing: 4px;
-        background: linear-gradient(45deg, #ffffff 30%, #e0f2fe 70%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        position: relative;
-        z-index: 10;
-        text-rendering: optimizeLegibility;
-        -webkit-font-smoothing: antialiased;
+        letter-spacing: 2px;
+        filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
       }
 
       .header p {
@@ -1067,7 +1061,7 @@
       // Search functionality
       const searchInput = document.getElementById('search-input');
       const searchResults = document.getElementById('search-results');
-
+      
       // Search data - you can expand this with more content
       const searchData = [
         {
@@ -1133,7 +1127,7 @@
 
       function displaySearchResults(results, query) {
         searchResults.innerHTML = '';
-
+        
         if (results.length === 0) {
           searchResults.innerHTML = '<div class="search-no-results">No results found</div>';
         } else {
@@ -1150,7 +1144,7 @@
             searchResults.appendChild(resultItem);
           });
         }
-
+        
         searchResults.style.display = 'block';
       }
 
@@ -1159,10 +1153,10 @@
         const queryIndex = words.findIndex(word => 
           word.toLowerCase().includes(query.toLowerCase())
         );
-
+        
         const start = Math.max(0, queryIndex - 5);
         const end = Math.min(words.length, queryIndex + 10);
-
+        
         return words.slice(start, end).join(' ') + '...';
       }
 
