@@ -52,7 +52,7 @@ title: Training & Courses
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
   <div class="card">
-    <h3><i class="fab fa-google" style="color: #4285f4;"></i> Google IT Support Certificate</h3>
+    <h3><span style="background: linear-gradient(45deg, #4285f4, #34a853, #fbbc05, #ea4335); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: bold; font-size: 1.2rem;">G</span><i class="fab fa-google" style="color: #4285f4; margin-left: 0.2rem;"></i> Google IT Support Certificate</h3>
     <p><strong>Issued by:</strong> Coursera</p>
     <p><strong>Completed:</strong> March 9, 2021</p>
     <p>Comprehensive IT support fundamentals covering troubleshooting, customer service, networking, operating systems, system administration, and security.</p>
@@ -73,7 +73,7 @@ title: Training & Courses
   </div>
 
   <div class="card">
-    <h3><i class="fab fa-google" style="color: #4285f4;"></i> Google Data Analytics Professional Certificate</h3>
+    <h3><span style="background: linear-gradient(45deg, #4285f4, #34a853, #fbbc05, #ea4335); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: bold; font-size: 1.2rem;">G</span><i class="fab fa-google" style="color: #4285f4; margin-left: 0.2rem;"></i> Google Data Analytics Professional Certificate</h3>
     <p><strong>Issued by:</strong> Coursera</p>
     <p><strong>Completed:</strong> July 31, 2021</p>
     <p>Data analytics fundamentals including data cleaning, analysis, visualization, and storytelling with data using tools like R, SQL, and Tableau.</p>
@@ -94,7 +94,7 @@ title: Training & Courses
   </div>
 
   <div class="card">
-    <h3><i class="fas fa-shield-alt" style="color: #ff6b35;"></i> Certificate of Cloud Security Knowledge (CCSK) V4</h3>
+    <h3><span style="display: inline-flex; align-items: center; background: linear-gradient(135deg, #0066cc, #004499); color: white; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.9rem; font-weight: bold; margin-right: 0.5rem;">CCSK</span><i class="fas fa-cloud-shield" style="color: #0066cc;"></i> Certificate of Cloud Security Knowledge (CCSK) V4</h3>
     <p><strong>Platform:</strong> Udemy</p>
     <p><strong>Instructor:</strong> Anthony Sequeira</p>
     <p><strong>Completed:</strong> August 26, 2024</p>
@@ -116,7 +116,7 @@ title: Training & Courses
   </div>
 
   <div class="card">
-    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> New Relic One: Observability From Beginner to Advanced</h3>
+    <h3><span style="background: linear-gradient(135deg, #00AC69, #1CE783); color: white; padding: 0.3rem 0.7rem; border-radius: 6px; font-size: 0.85rem; font-weight: bold; margin-right: 0.5rem;">New Relic</span><i class="fab fa-udemy" style="color: #a435f0; margin-left: 0.3rem;"></i> New Relic One: Observability From Beginner to Advanced</h3>
     <p><strong>Platform:</strong> Udemy</p>
     <p><strong>Instructor:</strong> Aref K.</p>
     <p><strong>Completed:</strong> January 15, 2024</p>
