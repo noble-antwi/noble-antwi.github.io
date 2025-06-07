@@ -33,6 +33,14 @@ title: Contact
       <i class="fab fa-github"></i> View GitHub Profile
     </a>
   </div>
+
+  <div class="card">
+    <h3><i class="fab fa-medium" style="color: #00ab6c;"></i> Medium</h3>
+    <p>Read my technical articles, tutorials, and insights on cybersecurity and cloud computing.</p>
+    <a href="https://medium.com/@noble-antwi" class="btn" target="_blank">
+      <i class="fab fa-medium"></i> Read Articles
+    </a>
+  </div>
 </div>
 
 <div class="card" style="margin-top: 3rem;">
@@ -71,3 +79,44 @@ title: Contact
   <p><i class="fas fa-clock"></i> Response time: Usually within 24 hours</p>
   <p><i class="fas fa-map-marker-alt"></i> Based in Chicago, IL | Open to remote opportunities</p>
 </div>
+
+<script>
+  // Handle Ready to Connect button click
+  document.addEventListener('DOMContentLoaded', function() {
+    // Find all email links and add click functionality
+    const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
+    
+    emailLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        // Check if the user's device can handle mailto links
+        const email = 'amnworlanyo@gmail.com';
+        const subject = 'Hello from your website';
+        const body = 'Hi Noble,%0D%0A%0D%0AI found your website and would like to connect.%0D%0A%0D%0ABest regards,';
+        
+        // Try to open the default email client
+        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+        
+        // For better user experience, also show a notification
+        setTimeout(function() {
+          if (confirm('If your email client didn\'t open automatically, you can copy this email address: ' + email)) {
+            // Copy email to clipboard if user confirms
+            if (navigator.clipboard) {
+              navigator.clipboard.writeText(email).then(function() {
+                alert('Email address copied to clipboard!');
+              });
+            } else {
+              // Fallback for older browsers
+              const textArea = document.createElement('textarea');
+              textArea.value = email;
+              document.body.appendChild(textArea);
+              textArea.select();
+              document.execCommand('copy');
+              document.body.removeChild(textArea);
+              alert('Email address copied to clipboard!');
+            }
+          }
+        }, 1000);
+      });
+    });
+  });
+</script>
