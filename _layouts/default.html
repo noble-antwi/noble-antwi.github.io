@@ -357,6 +357,7 @@
         margin-left: 2rem;
         transition: all 0.3s ease;
         border: 2px solid transparent;
+        position: relative;
       }
 
       .nav-search:focus-within {
@@ -378,6 +379,55 @@
       .nav-search i {
         color: var(--text-light);
         margin-right: 0.5rem;
+      }
+
+      .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(37, 99, 235, 0.15);
+        border: 1px solid var(--border-color);
+        max-height: 400px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+      }
+
+      .search-result-item {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .search-result-item:hover {
+        background: var(--bg-light);
+      }
+
+      .search-result-item:last-child {
+        border-bottom: none;
+      }
+
+      .search-result-title {
+        font-weight: 600;
+        color: var(--accent-color);
+        margin-bottom: 0.3rem;
+      }
+
+      .search-result-excerpt {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        line-height: 1.4;
+      }
+
+      .search-no-results {
+        padding: 1rem;
+        text-align: center;
+        color: var(--text-light);
+        font-style: italic;
       }
 
       /* Main Content */
@@ -972,7 +1022,8 @@
 
         <div class="nav-search">
           <i class="fas fa-search"></i>
-          <input type="text" placeholder="Search...">
+          <input type="text" placeholder="Search..." id="search-input">
+          <div class="search-results" id="search-results"></div>
         </div>
 
         <button class="nav-toggle" id="nav-toggle">
@@ -1007,14 +1058,138 @@
         }
       });
 
-      // Search functionality placeholder
-      document.querySelector('.nav-search input').addEventListener('focus', function() {
-        this.style.width = '220px';
+      // Search functionality
+      const searchInput = document.getElementById('search-input');
+      const searchResults = document.getElementById('search-results');
+      
+      // Search data - you can expand this with more content
+      const searchData = [
+        {
+          title: 'Home',
+          url: '/',
+          content: 'Noble Antwi Cloud Security Engineer Cybersecurity Professional Digital Forensics Expert identity access management threat detection'
+        },
+        {
+          title: 'Projects',
+          url: '/projects',
+          content: 'technical projects cloud security labs automation infrastructure security implementations'
+        },
+        {
+          title: 'Certifications',
+          url: '/certifications',
+          content: 'professional certifications cloud security credentials industry recognized'
+        },
+        {
+          title: 'Cloud Certifications',
+          url: '/cloud-certifications',
+          content: 'AWS Azure GCP cloud certifications solutions architect security'
+        },
+        {
+          title: 'Security Certifications',
+          url: '/security-certifications',
+          content: 'cybersecurity certifications CISSP security professional credentials'
+        },
+        {
+          title: 'Training Courses',
+          url: '/training-courses',
+          content: 'professional courses certificates training programs cybersecurity cloud security'
+        },
+        {
+          title: 'In Progress',
+          url: '/in-progress',
+          content: 'current certifications SC-300 Microsoft Identity Access Management AWS SysOps TCM Security SOC Analyst'
+        },
+        {
+          title: 'Blog',
+          url: '/blog',
+          content: 'technical blog insights tutorials cybersecurity cloud computing Wazuh SIEM Linux security'
+        },
+        {
+          title: 'Contact',
+          url: '/contact',
+          content: 'contact information get in touch email LinkedIn GitHub'
+        }
+      ];
+
+      function performSearch(query) {
+        if (!query.trim()) {
+          searchResults.style.display = 'none';
+          return;
+        }
+
+        const results = searchData.filter(item => 
+          item.title.toLowerCase().includes(query.toLowerCase()) ||
+          item.content.toLowerCase().includes(query.toLowerCase())
+        );
+
+        displaySearchResults(results, query);
+      }
+
+      function displaySearchResults(results, query) {
+        searchResults.innerHTML = '';
+        
+        if (results.length === 0) {
+          searchResults.innerHTML = '<div class="search-no-results">No results found</div>';
+        } else {
+          results.forEach(result => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'search-result-item';
+            resultItem.innerHTML = `
+              <div class="search-result-title">${result.title}</div>
+              <div class="search-result-excerpt">${highlightQuery(getExcerpt(result.content, query), query)}</div>
+            `;
+            resultItem.addEventListener('click', () => {
+              window.location.href = result.url;
+            });
+            searchResults.appendChild(resultItem);
+          });
+        }
+        
+        searchResults.style.display = 'block';
+      }
+
+      function getExcerpt(content, query) {
+        const words = content.split(' ');
+        const queryIndex = words.findIndex(word => 
+          word.toLowerCase().includes(query.toLowerCase())
+        );
+        
+        const start = Math.max(0, queryIndex - 5);
+        const end = Math.min(words.length, queryIndex + 10);
+        
+        return words.slice(start, end).join(' ') + '...';
+      }
+
+      function highlightQuery(text, query) {
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<strong style="background: var(--tertiary-color);">$1</strong>');
+      }
+
+      searchInput.addEventListener('input', function() {
+        performSearch(this.value);
       });
 
-      document.querySelector('.nav-search input').addEventListener('blur', function() {
-        if (!this.value) {
-          this.style.width = '180px';
+      searchInput.addEventListener('focus', function() {
+        this.style.width = '220px';
+        if (this.value) {
+          performSearch(this.value);
+        }
+      });
+
+      searchInput.addEventListener('blur', function() {
+        // Delay hiding results to allow clicking on them
+        setTimeout(() => {
+          if (!this.value) {
+            this.style.width = '180px';
+          }
+          searchResults.style.display = 'none';
+        }, 200);
+      });
+
+      // Close search results when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.nav-search')) {
+          searchResults.style.display = 'none';
         }
       });
     </script>
