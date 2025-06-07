@@ -79,7 +79,7 @@ title: Certifications In Progress
 </div>
 
 <div class="card" style="margin-top: 3rem;">
-  <h3><i class="fas fa-target"></i> Learning Goals for 2025</h3>
+  <h3><i class="fas fa-target"></i> Learning Goals for 2024</h3>
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
     <div>
       <h4 style="color: var(--accent-color); margin-bottom: 0.5rem;">Cloud Security</h4>

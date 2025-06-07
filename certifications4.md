@@ -70,32 +70,51 @@ title: All Certifications
   </div>
 </div>
 
-<h2><i class="fas fa-graduation-cap"></i> Professional Training & Courses</h2>
+<h2 id="professional-training-courses"><i class="fas fa-graduation-cap"></i> Professional Training & Courses</h2>
 
-<div class="card" style="text-align: center; margin-bottom: 2rem;">
-  <h3>Comprehensive Training Portfolio</h3>
-  <p style="font-size: 1.1rem; color: var(--text-light); margin-bottom: 2rem;">
-    Extensive collection of completed courses, active training programs, and planned learning paths across multiple platforms
-  </p>
-  
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+  <div class="card">
+    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> Udemy Courses</h3>
+    <ul style="list-style: none; padding: 0;">
+      <li style="margin-bottom: 0.8rem;"><i class="fas fa-graduation-cap" style="color: var(--success-color); margin-right: 0.5rem;"></i> Practical Cloud Security Implementation</li>
+      <li style="margin-bottom: 0.8rem;"><i class="fas fa-graduation-cap" style="color: var(--success-color); margin-right: 0.5rem;"></i> AWS Solutions Architect Masterclass</li>
+      <li style="margin-bottom: 0.8rem;"><i class="fas fa-graduation-cap" style="color: var(--success-color); margin-right: 0.5rem;"></i> Kubernetes Security Best Practices</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><i class="fab fa-coursera" style="color: #0056d3;"></i> Coursera Specializations</h3>
+    <ul style="list-style: none; padding: 0;">
+      <li style="margin-bottom: 0.8rem;"><i class="fas fa-certificate" style="color: var(--success-color); margin-right: 0.5rem;"></i> Cybersecurity Specialization Program</li>
+      <li style="margin-bottom: 0.8rem;"><i class="fas fa-certificate" style="color: var(--success-color); margin-right: 0.5rem;"></i> Google IT Security Certificate</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><i class="fab fa-linkedin" style="color: #0077b5;"></i> LinkedIn Learning</h3>
+    <ul style="list-style: none; padding: 0;">
+      <li style="margin-bottom: 0.8rem;"><i class="fas fa-play-circle" style="color: var(--success-color); margin-right: 0.5rem;"></i> Advanced Threat Detection</li>
+      <li style="margin-bottom: 0.8rem;"><i class="fas fa-play-circle" style="color: var(--success-color); margin-right: 0.5rem;"></i> DevSecOps Fundamentals</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <h3><i class="fas fa-trophy"></i> Training Achievements</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center; margin-top: 1.5rem;">
     <div>
-      <h4 style="color: var(--success-color); font-size: 2rem; margin-bottom: 0.5rem;">6</h4>
-      <p style="font-weight: 600;">Completed Courses</p>
+      <h3 style="color: var(--accent-color); font-size: 2.5rem; margin-bottom: 0.5rem;">15+</h3>
+      <p style="font-weight: 600; color: var(--text-dark);">Completed Courses</p>
     </div>
     <div>
-      <h4 style="color: var(--warning-color); font-size: 2rem; margin-bottom: 0.5rem;">15+</h4>
-      <p style="font-weight: 600;">Active Courses</p>
+      <h3 style="color: var(--success-color); font-size: 2.5rem; margin-bottom: 0.5rem;">120+</h3>
+      <p style="font-weight: 600; color: var(--text-dark);">Training Hours</p>
     </div>
     <div>
-      <h4 style="color: var(--accent-color); font-size: 2rem; margin-bottom: 0.5rem;">6</h4>
-      <p style="font-weight: 600;">Planned Courses</p>
+      <h3 style="color: var(--warning-color); font-size: 2.5rem; margin-bottom: 0.5rem;">5</h3>
+      <p style="font-weight: 600; color: var(--text-dark);">Platform Providers</p>
     </div>
   </div>
-  
-  <a href="/training-courses" class="btn">
-    <i class="fas fa-arrow-right"></i> View All Training & Courses
-  </a>
 </div>
 
 <div style="text-align: center; margin-top: 3rem;">
