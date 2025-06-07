@@ -16,7 +16,7 @@ title: Training & Courses
     <h3>Completed Courses</h3>
     <p>Professional certificates and specialized training programs successfully completed</p>
     <div style="margin: 1rem 0;">
-      <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">4 Completed</span>
+      <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">7 Completed</span>
     </div>
     <a href="#completed-courses" class="btn">
       <i class="fas fa-arrow-down"></i> View Completed
@@ -97,13 +97,43 @@ title: Training & Courses
       <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Cloud Security</span>
       <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">CCSK</span>
     </div>
-    
-    <a href="https://www.udemy.com/certificate/UC-504e5f95-94b6-428c-9a4d-556e23b7af98/" target="_blank" class="btn" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
-      <i class="fas fa-external-link-alt"></i> View Certificate
-    </a>
   </div>
 
-  
+  <div class="card">
+    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> Practical Cloud Security Implementation</h3>
+    <p><strong>Platform:</strong> Udemy</p>
+    <p><strong>Completed:</strong> 2024</p>
+    <p>Hands-on cloud security implementation across multiple cloud platforms with real-world scenarios and best practices.</p>
+    
+    <div style="margin: 1rem 0;">
+      <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Completed</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Implementation</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> AWS Solutions Architect Masterclass</h3>
+    <p><strong>Platform:</strong> Udemy</p>
+    <p><strong>Completed:</strong> 2023</p>
+    <p>Comprehensive AWS architecture training covering design principles, service selection, and best practices for scalable solutions.</p>
+    
+    <div style="margin: 1rem 0;">
+      <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Completed</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">AWS Architecture</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> Kubernetes Security Best Practices</h3>
+    <p><strong>Platform:</strong> Udemy</p>
+    <p><strong>Completed:</strong> 2024</p>
+    <p>Specialized training on securing Kubernetes clusters, container security, and implementing security policies in containerized environments.</p>
+    
+    <div style="margin: 1rem 0;">
+      <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Completed</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Kubernetes Security</span>
+    </div>
+  </div>
 
   <div class="card">
     <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> New Relic One: Observability From Beginner to Advanced</h3>
@@ -118,10 +148,6 @@ title: Training & Courses
       <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Observability</span>
       <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">New Relic</span>
     </div>
-    
-    <a href="https://www.udemy.com/certificate/UC-171f7b71-5b26-4d1a-8335-d0d2b12dbe25/" target="_blank" class="btn" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
-      <i class="fas fa-external-link-alt"></i> View Certificate
-    </a>
   </div>
 </div>
 
@@ -302,7 +328,7 @@ title: Training & Courses
   <h3><i class="fas fa-chart-line"></i> Training Statistics</h3>
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2rem; text-align: center; margin-top: 1.5rem;">
     <div>
-      <h3 style="color: var(--success-color); font-size: 2.5rem; margin-bottom: 0.5rem;">4</h3>
+      <h3 style="color: var(--success-color); font-size: 2.5rem; margin-bottom: 0.5rem;">7</h3>
       <p style="font-weight: 600; color: var(--text-dark);">Completed Courses</p>
     </div>
     <div>
