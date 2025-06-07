@@ -12,113 +12,68 @@ title: Certifications In Progress
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
   <div class="card">
-    <h3><i class="fab fa-microsoft"></i> SC-300: Microsoft Identity and Access Administrator</h3>
-    <p><strong>Expected Completion:</strong> Q2 2025</p>
-    <p>Microsoft identity and access management solutions including Azure Active Directory, conditional access, and identity governance.</p>
+    <h3><i class="fab fa-aws"></i> AWS Certified DevOps Engineer – Professional</h3>
+    <p><strong>Expected Completion:</strong> Q2 2024</p>
+    <p>Advanced DevOps practices on AWS, including CI/CD, infrastructure as code, and monitoring.</p>
     
     <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
         <span style="font-weight: 600;">Progress</span>
-        <span style="color: var(--accent-color); font-weight: 600;">35%</span>
+        <span style="color: var(--accent-color); font-weight: 600;">75%</span>
       </div>
       <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
-        <div style="background: var(--accent-color); height: 100%; width: 35%; border-radius: 4px;"></div>
+        <div style="background: var(--accent-color); height: 100%; width: 75%; border-radius: 4px;"></div>
       </div>
     </div>
     
     <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Azure AD</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Conditional Access</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Identity Governance</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">CI/CD</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Infrastructure as Code</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Monitoring</span>
     </div>
   </div>
 
   <div class="card">
-    <h3><i class="fab fa-aws"></i> AWS Certified SysOps Administrator – Associate</h3>
-    <p><strong>Expected Completion:</strong> Q2 2025</p>
-    <p>Systems operations on AWS platform including deployment, management, monitoring, and troubleshooting of systems on AWS.</p>
+    <h3><i class="fas fa-shield-alt"></i> CISSP (Certified Information Systems Security Professional)</h3>
+    <p><strong>Expected Completion:</strong> Q3 2024</p>
+    <p>Advanced cybersecurity management certification covering security and risk management, asset security, and more.</p>
     
     <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
         <span style="font-weight: 600;">Progress</span>
-        <span style="color: var(--accent-color); font-weight: 600;">28%</span>
+        <span style="color: var(--accent-color); font-weight: 600;">45%</span>
       </div>
       <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
-        <div style="background: var(--accent-color); height: 100%; width: 28%; border-radius: 4px;"></div>
+        <div style="background: var(--accent-color); height: 100%; width: 45%; border-radius: 4px;"></div>
       </div>
     </div>
     
     <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">AWS Operations</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Monitoring</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Troubleshooting</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Risk Management</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Asset Security</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Security Engineering</span>
     </div>
   </div>
 
   <div class="card">
-    <h3><i class="fas fa-shield-alt"></i> Practical SOC Analyst (PSAA)</h3>
-    <p><strong>Expected Completion:</strong> Q3 2025</p>
-    <p>Hands-on SOC analyst skills by TCM Security covering incident response, threat hunting, and security monitoring in real-world scenarios.</p>
+    <h3><i class="fab fa-microsoft"></i> Microsoft Azure Security Engineer Associate</h3>
+    <p><strong>Expected Completion:</strong> Q4 2024</p>
+    <p>Implementing security controls and threat protection, managing identity and access, and protecting data and applications in Azure.</p>
     
     <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
         <span style="font-weight: 600;">Progress</span>
-        <span style="color: var(--accent-color); font-weight: 600;">40%</span>
+        <span style="color: var(--accent-color); font-weight: 600;">20%</span>
       </div>
       <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
-        <div style="background: var(--accent-color); height: 100%; width: 40%; border-radius: 4px;"></div>
+        <div style="background: var(--accent-color); height: 100%; width: 20%; border-radius: 4px;"></div>
       </div>
     </div>
     
     <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">SOC Operations</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Threat Hunting</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Incident Response</span>
-    </div>
-  </div>
-</div>
-
-<div class="card" style="margin-top: 3rem;">
-  <h3><i class="fas fa-bullseye"></i> Future Certification Goals</h3>
-  <p style="text-align: center; font-size: 1.1rem; color: var(--text-light); margin-bottom: 2rem;">
-    Advanced certifications planned for future pursuit to expand expertise in cloud, security, and infrastructure
-  </p>
-  
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-    <div class="card" style="padding: 1rem; border-left: 4px solid var(--warning-color);">
-      <h4><i class="fas fa-shield-alt"></i> CISSP (Certified Information Systems Security Professional)</h4>
-      <p>Advanced cybersecurity management certification covering security and risk management, asset security, and security engineering.</p>
-      <span style="background: var(--warning-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Future Goal</span>
-    </div>
-
-    <div class="card" style="padding: 1rem; border-left: 4px solid var(--warning-color);">
-      <h4><i class="fab fa-aws"></i> AWS Certified DevOps Engineer – Professional</h4>
-      <p>Advanced DevOps practices on AWS, including CI/CD, infrastructure as code, and monitoring.</p>
-      <span style="background: var(--warning-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Future Goal</span>
-    </div>
-
-    <div class="card" style="padding: 1rem; border-left: 4px solid var(--warning-color);">
-      <h4><i class="fab fa-aws"></i> AWS Certified Solutions Architect – Professional</h4>
-      <p>Advanced AWS architecture skills for designing distributed systems and enterprise-scale applications.</p>
-      <span style="background: var(--warning-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Future Goal</span>
-    </div>
-
-    <div class="card" style="padding: 1rem; border-left: 4px solid var(--warning-color);">
-      <h4><i class="fab fa-microsoft"></i> Microsoft Certified: Azure Solutions Architect Expert</h4>
-      <p>Advanced Azure architecture and design solutions for compute, network, storage, and security.</p>
-      <span style="background: var(--warning-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Future Goal</span>
-    </div>
-
-    <div class="card" style="padding: 1rem; border-left: 4px solid var(--warning-color);">
-      <h4><i class="fas fa-dharmachakra"></i> Certified Kubernetes Administrator (CKA)</h4>
-      <p>Hands-on Kubernetes administration skills including cluster management, networking, and troubleshooting.</p>
-      <span style="background: var(--warning-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Future Goal</span>
-    </div>
-
-    <div class="card" style="padding: 1rem; border-left: 4px solid var(--warning-color);">
-      <h4><i class="fas fa-code"></i> HashiCorp Certified: Terraform Associate</h4>
-      <p>Infrastructure as Code using Terraform for cloud provisioning and management across multiple providers.</p>
-      <span style="background: var(--warning-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Future Goal</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Azure Security</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Identity Management</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Threat Protection</span>
     </div>
   </div>
 </div>

@@ -16,7 +16,7 @@ title: Training & Courses
     <h3>Completed Courses</h3>
     <p>Professional certificates and specialized training programs successfully completed</p>
     <div style="margin: 1rem 0;">
-      <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">7 Completed</span>
+      <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">6 Completed</span>
     </div>
     <a href="#completed-courses" class="btn">
       <i class="fas fa-arrow-down"></i> View Completed
@@ -132,21 +132,6 @@ title: Training & Courses
     <div style="margin: 1rem 0;">
       <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Completed</span>
       <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Kubernetes Security</span>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> New Relic One: Observability From Beginner to Advanced</h3>
-    <p><strong>Platform:</strong> Udemy</p>
-    <p><strong>Instructor:</strong> Aref K.</p>
-    <p><strong>Completed:</strong> January 15, 2024</p>
-    <p><strong>Duration:</strong> 3.5 hours</p>
-    <p>Comprehensive observability training covering New Relic monitoring, APM, infrastructure monitoring, and advanced observability practices for modern applications.</p>
-    
-    <div style="margin: 1rem 0;">
-      <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Completed</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Observability</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">New Relic</span>
     </div>
   </div>
 </div>
@@ -328,7 +313,7 @@ title: Training & Courses
   <h3><i class="fas fa-chart-line"></i> Training Statistics</h3>
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2rem; text-align: center; margin-top: 1.5rem;">
     <div>
-      <h3 style="color: var(--success-color); font-size: 2.5rem; margin-bottom: 0.5rem;">7</h3>
+      <h3 style="color: var(--success-color); font-size: 2.5rem; margin-bottom: 0.5rem;">6</h3>
       <p style="font-weight: 600; color: var(--text-dark);">Completed Courses</p>
     </div>
     <div>

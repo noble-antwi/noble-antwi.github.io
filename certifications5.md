@@ -80,7 +80,7 @@ title: All Certifications
   
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
     <div>
-      <h4 style="color: var(--success-color); font-size: 2rem; margin-bottom: 0.5rem;">7</h4>
+      <h4 style="color: var(--success-color); font-size: 2rem; margin-bottom: 0.5rem;">6</h4>
       <p style="font-weight: 600;">Completed Courses</p>
     </div>
     <div>
