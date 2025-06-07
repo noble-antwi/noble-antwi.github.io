@@ -54,12 +54,8 @@ title: Training & Courses
   <div class="card">
     <h3><i class="fab fa-google" style="color: #4285f4;"></i> Google IT Support Certificate</h3>
     <p><strong>Issued by:</strong> Coursera</p>
-    <p><strong>Completed:</strong> March 9, 2021</p>
+    <p><strong>Completed:</strong> 2024</p>
     <p>Comprehensive IT support fundamentals covering troubleshooting, customer service, networking, operating systems, system administration, and security.</p>
-    
-    <div style="background: var(--bg-light); padding: 0.8rem; border-radius: 8px; margin: 1rem 0; font-size: 0.9rem;">
-      <strong>Key Skills:</strong> Computer Networking • IT Infrastructure Services • System Administration • Troubleshooting • Operating Systems • Security • Customer Service
-    </div>
     
     <div style="margin: 1rem 0;">
       <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Completed</span>
@@ -75,17 +71,13 @@ title: Training & Courses
   <div class="card">
     <h3><i class="fab fa-google" style="color: #4285f4;"></i> Google Data Analytics Professional Certificate</h3>
     <p><strong>Issued by:</strong> Coursera</p>
-    <p><strong>Completed:</strong> July 31, 2021</p>
+    <p><strong>Completed:</strong> 2024</p>
     <p>Data analytics fundamentals including data cleaning, analysis, visualization, and storytelling with data using tools like R, SQL, and Tableau.</p>
-    
-    <div style="background: var(--bg-light); padding: 0.8rem; border-radius: 8px; margin: 1rem 0; font-size: 0.9rem;">
-      <strong>Key Skills:</strong> Data Analytics • Data Visualization • SQL • R Programming • Data Cleaning • Data Ethics • Problem Solving • Spreadsheets • Structured Thinking
-    </div>
     
     <div style="margin: 1rem 0;">
       <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Completed</span>
       <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Data Analytics</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">SQL</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Visualization</span>
     </div>
     
     <a href="https://www.credly.com/badges/b458cd5b-b837-4b9d-8789-851fe2d0b040/public_url" target="_blank" class="btn" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
@@ -100,10 +92,6 @@ title: Training & Courses
     <p><strong>Completed:</strong> August 26, 2024</p>
     <p>Comprehensive cloud security fundamentals covering governance, compliance, trust, assurance, risk management, and legal considerations.</p>
     
-    <div style="background: var(--bg-light); padding: 0.8rem; border-radius: 8px; margin: 1rem 0; font-size: 0.9rem;">
-      <strong>Key Skills:</strong> Cloud Security Architecture • Identity & Access Management (IAM) • Cloud Governance & Risk Management • Legal & Compliance • Cloud Infrastructure Security • Data Security & Encryption • Cloud Controls Matrix (CCM)
-    </div>
-    
     <div style="margin: 1rem 0;">
       <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Completed</span>
       <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Cloud Security</span>
@@ -115,6 +103,8 @@ title: Training & Courses
     </a>
   </div>
 
+  
+
   <div class="card">
     <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> New Relic One: Observability From Beginner to Advanced</h3>
     <p><strong>Platform:</strong> Udemy</p>
@@ -123,14 +113,10 @@ title: Training & Courses
     <p><strong>Duration:</strong> 3.5 hours</p>
     <p>Comprehensive observability training covering New Relic monitoring, APM, infrastructure monitoring, and advanced observability practices for modern applications.</p>
     
-    <div style="background: var(--bg-light); padding: 0.8rem; border-radius: 8px; margin: 1rem 0; font-size: 0.9rem;">
-      <strong>Key Skills:</strong> New Relic APM Configuration • Application Performance Monitoring • Error Analysis & Root Cause Detection • Database Performance Monitoring • Real User Monitoring • Alert Policy Setup • Incident Management
-    </div>
-    
     <div style="margin: 1rem 0;">
       <span style="background: var(--success-color); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Completed</span>
       <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Observability</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">APM</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">New Relic</span>
     </div>
     
     <a href="https://www.udemy.com/certificate/UC-171f7b71-5b26-4d1a-8335-d0d2b12dbe25/" target="_blank" class="btn" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
