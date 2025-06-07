@@ -116,68 +116,231 @@ title: Certifications In Progress
   Currently enrolled in training programs to build foundational knowledge for upcoming certifications
 </p>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+  <!-- High Progress Courses -->
   <div class="card">
-    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> AWS DevOps Engineer Prep - Udemy</h3>
-    <p><strong>Target Certification:</strong> AWS Certified DevOps Engineer – Professional</p>
-    <p>Comprehensive course covering CI/CD pipelines, infrastructure automation, and monitoring on AWS.</p>
+    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> AZ-104 Microsoft Azure Administrator</h3>
+    <p><strong>Instructor:</strong> John Christopher</p>
+    <p><strong>Target Certification:</strong> Azure Administrator Associate</p>
+    <p>Course with simulations covering Azure administration, virtual networks, storage, and identity management.</p>
     
     <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
         <span style="font-weight: 600;">Course Progress</span>
-        <span style="color: var(--success-color); font-weight: 600;">85%</span>
+        <span style="color: var(--success-color); font-weight: 600;">93%</span>
       </div>
       <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
-        <div style="background: var(--success-color); height: 100%; width: 85%; border-radius: 4px;"></div>
+        <div style="background: var(--success-color); height: 100%; width: 93%; border-radius: 4px;"></div>
       </div>
     </div>
     
     <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Training Course</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Hands-on Labs</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Simulations</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Azure Administration</span>
     </div>
   </div>
 
   <div class="card">
-    <h3><i class="fab fa-coursera" style="color: #0056d3;"></i> Cybersecurity Foundations - Coursera</h3>
-    <p><strong>Target Certification:</strong> CISSP</p>
-    <p>Building fundamental knowledge in risk management, security architecture, and governance principles.</p>
+    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> SC-200 Microsoft Security Operations Analyst</h3>
+    <p><strong>Instructor:</strong> John Christopher</p>
+    <p><strong>Target Certification:</strong> Security Operations Analyst Associate</p>
+    <p>Course with SIMS covering threat hunting, incident response, and security operations center practices.</p>
     
     <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
         <span style="font-weight: 600;">Course Progress</span>
-        <span style="color: var(--warning-color); font-weight: 600;">60%</span>
+        <span style="color: var(--success-color); font-weight: 600;">89%</span>
       </div>
       <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
-        <div style="background: var(--warning-color); height: 100%; width: 60%; border-radius: 4px;"></div>
+        <div style="background: var(--success-color); height: 100%; width: 89%; border-radius: 4px;"></div>
       </div>
     </div>
     
     <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Specialization</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Certificate Track</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Security Operations</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Threat Hunting</span>
     </div>
   </div>
 
   <div class="card">
-    <h3><i class="fab fa-linkedin" style="color: #0077b5;"></i> Azure Security Fundamentals - LinkedIn Learning</h3>
-    <p><strong>Target Certification:</strong> Azure Security Engineer Associate</p>
-    <p>Foundational training on Azure identity management, security controls, and threat protection.</p>
+    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> Getting Started with Wireshark</h3>
+    <p><strong>Instructor:</strong> Chris Geer</p>
+    <p><strong>Focus:</strong> Network Analysis & Security</p>
+    <p>Ultimate hands-on course for network packet analysis and troubleshooting using Wireshark.</p>
     
     <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
         <span style="font-weight: 600;">Course Progress</span>
-        <span style="color: var(--accent-color); font-weight: 600;">30%</span>
+        <span style="color: var(--success-color); font-weight: 600;">75%</span>
       </div>
       <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
-        <div style="background: var(--accent-color); height: 100%; width: 30%; border-radius: 4px;"></div>
+        <div style="background: var(--success-color); height: 100%; width: 75%; border-radius: 4px;"></div>
       </div>
     </div>
     
     <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Learning Path</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Practical Exercises</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Network Analysis</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Hands-on Labs</span>
     </div>
+  </div>
+
+  <div class="card">
+    <h3><i class="fas fa-shield-alt" style="color: #dc3545;"></i> Detection Engineering Masterclass Part 1</h3>
+    <p><strong>Instructor:</strong> Anthony Isherwood</p>
+    <p><strong>Platform:</strong> Udemy</p>
+    <p>Advanced detection engineering techniques for threat detection and security monitoring.</p>
+    
+    <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <span style="font-weight: 600;">Course Progress</span>
+        <span style="color: var(--warning-color); font-weight: 600;">58%</span>
+      </div>
+      <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
+        <div style="background: var(--warning-color); height: 100%; width: 58%; border-radius: 4px;"></div>
+      </div>
+    </div>
+    
+    <div style="margin-top: 1rem;">
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Detection Engineering</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Threat Detection</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><i class="fab fa-udemy" style="color: #a435f0;"></i> Grafana Monitoring</h3>
+    <p><strong>Instructor:</strong> Sean Bradley</p>
+    <p><strong>Focus:</strong> Monitoring & Observability</p>
+    <p>Comprehensive Grafana training for system monitoring and data visualization.</p>
+    
+    <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <span style="font-weight: 600;">Course Progress</span>
+        <span style="color: var(--warning-color); font-weight: 600;">45%</span>
+      </div>
+      <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
+        <div style="background: var(--warning-color); height: 100%; width: 45%; border-radius: 4px;"></div>
+      </div>
+    </div>
+    
+    <div style="margin-top: 1rem;">
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Monitoring</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Data Visualization</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><i class="fas fa-shield-alt" style="color: #dc3545;"></i> Security Operations (SOC) 101</h3>
+    <p><strong>Instructor:</strong> Andrew Prince</p>
+    <p><strong>Platform:</strong> TCM Security</p>
+    <p><strong>Target Certification:</strong> Practical SOC Analyst Associate (PSAA)</p>
+    <p>Foundational SOC operations training covering incident response, threat hunting, and security monitoring.</p>
+    
+    <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <span style="font-weight: 600;">Course Progress</span>
+        <span style="color: var(--warning-color); font-weight: 600;">40%</span>
+      </div>
+      <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
+        <div style="background: var(--warning-color); height: 100%; width: 40%; border-radius: 4px;"></div>
+      </div>
+    </div>
+    
+    <div style="margin-top: 1rem;">
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">SOC Operations</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Incident Response</span>
+    </div>
+  </div>
+</div>
+
+<h3><i class="fas fa-clock"></i> Additional Courses In Progress</h3>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+  <div class="card" style="padding: 1rem;">
+    <h4>CRISC (Certified in Risk and Information Systems Control)</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Progress:</strong> 40%</p>
+    <p><strong>Instructor:</strong> Stone River eLearning</p>
+  </div>
+
+  <div class="card" style="padding: 1rem;">
+    <h4>Kubernetes for Absolute Beginners</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Progress:</strong> 35%</p>
+    <p><strong>Instructor:</strong> KodeKloud Training</p>
+  </div>
+
+  <div class="card" style="padding: 1rem;">
+    <h4>DevOps Beginners to Advanced with Projects</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Progress:</strong> 25%</p>
+    <p><strong>Instructor:</strong> Imran Teli</p>
+  </div>
+
+  <div class="card" style="padding: 1rem;">
+    <h4>Prepare for (ISC)2 CCSP Exam - All Six Domains</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Progress:</strong> 5%</p>
+    <p><strong>Instructor:</strong> Gwen Bettwy</p>
+  </div>
+
+  <div class="card" style="padding: 1rem;">
+    <h4>Microsoft Sentinel Course with Hands-on SIMS</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Progress:</strong> 5%</p>
+    <p><strong>Instructor:</strong> John Christopher</p>
+  </div>
+
+  <div class="card" style="padding: 1rem;">
+    <h4>pfSense 2.4.4 Open Source Firewall</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Progress:</strong> 3%</p>
+    <p><strong>Instructor:</strong> Stone River eLearning</p>
+  </div>
+
+  <div class="card" style="padding: 1rem;">
+    <h4>HashiCorp Certified: Terraform Associate</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Progress:</strong> 2%</p>
+    <p><strong>Instructor:</strong> Bryan Krausen</p>
+  </div>
+
+  <div class="card" style="padding: 1rem;">
+    <h4>The Complete Cybersecurity Course: End Point Protection</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Progress:</strong> 2%</p>
+    <p><strong>Instructor:</strong> Nathan House</p>
+  </div>
+</div>
+
+<h3><i class="fas fa-hourglass-start"></i> Upcoming Courses</h3>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+  <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
+    <h4>Certified Kubernetes Administrator (CKA) with Practice Tests</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> KodeKloud Training</p>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Not Started</span>
+  </div>
+
+  <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
+    <h4>Complete Linux Training Course to Get Your Dream IT Job 2025</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> Imran Afzal</p>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Not Started</span>
+  </div>
+
+  <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
+    <h4>Nmap for Ethical Hackers - Ultimate Hands-On Course</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> David Greer</p>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Not Started</span>
+  </div>
+
+  <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
+    <h4>AKYLADE AI Security Foundation Full Course & Practice Exam</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> Jason Dion</p>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Not Started</span>
+  </div>
+
+  <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
+    <h4>Master Cisco CCNA 200-301: Comprehensive All-In-One Course</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> Jeremy McDowell</p>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Not Started</span>
+  </div>
+
+  <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
+    <h4>Microsoft Sentinel & Microsoft Defender for Cloud</h4>
+    <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> Christopher Net</p>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Not Started</span>
   </div>
 </div>
 

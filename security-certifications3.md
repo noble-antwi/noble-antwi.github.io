@@ -28,22 +28,6 @@ title: Security Certifications
       <i class="fas fa-external-link-alt"></i> Verify on Credly
     </a>
   </div>
-<div class="card">
-    <h3><i class="fas fa-shield-alt"></i> OPSWAT Introduction to Critical Infrastructure Protection (ICIP)</h3>
-    <p><strong>Issued:</strong> OPSWAT</p>
-    <p><strong>Credential ID:</strong> <a href="https://www.credly.com/badges/6a027495-f4df-4aac-829e-78e6aae4de12/public_url" target="_blank">View Badge</a></p>
-    <p>Foundational knowledge in critical infrastructure protection, cybersecurity frameworks, and risk management principles.</p>
-    
-    <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Critical Infrastructure</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Risk Management</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Cybersecurity Frameworks</span>
-    </div>
-    
-    <div style="margin-top: 1rem;">
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="6a027495-f4df-4aac-829e-78e6aae4de12" data-share-badge-host="https://www.credly.com"></div>
-    </div>
-  </div>
 </div>
 
 <h2><i class="fas fa-graduation-cap"></i> Security Training Progress</h2>
