@@ -1,4 +1,3 @@
-
 ---
 layout: default
 title: Contact
@@ -7,14 +6,14 @@ title: Contact
 <h1><i class="fas fa-envelope"></i> Let's Connect</h1>
 
 <p style="text-align: center; font-size: 1.2rem; color: var(--text-light); margin-bottom: 3rem;">
-  Whether it's collaboration, mentorship, or new opportunities — I'd love to hear from you!
+  Curious about working together, mentoring, or just having a real conversation about security, tech, or life? Let’s make it happen. Reach out — I’d love to connect.
 </p>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
   <div class="card">
     <h3><i class="fas fa-envelope" style="color: var(--accent-color);"></i> Email</h3>
     <p>For professional inquiries, project discussions, or general questions.</p>
-    <a href="mailto:{{ site.social.email }}" class="btn">
+    <a href="mailto:amnworlanyo@gmail.com" class="btn">
       <i class="fas fa-paper-plane"></i> Send Email
     </a>
   </div>
@@ -63,7 +62,7 @@ title: Contact
   <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9;">
     I'm always excited to discuss cybersecurity, cloud technologies, and potential collaborations.
   </p>
-  <a href="mailto:{{ site.social.email }}" style="background: white; color: var(--primary-color); padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+  <a href="mailto:amnworlanyo@gmail.com" style="background: white; color: var(--primary-color); padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
     <i class="fas fa-rocket"></i> Start a Conversation
   </a>
 </div>
