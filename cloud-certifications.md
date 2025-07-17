@@ -43,9 +43,6 @@ title: Cloud Certifications
     <h3>AWS Certified SysOps Administrator – Associate</h3>
     <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="9c5a0f84-ba05-46d0-b362-b2dde2f785cf" data-share-badge-host="https://www.credly.com"></div>
     <p style="margin-top: 1rem;">Systems operations on AWS platform including deployment, management, and troubleshooting</p>
-    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
-      <strong>Issued:</strong> June 11, 2025 | <strong>Expires:</strong> June 11, 2028
-    </p>
     <a href="https://www.credly.com/badges/9c5a0f84-ba05-46d0-b362-b2dde2f785cf/public_url" class="btn" target="_blank">
       <i class="fas fa-external-link-alt"></i> Verify on Credly
     </a>
@@ -78,9 +75,6 @@ title: Cloud Certifications
     <p><strong>Credential ID:</strong> <a href="https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/324D5F14A4B47A0F?sharingId=3DD1334494500325" target="_blank">324D5F14A4B47A0F</a></p>
     <p><strong>Certification Number:</strong> FEC4CC-112274</p>
     <p>Expertise in implementing, configuring, and managing Microsoft identity and access management solutions.</p>
-    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
-      <strong>Earned:</strong> June 8, 2025 | <strong>Expires:</strong> June 9, 2026
-    </p>
 
     <div style="margin-top: 1rem;">
       <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Identity Management</span>

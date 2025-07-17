@@ -1,4 +1,3 @@
-
 ---
 layout: default
 title: All Certifications
@@ -71,15 +70,32 @@ title: All Certifications
   </div>
 </div>
 
-<h2><i class="fas fa-graduation-cap"></i> Additional Training</h2>
+<h2><i class="fas fa-graduation-cap"></i> Professional Training & Courses</h2>
 
-<div class="card">
-  <h3><i class="fas fa-video"></i> Specialized Courses</h3>
-  <ul style="list-style: none; padding: 0;">
-    <li style="margin-bottom: 0.8rem;"><i class="fas fa-check" style="color: var(--success-color); margin-right: 0.5rem;"></i> <strong>Udemy:</strong> Practical Cloud Security Implementation</li>
-    <li style="margin-bottom: 0.8rem;"><i class="fas fa-check" style="color: var(--success-color); margin-right: 0.5rem;"></i> <strong>Coursera:</strong> Cybersecurity Specialization Program</li>
-    <li style="margin-bottom: 0.8rem;"><i class="fas fa-check" style="color: var(--success-color); margin-right: 0.5rem;"></i> <strong>LinkedIn Learning:</strong> Advanced Threat Detection</li>
-  </ul>
+<div class="card" style="text-align: center; margin-bottom: 2rem;">
+  <h3>Comprehensive Training Portfolio</h3>
+  <p style="font-size: 1.1rem; color: var(--text-light); margin-bottom: 2rem;">
+    Extensive collection of completed courses, active training programs, and planned learning paths across multiple platforms
+  </p>
+  
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+    <div>
+      <h4 style="color: var(--success-color); font-size: 2rem; margin-bottom: 0.5rem;">4</h4>
+      <p style="font-weight: 600;">Completed Courses</p>
+    </div>
+    <div>
+      <h4 style="color: var(--warning-color); font-size: 2rem; margin-bottom: 0.5rem;">15+</h4>
+      <p style="font-weight: 600;">Active Courses</p>
+    </div>
+    <div>
+      <h4 style="color: var(--accent-color); font-size: 2rem; margin-bottom: 0.5rem;">6</h4>
+      <p style="font-weight: 600;">Planned Courses</p>
+    </div>
+  </div>
+  
+  <a href="/training-courses" class="btn">
+    <i class="fas fa-arrow-right"></i> View All Training & Courses
+  </a>
 </div>
 
 <div style="text-align: center; margin-top: 3rem;">
