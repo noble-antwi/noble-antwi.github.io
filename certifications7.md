@@ -15,7 +15,7 @@ title: All Certifications
     <h3>Cloud Certifications</h3>
     <p>AWS, Multi-cloud networking, and container orchestration expertise</p>
     <div style="margin: 1rem 0;">
-      <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">8 Certifications</span>
+      <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">6 Certifications</span>
     </div>
     <a href="/cloud-certifications" class="btn">
       <i class="fas fa-arrow-right"></i> View Details
@@ -52,11 +52,11 @@ title: All Certifications
 <div class="card">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center;">
     <div>
-      <h3 style="color: var(--accent-color); font-size: 2.5rem; margin-bottom: 0.5rem;">10</h3>
+      <h3 style="color: var(--accent-color); font-size: 2.5rem; margin-bottom: 0.5rem;">8</h3>
       <p style="font-weight: 600; color: var(--text-dark);">Total Certifications</p>
     </div>
     <div>
-      <h3 style="color: var(--success-color); font-size: 2.5rem; margin-bottom: 0.5rem;">4</h3>
+      <h3 style="color: var(--success-color); font-size: 2.5rem; margin-bottom: 0.5rem;">3</h3>
       <p style="font-weight: 600; color: var(--text-dark);">AWS Certifications</p>
     </div>
     <div>
@@ -64,7 +64,7 @@ title: All Certifications
       <p style="font-weight: 600; color: var(--text-dark);">Security Certifications</p>
     </div>
     <div>
-      <h3 style="color: var(--primary-color); font-size: 2.5rem; margin-bottom: 0.5rem;">5</h3>
+      <h3 style="color: var(--primary-color); font-size: 2.5rem; margin-bottom: 0.5rem;">3</h3>
       <p style="font-weight: 600; color: var(--text-dark);">Multi-cloud & Networking</p>
     </div>
   </div>

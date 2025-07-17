@@ -38,62 +38,6 @@ title: Cloud Certifications
       <i class="fas fa-external-link-alt"></i> Verify on Credly
     </a>
   </div>
-
-  <div class="card" style="text-align: center;">
-    <h3>AWS Certified SysOps Administrator – Associate</h3>
-    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="9c5a0f84-ba05-46d0-b362-b2dde2f785cf" data-share-badge-host="https://www.credly.com"></div>
-    <p style="margin-top: 1rem;">Systems operations on AWS platform including deployment, management, and troubleshooting</p>
-    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
-      <strong>Issued:</strong> June 11, 2025 | <strong>Expires:</strong> June 11, 2028
-    </p>
-    <a href="https://www.credly.com/badges/9c5a0f84-ba05-46d0-b362-b2dde2f785cf/public_url" class="btn" target="_blank">
-      <i class="fas fa-external-link-alt"></i> Verify on Credly
-    </a>
-  </div>
-</div>
-
-<h2><i class="fab fa-microsoft"></i> Microsoft Azure</h2>
-
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
-  <div class="card">
-    <h3><i class="fab fa-microsoft"></i> Microsoft Certified: Azure Data Fundamentals</h3>
-    <p><strong>Issued:</strong> Microsoft</p>
-    <p><strong>Credential ID:</strong> <a href="https://www.credly.com/badges/f1082e80-2124-4f61-9e02-3d049ec7f281/public_url" target="_blank">View Badge</a></p>
-    <p>Foundational knowledge of core data concepts and how they are implemented using Microsoft Azure data services.</p>
-
-    <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Data Concepts</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Azure Data Services</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Analytics</span>
-    </div>
-
-    <div style="margin-top: 1rem;">
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="f1082e80-2124-4f61-9e02-3d049ec7f281" data-share-badge-host="https://www.credly.com"></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3><i class="fab fa-microsoft"></i> Microsoft Certified: Identity and Access Administrator Associate</h3>
-    <p><strong>Issued:</strong> Microsoft</p>
-    <p><strong>Credential ID:</strong> <a href="https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/324D5F14A4B47A0F?sharingId=3DD1334494500325" target="_blank">324D5F14A4B47A0F</a></p>
-    <p><strong>Certification Number:</strong> FEC4CC-112274</p>
-    <p>Expertise in implementing, configuring, and managing Microsoft identity and access management solutions.</p>
-    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
-      <strong>Earned:</strong> June 8, 2025 | <strong>Expires:</strong> June 9, 2026
-    </p>
-
-    <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Identity Management</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Access Control</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Azure AD</span>
-    </div>
-
-    <div style="margin-top: 1rem;">
-      <a href="https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/324D5F14A4B47A0F?sharingId=3DD1334494500325" class="btn" target="_blank">
-        <i class="fas fa-external-link-alt"></i> Verify on Microsoft Learn
-      </a>
-    </div>
-  </div>
 </div>
 
 <h2><i class="fas fa-network-wired"></i> Multi-Cloud & Networking</h2>
@@ -124,6 +68,23 @@ title: Cloud Certifications
     <a href="https://www.credly.com/badges/dcf6bf4f-0bf6-464c-b407-716df7f25357/public_url" class="btn" target="_blank">
       <i class="fas fa-external-link-alt"></i> Verify on Credly
     </a>
+  </div>
+
+  <div class="card">
+    <h3><i class="fab fa-microsoft"></i> Microsoft Certified: Azure Data Fundamentals</h3>
+    <p><strong>Issued:</strong> Microsoft</p>
+    <p><strong>Credential ID:</strong> <a href="https://www.credly.com/badges/f1082e80-2124-4f61-9e02-3d049ec7f281/public_url" target="_blank">View Badge</a></p>
+    <p>Foundational knowledge of core data concepts and how they are implemented using Microsoft Azure data services.</p>
+
+    <div style="margin-top: 1rem;">
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Data Concepts</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Azure Data Services</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Analytics</span>
+    </div>
+
+    <div style="margin-top: 1rem;">
+      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="f1082e80-2124-4f61-9e02-3d049ec7f281" data-share-badge-host="https://www.credly.com"></div>
+    </div>
   </div>
 </div>
 
