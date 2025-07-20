@@ -34,6 +34,147 @@ title: Home
 </div>
 
 <div class="card">
+  <h2><i class="fas fa-cogs"></i> Technical Skills & Expertise</h2>
+  <div class="skills-grid">
+    <div class="skill-category">
+      <h4><i class="fas fa-cloud"></i> Cloud Platforms</h4>
+      <div class="skill-item">
+        <span class="skill-name">Amazon Web Services (AWS)</span>
+        <div class="skill-level">
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Microsoft Azure</span>
+        <div class="skill-level">
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Google Cloud Platform</span>
+        <div class="skill-level">
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <h4><i class="fas fa-shield-alt"></i> Security Tools</h4>
+      <div class="skill-item">
+        <span class="skill-name">Wazuh SIEM</span>
+        <div class="skill-level">
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Wireshark</span>
+        <div class="skill-level">
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Vulnerability Assessment</span>
+        <div class="skill-level">
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <h4><i class="fas fa-code"></i> Programming & Scripting</h4>
+      <div class="skill-item">
+        <span class="skill-name">Python</span>
+        <div class="skill-level">
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">PowerShell</span>
+        <div class="skill-level">
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Bash/Linux</span>
+        <div class="skill-level">
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-category">
+      <h4><i class="fas fa-network-wired"></i> Infrastructure & DevOps</h4>
+      <div class="skill-item">
+        <span class="skill-name">Docker & Containerization</span>
+        <div class="skill-level">
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">Infrastructure as Code</span>
+        <div class="skill-level">
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">CI/CD Pipelines</span>
+        <div class="skill-level">
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
   <h2><i class="fas fa-rocket"></i> What I Do</h2>
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
     <div style="text-align: center; padding: 1rem;">

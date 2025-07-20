@@ -1052,23 +1052,358 @@
         }
       }
 
-      /* Dark mode support */
-      @media (prefers-color-scheme: dark) {
-        .nav {
-          background: rgba(30, 64, 175, 0.95);
+      /* Dark Mode Variables */
+      [data-theme="dark"] {
+        --text-dark: #f8fafc;
+        --text-light: #cbd5e1;
+        --text-white: #ffffff;
+        --bg-light: #1e293b;
+        --bg-dark: #0f172a;
+        --border-color: #334155;
+        --card-gradient: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+        --hover-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.25), 0 10px 10px -5px rgba(59, 130, 246, 0.2);
+      }
+
+      [data-theme="dark"] body {
+        background-color: var(--bg-dark);
+        color: var(--text-dark);
+      }
+
+      [data-theme="dark"] .nav {
+        background: rgba(15, 23, 42, 0.95);
+        border-bottom-color: var(--border-color);
+      }
+
+      [data-theme="dark"] .nav-link {
+        color: var(--text-light);
+      }
+
+      [data-theme="dark"] .nav-link:hover {
+        color: var(--text-white);
+      }
+
+      [data-theme="dark"] .dropdown-menu {
+        background: var(--bg-light);
+        border-color: var(--border-color);
+      }
+
+      [data-theme="dark"] .dropdown-item {
+        color: var(--text-light);
+        border-bottom-color: var(--border-color);
+      }
+
+      [data-theme="dark"] .dropdown-item:hover {
+        background: var(--bg-dark);
+        color: var(--text-white);
+      }
+
+      [data-theme="dark"] .content-wrapper {
+        background: var(--bg-light);
+      }
+
+      [data-theme="dark"] .nav-search {
+        background: var(--bg-light);
+        border-color: var(--border-color);
+      }
+
+      [data-theme="dark"] .nav-search:focus-within {
+        background: var(--bg-dark);
+        border-color: var(--accent-color);
+      }
+
+      [data-theme="dark"] .nav-search input {
+        color: var(--text-light);
+      }
+
+      [data-theme="dark"] .search-results {
+        background: var(--bg-light);
+        border-color: var(--border-color);
+      }
+
+      [data-theme="dark"] .search-result-item {
+        border-bottom-color: var(--border-color);
+      }
+
+      [data-theme="dark"] .search-result-item:hover {
+        background: var(--bg-dark);
+      }
+
+      /* Theme Toggle Button */
+      .theme-toggle {
+        background: none;
+        border: 2px solid var(--border-color);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--text-dark);
+        margin-left: 1rem;
+      }
+
+      .theme-toggle:hover {
+        border-color: var(--accent-color);
+        color: var(--accent-color);
+        transform: scale(1.1);
+      }
+
+      .theme-toggle i {
+        font-size: 1.2rem;
+        transition: transform 0.3s ease;
+      }
+
+      .theme-toggle:hover i {
+        transform: rotate(15deg);
+      }
+
+      [data-theme="dark"] .theme-toggle {
+        color: var(--text-light);
+        border-color: var(--border-color);
+      }
+
+      [data-theme="dark"] .theme-toggle:hover {
+        color: var(--accent-secondary);
+        border-color: var(--accent-secondary);
+      }
+
+      /* Skills Matrix Styles */
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+      }
+
+      .skill-category {
+        background: var(--card-gradient);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+      }
+
+      .skill-category:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--hover-shadow);
+      }
+
+      .skill-category h4 {
+        color: var(--accent-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .skill-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.8rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+      }
+
+      .skill-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
+
+      .skill-name {
+        font-weight: 500;
+        color: var(--text-dark);
+      }
+
+      .skill-level {
+        display: flex;
+        gap: 2px;
+      }
+
+      .skill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--border-color);
+        transition: all 0.3s ease;
+      }
+
+      .skill-dot.filled {
+        background: var(--accent-color);
+        box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+      }
+
+      .skill-dot.advanced {
+        background: var(--success-color);
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+      }
+
+      [data-theme="dark"] .skill-name {
+        color: var(--text-light);
+      }
+
+      [data-theme="dark"] .skill-item {
+        border-bottom-color: rgba(59, 130, 246, 0.2);
+      }
+
+      /* Project Case Study Styles */
+      .project-case-study {
+        background: var(--card-gradient);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--accent-color);
+        border: 1px solid var(--border-color);
+        transition: all 0.4s ease;
+      }
+
+      .project-case-study:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--hover-shadow);
+      }
+
+      .project-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .project-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--accent-color);
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .project-links {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .project-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: var(--accent-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .project-link:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+      }
+
+      .project-section {
+        margin-bottom: 1.5rem;
+      }
+
+      .project-section h5 {
+        color: var(--secondary-color);
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+
+      .tech-tag {
+        background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+      }
+
+      .challenge-solution {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin: 1rem 0;
+      }
+
+      .challenge, .solution {
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+      }
+
+      .challenge {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(239, 68, 68, 0.02));
+        border-left: 4px solid var(--danger-color);
+      }
+
+      .solution {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.02));
+        border-left: 4px solid var(--success-color);
+      }
+
+      /* Mobile responsiveness for new components */
+      @media (max-width: 768px) {
+        .skills-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
         }
 
-        .nav-link {
-          color: var(--text-white);
+        .skill-category {
+          padding: 1rem;
         }
 
-        .dropdown-menu {
-          background: var(--primary-color);
-          border-color: var(--border-cyber);
+        .project-header {
+          flex-direction: column;
+          align-items: flex-start;
         }
 
-        .dropdown-item {
-          color: var(--text-white);
+        .project-links {
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        .project-link {
+          flex: 1;
+          justify-content: center;
+        }
+
+        .challenge-solution {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
+        .tech-stack {
+          justify-content: flex-start;
+        }
+
+        .theme-toggle {
+          width: 35px;
+          height: 35px;
+          margin-left: 0.5rem;
+        }
+
+        .theme-toggle i {
+          font-size: 1rem;
         }
       }
 
@@ -1277,6 +1612,10 @@
           <div class="search-results" id="search-results"></div>
         </div>
 
+        <button class="theme-toggle" id="theme-toggle" title="Toggle Dark Mode">
+          <i class="fas fa-moon"></i>
+        </button>
+
         <button class="nav-toggle" id="nav-toggle">
           <i class="fas fa-bars"></i>
         </button>
@@ -1472,6 +1811,39 @@
       document.addEventListener('click', function(e) {
         if (!e.target.closest('.nav-search')) {
           searchResults.style.display = 'none';
+        }
+      });
+
+      // Dark Mode Toggle
+      const themeToggle = document.getElementById('theme-toggle');
+      const html = document.documentElement;
+      const themeIcon = themeToggle.querySelector('i');
+
+      // Check for saved theme or default to light mode
+      const currentTheme = localStorage.getItem('theme') || 'light';
+      html.setAttribute('data-theme', currentTheme);
+      
+      // Update icon based on current theme
+      if (currentTheme === 'dark') {
+        themeIcon.className = 'fas fa-sun';
+      } else {
+        themeIcon.className = 'fas fa-moon';
+      }
+
+      themeToggle.addEventListener('click', function() {
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        // Update icon
+        if (newTheme === 'dark') {
+          themeIcon.className = 'fas fa-sun';
+          themeToggle.title = 'Toggle Light Mode';
+        } else {
+          themeIcon.className = 'fas fa-moon';
+          themeToggle.title = 'Toggle Dark Mode';
         }
       });
     </script>

@@ -6,8 +6,8 @@ title: Home
 
 <div class="profile-section">
   <img src="assets/profile.jpg" alt="Noble Antwi - Cloud Security Engineer" class="profile-img"/>
-  <h1>👋 Hey, I'm Noble Antwi</h1>
-  <h3>🚀 Cloud Security Engineer | 🔐 Cybersecurity Expert | 📚 Continuous Learner</h3>
+  <h1>Welcome to my digital space : I'm Noble Antwi</h1>
+  <h3>Here, I share my journey through cloud security, infrastructure architecture, and cybersecurity, with a strong focus on identity and access management and threat detection strategies. I'm glad you're here!</h3>
   
   <div class="social-links">
     <a href="https://linkedin.com/in/{{ site.social.linkedin }}" class="social-link" target="_blank">
@@ -24,28 +24,42 @@ title: Home
 
 <div class="card">
   <h2><i class="fas fa-user"></i> About Me</h2>
-  <p>Welcome to my digital space! I'm a <strong>Cloud Security professional</strong> with 4+ years of hands-on IT infrastructure experience, currently pursuing a Master's in <em>Applied Cybersecurity and Digital Forensics</em> at <strong>Illinois Institute of Technology</strong>.</p>
+  <p>Hi, I'm Noble Antwi, a <strong>Cloud Security enthusiast</strong> and cybersecurity professional with over 4 years of hands-on experience in managing and securing IT infrastructures. I'm currently pursuing a Master's degree in <em>Cybersecurity and Digital Forensics</em> at the <strong>Illinois Institute of Technology</strong>, where I'm deepening my expertise in areas like digital forensics, incident response, and cloud-native security.</p>
   
-  <p>I specialize in <strong>cloud security, system hardening, and digital forensics</strong> — blending practical experience with cutting-edge research in cybersecurity.</p>
+  <p>My passion lies in <strong>cloud architecture, threat detection, identity and access management (IAM), and infrastructure protection</strong>. I've built a strong foundation in system administration and cloud engineering. Now, I'm focused on building secure, scalable systems across AWS, Azure, and Google Cloud. Whether it's implementing zero trust models, hardening Linux environments, or exploring the inner workings of modern SIEM tools, I thrive in roles that demand critical thinking and proactive defense.</p>
+  
+  <p>Outside of cybersecurity, I'm someone who values balance and creativity. Music keeps me grounded. I enjoy everything from Gospel and Lovers Rock to Afrobeat, Highlife, and HipLife. I'm also a proud supporter of Chelsea FC, even though I don't always have the time to watch every match.</p>
+  
+  <p>At my core, I'm a learner and a builder. I believe that technology, when used with purpose, can drive real and lasting impact. I'm always open to collaborating on meaningful projects or connecting with others who are passionate about innovation and security.</p>
 </div>
 
 <div class="card">
   <h2><i class="fas fa-rocket"></i> What I Do</h2>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
     <div style="text-align: center; padding: 1rem;">
-      <i class="fas fa-cloud-security" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-      <h3>Cloud Security</h3>
-      <p>Architecting secure AWS & Azure environments with Zero Trust principles</p>
+      <i class="fas fa-cloud" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+      <h3>☁️ Cloud Security & Architecture</h3>
+      <p>Designing and securing cloud environments on AWS, Azure, and GCP, with a focus on Zero Trust, least privilege, and compliance-driven architectures.</p>
     </div>
     <div style="text-align: center; padding: 1rem;">
-      <i class="fas fa-search" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-      <h3>Digital Forensics</h3>
-      <p>Investigating security incidents and analyzing network traffic</p>
+      <i class="fas fa-key" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+      <h3>🔐 Identity & Access Management (IAM)</h3>
+      <p>Implementing and optimizing IAM policies, roles, and authentication strategies to ensure secure, frictionless access across systems and services.</p>
     </div>
     <div style="text-align: center; padding: 1rem;">
       <i class="fas fa-shield-alt" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-      <h3>System Hardening</h3>
-      <p>Implementing robust security controls and monitoring solutions</p>
+      <h3>🛡️ Threat Detection & Incident Response</h3>
+      <p>Proactively identifying, investigating, and responding to threats using SIEM tools, telemetry, and network behavior analysis to reduce dwell time and improve response.</p>
+    </div>
+    <div style="text-align: center; padding: 1rem;">
+      <i class="fas fa-server" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+      <h3>🧰 System Hardening & Infrastructure Defense</h3>
+      <p>Locking down systems through secure baselining, patch management, and automated monitoring to ensure resilience against common and emerging threats.</p>
+    </div>
+    <div style="text-align: center; padding: 1rem;">
+      <i class="fas fa-graduation-cap" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+      <h3>📈 Continuous Learning & Knowledge Sharing</h3>
+      <p>Actively exploring new cybersecurity trends, tools, and frameworks. Passionate about community building, mentorship, and sharing practical knowledge through labs and projects.</p>
     </div>
   </div>
 </div>
