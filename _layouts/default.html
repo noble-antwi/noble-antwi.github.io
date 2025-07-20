@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=yes, minimum-scale=1, maximum-scale=5">
     <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
 
@@ -742,28 +742,191 @@
         box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
       }
 
-      /* Responsive */
-      @media (max-width: 968px) {
+      /* Mobile First Responsive Design */
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 15px;
+        }
+
+        .header {
+          padding: 2.5rem 0;
+        }
+
+        .header h1 {
+          font-size: 1.8rem;
+          letter-spacing: 2px;
+          line-height: 1.2;
+        }
+
+        .header p {
+          font-size: 0.95rem;
+          letter-spacing: 0.5px;
+        }
+
         .nav-container {
-          padding: 0 1rem;
+          padding: 0 15px;
+          min-height: 60px;
+        }
+
+        .nav-brand {
+          font-size: 1.2rem;
+        }
+
+        .nav-brand img {
+          width: 30px;
+          height: 30px;
+        }
+
+        .nav-toggle {
+          display: block;
+          padding: 0.3rem;
+        }
+
+        .nav-menu {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          flex-direction: column;
+          box-shadow: 0 8px 32px rgba(37, 99, 235, 0.15);
+          border-top: 1px solid var(--border-color);
+          max-height: 70vh;
+          overflow-y: auto;
+        }
+
+        .nav-menu.active {
+          display: flex;
+        }
+
+        .nav-link {
+          padding: 1rem 1.5rem;
+          border-bottom: 1px solid var(--border-color);
+          font-size: 0.9rem;
+          justify-content: flex-start;
+        }
+
+        .nav-link i {
+          margin-right: 0.8rem;
+          width: 16px;
         }
 
         .nav-search {
-          margin-left: 1rem;
+          display: none;
         }
 
-        .nav-search input {
+        .dropdown-menu {
+          position: static;
+          opacity: 1;
+          visibility: visible;
+          transform: none;
+          box-shadow: none;
+          border: none;
+          border-radius: 0;
+          background: var(--bg-light);
+          margin: 0;
+          min-width: auto;
+        }
+
+        .dropdown-item {
+          padding: 0.8rem 2rem;
+          font-size: 0.85rem;
+          border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .main-content {
+          padding: 2rem 0;
+        }
+
+        .content-wrapper {
+          padding: 1rem;
+          margin-bottom: 1rem;
+          border-radius: 8px;
+        }
+
+        .profile-img {
           width: 120px;
+          height: 120px;
+          margin-bottom: 1.5rem;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+          line-height: 1.3;
+          margin-bottom: 1rem;
+        }
+
+        h2 {
+          font-size: 1.4rem;
+          line-height: 1.3;
+          margin-bottom: 1.5rem;
+        }
+
+        h3 {
+          font-size: 1.2rem;
+          line-height: 1.3;
+        }
+
+        .card {
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+          border-radius: 12px;
+        }
+
+        .btn {
+          padding: 0.8rem 1.5rem;
+          font-size: 0.85rem;
+          border-radius: 8px;
+          display: block;
+          text-align: center;
+          margin: 1rem 0;
+        }
+
+        .social-links {
+          gap: 1rem;
+          margin: 1.5rem 0;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .social-link {
+          width: 50px;
+          height: 50px;
+          font-size: 1.2rem;
+          border-radius: 12px;
+        }
+
+        /* Touch-friendly spacing */
+        p {
+          line-height: 1.6;
+          margin-bottom: 1.2rem;
+        }
+
+        /* Improve text readability on mobile */
+        body {
+          font-size: 15px;
+          line-height: 1.6;
+        }
+
+        /* Better form elements on mobile */
+        input, textarea, select {
+          font-size: 16px; /* Prevents zoom on iOS */
         }
       }
 
-      @media (max-width: 768px) {
+      @media (max-width: 768px) and (min-width: 481px) {
         .header h1 {
           font-size: 2.2rem;
+          letter-spacing: 3px;
         }
 
         .header p {
           font-size: 1.1rem;
+        }
+
+        .nav-container {
+          padding: 0 1rem;
         }
 
         .nav-toggle {
@@ -822,6 +985,90 @@
 
         .content-wrapper {
           padding: 1.5rem;
+        }
+
+        .card {
+          padding: 2rem;
+        }
+
+        .social-links {
+          gap: 1.2rem;
+        }
+      }
+
+      @media (max-width: 968px) and (min-width: 769px) {
+        .nav-container {
+          padding: 0 1rem;
+        }
+
+        .nav-search {
+          margin-left: 1rem;
+        }
+
+        .nav-search input {
+          width: 120px;
+        }
+      }
+
+      /* Landscape phone orientation */
+      @media (max-height: 500px) and (orientation: landscape) {
+        .header {
+          padding: 1.5rem 0;
+        }
+
+        .header h1 {
+          font-size: 1.6rem;
+        }
+
+        .header p {
+          font-size: 0.9rem;
+        }
+
+        .nav-menu {
+          max-height: 50vh;
+        }
+      }
+
+      /* High DPI screens */
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .nav-brand img,
+        .profile-img {
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: crisp-edges;
+        }
+      }
+
+      /* Accessibility improvements for mobile */
+      @media (prefers-reduced-motion: reduce) {
+        .card,
+        .btn,
+        .nav-link,
+        .social-link {
+          transition: none;
+        }
+
+        .header::after {
+          animation: none;
+        }
+      }
+
+      /* Dark mode support */
+      @media (prefers-color-scheme: dark) {
+        .nav {
+          background: rgba(30, 64, 175, 0.95);
+        }
+
+        .nav-link {
+          color: var(--text-white);
+        }
+
+        .dropdown-menu {
+          background: var(--primary-color);
+          border-color: var(--border-cyber);
+        }
+
+        .dropdown-item {
+          color: var(--text-white);
         }
       }
 
@@ -1037,28 +1284,59 @@
     </nav>
 
     <script>
-      // Mobile navigation toggle
-      document.getElementById('nav-toggle').addEventListener('click', function() {
-        const navMenu = document.getElementById('nav-menu');
+      // Mobile navigation toggle with better touch handling
+      const navToggle = document.getElementById('nav-toggle');
+      const navMenu = document.getElementById('nav-menu');
+      
+      function toggleMobileNav() {
         navMenu.classList.toggle('active');
-
-        // Change icon
-        const icon = this.querySelector('i');
+        const icon = navToggle.querySelector('i');
+        
         if (navMenu.classList.contains('active')) {
           icon.className = 'fas fa-times';
+          document.body.style.overflow = 'hidden'; // Prevent scroll when menu is open
         } else {
           icon.className = 'fas fa-bars';
+          document.body.style.overflow = '';
         }
+      }
+      
+      // Handle both click and touch events
+      navToggle.addEventListener('click', toggleMobileNav);
+      navToggle.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        toggleMobileNav();
       });
 
-      // Close mobile menu when clicking outside
-      document.addEventListener('click', function(e) {
-        const navMenu = document.getElementById('nav-menu');
-        const navToggle = document.getElementById('nav-toggle');
-
-        if (!navMenu.contains(e.target) && !navToggle.contains(e.target)) {
+      // Close mobile menu when clicking outside or on menu links
+      function closeMobileNav() {
+        if (navMenu.classList.contains('active')) {
           navMenu.classList.remove('active');
           navToggle.querySelector('i').className = 'fas fa-bars';
+          document.body.style.overflow = '';
+        }
+      }
+      
+      document.addEventListener('click', function(e) {
+        if (!navMenu.contains(e.target) && !navToggle.contains(e.target)) {
+          closeMobileNav();
+        }
+      });
+      
+      // Close menu when clicking on nav links (mobile)
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 768) {
+            closeMobileNav();
+          }
+        });
+      });
+      
+      // Close menu on window resize
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+          closeMobileNav();
         }
       });
 
