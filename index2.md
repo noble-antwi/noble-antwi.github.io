@@ -37,7 +37,7 @@ title: Home
   <h2><i class="fas fa-cogs"></i> Technical Skills & Expertise</h2>
   <div class="skills-grid">
     <div class="skill-category">
-      <h4><i class="fas fa-cloud"></i> Cloud Platforms & Services</h4>
+      <h4><i class="fas fa-cloud"></i> Cloud Platforms</h4>
       <div class="skill-item">
         <span class="skill-name">Amazon Web Services (AWS)</span>
         <div class="skill-level">
@@ -68,20 +68,10 @@ title: Home
           <div class="skill-dot"></div>
         </div>
       </div>
-      <div class="skill-item">
-        <span class="skill-name">Kubernetes (K8s)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
     </div>
 
     <div class="skill-category">
-      <h4><i class="fas fa-shield-alt"></i> SIEM & Security Monitoring</h4>
+      <h4><i class="fas fa-shield-alt"></i> Security Tools</h4>
       <div class="skill-item">
         <span class="skill-name">Wazuh SIEM</span>
         <div class="skill-level">
@@ -93,84 +83,6 @@ title: Home
         </div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">Splunk</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Elastic Stack (ELK)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Microsoft Sentinel</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-search"></i> Digital Forensics & Incident Response</h4>
-      <div class="skill-item">
-        <span class="skill-name">Autopsy Forensic Suite</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Volatility Memory Analysis</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">SANS DFIR Tools</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Incident Response Planning</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-network-wired"></i> Network Security & Analysis</h4>
-      <div class="skill-item">
         <span class="skill-name">Wireshark</span>
         <div class="skill-level">
           <div class="skill-dot filled advanced"></div>
@@ -181,120 +93,12 @@ title: Home
         </div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">Nmap & Network Scanning</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Firewall Configuration</span>
+        <span class="skill-name">Vulnerability Assessment</span>
         <div class="skill-level">
           <div class="skill-dot filled advanced"></div>
           <div class="skill-dot filled advanced"></div>
           <div class="skill-dot filled advanced"></div>
           <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Network Traffic Analysis</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-bug"></i> Vulnerability Management & Testing</h4>
-      <div class="skill-item">
-        <span class="skill-name">Nessus Vulnerability Scanner</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">OpenVAS</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Metasploit Framework</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Penetration Testing</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-exclamation-triangle"></i> Risk & Compliance Management</h4>
-      <div class="skill-item">
-        <span class="skill-name">Risk Assessment & Analysis</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">NIST Cybersecurity Framework</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">ISO 27001/27002</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">PCI DSS Compliance</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
           <div class="skill-dot"></div>
         </div>
       </div>
@@ -323,103 +127,19 @@ title: Home
         </div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">Bash/Linux Shell</span>
+        <span class="skill-name">Bash/Linux</span>
         <div class="skill-level">
           <div class="skill-dot filled advanced"></div>
           <div class="skill-dot filled advanced"></div>
           <div class="skill-dot filled advanced"></div>
           <div class="skill-dot filled advanced"></div>
           <div class="skill-dot filled"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">SQL</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
         </div>
       </div>
     </div>
 
     <div class="skill-category">
-      <h4><i class="fas fa-user-shield"></i> Identity & Access Management (IAM)</h4>
-      <div class="skill-item">
-        <span class="skill-name">AWS IAM & Access Controls</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Azure Active Directory (Entra ID)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Multi-Factor Authentication (MFA)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Zero Trust Architecture</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Privileged Access Management (PAM)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-cogs"></i> Infrastructure Automation & DevSecOps</h4>
-      <div class="skill-item">
-        <span class="skill-name">Ansible Automation & Configuration</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Infrastructure as Code (Terraform)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
+      <h4><i class="fas fa-network-wired"></i> Infrastructure & DevOps</h4>
       <div class="skill-item">
         <span class="skill-name">Docker & Containerization</span>
         <div class="skill-level">
@@ -431,7 +151,17 @@ title: Home
         </div>
       </div>
       <div class="skill-item">
-        <span class="skill-name">CI/CD Security Integration</span>
+        <span class="skill-name">Infrastructure as Code</span>
+        <div class="skill-level">
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled advanced"></div>
+          <div class="skill-dot filled"></div>
+          <div class="skill-dot"></div>
+        </div>
+      </div>
+      <div class="skill-item">
+        <span class="skill-name">CI/CD Pipelines</span>
         <div class="skill-level">
           <div class="skill-dot filled"></div>
           <div class="skill-dot filled"></div>

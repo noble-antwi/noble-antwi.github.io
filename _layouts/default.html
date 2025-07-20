@@ -7,11 +7,29 @@
     <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
 
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+    <meta property="og:title" content="{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}">
+    <meta property="og:description" content="{{ page.description | default: site.description }}">
+    <meta property="og:image" content="{{ site.url }}/assets/logo.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ site.title }} - Logo">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ site.url }}{{ page.url }}">
+    <meta name="twitter:title" content="{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}">
+    <meta name="twitter:description" content="{{ page.description | default: site.description }}">
+    <meta name="twitter:image" content="{{ site.url }}/assets/logo.png">
+    <meta name="twitter:image:alt" content="{{ site.title }} - Logo">
+
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon.png">
-    <link rel="shortcut icon" href="/assets/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo.png">
+    <link rel="shortcut icon" href="/assets/logo.png">
     <meta name="theme-color" content="#2563eb">
 
     <!-- Fonts -->

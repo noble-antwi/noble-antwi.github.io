@@ -452,24 +452,78 @@
       .profile-section {
         text-align: center;
         margin-bottom: 3rem;
+        padding: 2rem 0;
+      }
+
+      .profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
       }
 
       .profile-img {
-        width: 200px;
-        height: 200px;
+        width: 180px;
+        height: 180px;
         border-radius: 50%;
-        border: 6px solid var(--accent-color);
-        margin: 0 auto 2rem;
-        display: block;
+        border: 4px solid var(--accent-color);
         object-fit: cover;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-        transition: all 0.3s ease;
+        box-shadow: 0 12px 32px rgba(37, 99, 235, 0.2);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+
+      .profile-img::before {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        padding: 4px;
+        background: linear-gradient(135deg, var(--accent-color), var(--security-accent), var(--cyber-blue));
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: xor;
+        -webkit-mask-composite: xor;
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
 
       .profile-img:hover {
-        transform: scale(1.05);
-        box-shadow: 0 12px 24px rgba(0,0,0,0.2);
-        border-color: var(--secondary-color);
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 20px 40px rgba(37, 99, 235, 0.3);
+        border-color: var(--cyber-blue);
+      }
+
+      .profile-img:hover::before {
+        opacity: 1;
+      }
+
+      .profile-info {
+        text-align: center;
+        max-width: 600px;
+      }
+
+      .profile-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .profile-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-light);
+        margin-bottom: 1rem;
+        font-weight: 500;
+      }
+
+      .profile-description {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--text-light);
+        margin-bottom: 2rem;
       }
 
       /* Typography */
@@ -846,9 +900,25 @@
         }
 
         .profile-img {
-          width: 120px;
-          height: 120px;
-          margin-bottom: 1.5rem;
+          width: 140px;
+          height: 140px;
+          border-width: 3px;
+        }
+
+        .profile-container {
+          gap: 1rem;
+        }
+
+        .profile-title {
+          font-size: 1.8rem;
+        }
+
+        .profile-subtitle {
+          font-size: 1rem;
+        }
+
+        .profile-description {
+          font-size: 0.9rem;
         }
 
         h1 {
@@ -971,8 +1041,16 @@
         }
 
         .profile-img {
-          width: 150px;
-          height: 150px;
+          width: 160px;
+          height: 160px;
+        }
+
+        .profile-title {
+          font-size: 2rem;
+        }
+
+        .profile-subtitle {
+          font-size: 1.1rem;
         }
 
         h1 {
@@ -1841,8 +1919,8 @@
       const html = document.documentElement;
       const themeIcon = themeToggle.querySelector('i');
 
-      // Check for saved theme or default to light mode
-      const currentTheme = localStorage.getItem('theme') || 'light';
+      // Check for saved theme or default to dark mode
+      const currentTheme = localStorage.getItem('theme') || 'dark';
       html.setAttribute('data-theme', currentTheme);
       
       // Update icon based on current theme
