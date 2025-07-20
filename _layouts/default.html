@@ -1054,13 +1054,13 @@
 
       /* Dark Mode Variables */
       [data-theme="dark"] {
-        --text-dark: #f8fafc;
-        --text-light: #cbd5e1;
+        --text-dark: #ffffff;
+        --text-light: #e2e8f0;
         --text-white: #ffffff;
         --bg-light: #1e293b;
         --bg-dark: #0f172a;
         --border-color: #334155;
-        --card-gradient: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+        --card-gradient: linear-gradient(145deg, #1e293b 0%, #334155 100%);
         --hover-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.25), 0 10px 10px -5px rgba(59, 130, 246, 0.2);
       }
 
@@ -1099,6 +1099,28 @@
 
       [data-theme="dark"] .content-wrapper {
         background: var(--bg-light);
+        color: var(--text-white);
+      }
+
+      [data-theme="dark"] .card {
+        background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+        color: var(--text-white);
+        border-color: var(--border-color);
+      }
+
+      [data-theme="dark"] h1,
+      [data-theme="dark"] h2,
+      [data-theme="dark"] h3,
+      [data-theme="dark"] h4,
+      [data-theme="dark"] h5,
+      [data-theme="dark"] h6 {
+        color: var(--text-white);
+      }
+
+      [data-theme="dark"] p,
+      [data-theme="dark"] li,
+      [data-theme="dark"] span {
+        color: var(--text-light);
       }
 
       [data-theme="dark"] .nav-search {
