@@ -264,24 +264,26 @@ nav a.active::after {
   padding: 0.8rem 2rem;
   border-radius: 8px;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   transition: all 0.3s ease;
-  border: none;
+  border: 2px solid var(--accent);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.btn-primary {
   background: var(--accent);
   color: var(--bg-dark);
+  font-size: 1.05rem;
 }
 
-.btn-primary:hover {
+.btn:hover {
   background: var(--accent-light);
   box-shadow: var(--glow);
   transform: translateY(-2px);
+}
+
+.btn-primary {
+  /* Uses .btn base styles */
 }
 
 .btn-secondary {
