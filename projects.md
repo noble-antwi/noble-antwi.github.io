@@ -244,6 +244,135 @@ title: Projects
   </div>
 </details>
 
+<details class="project-accordion">
+  <summary>
+    <h3><i class="fas fa-network-wired"></i> Enterprise Security Homelab: Cross-Platform Infrastructure</h3>
+    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
+  </summary>
+  
+  <div class="project-content">
+    <div class="accordion-badges">
+      <span style="background: rgba(255, 152, 0, 0.2); color: #ff9800; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #ff9800;">In Progress</span>
+      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Complex Lab</span>
+      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">Enterprise-Ready</span>
+    </div>
+
+    <div class="accordion-links">
+      <a href="https://github.com/noble-antwi/enterprise-security-homelab" target="_blank">
+        <i class="fab fa-github"></i> GitHub Repository
+      </a>
+      <a href="https://github.com/noble-antwi/enterprise-security-homelab/tree/main/docs" target="_blank">
+        <i class="fas fa-book"></i> Complete Documentation
+      </a>
+    </div>
+
+    <p><strong>Objective:</strong> Build a comprehensive, enterprise-grade cybersecurity homelab implementing professional security practices. This advanced lab environment mimics real-world infrastructure for Blue Team operations, Red Team simulation, and DevSecOps practices across both Linux and Windows platforms with cross-platform automation, SIEM monitoring, and secure remote access.</p>
+
+    <h5><i class="fas fa-cogs"></i> Core Technologies & Infrastructure</h5>
+    <div class="tech-stack">
+      <span class="tech-tag">pfSense Firewall</span>
+      <span class="tech-tag">VLAN Segmentation</span>
+      <span class="tech-tag">Wazuh SIEM</span>
+      <span class="tech-tag">Grafana/Prometheus</span>
+      <span class="tech-tag">Ansible Automation</span>
+      <span class="tech-tag">Tailscale Mesh VPN</span>
+      <span class="tech-tag">Ubuntu 24.04</span>
+      <span class="tech-tag">Rocky Linux 9.6</span>
+      <span class="tech-tag">Windows Server 2022</span>
+      <span class="tech-tag">WinRM</span>
+      <span class="tech-tag">SSH ED25519</span>
+      <span class="tech-tag">WireGuard</span>
+    </div>
+
+    <div class="quick-stats">
+      <div class="stat-item">
+        <div class="stat-number">7</div>
+        <div class="stat-label">Managed Systems</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">6</div>
+        <div class="stat-label">VLAN Segments</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Active VLANs</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Cross-Platform Mgmt</div>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features & Architecture</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>pfSense Enterprise Firewall:</strong> Advanced VLAN routing with 6-VLAN segmentation and security policies</li>
+      <li><strong>Cross-Platform Automation:</strong> Ansible managing 6 systems across Linux and Windows seamlessly with service accounts</li>
+      <li><strong>Comprehensive Security Monitoring:</strong> Wazuh SIEM collecting and analyzing logs from all platforms in real-time</li>
+      <li><strong>Infrastructure Observability:</strong> Grafana + Prometheus monitoring system health and performance metrics</li>
+      <li><strong>Secure Remote Access:</strong> Tailscale mesh VPN with WireGuard encryption for global connectivity</li>
+      <li><strong>Professional Authentication:</strong> SSH ED25519 keys for Linux, WinRM with service accounts for Windows</li>
+      <li><strong>VLAN Isolation:</strong> Management (10), BlueTeam SIEM (20), RedTeam Reserved (30), DevOps (40), Enterprise (50), Monitoring (60)</li>
+    </ul>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-line"></i> Deployed Infrastructure</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+      <p style="margin: 0 0 0.5rem 0;"><strong>Linux Systems (4):</strong> Ansible Controller (Ubuntu), TCM Ubuntu, Grafana Server (Ubuntu), Wazuh SIEM (Rocky Linux)</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Windows Systems (2):</strong> Windows Host Laptop (Dev/Testing), Windows Server 2022 (Enterprise Services)</p>
+      <p style="margin: 0;"><strong>Network:</strong> pfSense Firewall, TP-Link Managed Switch with VLAN support</p>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-list-check"></i> Implementation Status</h5>
+    <div style="margin: 1rem 0;">
+      <div style="margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;">Phase 1: Foundation (Network & Security)</span>
+          <span style="color: #4caf50; font-weight: bold;">100%</span>
+        </div>
+        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
+          <div style="height: 100%; width: 100%; background: #4caf50; border-radius: 3px;"></div>
+        </div>
+      </div>
+      <div style="margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;">Phase 2: Advanced Security & Monitoring</span>
+          <span style="color: #ff9800; font-weight: bold;">In Progress</span>
+        </div>
+        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
+          <div style="height: 100%; width: 75%; background: #ff9800; border-radius: 3px;"></div>
+        </div>
+      </div>
+      <div style="margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;">Phase 3: Red Team Capabilities</span>
+          <span style="color: #2196f3; font-weight: bold;">Planned</span>
+        </div>
+        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
+          <div style="height: 100%; width: 0%; background: #2196f3; border-radius: 3px;"></div>
+        </div>
+      </div>
+      <div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;">Phase 4: DevSecOps Integration</span>
+          <span style="color: #9c27b0; font-weight: bold;">Future</span>
+        </div>
+        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
+          <div style="height: 100%; width: 0%; background: #9c27b0; border-radius: 3px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-shield-alt"></i> Use Cases & Capabilities</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Blue Team Operations:</strong> Comprehensive threat detection with Wazuh SIEM monitoring across all platforms</li>
+      <li><strong>Cross-Platform Management:</strong> Unified Ansible automation for consistent Linux and Windows configuration</li>
+      <li><strong>Infrastructure Observability:</strong> Real-time performance monitoring and dashboards via Grafana/Prometheus</li>
+      <li><strong>Red Team Simulation:</strong> Dedicated VLAN for controlled attack simulation and penetration testing (planned)</li>
+      <li><strong>Security Research:</strong> Multi-platform testing environment for security tools and configurations</li>
+      <li><strong>DevSecOps Development:</strong> Foundation for CI/CD security pipeline integration (future)</li>
+    </ul>
+  </div>
+</details>
+
 <div class="project-case-study">
   <div class="project-header">
     <h3 class="project-title">
