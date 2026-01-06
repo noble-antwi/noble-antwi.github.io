@@ -42,15 +42,26 @@
 
   <body>
     <!-- Navigation -->
-    <nav style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(6, 182, 212, 0.2); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000;">
-      <div class="container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
-        <a href="/" class="logo" style="font-size: 1.5rem; font-weight: 900; background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px; text-decoration: none; min-width: 180px;">{{ site.title }}</a>
-        <ul style="display: flex; list-style: none; gap: 2.5rem; margin: 0; padding: 0;">
-          <li><a href="/" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Home</a></li>
-          <li><a href="/projects" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Projects</a></li>
-          <li><a href="/certifications" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Certifications</a></li>
-          <li><a href="/blog" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Blog</a></li>
-          <li><a href="/contact" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Contact</a></li>
+    <!-- Header with Name -->
+    <header style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.95) 100%); border-bottom: 2px solid rgba(6, 182, 212, 0.3); padding: 2.5rem 0; position: relative; overflow: hidden;">
+      <div style="position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, transparent 70%); border-radius: 50%; transform: translate(100px, -100px);"></div>
+      <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2;">
+        <a href="/" style="text-decoration: none;">
+          <h1 style="margin: 0; font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 3px;">{{ site.title }}</h1>
+          <p style="margin: 0.5rem 0 0 0; color: rgba(6, 182, 212, 0.8); font-size: 0.95rem; letter-spacing: 1px;">CLOUD SECURITY PROFESSIONAL</p>
+        </a>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(6, 182, 212, 0.2); padding: 0.8rem 0; position: sticky; top: 0; z-index: 999;">
+      <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <ul style="display: flex; list-style: none; gap: 2rem; margin: 0; padding: 0; flex-wrap: wrap;">
+          <li><a href="/" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; padding: 0.5rem 0; border-bottom: 2px solid transparent; display: block;">Home</a></li>
+          <li><a href="/projects" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; padding: 0.5rem 0; border-bottom: 2px solid transparent; display: block;">Projects</a></li>
+          <li><a href="/certifications" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; padding: 0.5rem 0; border-bottom: 2px solid transparent; display: block;">Certifications</a></li>
+          <li><a href="/blog" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; padding: 0.5rem 0; border-bottom: 2px solid transparent; display: block;">Blog</a></li>
+          <li><a href="/contact" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; padding: 0.5rem 0; border-bottom: 2px solid transparent; display: block;">Contact</a></li>
         </ul>
       </div>
     </nav>
