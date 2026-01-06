@@ -42,23 +42,24 @@
 
   <body>
     <!-- Navigation -->
-    <nav class="header" style="background: transparent; padding: 1rem 0;">
-      <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-        <a href="/" class="logo">{{ site.title }}</a>
-        <ul style="display: flex; list-style: none; gap: 2rem; margin: 0; padding: 0;">
-          <li><a href="/" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Home</a></li>
-          <li><a href="/projects" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Projects</a></li>
-          <li><a href="/certifications" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Certifications</a></li>
-          <li><a href="/blog" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Blog</a></li>
-          <li><a href="/contact" style="color: var(--text-primary); text-decoration: none; font-weight: 600;">Contact</a></li>
+    <nav style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(6, 182, 212, 0.2); padding: 1.2rem 0; position: sticky; top: 0; z-index: 1000;">
+      <div class="container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <a href="/" class="logo" style="font-size: 1.5rem; font-weight: 900; background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px; text-decoration: none; min-width: 180px;">{{ site.title }}</a>
+        <ul style="display: flex; list-style: none; gap: 2.5rem; margin: 0; padding: 0;">
+          <li><a href="/" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Home</a></li>
+          <li><a href="/projects" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Projects</a></li>
+          <li><a href="/certifications" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Certifications</a></li>
+          <li><a href="/blog" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Blog</a></li>
+          <li><a href="/contact" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; transition: all 0.3s ease; border-bottom: 2px solid transparent;">Contact</a></li>
         </ul>
       </div>
     </nav>
 
     <!-- Main Content -->
     <main class="main-content">
-      <div class="container">
-        {{ content }}
+      <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="position: relative;">
+          {{ content }}
       </div>
     </main>
 
@@ -73,5 +74,38 @@
         </div>
       </div>
     </footer>
+
+    <script>
+      // Hide Jekyll front matter that appears in the content
+      document.addEventListener('DOMContentLoaded', function() {
+        const contentDiv = document.querySelector('main > div > div');
+        if (!contentDiv) return;
+
+        const paragraphs = contentDiv.querySelectorAll('p, hr');
+        let frontMatterEnded = false;
+
+        paragraphs.forEach((el, index) => {
+          const text = el.textContent.trim();
+          
+          // Hide elements that are front matter
+          if (text.startsWith('---') || text.includes('layout:') || text.includes('title:')) {
+            el.style.display = 'none';
+            el.style.visibility = 'hidden';
+            el.style.margin = '0';
+            el.style.padding = '0';
+            el.style.height = '0';
+          }
+          
+          // Also hide the first paragraph if it looks like front matter output
+          if (index === 0 && (text.includes('layout:') || text.includes('default') || text.startsWith('title:'))) {
+            el.style.display = 'none';
+            el.style.visibility = 'hidden';
+            el.style.margin = '0';
+            el.style.padding = '0';
+            el.style.height = '0';
+          }
+        });
+      });
+    </script>
   </body>
 </html>
