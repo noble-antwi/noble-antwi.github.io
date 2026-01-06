@@ -70,23 +70,6 @@ title: Cloud Certifications
   </div>
 
   <div class="card">
-    <h3><i class="fab fa-microsoft"></i> Microsoft Certified: Azure Data Fundamentals</h3>
-    <p><strong>Issued:</strong> Microsoft</p>
-    <p><strong>Credential ID:</strong> <a href="https://www.credly.com/badges/f1082e80-2124-4f61-9e02-3d049ec7f281/public_url" target="_blank">View Badge</a></p>
-    <p>Foundational knowledge of core data concepts and how they are implemented using Microsoft Azure data services.</p>
-
-    <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Data Concepts</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Azure Data Services</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Analytics</span>
-    </div>
-
-    <div style="margin-top: 1rem;">
-      <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="f1082e80-2124-4f61-9e02-3d049ec7f281" data-share-badge-host="https://www.credly.com"></div>
-    </div>
-  </div>
-
-  <div class="card">
     <h3><i class="fab fa-microsoft"></i> Microsoft Certified: Identity and Access Administrator Associate</h3>
     <p><strong>Issued:</strong> Microsoft</p>
     <p><strong>Credential ID:</strong> <a href="https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/324D5F14A4B47A0F?sharingId=3DD1334494500325" target="_blank">324D5F14A4B47A0F</a></p>
@@ -104,6 +87,16 @@ title: Cloud Certifications
         <i class="fas fa-external-link-alt"></i> Verify on Microsoft Learn
       </a>
     </div>
+  </div>
+
+  <div class="card" style="text-align: center;">
+    <h3>Certified Cloud Security Professional (CCSP)</h3>
+    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="608cf2cd-a9e5-4d34-a83a-18c712ede34c" data-share-badge-host="https://www.credly.com"></div>
+    <p style="margin-top: 1rem;"><strong>Issued:</strong> Sep 2025 · <strong>Expires:</strong> Sep 2028</p>
+    <p>Advanced expertise in cloud security architecture, design, and implementation</p>
+    <a href="https://www.credly.com/badges/608cf2cd-a9e5-4d34-a83a-18c712ede34c/public_url" class="btn" target="_blank">
+      <i class="fas fa-external-link-alt"></i> Verify on Credly
+    </a>
   </div>
 </div>
 
