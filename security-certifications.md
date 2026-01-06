@@ -44,6 +44,16 @@ title: Security Certifications
       <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="6a027495-f4df-4aac-829e-78e6aae4de12" data-share-badge-host="https://www.credly.com"></div>
     </div>
   </div>
+
+  <div class="card" style="text-align: center;">
+    <h3>Certified Cloud Security Professional (CCSP)</h3>
+    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="608cf2cd-a9e5-4d34-a83a-18c712ede34c" data-share-badge-host="https://www.credly.com"></div>
+    <p style="margin-top: 1rem;"><strong>Issued:</strong> Sep 2025 · <strong>Expires:</strong> Sep 2028</p>
+    <p>Advanced expertise in cloud security architecture, design, and implementation</p>
+    <a href="https://www.credly.com/badges/608cf2cd-a9e5-4d34-a83a-18c712ede34c/public_url" class="btn" target="_blank">
+      <i class="fas fa-external-link-alt"></i> Verify on Credly
+    </a>
+  </div>
 </div>
 
 <h2><i class="fas fa-graduation-cap"></i> Security Training Progress</h2>

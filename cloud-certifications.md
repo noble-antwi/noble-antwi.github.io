@@ -88,6 +88,16 @@ title: Cloud Certifications
       </a>
     </div>
   </div>
+
+  <div class="card" style="text-align: center;">
+    <h3>Okta Certified Professional</h3>
+    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="89175d7b-e1de-43e6-8834-77f9c9de80b4" data-share-badge-host="https://www.credly.com"></div>
+    <p style="margin-top: 1rem;"><strong>Issued:</strong> Dec 2025 · <strong>Expires:</strong> Dec 2027</p>
+    <p>Professional expertise in Okta identity and access management solutions</p>
+    <a href="https://www.credly.com/badges/89175d7b-e1de-43e6-8834-77f9c9de80b4/public_url" class="btn" target="_blank">
+      <i class="fas fa-external-link-alt"></i> Verify on Credly
+    </a>
+  </div>
 </div>
 
 <h2><i class="fas fa-network-wired"></i> Multi-Cloud & Networking</h2>
@@ -116,6 +126,16 @@ title: Cloud Certifications
     <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="dcf6bf4f-0bf6-464c-b407-716df7f25357" data-share-badge-host="https://www.credly.com"></div>
     <p style="margin-top: 1rem;">Container orchestration and cloud-native technologies</p>
     <a href="https://www.credly.com/badges/dcf6bf4f-0bf6-464c-b407-716df7f25357/public_url" class="btn" target="_blank">
+      <i class="fas fa-external-link-alt"></i> Verify on Credly
+    </a>
+  </div>
+
+  <div class="card" style="text-align: center;">
+    <h3>KCNA: Kubernetes and Cloud Native Associate</h3>
+    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="191e0c5f-25fb-4c53-8aaf-c6cf35014f3b" data-share-badge-host="https://www.credly.com"></div>
+    <p style="margin-top: 1rem;"><strong>Issued:</strong> Sep 2025 · <strong>Expires:</strong> Sep 2027</p>
+    <p>Kubernetes and cloud-native Associate level expertise</p>
+    <a href="https://www.credly.com/badges/191e0c5f-25fb-4c53-8aaf-c6cf35014f3b/public_url" class="btn" target="_blank">
       <i class="fas fa-external-link-alt"></i> Verify on Credly
     </a>
   </div>
