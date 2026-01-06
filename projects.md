@@ -6,131 +6,238 @@ title: Projects
 
 <h1><i class="fas fa-project-diagram"></i> Featured Project Case Studies</h1>
 
-<div class="project-case-study">
-  <div class="project-header">
-    <h3 class="project-title">
-      <i class="fas fa-key"></i> 
-      Enterprise IAM Lab: Hybrid Identity Architecture
-    </h3>
-    <div style="margin-top: 0.5rem;">
-      <span style="background: rgba(255, 152, 0, 0.2); color: #ff9800; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; margin-right: 0.5rem; border: 1px solid #ff9800;">In Progress</span>
-      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; margin-right: 0.5rem; border: 1px solid #4caf50;">Large Project</span>
+<style>
+.project-accordion {
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  background: var(--bg-light);
+}
+
+.project-accordion summary {
+  padding: 1.5rem;
+  cursor: pointer;
+  background: rgba(6, 182, 212, 0.05);
+  border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s ease;
+  user-select: none;
+  list-style: none;
+}
+
+.project-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.project-accordion summary:hover {
+  background: rgba(6, 182, 212, 0.1);
+}
+
+.project-accordion summary h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex: 1;
+  color: var(--accent);
+  font-size: 1.3rem;
+}
+
+.project-accordion summary .chevron {
+  font-size: 1.2rem;
+  color: var(--accent);
+  transition: transform 0.3s ease;
+  margin-left: 1rem;
+}
+
+.project-accordion[open] summary .chevron {
+  transform: rotate(180deg);
+}
+
+.project-accordion .project-content {
+  padding: 2rem;
+  border-top: 1px solid rgba(6, 182, 212, 0.2);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: rgba(6, 182, 212, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.stat-item {
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 0.3rem;
+}
+
+.accordion-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.accordion-links {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.accordion-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--accent);
+  text-decoration: none;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  transition: all 0.3s;
+  font-size: 0.95rem;
+}
+
+.accordion-links a:hover {
+  background: rgba(6, 182, 212, 0.2);
+}
+</style>
+
+<details class="project-accordion" open>
+  <summary>
+    <h3><i class="fas fa-key"></i> Enterprise IAM Lab: Hybrid Identity Architecture</h3>
+    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
+  </summary>
+  
+  <div class="project-content">
+    <div class="accordion-badges">
+      <span style="background: rgba(255, 152, 0, 0.2); color: #ff9800; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #ff9800;">In Progress</span>
+      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Large Project</span>
       <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">Production-Grade</span>
     </div>
-    <div class="project-links" style="margin-top: 1rem;">
-      <a href="https://github.com/noble-antwi/enterprise-iam-lab" class="project-link" target="_blank">
+
+    <div class="accordion-links">
+      <a href="https://github.com/noble-antwi/enterprise-iam-lab" target="_blank">
         <i class="fab fa-github"></i> GitHub Repository
       </a>
-      <a href="https://github.com/noble-antwi/enterprise-iam-lab/blob/main/docs/guides/" class="project-link" target="_blank">
+      <a href="https://github.com/noble-antwi/enterprise-iam-lab/blob/main/docs/guides/" target="_blank">
         <i class="fas fa-book"></i> Documentation
       </a>
     </div>
-  </div>
 
-  <div class="project-section">
-    <h5><i class="fas fa-bullseye"></i> Project Objective</h5>
-    <p>Build a comprehensive 500-1000 user enterprise Identity and Access Management (IAM) environment from scratch. This production-grade homelab simulates a medium-sized organization's hybrid identity infrastructure, implementing industry best practices for zero-trust security, advanced authentication, and modern access management—directly applicable to Fortune 500 implementations.</p>
-  </div>
+    <p><strong>Objective:</strong> Build a comprehensive 500-1000 user enterprise Identity and Access Management (IAM) environment. This production-grade homelab simulates a medium-sized organization's hybrid identity infrastructure with industry best practices for zero-trust security and modern access management.</p>
 
-  <div class="tech-stack">
-    <span class="tech-tag">Windows Server 2022</span>
-    <span class="tech-tag">Active Directory</span>
-    <span class="tech-tag">OKTA Workforce Identity</span>
-    <span class="tech-tag">Microsoft Entra ID</span>
-    <span class="tech-tag">PowerShell</span>
-    <span class="tech-tag">SAML 2.0</span>
-    <span class="tech-tag">Conditional Access</span>
-    <span class="tech-tag">OKTA Expression Language</span>
-  </div>
-
-  <div class="challenge-solution">
-    <div class="challenge">
-      <h5><i class="fas fa-exclamation-triangle"></i> Challenge</h5>
-      <p>Design and implement a hybrid identity architecture that integrates on-premises Active Directory with cloud identity providers (OKTA + Microsoft Entra ID). Implement enterprise-grade security controls including network-based conditional access, graduated MFA policies, geographic restrictions, and threat intelligence integration—all while managing 35+ user accounts across 6 departments with different security postures.</p>
+    <h5><i class="fas fa-cogs"></i> Core Technologies & Protocols</h5>
+    <div class="tech-stack">
+      <span class="tech-tag">Windows Server 2022</span>
+      <span class="tech-tag">Active Directory</span>
+      <span class="tech-tag">OKTA Workforce Identity</span>
+      <span class="tech-tag">Microsoft Entra ID</span>
+      <span class="tech-tag">PowerShell</span>
+      <span class="tech-tag">SAML 2.0</span>
+      <span class="tech-tag">OAuth 2.0</span>
+      <span class="tech-tag">OIDC</span>
+      <span class="tech-tag">SWA</span>
+      <span class="tech-tag">LDAP</span>
+      <span class="tech-tag">Kerberos</span>
+      <span class="tech-tag">WS-Federation</span>
+      <span class="tech-tag">OKTA Expression Language</span>
+      <span class="tech-tag">Conditional Access</span>
     </div>
-    <div class="solution">
-      <h5><i class="fas fa-lightbulb"></i> Solution</h5>
-      <p>Architected a sophisticated hybrid identity environment with split-brain DNS, tiered administrative model (Tier 0/1/2), OKTA AD Agent secure tunnel for directory synchronization, and OKTA as primary IdP. Implemented network-based conditional access with three security zones: IP-based corporate network detection, geographic controls (country-level restrictions), and Tor anonymizer blocking. Configured graduated authentication policies requiring hardware-protected MFA for public networks and standard MFA for corporate networks.</p>
-    </div>
-  </div>
 
-  <div class="project-section">
-    <h5><i class="fas fa-cogs"></i> Current Implementation Status</h5>
-    <div style="margin: 1.5rem 0;">
-      <div style="margin-bottom: 1.2rem;">
-        <strong style="color: #4caf50;">Phase 1: Foundation</strong> <span style="color: var(--text-muted); font-size: 0.95rem;">✅ 100% Complete</span>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 0.5rem;">
+    <div class="quick-stats">
+      <div class="stat-item">
+        <div class="stat-number">35</div>
+        <div class="stat-label">User Accounts</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">20</div>
+        <div class="stat-label">Organization Units</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">15</div>
+        <div class="stat-label">Security Groups</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">6</div>
+        <div class="stat-label">Project Phases</div>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Hybrid Identity Architecture:</strong> Seamless AD + OKTA + Microsoft Entra ID integration</li>
+      <li><strong>Tiered Admin Model:</strong> Microsoft Tier 0/1/2 with privilege separation</li>
+      <li><strong>Network-Based Conditional Access:</strong> IP zones, geographic controls, Tor blocking</li>
+      <li><strong>Graduated MFA:</strong> Hardware-protected for public networks, standard for corporate</li>
+      <li><strong>Multi-Protocol Support:</strong> SAML 2.0, OAuth 2.0, OIDC, SWA, LDAP, Kerberos, WS-Federation</li>
+      <li><strong>Automated Provisioning:</strong> OKTA Expression Language for dynamic group assignment</li>
+    </ul>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-line"></i> Implementation Progress</h5>
+    <div style="margin: 1rem 0;">
+      <div style="margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;">Phases 1-4</span>
+          <span style="color: #4caf50; font-weight: bold;">100%</span>
+        </div>
+        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
           <div style="height: 100%; width: 100%; background: #4caf50; border-radius: 3px;"></div>
         </div>
       </div>
-      <div style="margin-bottom: 1.2rem;">
-        <strong style="color: #4caf50;">Phase 2: Active Directory Structure</strong> <span style="color: var(--text-muted); font-size: 0.95rem;">✅ 100% Complete</span>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 0.5rem;">
-          <div style="height: 100%; width: 100%; background: #4caf50; border-radius: 3px;"></div>
+      <div style="margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;">Phase 5 (Advanced Security)</span>
+          <span style="color: #ff9800; font-weight: bold;">40%</span>
         </div>
-      </div>
-      <div style="margin-bottom: 1.2rem;">
-        <strong style="color: #4caf50;">Phase 3: OKTA Integration</strong> <span style="color: var(--text-muted); font-size: 0.95rem;">✅ 100% Complete</span>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 0.5rem;">
-          <div style="height: 100%; width: 100%; background: #4caf50; border-radius: 3px;"></div>
-        </div>
-      </div>
-      <div style="margin-bottom: 1.2rem;">
-        <strong style="color: #4caf50;">Phase 4: Advanced OKTA Configuration</strong> <span style="color: var(--text-muted); font-size: 0.95rem;">✅ 100% Complete</span>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 0.5rem;">
-          <div style="height: 100%; width: 100%; background: #4caf50; border-radius: 3px;"></div>
-        </div>
-      </div>
-      <div style="margin-bottom: 1.2rem;">
-        <strong style="color: #ff9800;">Phase 5: Advanced Authentication & Security</strong> <span style="color: var(--text-muted); font-size: 0.95rem;">🔄 40% Complete (Phase 5.1 Operational)</span>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 0.5rem;">
+        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
           <div style="height: 100%; width: 40%; background: #ff9800; border-radius: 3px;"></div>
         </div>
       </div>
-      <div style="margin-bottom: 1.2rem;">
-        <strong style="color: #9c27b0;">Phase 6: Microsoft Entra ID Integration</strong> <span style="color: var(--text-muted); font-size: 0.95rem;">📋 Planned</span>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px; margin-top: 0.5rem;">
+      <div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;">Phase 6 (Entra ID)</span>
+          <span style="color: #9c27b0; font-weight: bold;">Planned</span>
+        </div>
+        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
           <div style="height: 100%; width: 0%; background: #9c27b0; border-radius: 3px;"></div>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-chart-bar"></i> Environment Scale</h5>
-    <ul style="margin-left: 1rem; line-height: 1.8;">
-      <li><strong>User Accounts:</strong> 35 total (27 employee accounts across 6 departments, 7 admin accounts, 1 service account)</li>
-      <li><strong>Organizational Units:</strong> 20 hierarchical OUs following enterprise design patterns</li>
-      <li><strong>Security Groups:</strong> 15 total (12 AD-sourced, 3 OKTA-mastered with dynamic group assignment)</li>
-      <li><strong>Integrated Applications:</strong> Dropbox Business (SAML 2.0), Box (SWA with password vaulting)</li>
-      <li><strong>Network Zones:</strong> 3 dynamic zones (Corporate IP-based, Geographic restrictions, Tor blocking)</li>
-      <li><strong>Authentication Policies:</strong> 3-tier graduated security requirements based on network context</li>
-    </ul>
-  </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-rocket"></i> Key Achievements</h5>
-    <ul style="margin-left: 1rem; line-height: 1.8;">
-      <li><strong>Hybrid Identity Architecture:</strong> Seamless integration between on-premises AD and cloud IdP (OKTA + Microsoft Entra ID)</li>
-      <li><strong>Enterprise Admin Model:</strong> Implemented Microsoft Tiered Admin Model (Tier 0/1/2) with separate admin accounts and privilege separation</li>
-      <li><strong>Network-Based Conditional Access:</strong> Three-layer security architecture with IP zones, geographic controls, and threat intelligence integration</li>
-      <li><strong>Automated Provisioning:</strong> Dynamic OKTA Expression Language rules for automated group assignment based on location and business logic</li>
-      <li><strong>Multi-Protocol Integration:</strong> SAML 2.0 and SWA application integration with automated user provisioning lifecycles</li>
-      <li><strong>Production-Grade Documentation:</strong> 6+ phases with step-by-step guides, troubleshooting procedures, and operational playbooks</li>
-      <li><strong>Video Demonstrations:</strong> Security flows captured and documented with detailed authentication path analysis</li>
-    </ul>
-  </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-graduation-cap"></i> Learning Outcomes Delivered</h5>
-    <p style="margin-bottom: 1rem;"><strong>Technical Skills:</strong> Hybrid identity design, enterprise AD management, OKTA administration, application integration (SAML/SWA), PowerShell automation, OKTA Expression Language, conditional access policy design, network-based authentication, MFA strategy, geographic controls, threat intelligence integration, and troubleshooting methodologies.</p>
-    <p><strong>Enterprise Best Practices:</strong> Split-brain DNS for hybrid environments, tiered admin model, dual-account pattern for privileged access, naming conventions, change management, audit compliance considerations (SOC 2, HIPAA, PCI-DSS), zero-trust architecture principles, and defense-in-depth security layering.</p>
-  </div>
-
-  <div style="background: rgba(255, 152, 0, 0.1); border-left: 4px solid #ff9800; padding: 1.5rem; border-radius: 8px; margin-top: 2rem;">
-    <p style="margin: 0; color: var(--text-secondary);"><i class="fas fa-info-circle"></i> <strong>Status Update:</strong> Phase 5.1 (Network-Based Conditional Access) is fully operational with IP zones, geographic restrictions, and Tor blocking deployed. Phase 5.2 (Adaptive MFA) and subsequent phases are in active development.</p>
-  </div>
-</div>
+</details>
 
 <div class="project-case-study">
   <div class="project-header">
