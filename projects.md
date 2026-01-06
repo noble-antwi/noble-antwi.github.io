@@ -11,7 +11,7 @@ title: Projects
   border: 1px solid rgba(6, 182, 212, 0.3);
   border-radius: 12px;
   margin-bottom: 2rem;
-  overflow: hidden;
+  overflow: visible;
   background: var(--bg-light);
 }
 
@@ -19,17 +19,17 @@ title: Projects
   padding: 1.5rem;
   cursor: pointer;
   background: rgba(6, 182, 212, 0.05);
-  border-bottom: 1px solid rgba(6, 182, 212, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: background 0.3s ease;
   user-select: none;
   list-style: none;
+  border-bottom: 1px solid rgba(6, 182, 212, 0.2);
 }
 
 .project-accordion summary::-webkit-details-marker {
-  display: none;
+  display: none !important;
 }
 
 .project-accordion summary:hover {
@@ -51,6 +51,11 @@ title: Projects
   color: var(--accent);
   transition: transform 0.3s ease;
   margin-left: 1rem;
+  flex-shrink: 0;
+}
+
+.project-accordion[open] summary {
+  border-bottom: 1px solid rgba(6, 182, 212, 0.3);
 }
 
 .project-accordion[open] summary .chevron {
@@ -135,7 +140,7 @@ title: Projects
 }
 </style>
 
-<details class="project-accordion" open>
+<details class="project-accordion">
   <summary>
     <h3><i class="fas fa-key"></i> Enterprise IAM Lab: Hybrid Identity Architecture</h3>
     <span class="chevron"><i class="fas fa-chevron-down"></i></span>

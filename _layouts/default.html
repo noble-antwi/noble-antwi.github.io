@@ -105,6 +105,21 @@
             el.style.height = '0';
           }
         });
+
+        // Initialize project accordions - ensure they work with details/summary
+        const accordions = document.querySelectorAll('.project-accordion');
+        accordions.forEach(accordion => {
+          const summary = accordion.querySelector('summary');
+          if (summary) {
+            summary.addEventListener('click', function(e) {
+              // The native details/summary behavior should work automatically
+              // This ensures proper interaction across all browsers
+              setTimeout(() => {
+                accordion.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }, 100);
+            });
+          }
+        });
       });
     </script>
   </body>
