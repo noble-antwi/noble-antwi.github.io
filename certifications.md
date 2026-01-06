@@ -9,6 +9,29 @@ title: All Certifications
   A comprehensive overview of my professional certifications and continuous learning journey
 </p>
 
+<style>
+  .cert-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: #06b6d4;
+    color: #0f172a;
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+    border: 2px solid #06b6d4;
+  }
+  
+  .cert-button:hover {
+    background: #22d3ee;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+    transform: translateY(-2px);
+  }
+</style>
+
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
   <div class="card" style="text-align: center;">
     <i class="fas fa-cloud" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
@@ -17,7 +40,7 @@ title: All Certifications
     <div style="margin: 1rem 0;">
       <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">9 Certifications</span>
     </div>
-    <a href="/cloud-certifications" class="btn">
+    <a href="/cloud-certifications" class="cert-button">
       <i class="fas fa-arrow-right"></i> View Details
     </a>
   </div>
@@ -29,7 +52,7 @@ title: All Certifications
     <div style="margin: 1rem 0;">
       <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">4 Certifications</span>
     </div>
-    <a href="/security-certifications" class="btn">
+    <a href="/security-certifications" class="cert-button">
       <i class="fas fa-arrow-right"></i> View Details
     </a>
   </div>
@@ -41,7 +64,7 @@ title: All Certifications
     <div style="margin: 1rem 0;">
       <span style="background: var(--accent-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">3 In Progress</span>
     </div>
-    <a href="/in-progress" class="btn">
+    <a href="/in-progress" class="cert-button">
       <i class="fas fa-arrow-right"></i> View Details
     </a>
   </div>
