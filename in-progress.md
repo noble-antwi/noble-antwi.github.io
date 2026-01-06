@@ -11,53 +11,10 @@ title: Certifications In Progress
 </p>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-  <div class="card">
-    <h3><i class="fab fa-microsoft"></i> SC-300: Microsoft Identity and Access Administrator</h3>
-    <p><strong>Expected Completion:</strong> Q2 2025</p>
-    <p>Microsoft identity and access management solutions including Azure Active Directory, conditional access, and identity governance.</p>
-    
-    <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-        <span style="font-weight: 600;">Progress</span>
-        <span style="color: var(--accent-color); font-weight: 600;">35%</span>
-      </div>
-      <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
-        <div style="background: var(--accent-color); height: 100%; width: 35%; border-radius: 4px;"></div>
-      </div>
-    </div>
-    
-    <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Azure AD</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Conditional Access</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Identity Governance</span>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3><i class="fab fa-aws"></i> AWS Certified SysOps Administrator – Associate</h3>
-    <p><strong>Expected Completion:</strong> Q2 2025</p>
-    <p>Systems operations on AWS platform including deployment, management, monitoring, and troubleshooting of systems on AWS.</p>
-    
-    <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-        <span style="font-weight: 600;">Progress</span>
-        <span style="color: var(--accent-color); font-weight: 600;">28%</span>
-      </div>
-      <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
-        <div style="background: var(--accent-color); height: 100%; width: 28%; border-radius: 4px;"></div>
-      </div>
-    </div>
-    
-    <div style="margin-top: 1rem;">
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">AWS Operations</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Monitoring</span>
-      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Troubleshooting</span>
-    </div>
-  </div>
 
   <div class="card">
     <h3><i class="fas fa-shield-alt"></i> Practical SOC Analyst (PSAA)</h3>
-    <p><strong>Expected Completion:</strong> Q3 2025</p>
+    <p><strong>Expected Completion:</strong> Q1 2026</p>
     <p>Hands-on SOC analyst skills by TCM Security covering incident response, threat hunting, and security monitoring in real-world scenarios.</p>
     
     <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
