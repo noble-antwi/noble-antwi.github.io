@@ -114,27 +114,6 @@ title: Blog
   <a href="https://medium.com/@noble-antwi/phishing-attack-detection-and-response-a-case-study-of-mighty-solutions-inc-c8c302fea859" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article →</a>
 </div>
 
-<!-- Personal & Career -->
-<h2 style="margin-top: 3rem;"><i class="fas fa-lightbulb"></i> Personal Journey & Insights</h2>
-
-<div class="card">
-  <h3><i class="fas fa-graduation-cap"></i> My Journey at Illinois Tech: A Transformative First Semester</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> December 11, 2024</p>
-  <p>A personal reflection on my first semester at Illinois Institute of Technology pursuing a Master's in Applied Cybersecurity and Digital Forensics. Discover the challenges overcome, lessons learned, and growth experienced in this transformative period.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Career Journey</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Education</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Growth</span>
-  </div>
-  <a href="https://medium.com/@noble-antwi/my-journey-at-illinois-tech" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article →</a>
-</div>
-
-<div style="background: rgba(6, 182, 212, 0.1); border-left: 4px solid var(--accent); padding: 2rem; border-radius: 12px; margin-top: 3rem; text-align: center;">
-  <h3 style="color: var(--accent); margin-bottom: 1rem;">Want to Read More?</h3>
-  <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Visit my Medium profile for the complete collection of articles and stay updated with new technical write-ups.</p>
-  <a href="https://medium.com/@noble-antwi" target="_blank" style="display: inline-block; padding: 0.8rem 2rem; background: var(--accent); color: var(--bg-dark); text-decoration: none; border-radius: 8px; font-weight: 600;">Visit Medium Profile →</a>
-</div>
-
 <div class="card">
   <h3><i class="fas fa-database"></i> Data Loss Prevention in the Cloud: A Comprehensive Guide with a Focus on AWS</h3>
   <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> AWS in Plain English</p>
