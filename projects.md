@@ -376,6 +376,74 @@ title: Projects
 
 <details class="project-accordion">
   <summary>
+    <h3><i class="fab fa-aws"></i> AWS Cost Optimizer</h3>
+    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
+  </summary>
+  
+  <div class="project-content">
+    <div class="accordion-badges">
+      <span style="background: rgba(255, 152, 0, 0.2); color: #ff9800; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #ff9800;">In Progress</span>
+      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Cloud Cost Management</span>
+      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">Automation</span>
+    </div>
+
+    <div class="accordion-links">
+      <a href="https://github.com/noble-antwi/aws-cost-optimizer" target="_blank">
+        <i class="fab fa-github"></i> GitHub Repository
+      </a>
+    </div>
+
+    <p><strong>Objective:</strong> Develop an automated AWS cost optimization tool that identifies and implements cost-saving opportunities across AWS infrastructure. This project combines infrastructure analysis, intelligent recommendations, and automated remediation to help organizations reduce cloud spending without compromising performance or reliability.</p>
+
+    <h5><i class="fas fa-cogs"></i> Core Technologies & Components</h5>
+    <div class="tech-stack">
+      <span class="tech-tag">Python</span>
+      <span class="tech-tag">AWS SDK (Boto3)</span>
+      <span class="tech-tag">AWS Cost Explorer</span>
+      <span class="tech-tag">AWS Trusted Advisor</span>
+      <span class="tech-tag">EC2</span>
+      <span class="tech-tag">RDS</span>
+      <span class="tech-tag">Elastic Load Balancing</span>
+      <span class="tech-tag">Data Analysis</span>
+      <span class="tech-tag">Reporting</span>
+    </div>
+
+    <div class="quick-stats">
+      <div class="stat-item">
+        <div class="stat-number">Multiple</div>
+        <div class="stat-label">AWS Services Analyzed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">Real-time</div>
+        <div class="stat-label">Cost Insights</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">Automated</div>
+        <div class="stat-label">Remediation</div>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Infrastructure Analysis:</strong> Comprehensive scanning of AWS resources to identify underutilized and oversized instances</li>
+      <li><strong>Intelligent Recommendations:</strong> Data-driven suggestions for cost optimization including instance rightsizing, reserved instance strategies, and storage optimization</li>
+      <li><strong>Automated Remediation:</strong> Implement cost-saving actions automatically or with approval workflows</li>
+      <li><strong>Cost Tracking:</strong> Monitor estimated savings and actual cost reductions over time</li>
+      <li><strong>Reporting Dashboard:</strong> Detailed reports and visualizations of optimization opportunities and savings</li>
+    </ul>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-line"></i> Optimization Areas</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+      <p style="margin: 0 0 0.5rem 0;"><strong>Compute Optimization:</strong> EC2 instance rightsizing, stopping idle instances, reserved instance recommendations</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Database Optimization:</strong> RDS instance rightsizing, storage optimization, backup retention policies</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Network Optimization:</strong> Unused Elastic IPs, cross-AZ data transfer optimization, NAT gateway efficiency</p>
+      <p style="margin: 0;"><strong>Storage Optimization:</strong> Unattached volumes, S3 storage class analysis, old snapshot cleanup</p>
+    </div>
+  </div>
+</details>
+
+<details class="project-accordion">
+  <summary>
     <h3><i class="fas fa-clipboard-check"></i> Collins Aerospace IT Audit: Post-Incident Security Assessment</h3>
     <span class="chevron"><i class="fas fa-chevron-down"></i></span>
   </summary>
