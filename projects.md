@@ -439,6 +439,69 @@ title: Projects
       <p style="margin: 0 0 0.5rem 0;"><strong>Network Optimization:</strong> Unused Elastic IPs, cross-AZ data transfer optimization, NAT gateway efficiency</p>
       <p style="margin: 0;"><strong>Storage Optimization:</strong> Unattached volumes, S3 storage class analysis, old snapshot cleanup</p>
     </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-dollar-sign"></i> Cost-Saving Mechanisms</h5>
+    <div style="margin: 1rem 0;">
+      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>1. Right-Sizing Analysis</strong></h6>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Analyzes CPU, memory, and network utilization patterns over time to recommend optimal instance types. Organizations typically save 20-40% by downsizing over-provisioned instances.</p>
+      </div>
+
+      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>2. Reserved Instance (RI) Optimization</strong></h6>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Identifies consistent workloads suitable for Reserved Instances and Savings Plans, providing up to 70% savings compared to on-demand pricing. Tool recommends optimal RI purchase strategies.</p>
+      </div>
+
+      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>3. Idle Resource Elimination</strong></h6>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Detects and flags unused EC2 instances, RDS databases, EBS volumes, and Elastic IPs. Quick wins for cleanup typically yield 10-25% immediate cost reduction.</p>
+      </div>
+
+      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>4. Storage Tiering</strong></h6>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Recommends moving infrequently accessed data to cheaper storage classes (S3 Standard-IA, Glacier). Can save 70-90% on storage costs for archival data.</p>
+      </div>
+
+      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>5. Automation Scheduling</strong></h6>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Implements automated start/stop schedules for non-production environments, saving 40-60% on compute for development and testing workloads.</p>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-pie"></i> Business Benefits & ROI</h5>
+    <div style="margin: 1rem 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+      <div style="padding: 1rem; background: rgba(156, 39, 176, 0.1); border-radius: 8px; border-left: 3px solid #9c27b0;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #9c27b0;"><i class="fas fa-percent"></i> Cost Reduction</h6>
+        <p style="margin: 0; font-size: 0.9rem;">30-50% average monthly cloud cost reduction through comprehensive optimization</p>
+      </div>
+
+      <div style="padding: 1rem; background: rgba(156, 39, 176, 0.1); border-radius: 8px; border-left: 3px solid #9c27b0;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #9c27b0;"><i class="fas fa-clock"></i> Time Savings</h6>
+        <p style="margin: 0; font-size: 0.9rem;">Eliminates manual cost analysis; automated scanning runs continuously</p>
+      </div>
+
+      <div style="padding: 1rem; background: rgba(156, 39, 176, 0.1); border-radius: 8px; border-left: 3px solid #9c27b0;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #9c27b0;"><i class="fas fa-eye"></i> Visibility</h6>
+        <p style="margin: 0; font-size: 0.9rem;">Complete cost visibility with detailed reports and trend analysis</p>
+      </div>
+
+      <div style="padding: 1rem; background: rgba(156, 39, 176, 0.1); border-radius: 8px; border-left: 3px solid #9c27b0;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #9c27b0;"><i class="fas fa-shield-alt"></i> Risk Mitigation</h6>
+        <p style="margin: 0; font-size: 0.9rem;">Approval workflows prevent accidental resource termination</p>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-target"></i> Real-World Impact Scenarios</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(33, 150, 243, 0.05); border-radius: 8px; border-left: 3px solid #2196f3;">
+      <p style="margin: 0 0 0.8rem 0;"><strong>Scenario 1 - Mid-Size SaaS Company ($50K/month AWS spend):</strong></p>
+      <p style="margin: 0 0 1rem 0; font-size: 0.95rem; color: var(--text-secondary);">Identifies 20+ oversized EC2 instances, unused RDS replicas, and abandoned S3 buckets. Estimated savings: $15K-18K/month (30-36% reduction)</p>
+
+      <p style="margin: 0 0 0.8rem 0;"><strong>Scenario 2 - Enterprise Organization ($500K/month AWS spend):</strong></p>
+      <p style="margin: 0 0 1rem 0; font-size: 0.95rem; color: var(--text-secondary);">Discovers cross-AZ data transfer inefficiencies, recommends Reserved Instance purchases, and identifies test environment waste. Potential savings: $125K-200K/month (25-40%)</p>
+
+      <p style="margin: 0 0 0.8rem 0;"><strong>Scenario 3 - Development-Heavy Organization:</strong></p>
+      <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Implements automated scheduling for dev/test environments, consolidates resources, and archives old snapshots. Quick savings: $8K-12K/month with minimal effort</p>
+    </div>
   </div>
 </details>
 
