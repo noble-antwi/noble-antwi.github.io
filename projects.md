@@ -484,6 +484,123 @@ title: Projects
   </div>
 </details>
 
+<details class="project-accordion">
+  <summary>
+    <h3><i class="fas fa-shield-virus"></i> Cyberdyne Systems: Enterprise Security Assessment</h3>
+    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
+  </summary>
+  
+  <div class="project-content">
+    <div class="accordion-badges">
+      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Completed</span>
+      <span style="background: rgba(244, 67, 54, 0.2); color: #f44336; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #f44336;">Academic Project</span>
+      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">Defense-in-Depth</span>
+    </div>
+
+    <div class="accordion-links">
+      <a href="https://github.com/noble-antwi/cyberdyne-security-assessment" target="_blank">
+        <i class="fab fa-github"></i> GitHub Repository
+      </a>
+      <a href="https://github.com/noble-antwi/cyberdyne-security-assessment/blob/main/deliverables/Cyberdyne_Security_Assessment_Report.md" target="_blank">
+        <i class="fas fa-file-alt"></i> Full Assessment Report
+      </a>
+    </div>
+
+    <p><strong>Objective:</strong> Conduct a comprehensive enterprise security assessment for Cyberdyne Systems Corporation, a fictional AI and robotics manufacturing company with 400 employees across California and Taiwan. The assessment identifies critical vulnerabilities and provides a complete defense-in-depth security program addressing technology, policy, and human factors.</p>
+
+    <h5><i class="fas fa-cogs"></i> Frameworks & Technologies Evaluated</h5>
+    <div class="tech-stack">
+      <span class="tech-tag">NIST CSF</span>
+      <span class="tech-tag">NIST 800-171</span>
+      <span class="tech-tag">CCPA</span>
+      <span class="tech-tag">Active Directory</span>
+      <span class="tech-tag">Kerberos</span>
+      <span class="tech-tag">Group Policy</span>
+      <span class="tech-tag">LUKS Encryption</span>
+      <span class="tech-tag">BitLocker</span>
+      <span class="tech-tag">UFW/iptables</span>
+      <span class="tech-tag">SIEM</span>
+      <span class="tech-tag">VPN/MFA</span>
+      <span class="tech-tag">MDM</span>
+    </div>
+
+    <div class="quick-stats">
+      <div class="stat-item">
+        <div class="stat-number">16</div>
+        <div class="stat-label">Vulnerabilities Found</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">13</div>
+        <div class="stat-label">Technical Controls</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">11</div>
+        <div class="stat-label">Security Policies</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">800+</div>
+        <div class="stat-label">Devices Assessed</div>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-exclamation-triangle"></i> Key Findings by Category</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(244, 67, 54, 0.05); border-radius: 8px; border-left: 3px solid #f44336;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
+          <td style="padding: 0.5rem 0;"><strong>End-of-Life Systems</strong></td>
+          <td style="color: #f44336; font-weight: bold;">CRITICAL</td>
+          <td>800+ devices running EOL OS (Ubuntu 10.04, Windows 10 v1607)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
+          <td style="padding: 0.5rem 0;"><strong>Endpoint Protection</strong></td>
+          <td style="color: #f44336; font-weight: bold;">CRITICAL</td>
+          <td>No centralized antivirus deployment</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
+          <td style="padding: 0.5rem 0;"><strong>Data Protection</strong></td>
+          <td style="color: #f44336; font-weight: bold;">CRITICAL</td>
+          <td>Unencrypted data transport between facilities</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
+          <td style="padding: 0.5rem 0;"><strong>Access Management</strong></td>
+          <td style="color: #ff9800; font-weight: bold;">HIGH</td>
+          <td>No centralized identity management</td>
+        </tr>
+        <tr>
+          <td style="padding: 0.5rem 0;"><strong>Hardware Security</strong></td>
+          <td style="color: #ff9800; font-weight: bold;">HIGH</td>
+          <td>Excessive USB ports, insufficient resources</td>
+        </tr>
+      </table>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-layer-group"></i> Defense-in-Depth Strategy</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+      <p style="margin: 0 0 0.5rem 0;"><strong>Human Layer:</strong> 8 training programs including role-based specialized training</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Policy Layer:</strong> 11 security policies (AUP, Data Classification, Incident Response)</p>
+      <p style="margin: 0;"><strong>Technology Layer:</strong> 13 controls (AD, SIEM, VPN/MFA, Encryption, DLP)</p>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-tasks"></i> Recommended Controls (Phased)</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Phase 1 (Immediate):</strong> OS Upgrade Program, Enterprise Endpoint Protection, Full-Disk Encryption, Active Directory</li>
+      <li><strong>Phase 2:</strong> SIEM Implementation, VPN with MFA, Mobile Device Management, Host Firewalls</li>
+      <li><strong>Phase 3:</strong> Standardized Imaging, Data Loss Prevention, Asset Management, USB Device Control</li>
+    </ul>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-building"></i> Organization Profile</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+      <p style="margin: 0 0 0.5rem 0;"><strong>Employees:</strong> 400 across 9 job categories</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Locations:</strong> California (HQ/R&D) and Taiwan (Manufacturing)</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Device Mix:</strong> 300 Windows laptops, 200 Linux desktops, 150 Android tablets, 100+ servers</p>
+      <p style="margin: 0;"><strong>Compliance:</strong> CCPA, PDPC, NIST 800-171, FAR/DFARS</p>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-graduation-cap"></i> Academic Context</h5>
+    <p style="line-height: 1.8;">Completed as part of ITMO-X58 - Operating System Security at Illinois Institute of Technology (Fall 2025). This capstone project integrates concepts from Linux security mechanisms, Windows security technologies, mobile security, and defense-in-depth architecture.</p>
+  </div>
+</details>
+
 <div class="project-case-study">
   <div class="project-header">
     <h3 class="project-title">
