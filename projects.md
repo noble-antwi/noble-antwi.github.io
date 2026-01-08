@@ -1,5 +1,6 @@
 
 ---
+
 layout: default
 title: Projects
 ---
@@ -373,10 +374,120 @@ title: Projects
   </div>
 </details>
 
+<details class="project-accordion">
+  <summary>
+    <h3><i class="fas fa-clipboard-check"></i> Collins Aerospace IT Audit: Post-Incident Security Assessment</h3>
+    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
+  </summary>
+  
+  <div class="project-content">
+    <div class="accordion-badges">
+      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Completed</span>
+      <span style="background: rgba(244, 67, 54, 0.2); color: #f44336; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #f44336;">Academic Project</span>
+      <span style="background: rgba(33, 150, 243, 0.2); color: #2196f3; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #2196f3;">IT Audit</span>
+    </div>
+
+    <div class="accordion-links">
+      <a href="https://github.com/noble-antwi/collins-aerospace-audit" target="_blank">
+        <i class="fab fa-github"></i> GitHub Repository
+      </a>
+      <a href="https://github.com/noble-antwi/collins-aerospace-audit/blob/main/docs/audit-findings-report.md" target="_blank">
+        <i class="fas fa-file-alt"></i> Full Audit Report
+      </a>
+    </div>
+
+    <p><strong>Objective:</strong> Conduct a comprehensive IT audit engagement of Collins Aerospace's information security controls following a simulated cybersecurity incident. This graduate-level project demonstrates practical application of IT audit frameworks, risk assessment methodologies, CMMC Level 3 gap analysis, and remediation planning for an enterprise aerospace organization.</p>
+
+    <h5><i class="fas fa-cogs"></i> Frameworks & Methodologies Applied</h5>
+    <div class="tech-stack">
+      <span class="tech-tag">COBIT 2019</span>
+      <span class="tech-tag">NIST SP 800-30</span>
+      <span class="tech-tag">NIST SP 800-53</span>
+      <span class="tech-tag">NIST SP 800-171/172</span>
+      <span class="tech-tag">CMMC 2.0</span>
+      <span class="tech-tag">ISO/IEC 27001:2022</span>
+      <span class="tech-tag">COSO</span>
+      <span class="tech-tag">Risk Assessment</span>
+      <span class="tech-tag">Control Testing</span>
+      <span class="tech-tag">Remediation Planning</span>
+    </div>
+
+    <div class="quick-stats">
+      <div class="stat-item">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Key Findings</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">$4.5M+</div>
+        <div class="stat-label">Remediation Cost</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">$2.3B</div>
+        <div class="stat-label">Contracts at Risk</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">18</div>
+        <div class="stat-label">Risks Identified</div>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-exclamation-triangle"></i> Critical Audit Findings</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(244, 67, 54, 0.05); border-radius: 8px; border-left: 3px solid #f44336;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
+          <td style="padding: 0.5rem 0;"><strong>1. Inadequate MFA</strong></td>
+          <td style="color: #f44336; font-weight: bold;">CRITICAL</td>
+          <td>60.5% of VPN accounts lack MFA</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
+          <td style="padding: 0.5rem 0;"><strong>2. Privileged Access Gaps</strong></td>
+          <td style="color: #ff9800; font-weight: bold;">HIGH</td>
+          <td>No reviews in 30 months</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
+          <td style="padding: 0.5rem 0;"><strong>3. Incident Response</strong></td>
+          <td style="color: #ff9800; font-weight: bold;">HIGH</td>
+          <td>16-18 hour detection delay</td>
+        </tr>
+        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
+          <td style="padding: 0.5rem 0;"><strong>4. Backup & DR</strong></td>
+          <td style="color: #f44336; font-weight: bold;">CRITICAL</td>
+          <td>No air-gapped backups</td>
+        </tr>
+        <tr>
+          <td style="padding: 0.5rem 0;"><strong>5. Vendor Security</strong></td>
+          <td style="color: #2196f3; font-weight: bold;">MEDIUM</td>
+          <td>47 vendors unassessed</td>
+        </tr>
+      </table>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-folder-open"></i> Project Deliverables</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Audit Planning Memo:</strong> Comprehensive planning documentation and scope definition</li>
+      <li><strong>Executive Presentation:</strong> Board-level findings and recommendations presentation</li>
+      <li><strong>Control Testing Procedures:</strong> Detailed testing methodology and evidence collection</li>
+      <li><strong>Remediation Roadmap:</strong> Prioritized implementation plan with cost estimates</li>
+      <li><strong>Incident Timeline Analysis:</strong> Attack timeline reconstruction and root cause analysis</li>
+      <li><strong>NIST Risk Assessment:</strong> 8 complete assessment tables with threat modeling</li>
+    </ul>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-line"></i> Business Impact Analysis</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+      <p style="margin: 0 0 0.5rem 0;"><strong>Direct Incident Costs:</strong> $15M+ in losses</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Operational Impact:</strong> 217 flights cancelled, 2.8M transactions lost</p>
+      <p style="margin: 0;"><strong>Compliance Risk:</strong> CMMC Level 3 certification required Q2 2026</p>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-graduation-cap"></i> Academic Context</h5>
+    <p style="line-height: 1.8;">Completed as part of ITMM 586 - Information Technology Auditing at Illinois Institute of Technology (Fall 2025). The project included 12+ weekly discussions on audit concepts, ethics case studies, and real-world incident analysis including the CrowdStrike global outage (July 2024).</p>
+  </div>
+</details>
+
 <div class="project-case-study">
   <div class="project-header">
     <h3 class="project-title">
-      <i class="fab fa-aws"></i> 
+      <i class="fab fa-aws"></i>
       Three-Tier Web Architecture on AWS
     </h3>
     <div class="project-links">
@@ -462,7 +573,7 @@ title: Projects
 <div class="project-case-study">
   <div class="project-header">
     <h3 class="project-title">
-      <i class="fas fa-shield-alt"></i> 
+      <i class="fas fa-shield-alt"></i>
       Enterprise SIEM Implementation with Wazuh
     </h3>
     <div class="project-links">
@@ -522,7 +633,7 @@ title: Projects
 <div class="project-case-study">
   <div class="project-header">
     <h3 class="project-title">
-      <i class="fab fa-aws"></i> 
+      <i class="fab fa-aws"></i>
       Secure Static Website with Global CDN
     </h3>
     <div class="project-links">
