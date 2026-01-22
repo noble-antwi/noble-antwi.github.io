@@ -143,6 +143,187 @@ title: Projects
 
 <details class="project-accordion">
   <summary>
+    <h3><i class="fas fa-briefcase"></i> IAM Job Scout: Automated Job Board for IAM Professionals</h3>
+    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
+  </summary>
+  
+  <div class="project-content">
+    <div class="accordion-badges">
+      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Completed</span>
+      <span style="background: rgba(33, 150, 243, 0.2); color: #2196f3; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #2196f3;">Full-Stack Web App</span>
+      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">Production-Ready</span>
+    </div>
+
+    <div class="accordion-links">
+      <a href="https://github.com/noble-antwi/iam-job-scout" target="_blank">
+        <i class="fab fa-github"></i> GitHub Repository
+      </a>
+      <a href="https://github.com/noble-antwi/iam-job-scout/blob/main/docs/MONITORING.md" target="_blank">
+        <i class="fas fa-book"></i> Documentation
+      </a>
+    </div>
+
+    <p><strong>Objective:</strong> Build an automated, production-grade web application that helps junior to mid-level Identity & Access Management (IAM) professionals discover relevant job opportunities across the USA. The application automatically searches for IAM job postings using Google Custom Search Engine, filters out senior positions, and presents them in a clean, searchable interface with smart filtering and monitoring capabilities.</p>
+
+    <h5><i class="fas fa-cogs"></i> Core Technologies & Stack</h5>
+    <div class="tech-stack">
+      <span class="tech-tag">Python</span>
+      <span class="tech-tag">FastAPI</span>
+      <span class="tech-tag">Jinja2 Templates</span>
+      <span class="tech-tag">TailwindCSS</span>
+      <span class="tech-tag">SQLite</span>
+      <span class="tech-tag">PostgreSQL</span>
+      <span class="tech-tag">APScheduler</span>
+      <span class="tech-tag">Prometheus</span>
+      <span class="tech-tag">Grafana</span>
+      <span class="tech-tag">Docker</span>
+      <span class="tech-tag">Docker Compose</span>
+      <span class="tech-tag">Google CSE API</span>
+    </div>
+
+    <div class="quick-stats">
+      <div class="stat-item">
+        <div class="stat-number">12+</div>
+        <div class="stat-label">API Endpoints</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">30+</div>
+        <div class="stat-label">Metrics Tracked</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Deployment Options</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Dockerized</div>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Smart Job Filtering:</strong> Automatically excludes senior/advanced roles while focusing on junior to mid-level positions (0-5 years experience)</li>
+      <li><strong>Full-Text Search:</strong> Search across job title, company name, and description with real-time results</li>
+      <li><strong>Location Filtering:</strong> Geographic filtering to find jobs in specific regions</li>
+      <li><strong>Multiple Sorting Options:</strong> Sort by newest, oldest, relevance, or company name</li>
+      <li><strong>Auto-Cleanup:</strong> Jobs older than 30 days are automatically removed to keep listings fresh</li>
+      <li><strong>Similar Job Suggestions:</strong> View related opportunities when viewing job details</li>
+      <li><strong>Admin Panel:</strong> Secure, password-protected admin interface for manual job scanning</li>
+      <li><strong>Demo Mode:</strong> Works without API keys using sample data for testing</li>
+      <li><strong>API Token Protection:</strong> Secure endpoints for cron-triggered operations</li>
+      <li><strong>Production Monitoring:</strong> Built-in Prometheus metrics and Grafana dashboard support</li>
+    </ul>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-filter"></i> Intelligent Filtering Logic</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+      <p style="margin: 0 0 0.5rem 0;"><strong>Excluded Keywords (Senior Roles):</strong> senior, sr, principal, architect, lead, manager, director, head, vp, staff, distinguished, chief</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Included Keywords (Junior/Mid Roles):</strong> analyst, associate, administrator, engineer, specialist, iam, identity, okta, entra, azure ad, sso, saml, oidc, scim, iga, pam, sailpoint, saviynt, ping, cyberark</p>
+      <p style="margin: 0;"><strong>Experience Filters:</strong> Include 0-5, 1-3, 2-4, 3-5 years | Exclude 7+, 10+, 12+ years</p>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-line"></i> Production-Grade Monitoring & Observability</h5>
+    <div style="margin: 1rem 0;">
+      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>Application Performance Metrics</strong></h6>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">HTTP request duration histograms (p50, p95, p99), request rate by endpoint, error rate tracking, and concurrent request monitoring</p>
+      </div>
+
+      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(33, 150, 243, 0.05); border-radius: 8px; border-left: 3px solid #2196f3;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #2196f3;"><strong>Business Metrics</strong></h6>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Total jobs in database, new jobs this week, saved/applied job tracking, scan success rate, and last successful scan timestamp</p>
+      </div>
+
+      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(255, 152, 0, 0.05); border-radius: 8px; border-left: 3px solid #ff9800;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #ff9800;"><strong>Database & System Metrics</strong></h6>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Query duration tracking, active connection pool utilization, database operations by type, memory usage, and Python garbage collection metrics</p>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-server"></i> API Endpoints & Architecture</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+      <p style="margin: 0 0 0.5rem 0;"><strong>Public Endpoints:</strong> Main job board with search/filters, individual job details, admin login, JSON API for jobs/stats, health check, Prometheus metrics</p>
+      <p style="margin: 0;"><strong>Protected Endpoints (Session Auth or API Token):</strong> Manual job scan trigger, automatic cleanup of old jobs (30+ days)</p>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-cloud"></i> Deployment Options</h5>
+    <div style="margin: 1rem 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+      <div style="padding: 1rem; background: rgba(76, 175, 80, 0.1); border-radius: 8px; border-left: 3px solid #4caf50;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><i class="fas fa-rocket"></i> Render (Recommended)</h6>
+        <p style="margin: 0; font-size: 0.9rem;">Easiest deployment with built-in cron job support, automatic HTTPS, and zero-config environment</p>
+      </div>
+
+      <div style="padding: 1rem; background: rgba(33, 150, 243, 0.1); border-radius: 8px; border-left: 3px solid #2196f3;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #2196f3;"><i class="fab fa-docker"></i> Fly.io</h6>
+        <p style="margin: 0; font-size: 0.9rem;">Docker-based deployment with generous free tier and global edge network support</p>
+      </div>
+
+      <div style="padding: 1rem; background: rgba(255, 152, 0, 0.1); border-radius: 8px; border-left: 3px solid #ff9800;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #ff9800;"><i class="fas fa-server"></i> VPS</h6>
+        <p style="margin: 0; font-size: 0.9rem;">Full control deployment on DigitalOcean, AWS Lightsail, or Ubuntu Server with Docker Compose</p>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-shield-alt"></i> Security Features</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Password-Protected Admin Panel:</strong> Secure authentication for manual job scanning operations</li>
+      <li><strong>API Token Authentication:</strong> X-ADMIN-TOKEN header validation for cron job endpoints</li>
+      <li><strong>Session Secret Encryption:</strong> Secure session management with cryptographic session keys</li>
+      <li><strong>Environment Variable Configuration:</strong> Sensitive credentials stored outside codebase</li>
+      <li><strong>Production Security Recommendations:</strong> Documented best practices for secure deployment</li>
+    </ul>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-lightbulb"></i> Technical Highlights & Best Practices</h5>
+    <div style="margin: 1rem 0;">
+      <div style="margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;"><strong>🐍 FastAPI Modern Python Backend</strong></span>
+        </div>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">Asynchronous API with automatic OpenAPI documentation, type hints, and validation</p>
+      </div>
+
+      <div style="margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;"><strong>📊 Production Monitoring Stack</strong></span>
+        </div>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">Prometheus metrics with Grafana dashboards for real-time performance tracking and alerting</p>
+      </div>
+
+      <div style="margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;"><strong>🔄 Automated Job Scheduling</strong></span>
+        </div>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">APScheduler for background tasks with configurable daily scanning and automatic cleanup</p>
+      </div>
+
+      <div style="margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;"><strong>🐳 Containerized Architecture</strong></span>
+        </div>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">Docker and Docker Compose setup for consistent deployment across all environments</p>
+      </div>
+
+      <div style="margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
+          <span style="font-size: 0.95rem;"><strong>💾 Flexible Database Support</strong></span>
+        </div>
+        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">SQLite for development/small deployments, PostgreSQL support for production scale</p>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-tools"></i> Comprehensive Documentation</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(156, 39, 176, 0.05); border-radius: 8px; border-left: 3px solid #9c27b0;">
+      <p style="margin: 0 0 0.5rem 0;">✓ Quick Start Guide - Get monitoring running in 10 minutes</p>
+      <p style="margin: 0 0 0.5rem 0;">✓ Complete Monitoring Guide - Comprehensive documentation with examples</p>
+      <p style="margin: 0 0 0.5rem 0;">✓ Architecture Diagram - Visual guide to monitoring setup</p>
+      <p style="margin: 0 0 0.5rem 0;">✓ Docker Networking Guide - Tips for container deployments</p>
+      <p style="margin: 0 0 0.5rem 0;">✓ Prometheus Configuration Examples - Ready-to-use configs</p>
+      <p style="margin: 0;">✓ Alert Rules - Production-ready alerting setup</p>
+    </div>
+  </div>
+</details>
+
+<details class="project-accordion">
+  <summary>
     <h3><i class="fas fa-key"></i> Enterprise IAM Lab: Hybrid Identity Architecture</h3>
     <span class="chevron"><i class="fas fa-chevron-down"></i></span>
   </summary>
