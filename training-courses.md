@@ -38,7 +38,7 @@ title: Training & Courses
   <div class="card" style="text-align: center;">
     <i class="fas fa-list" style="font-size: 3rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
     <h3>Planned Courses</h3>
-    <p>Upcoming training programs and courses planned for 2025</p>
+    <p>Upcoming training programs and courses planned for 2026</p>
     <div style="margin: 1rem 0;">
       <span style="background: var(--accent-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">6 Planned</span>
     </div>
@@ -272,43 +272,43 @@ title: Training & Courses
   </div>
 </div>
 
-<h2 id="planned-courses"><i class="fas fa-calendar-alt"></i> Planned Training for 2025</h2>
+<h2 id="planned-courses"><i class="fas fa-calendar-alt"></i> Planned Training for 2026</h2>
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
   <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
     <h4>Certified Kubernetes Administrator (CKA) with Practice Tests</h4>
     <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> KodeKloud Training</p>
-    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q1 2025</span>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q1 2026</span>
   </div>
 
   <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
     <h4>Complete Linux Training Course to Get Your Dream IT Job 2025</h4>
     <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> Imran Afzal</p>
-    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q1 2025</span>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q1 2026</span>
   </div>
 
   <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
     <h4>Nmap for Ethical Hackers - Ultimate Hands-On Course</h4>
     <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> David Greer</p>
-    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q2 2025</span>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q2 2026</span>
   </div>
 
   <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
     <h4>AKYLADE AI Security Foundation Full Course & Practice Exam</h4>
     <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> Jason Dion</p>
-    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q2 2025</span>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q2 2026</span>
   </div>
 
   <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
     <h4>Master Cisco CCNA 200-301: Comprehensive All-In-One Course</h4>
     <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> Jeremy McDowell</p>
-    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q3 2025</span>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q3 2026</span>
   </div>
 
   <div class="card" style="padding: 1rem; border-left: 4px solid var(--accent-color);">
     <h4>Microsoft Sentinel & Microsoft Defender for Cloud</h4>
     <p><strong>Platform:</strong> Udemy | <strong>Instructor:</strong> Christopher Net</p>
-    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q4 2025</span>
+    <span style="background: var(--accent-color); color: white; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem;">Planned Q4 2026</span>
   </div>
 </div>
 
