@@ -5,7 +5,7 @@ title: Home
 ---
 
 <div class="profile-section">
-  <img src="assets/profile.png" alt="Noble Antwi - Cloud Security Engineer" class="profile-img" loading="lazy"/>
+  <img src="assets/profile.jpg" alt="Noble Antwi - Cloud Security Engineer" class="profile-img" loading="lazy"/>
   <h1>Welcome to my digital space : I'm Noble Antwi</h1>
   <h3>Here, I share my journey through cloud security, infrastructure architecture, and cybersecurity, with a strong focus on identity and access management and threat detection strategies. I'm glad you're here!</h3>
   
