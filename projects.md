@@ -1,8 +1,8 @@
 
 ---
-
 layout: default
 title: Projects
+description: "Explore Noble Antwi's cloud security projects including AWS security implementations, IAM job scout, penetration testing, and security assessment case studies."
 ---
 
 <h1><i class="fas fa-project-diagram"></i> Featured Project Case Studies</h1>
