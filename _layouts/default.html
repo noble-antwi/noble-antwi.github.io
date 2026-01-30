@@ -42,6 +42,28 @@
     <!-- Cloudflare Web Analytics -->
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c50b3c226c88413ebf8aa471669540bd"}'></script>
     <!-- End Cloudflare Web Analytics -->
+
+    <!-- JSON-LD Schema Markup for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Noble Worlanyo Antwi",
+      "url": "{{ site.url }}",
+      "jobTitle": "Cloud Security Engineer",
+      "description": "{{ site.description }}",
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "Illinois Institute of Technology"
+      },
+      "knowsAbout": ["Cloud Security", "AWS", "Azure", "GCP", "IAM", "Threat Detection", "Digital Forensics", "Penetration Testing", "DevSecOps"],
+      "sameAs": [
+        "https://linkedin.com/in/{{ site.social.linkedin }}",
+        "https://github.com/{{ site.social.github }}"
+      ],
+      "email": "{{ site.social.email }}"
+    }
+    </script>
   </head>
 
   <body>

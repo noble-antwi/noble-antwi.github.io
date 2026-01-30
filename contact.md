@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Contact
+description: "Connect with Noble Antwi - Cloud Security Engineer. Available for cybersecurity consulting, mentoring, and collaboration opportunities."
 ---
 
 <h1><i class="fas fa-envelope"></i> Let's Connect</h1>

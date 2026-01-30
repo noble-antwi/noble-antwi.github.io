@@ -1,7 +1,7 @@
 title: Noble Antwi
 description: "Securing the Cloud | Defending Digital Frontiers | Passionate About IAM, Threat Detection, and Forensics"
 baseurl: ""
-url: ""
+url: "https://noble-antwi.github.io"
 
 # Theme
 theme: jekyll-theme-cayman

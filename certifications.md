@@ -1,6 +1,7 @@
 ---
 layout: default
 title: All Certifications
+description: "View Noble Antwi's professional certifications in cloud security, AWS, Azure, GCP, CompTIA Security+, and other cybersecurity credentials."
 ---
 
 <h1><i class="fas fa-certificate"></i> Professional Certifications</h1>
