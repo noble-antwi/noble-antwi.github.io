@@ -143,6 +143,130 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
 
 <details class="project-accordion">
   <summary>
+    <h3><i class="fas fa-shield-alt"></i> Cloud Security Posture Dashboard: Multi-Cloud Security Assessment Platform</h3>
+    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
+  </summary>
+
+  <div class="project-content">
+    <div class="accordion-badges">
+      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Completed</span>
+      <span style="background: rgba(33, 150, 243, 0.2); color: #2196f3; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #2196f3;">Multi-Cloud Security</span>
+      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">DevSecOps</span>
+      <span style="background: rgba(244, 67, 54, 0.2); color: #f44336; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #f44336;">Automation</span>
+    </div>
+
+    <div class="accordion-links">
+      <a href="https://github.com/noble-antwi/cloud-security-posture-dashboard" target="_blank">
+        <i class="fab fa-github"></i> GitHub Repository
+      </a>
+    </div>
+
+    <p><strong>Objective:</strong> Build a comprehensive multi-cloud security assessment platform that automates the deployment of intentionally misconfigured cloud resources, performs security scanning using industry-standard tools, aggregates findings into unified formats, and visualizes results through an interactive dashboard with automated remediation guidance and compliance mapping.</p>
+
+    <h5><i class="fas fa-cogs"></i> Core Technologies & Stack</h5>
+    <div class="tech-stack">
+      <span class="tech-tag">Terraform</span>
+      <span class="tech-tag">Python</span>
+      <span class="tech-tag">Flask</span>
+      <span class="tech-tag">Prowler</span>
+      <span class="tech-tag">ScoutSuite</span>
+      <span class="tech-tag">AWS</span>
+      <span class="tech-tag">Azure</span>
+      <span class="tech-tag">Bootstrap 5</span>
+      <span class="tech-tag">Chart.js</span>
+      <span class="tech-tag">JSON</span>
+      <span class="tech-tag">IAM</span>
+      <span class="tech-tag">S3</span>
+      <span class="tech-tag">Azure Storage</span>
+    </div>
+
+    <div class="quick-stats">
+      <div class="stat-item">
+        <div class="stat-number">500+</div>
+        <div class="stat-label">Security Checks</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">2</div>
+        <div class="stat-label">Cloud Platforms</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">6+</div>
+        <div class="stat-label">Compliance Frameworks</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Automated</div>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Multi-Cloud Support:</strong> Automated security assessment across AWS and Azure cloud platforms with unified findings aggregation</li>
+      <li><strong>Infrastructure as Code:</strong> Terraform-based deployment of intentionally misconfigured resources for testing security controls and scanner accuracy</li>
+      <li><strong>Industry-Standard Scanning:</strong> Integration with Prowler 3.x (AWS) and ScoutSuite (Azure) for comprehensive security assessments covering 500+ checks</li>
+      <li><strong>Unified Findings Schema:</strong> Python-based aggregation engine that normalizes findings from multiple scanning tools into a consistent format</li>
+      <li><strong>Interactive Dashboard:</strong> Flask web application with Bootstrap 5 UI featuring real-time visualization, severity breakdown charts, and filterable findings tables</li>
+      <li><strong>Automated Remediation:</strong> Built-in remediation engine with AWS CLI commands for S3 encryption, public access blocking, versioning, and IAM Access Analyzer setup</li>
+      <li><strong>Compliance Mapping:</strong> Findings mapped to CIS 2.0, CIS 1.4, CIS 1.5, NIST, PCI-DSS, HIPAA, and GDPR compliance frameworks</li>
+      <li><strong>Dry-Run Mode:</strong> Safe testing of remediation scripts before applying changes to production environments</li>
+      <li><strong>Batch Remediation:</strong> Support for remediating multiple security findings across resources simultaneously</li>
+      <li><strong>Export Capabilities:</strong> JSON and CSV export formats for integration with SIEM tools and reporting systems</li>
+    </ul>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-cloud"></i> Supported Cloud Services & Resources</h5>
+    <div style="margin: 1rem 0;">
+      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(255, 152, 0, 0.05); border-radius: 8px; border-left: 3px solid #ff9800;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #ff9800;"><strong>AWS Resources</strong></h6>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">S3 buckets (encryption, versioning, public access policies), IAM Access Analyzer, CloudTrail logging, VPC security groups, EC2 security configurations, RDS encryption, Lambda security, and 500+ additional security checks via Prowler</p>
+      </div>
+
+      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(33, 150, 243, 0.05); border-radius: 8px; border-left: 3px solid #2196f3;">
+        <h6 style="margin: 0 0 0.5rem 0; color: #2196f3;"><strong>Azure Resources</strong></h6>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Storage accounts (security settings, encryption), Network Security Groups, Key Vaults, Virtual Machines, SQL Databases, Active Directory configurations, and comprehensive service coverage via ScoutSuite</p>
+      </div>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-pie"></i> Dashboard Visualization Features</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Real-Time Metrics:</strong> Summary cards displaying total findings, critical/high/medium/low severity counts, and affected resources</li>
+      <li><strong>Severity Distribution:</strong> Interactive doughnut chart showing the proportion of findings by severity level</li>
+      <li><strong>Cloud Provider Comparison:</strong> Bar chart comparing security findings across AWS and Azure environments</li>
+      <li><strong>Searchable Findings Table:</strong> Filter and search capabilities for quickly locating specific security issues</li>
+      <li><strong>Detailed Findings View:</strong> Expandable rows with remediation guidance, affected resources, and compliance framework mapping</li>
+      <li><strong>Severity Badges:</strong> Color-coded severity indicators (Critical=Red, High=Orange, Medium=Yellow, Low=Blue)</li>
+    </ul>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-tools"></i> Five-Stage Security Pipeline</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
+      <p style="margin: 0 0 0.5rem 0;"><strong>1. Deploy:</strong> Terraform provisions intentionally misconfigured AWS and Azure resources for testing</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>2. Scan:</strong> Prowler and ScoutSuite perform automated security assessments with 500+ checks</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>3. Aggregate:</strong> Python scripts normalize findings from multiple tools into unified JSON schema</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>4. Visualize:</strong> Flask dashboard displays findings with charts, filters, and detailed remediation guidance</p>
+      <p style="margin: 0;"><strong>5. Remediate:</strong> Automated scripts fix identified issues with dry-run mode for safe testing</p>
+    </div>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-shield-alt"></i> Use Cases & Applications</h5>
+    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Security Tool Validation:</strong> Test and validate security scanning tools in controlled environments before production deployment</li>
+      <li><strong>Cloud Security Training:</strong> Learn common cloud misconfigurations and remediation techniques in safe sandbox environments</li>
+      <li><strong>DevSecOps Pipeline Integration:</strong> Build security automation pipelines with automated scanning and remediation capabilities</li>
+      <li><strong>Compliance Auditing:</strong> Map security findings to compliance frameworks (CIS, NIST, PCI-DSS, HIPAA, GDPR) for audit preparation</li>
+      <li><strong>Security Posture Assessment:</strong> Continuously monitor multi-cloud security posture with unified visibility across AWS and Azure</li>
+    </ul>
+
+    <h5 style="margin-top: 1.5rem;"><i class="fas fa-graduation-cap"></i> Technical Skills Demonstrated</h5>
+    <div style="margin: 1rem 0; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
+      <p style="margin: 0 0 0.5rem 0;"><strong>Cloud Security:</strong> AWS security services (IAM, S3, CloudTrail), Azure security (Storage, NSG, Key Vault), security scanning tools (Prowler, ScoutSuite)</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Infrastructure as Code:</strong> Terraform for multi-cloud resource provisioning and management</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Security Automation:</strong> Python scripting for findings aggregation, automated remediation, and compliance mapping</p>
+      <p style="margin: 0 0 0.5rem 0;"><strong>Web Development:</strong> Flask backend, Bootstrap 5 frontend, Chart.js data visualization, RESTful API design</p>
+      <p style="margin: 0;"><strong>DevSecOps:</strong> CI/CD security integration, automated security testing, remediation automation, compliance-as-code</p>
+    </div>
+  </div>
+</details>
+
+<details class="project-accordion">
+  <summary>
     <h3><i class="fas fa-briefcase"></i> IAM Job Scout: Automated Job Board for IAM Professionals</h3>
     <span class="chevron"><i class="fas fa-chevron-down"></i></span>
   </summary>
