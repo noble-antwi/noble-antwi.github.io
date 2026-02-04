@@ -163,7 +163,7 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       </a>
     </div>
 
-    <p><strong>Objective:</strong> Build an automated, production-grade web application that helps junior to mid-level Identity & Access Management (IAM) professionals discover relevant job opportunities across the USA. The application automatically searches for IAM job postings using Google Custom Search Engine, filters out senior positions, and presents them in a clean, searchable interface with smart filtering and monitoring capabilities.</p>
+    <p><strong>Objective:</strong> Build an automated, production-grade web application that helps junior to mid-level Identity & Access Management (IAM) professionals discover relevant job opportunities across the USA. The application automatically searches for IAM job postings using multiple job APIs (JSearch, Adzuna, and RemoteOK) with intelligent deduplication, filters out senior positions, and presents them in a clean, searchable interface with smart filtering and monitoring capabilities.</p>
 
     <h5><i class="fas fa-cogs"></i> Core Technologies & Stack</h5>
     <div class="tech-stack">
@@ -178,7 +178,9 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <span class="tech-tag">Grafana</span>
       <span class="tech-tag">Docker</span>
       <span class="tech-tag">Docker Compose</span>
-      <span class="tech-tag">Google CSE API</span>
+      <span class="tech-tag">JSearch API</span>
+      <span class="tech-tag">Adzuna API</span>
+      <span class="tech-tag">RemoteOK API</span>
     </div>
 
     <div class="quick-stats">
@@ -202,11 +204,15 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
 
     <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features</h5>
     <ul style="margin-left: 1.5rem; line-height: 1.8;">
+      <li><strong>Multi-API Integration:</strong> Searches JSearch (Indeed, LinkedIn, Glassdoor), Adzuna, and RemoteOK concurrently for comprehensive job coverage across multiple platforms</li>
+      <li><strong>Smart Deduplication:</strong> Uses fuzzy matching algorithms to automatically eliminate duplicate job listings from different sources</li>
       <li><strong>Smart Job Filtering:</strong> Automatically excludes senior/advanced roles while focusing on junior to mid-level positions (0-5 years experience)</li>
       <li><strong>Full-Text Search:</strong> Search across job title, company name, and description with real-time results</li>
       <li><strong>Location Filtering:</strong> Geographic filtering to find jobs in specific regions</li>
       <li><strong>Multiple Sorting Options:</strong> Sort by newest, oldest, relevance, or company name</li>
+      <li><strong>Job Status Tracking:</strong> Mark jobs as saved, applied, or hidden to manage your application process</li>
       <li><strong>Auto-Cleanup:</strong> Jobs older than 30 days are automatically removed to keep listings fresh</li>
+      <li><strong>Scheduled Scanning:</strong> Configurable automatic job searches (default: Monday/Wednesday/Saturday)</li>
       <li><strong>Similar Job Suggestions:</strong> View related opportunities when viewing job details</li>
       <li><strong>Admin Panel:</strong> Secure, password-protected admin interface for manual job scanning</li>
       <li><strong>Demo Mode:</strong> Works without API keys using sample data for testing</li>
