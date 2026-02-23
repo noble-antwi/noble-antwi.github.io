@@ -2,14 +2,57 @@
 ---
 layout: default
 title: Blog
+description: "Noble Antwi's technical blog — lab notes, project updates, learning journals, and cloud security articles covering AWS, Azure, IAM, and DevSecOps."
 ---
 
 <h1><i class="fas fa-blog"></i> Technical Blog & Articles</h1>
 
 <p style="text-align: center; font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 3rem;">
-  Deep-dive technical articles, hands-on guides, and insights from my cloud security and cybersecurity journey.
-  <br><a href="https://medium.com/@noble-antwi" target="_blank" style="color: var(--accent); font-weight: 600; text-decoration: none;">Read more on Medium →</a>
+  Lab notes, project updates, learning journals, and deep-dive security articles from my cloud security journey.
+  <br><a href="https://medium.com/@noble-antwi" target="_blank" style="color: var(--accent); font-weight: 600; text-decoration: none;">Also on Medium →</a>
 </p>
+
+<!-- LOCAL POSTS: Lab Notes & Project Updates -->
+{% assign local_posts = site.posts %}
+{% if local_posts.size > 0 %}
+<h2 style="margin-top: 1rem;"><i class="fas fa-flask"></i> Lab Notes & Project Updates</h2>
+<p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem;">Personal notes on what I'm building, learning, and experimenting with — direct from the lab.</p>
+
+<div style="display: grid; gap: 1.5rem; margin-bottom: 3rem;">
+{% for post in local_posts %}
+  <div class="card" style="border-left: 4px solid var(--accent);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.8rem;">
+      <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+        {% if post.category == "lab-notes" %}
+          <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem; border: 1px solid #4caf50;"><i class="fas fa-flask"></i> Lab Notes</span>
+        {% elsif post.category == "project-update" %}
+          <span style="background: rgba(33, 150, 243, 0.2); color: #2196f3; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem; border: 1px solid #2196f3;"><i class="fas fa-code-branch"></i> Project Update</span>
+        {% elsif post.category == "til" %}
+          <span style="background: rgba(255, 193, 7, 0.2); color: #ffc107; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem; border: 1px solid #ffc107;"><i class="fas fa-lightbulb"></i> TIL</span>
+        {% elsif post.category == "learning" %}
+          <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem; border: 1px solid #9c27b0;"><i class="fas fa-graduation-cap"></i> Learning</span>
+        {% else %}
+          <span style="background: rgba(6, 182, 212, 0.2); color: var(--accent); padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.8rem; border: 1px solid var(--accent);"><i class="fas fa-pen"></i> {{ post.category }}</span>
+        {% endif %}
+      </div>
+      <span style="color: var(--text-muted); font-size: 0.85rem;"><i class="fas fa-calendar"></i> {{ post.date | date: "%B %-d, %Y" }}</span>
+    </div>
+    <h3 style="margin: 0 0 0.7rem; font-size: 1.15rem;">{{ post.title }}</h3>
+    <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.7;">{{ post.excerpt | strip_html | truncate: 200 }}</p>
+    {% if post.tags %}
+    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem;">
+      {% for tag in post.tags %}
+      <span style="background: rgba(6, 182, 212, 0.1); color: var(--accent); padding: 0.15rem 0.5rem; border-radius: 8px; font-size: 0.8rem;">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <a href="{{ post.url }}" style="color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.95rem;">Read Full Post <i class="fas fa-arrow-right"></i></a>
+  </div>
+{% endfor %}
+</div>
+
+<hr style="border: none; border-top: 1px solid rgba(6, 182, 212, 0.2); margin: 2rem 0;">
+{% endif %}
 
 <!-- AWS & Cloud Security Articles -->
 <h2 style="margin-top: 3rem;"><i class="fab fa-aws"></i> AWS & Cloud Security</h2>

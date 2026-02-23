@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: 'en-US' }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=yes, minimum-scale=1, maximum-scale=5">
+    <title>{{ page.title }} | {{ site.title }}</title>
+    <meta name="description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+    <meta property="og:title" content="{{ page.title }} | {{ site.title }}">
+    <meta property="og:description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+    <meta property="og:image" content="{{ site.url }}/assets/logo.png">
+    <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+    <meta property="article:author" content="Noble Worlanyo Antwi">
+    {% if page.tags %}<meta property="article:tag" content="{{ page.tags | join: ', ' }}">{% endif %}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page.title }}">
+    <meta name="twitter:description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+    <meta name="twitter:image" content="{{ site.url }}/assets/logo.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.png">
+    <link rel="shortcut icon" href="/assets/logo.png">
+    <meta name="theme-color" content="#06b6d4">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Custom Theme CSS -->
+    <link rel="stylesheet" href="/assets/custom-theme.css">
+
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c50b3c226c88413ebf8aa471669540bd"}'></script>
+
+    <!-- JSON-LD for Blog Post -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "{{ page.title }}",
+      "datePublished": "{{ page.date | date_to_xmlschema }}",
+      "author": {
+        "@type": "Person",
+        "name": "Noble Worlanyo Antwi",
+        "url": "{{ site.url }}"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Noble Worlanyo Antwi"
+      },
+      "url": "{{ site.url }}{{ page.url }}",
+      "description": "{{ page.excerpt | strip_html | truncate: 160 }}"
+    }
+    </script>
+
+    <style>
+      .post-header {
+        padding: 3rem 0 2rem;
+        border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+        margin-bottom: 2.5rem;
+      }
+      .post-meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+      .post-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .post-tag {
+        background: rgba(6, 182, 212, 0.15);
+        color: var(--accent);
+        padding: 0.2rem 0.7rem;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        border: 1px solid rgba(6, 182, 212, 0.4);
+        text-decoration: none;
+      }
+      .post-category-badge {
+        background: rgba(6, 182, 212, 0.2);
+        color: var(--accent);
+        padding: 0.3rem 0.9rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .post-body {
+        line-height: 1.9;
+        font-size: 1.05rem;
+        color: var(--text-light);
+        max-width: 780px;
+      }
+      .post-body h2 {
+        color: var(--accent);
+        margin: 2.5rem 0 1rem;
+        font-size: 1.5rem;
+        border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+        padding-bottom: 0.5rem;
+      }
+      .post-body h3 {
+        color: var(--text-light);
+        margin: 2rem 0 0.8rem;
+        font-size: 1.2rem;
+      }
+      .post-body code {
+        background: rgba(6, 182, 212, 0.1);
+        color: var(--accent);
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+        font-family: 'Courier New', monospace;
+      }
+      .post-body pre {
+        background: rgba(6, 182, 212, 0.05);
+        border: 1px solid rgba(6, 182, 212, 0.2);
+        border-radius: 8px;
+        padding: 1.5rem;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+      }
+      .post-body pre code {
+        background: none;
+        padding: 0;
+        color: var(--text-light);
+      }
+      .post-body ul, .post-body ol {
+        margin: 1rem 0 1rem 1.5rem;
+        line-height: 2;
+      }
+      .post-body blockquote {
+        border-left: 4px solid var(--accent);
+        background: rgba(6, 182, 212, 0.05);
+        padding: 1rem 1.5rem;
+        border-radius: 0 8px 8px 0;
+        margin: 1.5rem 0;
+        font-style: italic;
+        color: var(--text-secondary);
+      }
+      .post-body img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        border: 1px solid rgba(6, 182, 212, 0.2);
+      }
+      .post-footer {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(6, 182, 212, 0.2);
+      }
+      .post-nav {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+      .post-nav a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.7rem 1.2rem;
+        background: rgba(6, 182, 212, 0.1);
+        color: var(--accent);
+        text-decoration: none;
+        border-radius: 8px;
+        border: 1px solid rgba(6, 182, 212, 0.3);
+        font-size: 0.9rem;
+        transition: all 0.3s;
+      }
+      .post-nav a:hover {
+        background: rgba(6, 182, 212, 0.2);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.95) 100%); border-bottom: 2px solid rgba(6, 182, 212, 0.3); padding: 2.5rem 0; position: relative; overflow: hidden;">
+      <div style="position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, transparent 70%); border-radius: 50%; transform: translate(100px, -100px);"></div>
+      <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; text-align: center;">
+        <a href="/" style="text-decoration: none;">
+          <h1 style="margin: 0; font-size: 2.8rem; font-weight: 900; background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 4px; text-transform: uppercase;">NOBLE W. ANTWI</h1>
+          <p style="margin: 0.8rem 0 0 0; color: rgba(6, 182, 212, 0.8); font-size: 0.95rem; letter-spacing: 2px; text-transform: uppercase;">Cloud Security Professional</p>
+        </a>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(6, 182, 212, 0.2); padding: 0.8rem 0; position: sticky; top: 0; z-index: 999;">
+      <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <ul style="display: flex; list-style: none; gap: 2rem; margin: 0; padding: 0; flex-wrap: wrap;">
+          <li><a href="/" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; padding: 0.5rem 0; border-bottom: 2px solid transparent; display: block;">Home</a></li>
+          <li><a href="/projects" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; padding: 0.5rem 0; border-bottom: 2px solid transparent; display: block;">Projects</a></li>
+          <li><a href="/certifications" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; padding: 0.5rem 0; border-bottom: 2px solid transparent; display: block;">Certifications</a></li>
+          <li><a href="/blog" style="color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; padding: 0.5rem 0; border-bottom: 2px solid var(--accent); display: block;">Blog</a></li>
+          <li><a href="/contact" style="color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.3s ease; padding: 0.5rem 0; border-bottom: 2px solid transparent; display: block;">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Post Content -->
+    <main class="main-content">
+      <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+
+        <div class="post-header">
+          <!-- Category Badge -->
+          {% if page.category %}
+          <div style="margin-bottom: 1rem;">
+            <span class="post-category-badge">
+              {% if page.category == "lab-notes" %}<i class="fas fa-flask"></i> Lab Notes
+              {% elsif page.category == "project-update" %}<i class="fas fa-code-branch"></i> Project Update
+              {% elsif page.category == "til" %}<i class="fas fa-lightbulb"></i> Today I Learned
+              {% elsif page.category == "learning" %}<i class="fas fa-graduation-cap"></i> Learning Notes
+              {% elsif page.category == "cloud-security" %}<i class="fas fa-cloud"></i> Cloud Security
+              {% else %}<i class="fas fa-pen"></i> {{ page.category }}
+              {% endif %}
+            </span>
+          </div>
+          {% endif %}
+
+          <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-light); line-height: 1.3; margin-bottom: 1rem;">{{ page.title }}</h1>
+
+          <div class="post-meta">
+            <span><i class="fas fa-calendar"></i> {{ page.date | date: "%B %-d, %Y" }}</span>
+            {% if page.read_time %}<span><i class="fas fa-clock"></i> {{ page.read_time }} min read</span>{% endif %}
+            {% if page.tags %}
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              {% for tag in page.tags %}
+              <span class="post-tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Post Body -->
+        <div class="post-body">
+          {{ content }}
+        </div>
+
+        <!-- Post Footer -->
+        <div class="post-footer">
+          <div style="display: flex; align-items: center; gap: 1rem; padding: 1.5rem; background: rgba(6, 182, 212, 0.05); border-radius: 12px; border: 1px solid rgba(6, 182, 212, 0.2);">
+            <img src="/assets/profile.jpg" alt="Noble Antwi" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent);">
+            <div>
+              <p style="margin: 0; font-weight: 700; color: var(--text-light);">Noble Worlanyo Antwi</p>
+              <p style="margin: 0.2rem 0 0; font-size: 0.9rem; color: var(--text-secondary);">Cloud Security Engineer · IAM Specialist · MSc Cybersecurity & Digital Forensics</p>
+            </div>
+          </div>
+
+          <div class="post-nav">
+            <a href="/blog"><i class="fas fa-arrow-left"></i> Back to All Posts</a>
+            <a href="/contact"><i class="fas fa-envelope"></i> Get In Touch</a>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--bg-darker); color: var(--text-secondary); text-align: center; padding: 3rem 2rem; border-top: 1px solid rgba(6, 182, 212, 0.2); margin-top: 4rem;">
+      <div class="container">
+        <p>&copy; {{ 'now' | date: "%Y" }} {{ site.title }}. Cloud Security Professional | Built with ❤️</p>
+        <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1.5rem;">
+          <a href="https://linkedin.com/in/{{ site.social.linkedin }}" style="color: var(--accent); text-decoration: none;">LinkedIn</a>
+          <a href="https://github.com/{{ site.social.github }}" style="color: var(--accent); text-decoration: none;">GitHub</a>
+          <a href="mailto:{{ site.social.email }}" style="color: var(--accent); text-decoration: none;">Email</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
