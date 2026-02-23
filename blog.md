@@ -80,7 +80,7 @@ description: "Noble Antwi's technical blog — lab notes, project updates, learn
 <!-- ======================================================== -->
 <div style="margin-bottom: 1rem;">
   <h2 style="margin: 0 0 0.5rem;"><i class="fas fa-newspaper"></i> Published Articles</h2>
-  <p style="color: var(--text-secondary); font-size: 0.95rem; margin: 0 0 0.5rem;">Long-form, polished articles published on <a href="https://medium.com/@noble-antwi" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600;">Medium</a> and <a href="https://aws.plainenglish.io" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600;">AWS in Plain English</a>. Structured write-ups with in-depth coverage.</p>
+  <p style="color: var(--text-secondary); font-size: 0.95rem; margin: 0 0 0.5rem;">Long-form, polished articles published on <a href="https://medium.com/@noble-antwi" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600;">Medium</a>. Structured write-ups with in-depth coverage across cloud security, cybersecurity, and infrastructure.</p>
 </div>
 
 <!-- AWS & Cloud Security Articles -->

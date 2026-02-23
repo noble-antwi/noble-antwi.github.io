@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "How to Write a Lab Note or Project Update"
+date: 2026-01-01
 category: lab-notes
 tags: [meta, guide, how-to]
 read_time: 3
