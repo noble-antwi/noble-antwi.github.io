@@ -33,6 +33,13 @@
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
+
+  /* Aliases — referenced in page inline HTML */
+  --accent-color: var(--accent);
+  --success-color: var(--success);
+  --warning-color: var(--warning);
+  --bg-light: var(--bg-card);
+  --text-light: var(--text-primary);
   
   /* Shadows & Effects */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -158,6 +165,75 @@ nav a.active {
 nav a:hover::after,
 nav a.active::after {
   width: 100%;
+}
+
+/* ============================================
+   SITE NAV (hamburger + active states)
+   ============================================ */
+
+.site-nav {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+  padding: 0.8rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid transparent;
+  display: block;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--accent-light);
+  border-bottom-color: var(--accent);
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--accent);
+  transition: all 0.3s ease;
+  border-radius: 2px;
 }
 
 /* ============================================
@@ -794,10 +870,27 @@ footer p {
     justify-content: center;
   }
   
-  nav ul {
-    display: none;
+  /* Hamburger menu */
+  .nav-toggle {
+    display: flex;
   }
-  
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    padding: 0.5rem 2rem 1rem;
+    border-top: 1px solid rgba(6, 182, 212, 0.1);
+  }
+
+  .nav-links.is-open {
+    display: flex;
+  }
+
+  .nav-container {
+    justify-content: space-between;
+  }
+
   .card {
     padding: 1.5rem;
   }
@@ -881,4 +974,201 @@ footer p {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+}
+
+/* ============================================
+   BLOG POST STYLES
+   ============================================ */
+
+.post-header {
+  padding: 3rem 0 2rem;
+  border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+  margin-bottom: 2.5rem;
+}
+
+.post-meta {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 1rem 0 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.post-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.post-tag {
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--accent);
+  padding: 0.2rem 0.7rem;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  text-decoration: none;
+}
+
+.post-category-badge {
+  background: rgba(6, 182, 212, 0.2);
+  color: var(--accent);
+  padding: 0.3rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.post-body {
+  line-height: 1.9;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+  max-width: 780px;
+}
+
+.post-body h2 {
+  color: var(--accent);
+  margin: 2.5rem 0 1rem;
+  font-size: 1.5rem;
+  border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.post-body h3 {
+  color: var(--text-primary);
+  margin: 2rem 0 0.8rem;
+  font-size: 1.2rem;
+}
+
+.post-body a {
+  color: var(--accent-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.post-body a:hover {
+  color: #ffffff;
+}
+
+.post-body code {
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--accent);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: 'Courier New', monospace;
+}
+
+.post-body pre {
+  background: rgba(6, 182, 212, 0.05);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: 8px;
+  padding: 1.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.post-body pre code {
+  background: none;
+  padding: 0;
+  color: var(--text-primary);
+}
+
+.post-body ul,
+.post-body ol {
+  margin: 1rem 0 1rem 1.5rem;
+  line-height: 2;
+}
+
+.post-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+
+.post-body table th {
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--accent);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.post-body table td {
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  color: var(--text-primary);
+  vertical-align: top;
+}
+
+.post-body table tr:nth-child(even) td {
+  background: rgba(6, 182, 212, 0.03);
+}
+
+.post-body blockquote {
+  border-left: 4px solid var(--accent);
+  background: rgba(6, 182, 212, 0.05);
+  padding: 1rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.post-body img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.post-footer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.post-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--accent);
+  text-decoration: none;
+  border-radius: 8px;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+
+.post-nav a:hover {
+  background: rgba(6, 182, 212, 0.2);
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

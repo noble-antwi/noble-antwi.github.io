@@ -14,7 +14,7 @@ description: "Connect with Noble Antwi - Cloud Security Engineer. Available for 
   <div class="card">
     <h3><i class="fas fa-envelope" style="color: var(--accent-color);"></i> Email</h3>
     <p>For professional inquiries, project discussions, or general questions.</p>
-    <a href="mailto:amnworlanyo@gmail.com" class="btn">
+    <a href="mailto:nobleantwi@gmail.com" class="btn">
       <i class="fas fa-paper-plane"></i> Send Email
     </a>
   </div>
@@ -71,7 +71,7 @@ description: "Connect with Noble Antwi - Cloud Security Engineer. Available for 
   <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9;">
     I'm always excited to discuss cybersecurity, cloud technologies, and potential collaborations.
   </p>
-  <a href="mailto:amnworlanyo@gmail.com" style="background: white; color: var(--primary-color); padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+  <a href="mailto:nobleantwi3@gmail.com" style="background: white; color: var(--primary-color); padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
     <i class="fas fa-rocket"></i> Start a Conversation
   </a>
 </div>
@@ -86,17 +86,17 @@ description: "Connect with Noble Antwi - Cloud Security Engineer. Available for 
   document.addEventListener('DOMContentLoaded', function() {
     // Find all email links and add click functionality
     const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
-    
+
     emailLinks.forEach(function(link) {
       link.addEventListener('click', function(e) {
         // Check if the user's device can handle mailto links
-        const email = 'amnworlanyo@gmail.com';
+        const email = 'nobleantwi3@gmail.com';
         const subject = 'Hello from your website';
         const body = 'Hi Noble,%0D%0A%0D%0AI found your website and would like to connect.%0D%0A%0D%0ABest regards,';
-        
+
         // Try to open the default email client
         const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`;
-        
+
         // For better user experience, also show a notification
         setTimeout(function() {
           if (confirm('If your email client didn\'t open automatically, you can copy this email address: ' + email)) {
