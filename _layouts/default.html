@@ -67,6 +67,32 @@
   </head>
 
   <body>
+
+    <!-- Loading screen -->
+    <div id="loading-screen">
+      <div class="loader-content">
+        <div class="loader-name">
+          <span class="loader-letter">N</span>
+          <span class="loader-letter">O</span>
+          <span class="loader-letter">B</span>
+          <span class="loader-letter">L</span>
+          <span class="loader-letter">E</span>
+        </div>
+        <div class="loader-subtitle">Cloud Security &amp; IAM Professional</div>
+        <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+      </div>
+    </div>
+
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+    <!-- Custom cursor (desktop only) -->
+    <div id="cursor-dot"  aria-hidden="true"></div>
+    <div id="cursor-ring" aria-hidden="true"></div>
+
+    <!-- Scroll progress bar -->
+    <div id="scroll-progress" aria-hidden="true"></div>
+
     {% include site-header.html %}
     {% include site-nav.html %}
 
@@ -80,6 +106,8 @@
     </main>
 
     {% include site-footer.html %}
+
+    <script src="/assets/js/effects.js" defer></script>
 
     <script>
       // Hide Jekyll front matter that appears in the content
