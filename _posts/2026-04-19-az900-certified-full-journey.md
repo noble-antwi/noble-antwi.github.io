@@ -37,28 +37,28 @@ So I cleared my study schedule, opened Tutorial Dojo, and started working.
 Rather than taking a traditional course, I built my own notes from scratch. As I worked through each topic, I wrote up what I learned and published it here. The posts became a useful reference as I moved toward the exam.
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
-  <a href="/2026/02/24/az900-azure-fundamentals-journey.html" style="text-decoration: none;">
+  <a href="/learning/2026/02/24/az900-azure-fundamentals-journey.html" style="text-decoration: none;">
     <div style="background: rgba(6,182,212,0.07); border: 1px solid rgba(6,182,212,0.2); border-radius: 10px; padding: 1.2rem; transition: border-color 0.2s; cursor: pointer;">
       <div style="font-size: 0.8rem; color: #06b6d4; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Study Notes <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></div>
       <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem;">Cloud Concepts</div>
       <div style="font-size: 0.9rem; color: var(--text-secondary);">IaaS, PaaS, SaaS, shared responsibility, cloud models</div>
     </div>
   </a>
-  <a href="/2026/04/04/az900-governance-tags-and-compliance.html" style="text-decoration: none;">
+  <a href="/learning/2026/04/04/az900-governance-tags-and-compliance.html" style="text-decoration: none;">
     <div style="background: rgba(6,182,212,0.07); border: 1px solid rgba(6,182,212,0.2); border-radius: 10px; padding: 1.2rem; transition: border-color 0.2s; cursor: pointer;">
       <div style="font-size: 0.8rem; color: #06b6d4; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Study Notes <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></div>
       <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem;">Governance and Compliance</div>
       <div style="font-size: 0.9rem; color: var(--text-secondary);">Azure Policy, Resource Locks, RBAC, Purview, Tags</div>
     </div>
   </a>
-  <a href="/2026/04/05/az900-managing-deploying-azure-resources.html" style="text-decoration: none;">
+  <a href="/learning/2026/04/05/az900-managing-deploying-azure-resources.html" style="text-decoration: none;">
     <div style="background: rgba(6,182,212,0.07); border: 1px solid rgba(6,182,212,0.2); border-radius: 10px; padding: 1.2rem; transition: border-color 0.2s; cursor: pointer;">
       <div style="font-size: 0.8rem; color: #06b6d4; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Study Notes <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></div>
       <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem;">Management Tools and Deployment</div>
       <div style="font-size: 0.9rem; color: var(--text-secondary);">Azure Portal, CLI, PowerShell, Azure Arc, Bicep, ARM, VPN types</div>
     </div>
   </a>
-  <a href="/2026/04/05/az900-monitoring-tools.html" style="text-decoration: none;">
+  <a href="/learning/2026/04/05/az900-monitoring-tools.html" style="text-decoration: none;">
     <div style="background: rgba(6,182,212,0.07); border: 1px solid rgba(6,182,212,0.2); border-radius: 10px; padding: 1.2rem; transition: border-color 0.2s; cursor: pointer;">
       <div style="font-size: 0.8rem; color: #06b6d4; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Study Notes <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></div>
       <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem;">Monitoring and Observability</div>
