@@ -16,7 +16,7 @@ description: "View Noble Antwi's professional certifications in cloud security, 
     <h3>Cloud Certifications</h3>
     <p>AWS, Multi-cloud networking, and container orchestration expertise</p>
     <div style="margin: 1rem 0;">
-      <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">9 Certifications</span>
+      <span style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600;">10 Certifications</span>
     </div>
     <a href="/cloud-certifications" class="btn">
       <i class="fas fa-arrow-right"></i> View Details
@@ -53,7 +53,7 @@ description: "View Noble Antwi's professional certifications in cloud security, 
 <div class="card">
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; text-align: center;">
     <div>
-      <h3 style="color: var(--accent-color); font-size: 2.5rem; margin-bottom: 0.5rem;">13</h3>
+      <h3 style="color: var(--accent-color); font-size: 2.5rem; margin-bottom: 0.5rem;">14</h3>
       <p style="font-weight: 600; color: var(--text-dark);">Total Certifications</p>
     </div>
     <div>

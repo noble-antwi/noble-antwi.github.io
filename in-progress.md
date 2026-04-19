@@ -13,6 +13,28 @@ title: Certifications In Progress
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
 
   <div class="card">
+    <h3><i class="fab fa-microsoft"></i> Microsoft Certified: Azure Administrator Associate (AZ-104)</h3>
+    <p><strong>Expected Completion:</strong> Q2 2026</p>
+    <p>Hands-on Azure administration covering virtual networks, storage, identity, monitoring, and resource management. Direct progression from AZ-900.</p>
+
+    <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <span style="font-weight: 600;">Course Progress</span>
+        <span style="color: var(--success-color); font-weight: 600;">93%</span>
+      </div>
+      <div style="background: #e0e0e0; height: 8px; border-radius: 4px;">
+        <div style="background: var(--success-color); height: 100%; width: 93%; border-radius: 4px;"></div>
+      </div>
+    </div>
+
+    <div style="margin-top: 1rem;">
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Azure Administration</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Virtual Networks</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Identity</span>
+    </div>
+  </div>
+
+  <div class="card">
     <h3><i class="fas fa-shield-alt"></i> Practical SOC Analyst (PSAA)</h3>
     <p><strong>Expected Completion:</strong> Q1 2026</p>
     <p>Hands-on SOC analyst skills by TCM Security covering incident response, threat hunting, and security monitoring in real-world scenarios.</p>
