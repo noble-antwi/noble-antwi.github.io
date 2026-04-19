@@ -90,11 +90,11 @@ title: Cloud Certifications
   </div>
 
   <div class="card">
-    <h3><i class="fab fa-microsoft"></i> Microsoft Certified: Identity and Access Administrator Associate</h3>
-    <p><strong>Issued:</strong> Microsoft</p>
+    <h3><i class="fab fa-microsoft"></i> Microsoft Certified: Identity and Access Administrator Associate (SC-300)</h3>
+    <p><strong>Renewed:</strong> April 19, 2026 &nbsp;|&nbsp; <strong>Score:</strong> 92%</p>
     <p><strong>Credential ID:</strong> <a href="https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/324D5F14A4B47A0F?sharingId=3DD1334494500325" target="_blank">324D5F14A4B47A0F</a></p>
     <p><strong>Certification Number:</strong> FEC4CC-112274</p>
-    <p>Expertise in implementing, configuring, and managing Microsoft identity and access management solutions.</p>
+    <p>Expertise in implementing, configuring, and managing Microsoft identity and access management solutions including Conditional Access, Entra ID, and entitlement management.</p>
 
     <div style="margin-top: 1rem;">
       <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Identity Management</span>
