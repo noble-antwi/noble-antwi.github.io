@@ -53,6 +53,26 @@ title: Cloud Certifications
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
   <div class="card">
+    <h3><i class="fab fa-microsoft"></i> Microsoft Certified: Azure Fundamentals (AZ-900)</h3>
+    <p><strong>Issued:</strong> April 19, 2026</p>
+    <p><strong>Score:</strong> 873 / 1000 &nbsp;|&nbsp; Passing: 700</p>
+    <p><strong>Credential ID:</strong> 59914E901AC5CF08 &nbsp;|&nbsp; Cert No: 950F3F-VB3714</p>
+    <p>Foundational understanding of cloud concepts, Azure architecture and services, and Azure management and governance.</p>
+
+    <div style="margin-top: 1rem;">
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Cloud Concepts</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Azure Services</span>
+      <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Governance</span>
+    </div>
+
+    <div style="margin-top: 1rem;">
+      <a href="https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/59914E901AC5CF08?sharingId=3DD1334494500325" class="btn" target="_blank">
+        <i class="fas fa-external-link-alt"></i> Verify on Microsoft Learn
+      </a>
+    </div>
+  </div>
+
+  <div class="card">
     <h3><i class="fab fa-microsoft"></i> Microsoft Certified: Azure Data Fundamentals</h3>
     <p><strong>Issued:</strong> Microsoft</p>
     <p><strong>Credential ID:</strong> <a href="https://www.credly.com/badges/f1082e80-2124-4f61-9e02-3d049ec7f281/public_url" target="_blank">View Badge</a></p>
