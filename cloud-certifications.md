@@ -124,6 +124,16 @@ title: Cloud Certifications
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
   <div class="card" style="text-align: center;">
+    <h3>Okta Certified Administrator</h3>
+    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="a1cd5c3f-7f0e-4493-8ee6-290e79ba1775" data-share-badge-host="https://www.credly.com"></div>
+    <p style="margin-top: 1rem;"><strong>Issued:</strong> Jan 2026 · <strong>Expires:</strong> Jan 2028</p>
+    <p>Administrator-level expertise in Okta Workforce Identity, including user lifecycle management, policies, and directory integrations</p>
+    <a href="https://www.credly.com/badges/a1cd5c3f-7f0e-4493-8ee6-290e79ba1775/public_url" class="btn" target="_blank">
+      <i class="fas fa-external-link-alt"></i> Verify on Credly
+    </a>
+  </div>
+
+  <div class="card" style="text-align: center;">
     <h3>Okta Certified Professional</h3>
     <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="89175d7b-e1de-43e6-8834-77f9c9de80b4" data-share-badge-host="https://www.credly.com"></div>
     <p style="margin-top: 1rem;"><strong>Issued:</strong> Dec 2025 · <strong>Expires:</strong> Dec 2027</p>
