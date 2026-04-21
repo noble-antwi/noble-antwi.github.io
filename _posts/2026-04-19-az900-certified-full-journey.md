@@ -26,7 +26,7 @@ It is done. On April 19, 2026, I passed the Microsoft Azure AZ-900 Fundamentals 
 
 ## Where It Started
 
-A few weeks ago I was preparing for a potential AWS Data Centre interview and decided to use the time productively. AZ-900 had been on my list for a long time. I already had real-world Azure experience from years of working across cloud platforms, but I wanted the credential to reflect that formally. The timing made sense: structured review of Azure fundamentals would reinforce what I already knew and close any gaps before going deeper into Azure administration with AZ-104.
+AZ-900 had been on my list for a long time. I already had real-world Azure experience from years of working across cloud platforms, but I wanted the credential to reflect that formally. A few weeks ago I cleared my study schedule and committed to getting it done properly: structured review of Azure fundamentals to reinforce what I already knew and close any gaps before going deeper into Azure administration with AZ-104.
 
 So I cleared my study schedule, opened Tutorial Dojo, and started working.
 
