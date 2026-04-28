@@ -120,6 +120,13 @@ description: "Noble Antwi's technical blog - lab notes, project updates, learnin
     <p>No posts in this category yet.</p>
   </div>
 
+  <!-- Show more button -->
+  <div id="show-more-wrap" style="display: none; text-align: center; margin-top: 1.5rem;">
+    <button id="show-more-btn" onclick="showMore()" style="background: transparent; color: #06b6d4; border: 1px solid rgba(6,182,212,0.4); padding: 0.6rem 1.8rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+      Show next 10
+    </button>
+  </div>
+
 </div>
 {% endif %}
 
@@ -285,48 +292,81 @@ description: "Noble Antwi's technical blog - lab notes, project updates, learnin
 <!-- FILTER JAVASCRIPT                                         -->
 <!-- ======================================================== -->
 <script>
-function filterPosts(category) {
-  var cards = document.querySelectorAll('.post-card');
-  var tabs = document.querySelectorAll('.blog-tab');
+var BATCH = 10;
+var activeCategory = 'all';
+var currentLimit = BATCH;
+
+function getMatchingCards() {
+  var all = document.querySelectorAll('.post-card');
+  var matched = [];
+  all.forEach(function(card) {
+    if (activeCategory === 'all' || card.getAttribute('data-category') === activeCategory) {
+      matched.push(card);
+    }
+  });
+  return matched;
+}
+
+function applyFilter() {
+  var all = document.querySelectorAll('.post-card');
+  var matched = getMatchingCards();
   var countLabel = document.getElementById('post-count-label');
   var noResults = document.getElementById('no-results');
-  var visible = 0;
+  var showMoreWrap = document.getElementById('show-more-wrap');
+  var showMoreBtn = document.getElementById('show-more-btn');
 
-  cards.forEach(function(card) {
-    if (category === 'all' || card.getAttribute('data-category') === category) {
+  all.forEach(function(card) {
+    card.style.display = 'none';
+  });
+
+  matched.forEach(function(card, index) {
+    if (index < currentLimit) {
       card.style.display = 'block';
-      visible++;
-    } else {
-      card.style.display = 'none';
     }
   });
 
-  tabs.forEach(function(tab) {
-    var isActive = tab.getAttribute('data-tab') === category;
-    if (isActive) {
-      tab.style.background = 'rgba(6,182,212,0.2)';
-      tab.style.color = '#06b6d4';
-      tab.style.borderColor = 'rgba(6,182,212,0.5)';
-      tab.classList.add('active-tab');
-    } else {
-      tab.style.background = 'transparent';
-      tab.style.color = 'var(--text-secondary)';
-      tab.style.borderColor = 'rgba(255,255,255,0.1)';
-      tab.classList.remove('active-tab');
-    }
-  });
+  var shown = Math.min(currentLimit, matched.length);
+  var remaining = matched.length - shown;
 
-  if (visible === 0) {
+  if (matched.length === 0) {
     noResults.style.display = 'block';
     countLabel.style.display = 'none';
+    showMoreWrap.style.display = 'none';
   } else {
     noResults.style.display = 'none';
     countLabel.style.display = 'block';
-    if (category === 'all') {
-      countLabel.textContent = 'Showing all ' + visible + ' entries';
+    countLabel.textContent = 'Showing ' + shown + ' of ' + matched.length + (matched.length === 1 ? ' entry' : ' entries');
+
+    if (remaining > 0) {
+      showMoreWrap.style.display = 'block';
+      var nextBatch = Math.min(BATCH, remaining);
+      showMoreBtn.textContent = 'Show next ' + nextBatch + ' (' + remaining + ' remaining)';
     } else {
-      countLabel.textContent = 'Showing ' + visible + (visible === 1 ? ' entry' : ' entries') + ' in this category';
+      showMoreWrap.style.display = 'none';
     }
   }
 }
+
+function filterPosts(category) {
+  activeCategory = category;
+  currentLimit = BATCH;
+
+  document.querySelectorAll('.blog-tab').forEach(function(tab) {
+    var isActive = tab.getAttribute('data-tab') === category;
+    tab.style.background = isActive ? 'rgba(6,182,212,0.2)' : 'transparent';
+    tab.style.color = isActive ? '#06b6d4' : 'var(--text-secondary)';
+    tab.style.borderColor = isActive ? 'rgba(6,182,212,0.5)' : 'rgba(255,255,255,0.1)';
+  });
+
+  applyFilter();
+}
+
+function showMore() {
+  currentLimit += BATCH;
+  applyFilter();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  applyFilter();
+});
 </script>
