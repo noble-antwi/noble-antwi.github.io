@@ -252,16 +252,19 @@ The same applies to any VLAN in the lab. Every VM gets its network assignment fr
 
 ## Updated Infrastructure State
 
-| System | IP | VLAN | Platform | Purpose |
-|--------|----|------|----------|---------|
-| pfSense | 192.168.10.1 | Management | FreeBSD | Gateway and firewall |
-| Ansible Controller | 192.168.10.2 | Management | Ubuntu 24.04 | Automation |
-| Laptop | 192.168.10.3 | Management | Windows 11 | Admin workstation |
-| TCM Ubuntu | 192.168.10.4 | Management | Ubuntu 24.04 | Training |
-| Windows Server 2022 | 192.168.10.5 | Management | Windows Server | Enterprise services |
-| **Proxmox VE** | **192.168.10.6** | **Management** | **Proxmox VE** | **VM hypervisor** |
-| Wazuh SIEM | 192.168.20.2 | BlueTeam | Rocky Linux 9.6 | SIEM |
-| Grafana | 192.168.60.2 | Monitoring | Ubuntu 24.04 | Observability |
+Every system in this lab runs on dedicated bare-metal hardware. Proxmox is the hypervisor layer added on top of that physical foundation, enabling VM workloads across any VLAN without requiring additional physical machines.
+
+| System | IP | VLAN | Deployment | Purpose |
+|--------|----|------|------------|---------|
+| pfSense | 192.168.10.1 | Management | Dedicated machine | Gateway and firewall |
+| Ansible Controller | 192.168.10.2 | Management | Dedicated machine | Automation |
+| Laptop | 192.168.10.3 | Management | Dedicated machine | Admin workstation |
+| TCM Ubuntu | 192.168.10.4 | Management | Dedicated machine | Training |
+| Windows Server 2022 | 192.168.10.5 | Management | Dedicated machine | Enterprise services |
+| **Proxmox VE** | **192.168.10.6** | **Management** | **Dedicated desktop** | **VM hypervisor** |
+| Wazuh SIEM | 192.168.20.2 | BlueTeam | Dedicated machine | SIEM |
+| HashiCorp Vault | 192.168.40.x | DevOps | Dedicated machine | Secrets management |
+| Grafana | 192.168.60.2 | Monitoring | Dedicated machine | Observability |
 
 ---
 
