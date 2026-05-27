@@ -8,7 +8,7 @@ description: "How I moved my Proxmox VE node from a single VLAN access port onto
 read_time: 12
 ---
 
-This post documents a specific milestone in my enterprise homelab build: moving the Proxmox VE hypervisor from a VLAN 10 access port onto a trunk port, enabling it to host virtual machines across any VLAN in the lab — not just Management.
+This post documents a specific milestone in my enterprise homelab build: moving the Proxmox VE hypervisor from a VLAN 10 access port onto a trunk port, enabling it to host virtual machines across any VLAN in the lab, not just Management.
 
 It is one of those changes that sounds straightforward but has one critical sequence requirement that, if you get wrong, will lock you out of the machine entirely. I will walk through the full process, the reasoning behind each step, and what the output looks like at every stage.
 
@@ -29,7 +29,7 @@ My homelab runs pfSense as the core firewall and router, with a TP-Link TL-SG108
 
 The switch has two trunk ports carrying all VLANs tagged: Port 1 goes to pfSense, and Port 2 was previously used for the primary laptop. The remaining ports are access ports, each belonging to a single VLAN.
 
-I installed Proxmox VE on a dedicated desktop machine and initially connected it to Port 3 — a VLAN 10 access port — to complete the installation and get the management IP assigned. That works fine for setup, but it means every VM on that Proxmox node is stuck on VLAN 10. To deploy Kali Linux on VLAN 30 (RedTeam), or any VM on a different network segment, Proxmox needs to be on a trunk port.
+I installed Proxmox VE on a dedicated desktop machine and initially connected it to Port 3 (a VLAN 10 access port) to complete the installation and get the management IP assigned. That works fine for setup, but it means every VM on that Proxmox node is stuck on VLAN 10. To deploy Kali Linux on VLAN 30 (RedTeam), or any VM on a different network segment, Proxmox needs to be on a trunk port.
 
 The goal: move Proxmox from Port 3 (VLAN 10 access) to Port 2 (trunk, all VLANs) without losing connectivity in the process.
 
@@ -39,14 +39,14 @@ The goal: move Proxmox from Port 3 (VLAN 10 access) to Port 2 (trunk, all VLANs)
 
 This is where most guides skip a step that matters. Here is what actually changes when you move from an access port to a trunk port:
 
-**On an access port**, the switch delivers VLAN 10 frames to Proxmox completely untagged. Proxmox does not need to know anything about VLANs — it just sees a normal Ethernet frame and responds accordingly.
+**On an access port**, the switch delivers VLAN 10 frames to Proxmox completely untagged. Proxmox does not need to know anything about VLANs. It just sees a normal Ethernet frame and responds accordingly.
 
-**On a trunk port**, the switch delivers all VLAN traffic with 802.1Q tags attached. A VLAN 10 frame arrives with a VLAN 10 tag embedded in the Ethernet header. If Proxmox's network bridge is not configured to understand and strip those tags, it cannot process the frames — and the management IP becomes unreachable the moment the cable moves.
+**On a trunk port**, the switch delivers all VLAN traffic with 802.1Q tags attached. A VLAN 10 frame arrives with a VLAN 10 tag embedded in the Ethernet header. If Proxmox's network bridge is not configured to understand and strip those tags, it cannot process the frames, and the management IP becomes unreachable the moment the cable moves.
 
 So the correct sequence is non-negotiable:
 
 ```
-1. Reconfigure Proxmox networking to be VLAN-aware  ← while still on the access port
+1. Reconfigure Proxmox networking to be VLAN-aware  <- while still on the access port
 2. Verify the new config is correct
 3. Then move the cable to the trunk port
 ```
@@ -64,7 +64,7 @@ ip link show
 ```
 
 ![Output of ip link show on Proxmox showing nic0 as the physical NIC]({{ site.baseurl }}/assets/posts/proxmox-vlan/01-ip-link-show.png)
-*Output of ip link show — the physical NIC name is required before editing any config*
+*Output of ip link show. The physical NIC name is required before editing any config.*
 
 The physical NIC on this machine is named `nic0`, with alternative names `enp0s25` and `enx3417eb9da246`. The name that matters is whichever one Proxmox is already using in `/etc/network/interfaces`. I checked that next:
 
@@ -72,7 +72,7 @@ The physical NIC on this machine is named `nic0`, with alternative names `enp0s2
 cat /etc/network/interfaces
 ```
 
-The existing config confirmed `nic0` as the bridge port in the default `vmbr0` configuration — and critically, it showed that the management IP `192.168.10.6` was sitting directly on `vmbr0` with no VLAN tag. That is the standard post-install state and exactly what needs to change.
+The existing config confirmed `nic0` as the bridge port in the default `vmbr0` configuration. Critically, it showed that the management IP `192.168.10.6` was sitting directly on `vmbr0` with no VLAN tag. That is the standard post-install state and exactly what needs to change.
 
 ---
 
@@ -96,8 +96,8 @@ The management IP lives directly on `vmbr0`, which is a flat bridge with no VLAN
 
 The change required is:
 - Add `bridge-vlan-aware yes` and `bridge-vids 2-4094` to `vmbr0`, making it trunk-capable
-- Remove the IP address from `vmbr0` — it should carry no IP of its own
-- Create a new sub-interface `vmbr0.10` and assign the management IP there — this interface explicitly handles VLAN 10 tagged traffic
+- Remove the IP address from `vmbr0`. It should carry no IP of its own
+- Create a new sub-interface `vmbr0.10` and assign the management IP there. This interface explicitly handles VLAN 10 tagged traffic
 
 ---
 
@@ -141,13 +141,13 @@ source /etc/network/interfaces.d/*
 ```
 
 ![The new /etc/network/interfaces config open in nano showing the VLAN-aware bridge configuration]({{ site.baseurl }}/assets/posts/proxmox-vlan/02-interfaces-config-nano.png)
-*The updated interfaces file in nano — vmbr0 is now VLAN-aware and the management IP has moved to vmbr0.10*
+*The updated interfaces file in nano. vmbr0 is now VLAN-aware and the management IP has moved to vmbr0.10.*
 
 The key changes from the default:
-- `vmbr0` is now `inet manual` with no IP address — it is a VLAN carrier, not a management interface
+- `vmbr0` is now `inet manual` with no IP address. It is a VLAN carrier, not a management interface
 - `bridge-vlan-aware yes` enables 802.1Q processing on the bridge
 - `bridge-vids 2-4094` tells the bridge to accept any VLAN tag in that range
-- `vmbr0.10` is the new management interface — it explicitly handles traffic tagged VLAN 10
+- `vmbr0.10` is the new management interface. It explicitly handles traffic tagged VLAN 10
 
 ---
 
@@ -176,9 +176,9 @@ ping -c 4 192.168.10.1
 ```
 
 ![Output of the four verification commands after applying the new config]({{ site.baseurl }}/assets/posts/proxmox-vlan/03-verification-commands.png)
-*Verification output after ifreload — vmbr0.10 has the correct IP, vlan_filtering returns 1, and the route is correct*
+*Verification output after ifreload. vmbr0.10 has the correct IP, vlan_filtering returns 1, and the route is correct.*
 
-The ping to pfSense returned `Destination Host Unreachable` at this stage — and that is the expected behaviour. The config is now sending tagged VLAN 10 frames, but Port 3 on the switch is an access port that only accepts untagged frames. The switch drops them. This confirms the new config is working correctly — it just needs to be on a trunk port to complete the handshake.
+The ping to pfSense returned `Destination Host Unreachable` at this stage, and that is the expected behaviour. The config is now sending tagged VLAN 10 frames, but Port 3 on the switch is an access port that only accepts untagged frames. The switch drops them. This confirms the new config is working correctly. It just needs to be on a trunk port to complete the handshake.
 
 The three checks that matter all passed:
 - `vmbr0.10` shows `192.168.10.6/24`
@@ -196,7 +196,7 @@ ping -c 4 192.168.10.1
 ```
 
 ![Ping to pfSense succeeding after moving the cable to Port 2]({{ site.baseurl }}/assets/posts/proxmox-vlan/04-ping-success.png)
-*4 packets transmitted, 4 received, 0% packet loss — Proxmox is live on the trunk port*
+*4 packets transmitted, 4 received, 0% packet loss. Proxmox is live on the trunk port.*
 
 ```
 4 packets transmitted, 4 received, 0% packet loss
@@ -216,17 +216,17 @@ https://192.168.10.6:8006
 ```
 
 ![Proxmox web UI accessible after the trunk port migration]({{ site.baseurl }}/assets/posts/proxmox-vlan/05-proxmox-webui.png)
-*Proxmox VE web UI accessible at 192.168.10.6:8006 from the management network*
+*Proxmox VE web UI accessible at 192.168.10.6:8006 from the management network.*
 
-The "No valid subscription" notice that appears on login is standard for the free community edition — it does not affect functionality. Clicking OK dismisses it.
+The "No valid subscription" notice that appears on login is standard for the free community edition and does not affect functionality. Clicking OK dismisses it.
 
-Navigating to **Datacenter → proxmox → System → Network** confirms the final interface state:
+Navigating to **Datacenter -> proxmox -> System -> Network** confirms the final interface state:
 
 | Interface | Type | Configuration |
 |-----------|------|---------------|
-| `nic0` | NIC | No IP — trunk carrier |
+| `nic0` | NIC | No IP, trunk carrier |
 | `vmbr0` | Linux Bridge | VLAN-aware, bridge-vids 2-4094 |
-| `vmbr0.10` | VLAN Interface | 192.168.10.6/24 — management |
+| `vmbr0.10` | VLAN Interface | 192.168.10.6/24, management |
 
 ---
 
@@ -244,7 +244,7 @@ Bridge:    vmbr0
 VLAN Tag:  30
 ```
 
-Kali boots, requests a DHCP lease, and pfSense responds with an address from the `192.168.30.0/24` pool — the same pool it manages for VLAN 30 across the rest of the lab. No additional pfSense configuration is required because the VLAN already exists and pfSense is already the DHCP server for it.
+Kali boots, requests a DHCP lease, and pfSense responds with an address from the `192.168.30.0/24` pool, the same pool it manages for VLAN 30 across the rest of the lab. No additional pfSense configuration is required because the VLAN already exists and pfSense is already the DHCP server for it.
 
 The same applies to any VLAN in the lab. Every VM gets its network assignment from a single VLAN Tag field, and `vmbr0` handles the 802.1Q tagging transparently.
 
@@ -267,11 +267,11 @@ The same applies to any VLAN in the lab. Every VM gets its network assignment fr
 
 ## Key Takeaways
 
-The configuration change itself is small — four lines added to `/etc/network/interfaces` and the management IP moved one level down to a VLAN sub-interface. The important part is understanding why the sequence matters.
+The configuration change itself is small: four lines added to `/etc/network/interfaces` and the management IP moved one level down to a VLAN sub-interface. The important part is understanding why the sequence matters.
 
 Moving the cable before reconfiguring the bridge means Proxmox receives tagged frames it cannot decode, and the management IP vanishes. Reconfiguring first means the bridge is ready to speak trunk before the trunk port is introduced. The verification step between config change and cable move is what makes this safe to do without physical console access.
 
-A single VLAN-aware bridge on a single NIC now gives every VM on this Proxmox node access to any of the six lab VLANs — the same capability that previously required separate NICs or separate physical connections.
+A single VLAN-aware bridge on a single NIC now gives every VM on this Proxmox node access to any of the six lab VLANs, the same capability that previously required separate NICs or separate physical connections.
 
 ---
 
