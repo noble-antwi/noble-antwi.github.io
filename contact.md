@@ -1,123 +1,57 @@
 ---
 layout: default
 title: Contact
-description: "Connect with Noble Antwi - Cloud Security Engineer. Available for cybersecurity consulting, mentoring, and collaboration opportunities."
+description: "Get in touch with Noble Antwi, Cloud Security and Identity Engineer in Chicago. Open to cloud security, IAM, and identity security roles."
 ---
 
-<h1><i class="fas fa-envelope"></i> Let's Connect</h1>
+<h1><i class="fas fa-envelope"></i> Let's talk</h1>
 
-<p style="text-align: center; font-size: 1.2rem; color: var(--text-light); margin-bottom: 3rem;">
-  Curious about working together, mentoring, or just having a real conversation about security, tech, or life? Let’s make it happen. Reach out — I’d love to connect.
+<p class="page-lead">
+  Open to Cloud Security, IAM and Identity Security roles, and to conversations with people working on the same problems. Email is the fastest way to reach me.
 </p>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-  <div class="card">
-    <h3><i class="fas fa-envelope" style="color: var(--accent-color);"></i> Email</h3>
-    <p>For professional inquiries, project discussions, or general questions.</p>
-    <a href="mailto:nobleantwi@gmail.com" class="btn">
-      <i class="fas fa-paper-plane"></i> Send Email
-    </a>
-  </div>
-
-  <div class="card">
-    <h3><i class="fab fa-linkedin" style="color: #0077b5;"></i> LinkedIn</h3>
-    <p>Connect with me professionally and stay updated on my latest projects and insights.</p>
-    <a href="https://linkedin.com/in/{{ site.social.linkedin }}" class="btn" target="_blank">
-      <i class="fab fa-linkedin"></i> Connect on LinkedIn
-    </a>
-  </div>
-
-  <div class="card">
-    <h3><i class="fab fa-github" style="color: #333;"></i> GitHub</h3>
-    <p>Explore my code repositories, contribute to projects, or collaborate on open source initiatives.</p>
-    <a href="https://github.com/{{ site.social.github }}" class="btn" target="_blank">
-      <i class="fab fa-github"></i> View GitHub Profile
-    </a>
-  </div>
-
-  <div class="card">
-    <h3><i class="fab fa-medium" style="color: #00ab6c;"></i> Medium</h3>
-    <p>Read my technical articles, tutorials, and insights on cybersecurity and cloud computing.</p>
-    <a href="https://medium.com/@noble-antwi" class="btn" target="_blank">
-      <i class="fab fa-medium"></i> Read Articles
-    </a>
-  </div>
-</div>
-
-<div class="card" style="margin-top: 3rem;">
-  <h2><i class="fas fa-handshake"></i> What I'm Looking For</h2>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 1.5rem;">
-    <div>
-      <h3><i class="fas fa-briefcase"></i> Career Opportunities</h3>
-      <p>Cloud Security Engineer positions, Cybersecurity Analyst roles, or Security Consultant opportunities.</p>
-    </div>
-    <div>
-      <h3><i class="fas fa-users"></i> Collaboration</h3>
-      <p>Open source projects, research collaborations, or technical writing partnerships.</p>
-    </div>
-    <div>
-      <h3><i class="fas fa-graduation-cap"></i> Mentorship</h3>
-      <p>Learning from experienced professionals and sharing knowledge with those starting their journey.</p>
-    </div>
-    <div>
-      <h3><i class="fas fa-comments"></i> Networking</h3>
-      <p>Connecting with cybersecurity professionals, cloud architects, and technology enthusiasts.</p>
-    </div>
-  </div>
-</div>
-
-<div style="background: var(--gradient); color: white; padding: 3rem; border-radius: 12px; text-align: center; margin: 3rem 0;">
-  <h2 style="color: white; margin-bottom: 1rem;">Ready to Connect?</h2>
-  <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.9;">
-    I'm always excited to discuss cybersecurity, cloud technologies, and potential collaborations.
-  </p>
-  <a href="mailto:nobleantwi3@gmail.com" style="background: white; color: var(--primary-color); padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
-    <i class="fas fa-rocket"></i> Start a Conversation
+<div class="contact-grid">
+  <a href="mailto:{{ site.social.email }}" class="contact-card">
+    <i class="fas fa-envelope"></i>
+    <h3>Email</h3>
+    <p>{{ site.social.email }}</p>
+  </a>
+  <a href="https://linkedin.com/in/{{ site.social.linkedin }}" class="contact-card" target="_blank" rel="noopener">
+    <i class="fab fa-linkedin-in"></i>
+    <h3>LinkedIn</h3>
+    <p>in/{{ site.social.linkedin }}</p>
+  </a>
+  <a href="https://github.com/{{ site.social.github }}" class="contact-card" target="_blank" rel="noopener">
+    <i class="fab fa-github"></i>
+    <h3>GitHub</h3>
+    <p>@{{ site.social.github }}</p>
+  </a>
+  <a href="https://medium.com/@noble-antwi" class="contact-card" target="_blank" rel="noopener">
+    <i class="fab fa-medium"></i>
+    <h3>Medium</h3>
+    <p>Longer-form articles</p>
   </a>
 </div>
 
-<div style="text-align: center; color: var(--text-light);">
-  <p><i class="fas fa-clock"></i> Response time: Usually within 24 hours</p>
-  <p><i class="fas fa-map-marker-alt"></i> Based in Chicago, IL | Open to remote opportunities</p>
+<div class="card">
+  <h2><i class="fas fa-handshake"></i> What I'm looking for</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+    <div>
+      <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;"><i class="fas fa-briefcase" style="color: var(--accent);"></i> Roles</h3>
+      <p>Cloud Security Engineer, IAM or Identity Security Engineer, and Security Engineer roles with a detection focus. Chicago or remote.</p>
+    </div>
+    <div>
+      <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;"><i class="fas fa-code-branch" style="color: var(--accent);"></i> Collaboration</h3>
+      <p>Open-source identity and cloud security tooling, lab write-ups, and technical writing.</p>
+    </div>
+    <div>
+      <h3 style="font-size: 1.05rem; margin-bottom: 0.4rem;"><i class="fas fa-comments" style="color: var(--accent);"></i> Conversation</h3>
+      <p>Happy to compare notes on IAM design, homelab builds, or the certification path. If you are earlier on the road, ask.</p>
+    </div>
+  </div>
 </div>
 
-<script>
-  // Handle Ready to Connect button click
-  document.addEventListener('DOMContentLoaded', function() {
-    // Find all email links and add click functionality
-    const emailLinks = document.querySelectorAll('a[href^="mailto:"]');
-
-    emailLinks.forEach(function(link) {
-      link.addEventListener('click', function(e) {
-        // Check if the user's device can handle mailto links
-        const email = 'nobleantwi3@gmail.com';
-        const subject = 'Hello from your website';
-        const body = 'Hi Noble,%0D%0A%0D%0AI found your website and would like to connect.%0D%0A%0D%0ABest regards,';
-
-        // Try to open the default email client
-        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`;
-
-        // For better user experience, also show a notification
-        setTimeout(function() {
-          if (confirm('If your email client didn\'t open automatically, you can copy this email address: ' + email)) {
-            // Copy email to clipboard if user confirms
-            if (navigator.clipboard) {
-              navigator.clipboard.writeText(email).then(function() {
-                alert('Email address copied to clipboard!');
-              });
-            } else {
-              // Fallback for older browsers
-              const textArea = document.createElement('textarea');
-              textArea.value = email;
-              document.body.appendChild(textArea);
-              textArea.select();
-              document.execCommand('copy');
-              document.body.removeChild(textArea);
-              alert('Email address copied to clipboard!');
-            }
-          }
-        }, 1000);
-      });
-    });
-  });
-</script>
+<div class="contact-meta">
+  <span><i class="fas fa-map-marker-alt"></i> Chicago, IL</span>
+  <span><i class="fas fa-clock"></i> Usually replies within a day</span>
+</div>
