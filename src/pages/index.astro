@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import { SITE, byDateDesc, SERIES } from '../lib/site';
+import { CERTS } from '../data/certifications';
+
+const work = (await getCollection('work')).filter((w) => w.data.featured).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+const posts = (await getCollection('posts')).sort(byDateDesc);
+const latest = posts.slice(0, 5);
+const featuredCerts = CERTS.filter((c) => c.featured).concat(CERTS.filter((c) => c.id === 'security-plus'));
+const seriesCounts = SERIES.map((s) => ({ ...s, count: posts.filter(s.match).length })).filter((s) => s.count > 1);
+---
+
+<Base>
+  <div class="container">
+    <section class="hero">
+      <div>
+        <span class="kicker">{SITE.tagline} · {SITE.location}</span>
+        <h1 class="display h1">I secure identities, <em>and the cloud they live in.</em></h1>
+        <p class="lead">I design least-privilege access on AWS and Azure, run hybrid identity across Active Directory, Entra ID and Okta, keep secrets in HashiCorp Vault, and build the detection that catches what slips through. Then I write it down so someone else could rebuild it.</p>
+        <div class="actions">
+          <a class="btn" href="/work/">See the work</a>
+          <a class="btn btn-ghost" href="/writing/">Read the notes</a>
+        </div>
+      </div>
+      <dl class="hero-aside">
+        <div>
+          <dt>Currently</dt>
+          <dd>Building a regulated-bank identity and network lab, and finishing AZ-104 and SC-200. <a href="/now/">Now page</a></dd>
+        </div>
+        <div>
+          <dt>Credentials</dt>
+          <dd>AWS Security Specialty · CCSP · SC-300 · Okta Certified Professional and Administrator · Security+ · <a href="/credentials/">all seventeen</a></dd>
+        </div>
+        <div>
+          <dt>Education</dt>
+          <dd>M.S. Cybersecurity &amp; Digital Forensics candidate, Illinois Institute of Technology</dd>
+        </div>
+        <div>
+          <dt>Elsewhere</dt>
+          <dd><a href={`https://github.com/${SITE.github}`} target="_blank" rel="noopener">GitHub</a> · <a href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener">LinkedIn</a> · <a href={`mailto:${SITE.email}`}>Email</a></dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Selected work</span>
+          <h2 class="display h2">Labs built like production, documented like an audit.</h2>
+        </div>
+        <a class="section-link" href="/work/">All projects</a>
+      </div>
+      <div>
+        {work.map((w) => (
+          <article class="feature">
+            <div class="feature-media">
+              {w.data.hero ? (
+                <a href={`/work/${w.id}/`}><Image src={w.data.hero} alt={w.data.heroAlt ?? ''} width={900} densities={[1, 1.5]} /></a>
+              ) : (
+                <div style="padding:2.5rem 2rem;">
+                  <span class="kicker">Stack</span>
+                  <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--ink-2);margin:0.8rem 0 0;line-height:1.7;">{w.data.stack.join(' · ')}</p>
+                </div>
+              )}
+            </div>
+            <div class="feature-body">
+              <span class="kicker">{w.data.kicker}</span>
+              <h3><a href={`/work/${w.id}/`}>{w.data.title}</a></h3>
+              <p>{w.data.summary}</p>
+              <div class="tags">{w.data.stack.slice(0, 6).map((t) => <span>{t}</span>)}</div>
+              <a class="section-link" href={`/work/${w.id}/`}>Read the case study</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Writing</span>
+          <h2 class="display h2">Notes from the lab and the study desk.</h2>
+          <p>Written as I go, so they contain the mistakes as well as the fixes. {seriesCounts.length} series so far: {seriesCounts.map((s, i) => <>{i > 0 && ', '}<a href={`/writing/?posts=${s.id}`} style="color:var(--ink);">{s.title}</a></>)}.</p>
+        </div>
+        <a class="section-link" href="/writing/">All writing</a>
+      </div>
+      <PostList posts={latest} />
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Credentials</span>
+          <h2 class="display h2">Seventeen, weighted toward identity and cloud security.</h2>
+        </div>
+        <a class="section-link" href="/credentials/">All credentials</a>
+      </div>
+      <div class="cred-strip">
+        {featuredCerts.map((c) => (
+          <a href="/credentials/">
+            {c.image ? <img src={c.image} alt="" loading="lazy" referrerpolicy="no-referrer" width="36" height="36" /> : <span class="mark" aria-hidden="true">{c.mark}</span>}
+            <span><b>{c.short}</b><small>{c.issuer}</small></span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</Base>

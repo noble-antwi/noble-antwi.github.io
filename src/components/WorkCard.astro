@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+import type { Work } from '../lib/site';
+
+interface Props { work: Work; filterGroup?: string }
+const { work, filterGroup } = Astro.props;
+const d = work.data;
+const pill = d.status === 'complete' ? 'pill-ok' : d.status === 'active' ? 'pill-warn' : 'pill-info';
+---
+
+<a class="work-card" href={`/work/${work.id}/`} data-filter-item={filterGroup ? '' : undefined} data-filter-group={filterGroup} data-cat={filterGroup ? d.category : undefined}>
+  <div class="media">
+    {d.hero ? (
+      <Image src={d.hero} alt={d.heroAlt ?? ''} width={720} densities={[1, 2]} />
+    ) : (
+      <span class="placeholder" aria-hidden="true">{d.title.split(' ').map((w) => w[0]).join('').slice(0, 3)}</span>
+    )}
+  </div>
+  <div class="body">
+    <div class="top">
+      <span class="kicker">{d.kicker}</span>
+      <span class={`pill ${pill}`}>{d.statusLabel}</span>
+    </div>
+    <h3>{d.title}</h3>
+    <p>{d.summary}</p>
+    <div class="tags">{d.stack.slice(0, 6).map((t) => <span>{t}</span>)}</div>
+    <span class="go">Read the case study →</span>
+  </div>
+</a>

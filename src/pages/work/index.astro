@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import { WORK_CATEGORIES } from '../../lib/site';
+
+const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+const counts = Object.fromEntries(Object.keys(WORK_CATEGORIES).map((k) => [k, work.filter((w) => w.data.category === k).length]));
+---
+
+<Base title="Work" description="Cloud security and identity projects by Noble Antwi: a hybrid identity lab across Active Directory, Okta and Entra ID, a segmented security homelab with Wazuh, a multi-cloud posture dashboard, and enterprise security assessments.">
+  <div class="container">
+    <header class="page-head">
+      <span class="kicker">Work</span>
+      <h1 class="display h1">Seven projects, each with a repository and a write-up.</h1>
+      <p class="lead">Two long-running labs for a fictional bank, three tools, and two graduate assessments. Every case study covers the objective, the architecture, what got built, the decisions behind it, and what is next.</p>
+    </header>
+
+    <div class="stat-strip" style="margin-bottom:2.5rem;">
+      <div><strong>{work.length}</strong><span>Case studies</span></div>
+      <div><strong>{work.filter((w) => w.data.status === 'active').length}</strong><span>In active build</span></div>
+      <div><strong>{work.filter((w) => w.data.gallery.length > 0).reduce((n, w) => n + w.data.gallery.length, 0)}</strong><span>Evidence screenshots</span></div>
+      <div><strong>{work.length}</strong><span>Public repositories</span></div>
+    </div>
+
+    <div class="filter-tabs" data-filter-group="work" role="group" aria-label="Filter projects">
+      <button class="filter-tab is-active" data-filter="all" aria-pressed="true">All <span class="count">{work.length}</span></button>
+      {Object.entries(WORK_CATEGORIES).map(([k, label]) => (
+        <button class="filter-tab" data-filter={k} aria-pressed="false">{label} <span class="count">{counts[k]}</span></button>
+      ))}
+    </div>
+
+    <div class="work-list">
+      {work.map((w) => <WorkCard work={w} filterGroup="work" />)}
+    </div>
+    <p class="filter-empty" data-filter-group="work">No projects in this category yet.</p>
+
+    <div class="cta-band">
+      <p>The repositories are public and the documentation is written so someone else could rebuild the lab.</p>
+      <div class="actions">
+        <a class="btn" href="https://github.com/noble-antwi" target="_blank" rel="noopener">Browse GitHub</a>
+        <a class="btn btn-ghost" href="/contact/">Get in touch</a>
+      </div>
+    </div>
+  </div>
+</Base>
