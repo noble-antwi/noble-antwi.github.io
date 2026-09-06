@@ -278,4 +278,4 @@ A single VLAN-aware bridge on a single NIC now gives every VM on this Proxmox no
 
 ---
 
-*Part of the ongoing [Enterprise Information Security Lab](https://github.com/noble-antwi/enterprise-homelab) build documentation.*
+*Part of the ongoing [Enterprise Information Security Lab](https://github.com/noble-antwi/enterprise-security-homelab) build documentation.*
