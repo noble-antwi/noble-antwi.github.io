@@ -20,11 +20,11 @@ description: "Noble Antwi: Cloud Security and Identity Engineer. AWS and Azure I
 </section>
 
 <div class="proof-strip">
-  <a href="/cloud-certifications" class="proof-item"><i class="fab fa-aws"></i> AWS Security Specialty</a>
-  <a href="/cloud-certifications" class="proof-item"><i class="fas fa-cloud"></i> CCSP</a>
-  <a href="/cloud-certifications" class="proof-item"><i class="fab fa-microsoft"></i> SC-300 Identity Administrator</a>
-  <a href="/cloud-certifications" class="proof-item"><i class="fas fa-id-badge"></i> Okta Certified Professional</a>
-  <a href="/security-certifications" class="proof-item"><i class="fas fa-shield-alt"></i> CompTIA Security+</a>
+  <a href="/certifications" class="proof-item"><i class="fab fa-aws"></i> AWS Security Specialty</a>
+  <a href="/certifications" class="proof-item"><i class="fas fa-cloud"></i> CCSP</a>
+  <a href="/certifications" class="proof-item"><i class="fab fa-microsoft"></i> SC-300 Identity Administrator</a>
+  <a href="/certifications" class="proof-item"><i class="fas fa-id-badge"></i> Okta Certified Professional</a>
+  <a href="/certifications" class="proof-item"><i class="fas fa-shield-alt"></i> CompTIA Security+</a>
   <span class="proof-item"><i class="fas fa-graduation-cap"></i> M.S. Cybersecurity, Illinois Tech</span>
 </div>
 

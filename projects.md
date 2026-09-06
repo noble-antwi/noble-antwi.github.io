@@ -1,161 +1,48 @@
-
 ---
 layout: default
 title: Projects
-description: "Explore Noble Antwi's cloud security projects including AWS security implementations, IAM job scout, penetration testing, and security assessment case studies."
+description: "Noble Antwi's cloud security and identity projects: a hybrid identity lab across Active Directory, Okta and Entra ID, a segmented security homelab with Wazuh, a multi-cloud posture dashboard, and enterprise security assessments."
 ---
 
-<h1><i class="fas fa-project-diagram"></i> Featured Project Case Studies</h1>
+<div class="page-head">
+  <p class="page-kicker">Projects</p>
+  <h1 class="page-title">Labs and builds, documented like production</h1>
+  <p class="page-lead">Every project here has a repository and a write-up. Open a card for the full case study: objective, stack, what got built, and where it stands.</p>
+</div>
 
-<style>
-.project-accordion {
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  border-radius: 12px;
-  margin-bottom: 2rem;
-  overflow: visible;
-  background: var(--bg-light);
-}
+<div class="stat-strip">
+  <div class="stat-tile"><strong>7</strong><span>Case studies</span></div>
+  <div class="stat-tile"><strong>7</strong><span>Public repositories</span></div>
+  <div class="stat-tile"><strong>2</strong><span>Labs in active build</span></div>
+  <div class="stat-tile"><strong>3</strong><span>Focus areas</span></div>
+</div>
 
-.project-accordion summary {
-  padding: 1.5rem;
-  cursor: pointer;
-  background: rgba(6, 182, 212, 0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background 0.3s ease;
-  user-select: none;
-  list-style: none;
-  border-bottom: 1px solid rgba(6, 182, 212, 0.2);
-}
+<div class="filter-tabs" data-filter-group="proj" role="group" aria-label="Filter projects">
+  <button class="filter-tab is-active" data-filter="all" aria-pressed="true">All <span class="count">9</span></button>
+  <button class="filter-tab" data-filter="identity" aria-pressed="false"><i class="fas fa-user-shield"></i> Identity <span class="count">3</span></button>
+  <button class="filter-tab" data-filter="cloud" aria-pressed="false"><i class="fas fa-cloud"></i> Cloud <span class="count">2</span></button>
+  <button class="filter-tab" data-filter="detection" aria-pressed="false"><i class="fas fa-crosshairs"></i> Detection &amp; infrastructure <span class="count">2</span></button>
+  <button class="filter-tab" data-filter="assessment" aria-pressed="false"><i class="fas fa-clipboard-check"></i> Assessments <span class="count">2</span></button>
+</div>
 
-.project-accordion summary::-webkit-details-marker {
-  display: none !important;
-}
-
-.project-accordion summary:hover {
-  background: rgba(6, 182, 212, 0.1);
-}
-
-.project-accordion summary h3 {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  flex: 1;
-  color: var(--accent);
-  font-size: 1.3rem;
-}
-
-.project-accordion summary .chevron {
-  font-size: 1.2rem;
-  color: var(--accent);
-  transition: transform 0.3s ease;
-  margin-left: 1rem;
-  flex-shrink: 0;
-}
-
-.project-accordion[open] summary {
-  border-bottom: 1px solid rgba(6, 182, 212, 0.3);
-}
-
-.project-accordion[open] summary .chevron {
-  transform: rotate(180deg);
-}
-
-.project-accordion .project-content {
-  padding: 2rem;
-  border-top: 1px solid rgba(6, 182, 212, 0.2);
-  animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.quick-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  margin: 1.5rem 0;
-  padding: 1.5rem;
-  background: rgba(6, 182, 212, 0.05);
-  border-radius: 8px;
-  border: 1px solid rgba(6, 182, 212, 0.2);
-}
-
-.stat-item {
-  text-align: center;
-  padding: 0.5rem;
-}
-
-.stat-number {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--accent);
-}
-
-.stat-label {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-top: 0.3rem;
-}
-
-.accordion-badges {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.accordion-links {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.accordion-links a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
-  background: rgba(6, 182, 212, 0.1);
-  color: var(--accent);
-  text-decoration: none;
-  border-radius: 6px;
-  border: 1px solid var(--accent);
-  transition: all 0.3s;
-  font-size: 0.95rem;
-}
-
-.accordion-links a:hover {
-  background: rgba(6, 182, 212, 0.2);
-}
-</style>
-
-<details class="project-accordion">
-  <summary>
-    <h3><i class="fas fa-shield-alt"></i> Cloud Security Posture Dashboard: Multi-Cloud Security Assessment Platform</h3>
-    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
-  </summary>
-
-  <div class="project-content">
-    <div class="accordion-badges">
-      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Completed</span>
-      <span style="background: rgba(33, 150, 243, 0.2); color: #2196f3; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #2196f3;">Multi-Cloud Security</span>
-      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">DevSecOps</span>
-      <span style="background: rgba(244, 67, 54, 0.2); color: #f44336; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #f44336;">Automation</span>
+<div class="proj-grid">
+<details class="proj" id="cspm-dashboard" data-filter-item data-filter-group="proj" data-cat="cloud">
+  <summary class="proj-card">
+    <div class="proj-top">
+      <span class="proj-kicker">Cloud posture · AWS + Azure</span>
+      <span class="pill pill-ok">Completed</span>
     </div>
-
-    <div class="accordion-links">
+    <h3 class="proj-title">Cloud Security Posture Dashboard</h3>
+    <p class="proj-summary">Terraform deploys deliberately misconfigured AWS and Azure resources, Prowler and ScoutSuite scan them, and a Flask dashboard normalises 500+ checks into one findings schema with remediation commands and CIS / NIST / PCI mapping.</p>
+    <div class="tag-row"><span>Terraform</span><span>Prowler</span><span>ScoutSuite</span><span>Python</span><span>Flask</span><span>AWS</span><span>Azure</span></div>
+    <div class="proj-foot">
+      <span><i class="fab fa-github"></i> noble-antwi/cloud-security-posture-dashboard</span>
+      <span class="proj-open"><span class="when-closed">Read case study</span><span class="when-open">Collapse</span><i class="fas fa-chevron-down"></i></span>
+    </div>
+  </summary>
+  <div class="proj-body">
+    <div class="proj-body-inner">
+<div class="proj-links">
       <a href="https://github.com/noble-antwi/cloud-security-posture-dashboard" target="_blank">
         <i class="fab fa-github"></i> GitHub Repository
       </a>
@@ -199,8 +86,8 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-rocket"></i> Key Features</h5>
+    <ul class="proj-list">
       <li><strong>Multi-Cloud Support:</strong> Automated security assessment across AWS and Azure cloud platforms with unified findings aggregation</li>
       <li><strong>Infrastructure as Code:</strong> Terraform-based deployment of intentionally misconfigured resources for testing security controls and scanner accuracy</li>
       <li><strong>Industry-Standard Scanning:</strong> Integration with Prowler 3.x (AWS) and ScoutSuite (Azure) for comprehensive security assessments covering 500+ checks</li>
@@ -213,21 +100,21 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <li><strong>Export Capabilities:</strong> JSON and CSV export formats for integration with SIEM tools and reporting systems</li>
     </ul>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-cloud"></i> Supported Cloud Services & Resources</h5>
-    <div style="margin: 1rem 0;">
-      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(255, 152, 0, 0.05); border-radius: 8px; border-left: 3px solid #ff9800;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #ff9800;"><strong>AWS Resources</strong></h6>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">S3 buckets (encryption, versioning, public access policies), IAM Access Analyzer, CloudTrail logging, VPC security groups, EC2 security configurations, RDS encryption, Lambda security, and 500+ additional security checks via Prowler</p>
+    <h5><i class="fas fa-cloud"></i> Supported Cloud Services & Resources</h5>
+    <div>
+      <div class="callout callout-warn">
+        <h6><strong>AWS Resources</strong></h6>
+        <p>S3 buckets (encryption, versioning, public access policies), IAM Access Analyzer, CloudTrail logging, VPC security groups, EC2 security configurations, RDS encryption, Lambda security, and 500+ additional security checks via Prowler</p>
       </div>
 
-      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(33, 150, 243, 0.05); border-radius: 8px; border-left: 3px solid #2196f3;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #2196f3;"><strong>Azure Resources</strong></h6>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Storage accounts (security settings, encryption), Network Security Groups, Key Vaults, Virtual Machines, SQL Databases, Active Directory configurations, and comprehensive service coverage via ScoutSuite</p>
+      <div class="callout callout-info">
+        <h6><strong>Azure Resources</strong></h6>
+        <p>Storage accounts (security settings, encryption), Network Security Groups, Key Vaults, Virtual Machines, SQL Databases, Active Directory configurations, and comprehensive service coverage via ScoutSuite</p>
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-pie"></i> Dashboard Visualization Features</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-chart-pie"></i> Dashboard Visualization Features</h5>
+    <ul class="proj-list">
       <li><strong>Real-Time Metrics:</strong> Summary cards displaying total findings, critical/high/medium/low severity counts, and affected resources</li>
       <li><strong>Severity Distribution:</strong> Interactive doughnut chart showing the proportion of findings by severity level</li>
       <li><strong>Cloud Provider Comparison:</strong> Bar chart comparing security findings across AWS and Azure environments</li>
@@ -236,17 +123,17 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <li><strong>Severity Badges:</strong> Color-coded severity indicators (Critical=Red, High=Orange, Medium=Yellow, Low=Blue)</li>
     </ul>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-tools"></i> Five-Stage Security Pipeline</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
-      <p style="margin: 0 0 0.5rem 0;"><strong>1. Deploy:</strong> Terraform provisions intentionally misconfigured AWS and Azure resources for testing</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>2. Scan:</strong> Prowler and ScoutSuite perform automated security assessments with 500+ checks</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>3. Aggregate:</strong> Python scripts normalize findings from multiple tools into unified JSON schema</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>4. Visualize:</strong> Flask dashboard displays findings with charts, filters, and detailed remediation guidance</p>
-      <p style="margin: 0;"><strong>5. Remediate:</strong> Automated scripts fix identified issues with dry-run mode for safe testing</p>
+    <h5><i class="fas fa-tools"></i> Five-Stage Security Pipeline</h5>
+    <div class="callout">
+      <p><strong>1. Deploy:</strong> Terraform provisions intentionally misconfigured AWS and Azure resources for testing</p>
+      <p><strong>2. Scan:</strong> Prowler and ScoutSuite perform automated security assessments with 500+ checks</p>
+      <p><strong>3. Aggregate:</strong> Python scripts normalize findings from multiple tools into unified JSON schema</p>
+      <p><strong>4. Visualize:</strong> Flask dashboard displays findings with charts, filters, and detailed remediation guidance</p>
+      <p><strong>5. Remediate:</strong> Automated scripts fix identified issues with dry-run mode for safe testing</p>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-shield-alt"></i> Use Cases & Applications</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-shield-alt"></i> Use Cases & Applications</h5>
+    <ul class="proj-list">
       <li><strong>Security Tool Validation:</strong> Test and validate security scanning tools in controlled environments before production deployment</li>
       <li><strong>Cloud Security Training:</strong> Learn common cloud misconfigurations and remediation techniques in safe sandbox environments</li>
       <li><strong>DevSecOps Pipeline Integration:</strong> Build security automation pipelines with automated scanning and remediation capabilities</li>
@@ -254,31 +141,35 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <li><strong>Security Posture Assessment:</strong> Continuously monitor multi-cloud security posture with unified visibility across AWS and Azure</li>
     </ul>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-graduation-cap"></i> Technical Skills Demonstrated</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
-      <p style="margin: 0 0 0.5rem 0;"><strong>Cloud Security:</strong> AWS security services (IAM, S3, CloudTrail), Azure security (Storage, NSG, Key Vault), security scanning tools (Prowler, ScoutSuite)</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Infrastructure as Code:</strong> Terraform for multi-cloud resource provisioning and management</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Security Automation:</strong> Python scripting for findings aggregation, automated remediation, and compliance mapping</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Web Development:</strong> Flask backend, Bootstrap 5 frontend, Chart.js data visualization, RESTful API design</p>
-      <p style="margin: 0;"><strong>DevSecOps:</strong> CI/CD security integration, automated security testing, remediation automation, compliance-as-code</p>
+    <h5><i class="fas fa-graduation-cap"></i> Technical Skills Demonstrated</h5>
+    <div class="callout callout-ok">
+      <p><strong>Cloud Security:</strong> AWS security services (IAM, S3, CloudTrail), Azure security (Storage, NSG, Key Vault), security scanning tools (Prowler, ScoutSuite)</p>
+      <p><strong>Infrastructure as Code:</strong> Terraform for multi-cloud resource provisioning and management</p>
+      <p><strong>Security Automation:</strong> Python scripting for findings aggregation, automated remediation, and compliance mapping</p>
+      <p><strong>Web Development:</strong> Flask backend, Bootstrap 5 frontend, Chart.js data visualization, RESTful API design</p>
+      <p><strong>DevSecOps:</strong> CI/CD security integration, automated security testing, remediation automation, compliance-as-code</p>
+    </div>
     </div>
   </div>
 </details>
 
-<details class="project-accordion">
-  <summary>
-    <h3><i class="fas fa-briefcase"></i> IAM Job Scout: Automated Job Board for IAM Professionals</h3>
-    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
-  </summary>
-  
-  <div class="project-content">
-    <div class="accordion-badges">
-      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Completed</span>
-      <span style="background: rgba(33, 150, 243, 0.2); color: #2196f3; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #2196f3;">Full-Stack Web App</span>
-      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">Production-Ready</span>
+<details class="proj" id="iam-job-scout" data-filter-item data-filter-group="proj" data-cat="identity">
+  <summary class="proj-card">
+    <div class="proj-top">
+      <span class="proj-kicker">Identity · Tooling</span>
+      <span class="pill pill-ok">Completed</span>
     </div>
-
-    <div class="accordion-links">
+    <h3 class="proj-title">IAM Job Scout</h3>
+    <p class="proj-summary">A FastAPI job board that pulls IAM roles from three job APIs, de-duplicates with fuzzy matching, filters out senior titles, and ships with Prometheus metrics, a Grafana dashboard, and Docker Compose deployment.</p>
+    <div class="tag-row"><span>Python</span><span>FastAPI</span><span>PostgreSQL</span><span>Docker</span><span>Prometheus</span><span>Grafana</span></div>
+    <div class="proj-foot">
+      <span><i class="fab fa-github"></i> noble-antwi/iam-job-scout</span>
+      <span class="proj-open"><span class="when-closed">Read case study</span><span class="when-open">Collapse</span><i class="fas fa-chevron-down"></i></span>
+    </div>
+  </summary>
+  <div class="proj-body">
+    <div class="proj-body-inner">
+<div class="proj-links">
       <a href="https://github.com/noble-antwi/iam-job-scout" target="_blank">
         <i class="fab fa-github"></i> GitHub Repository
       </a>
@@ -326,8 +217,8 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-rocket"></i> Key Features</h5>
+    <ul class="proj-list">
       <li><strong>Multi-API Integration:</strong> Searches JSearch (Indeed, LinkedIn, Glassdoor), Adzuna, and RemoteOK concurrently for comprehensive job coverage across multiple platforms</li>
       <li><strong>Smart Deduplication:</strong> Uses fuzzy matching algorithms to automatically eliminate duplicate job listings from different sources</li>
       <li><strong>Smart Job Filtering:</strong> Automatically excludes senior/advanced roles while focusing on junior to mid-level positions (0-5 years experience)</li>
@@ -344,57 +235,57 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <li><strong>Production Monitoring:</strong> Built-in Prometheus metrics and Grafana dashboard support</li>
     </ul>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-filter"></i> Intelligent Filtering Logic</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
-      <p style="margin: 0 0 0.5rem 0;"><strong>Excluded Keywords (Senior Roles):</strong> senior, sr, principal, architect, lead, manager, director, head, vp, staff, distinguished, chief</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Included Keywords (Junior/Mid Roles):</strong> analyst, associate, administrator, engineer, specialist, iam, identity, okta, entra, azure ad, sso, saml, oidc, scim, iga, pam, sailpoint, saviynt, ping, cyberark</p>
-      <p style="margin: 0;"><strong>Experience Filters:</strong> Include 0-5, 1-3, 2-4, 3-5 years | Exclude 7+, 10+, 12+ years</p>
+    <h5><i class="fas fa-filter"></i> Intelligent Filtering Logic</h5>
+    <div class="callout">
+      <p><strong>Excluded Keywords (Senior Roles):</strong> senior, sr, principal, architect, lead, manager, director, head, vp, staff, distinguished, chief</p>
+      <p><strong>Included Keywords (Junior/Mid Roles):</strong> analyst, associate, administrator, engineer, specialist, iam, identity, okta, entra, azure ad, sso, saml, oidc, scim, iga, pam, sailpoint, saviynt, ping, cyberark</p>
+      <p><strong>Experience Filters:</strong> Include 0-5, 1-3, 2-4, 3-5 years | Exclude 7+, 10+, 12+ years</p>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-line"></i> Production-Grade Monitoring & Observability</h5>
-    <div style="margin: 1rem 0;">
-      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>Application Performance Metrics</strong></h6>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">HTTP request duration histograms (p50, p95, p99), request rate by endpoint, error rate tracking, and concurrent request monitoring</p>
+    <h5><i class="fas fa-chart-line"></i> Production-Grade Monitoring & Observability</h5>
+    <div>
+      <div class="callout callout-ok">
+        <h6><strong>Application Performance Metrics</strong></h6>
+        <p>HTTP request duration histograms (p50, p95, p99), request rate by endpoint, error rate tracking, and concurrent request monitoring</p>
       </div>
 
-      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(33, 150, 243, 0.05); border-radius: 8px; border-left: 3px solid #2196f3;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #2196f3;"><strong>Business Metrics</strong></h6>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Total jobs in database, new jobs this week, saved/applied job tracking, scan success rate, and last successful scan timestamp</p>
+      <div class="callout callout-info">
+        <h6><strong>Business Metrics</strong></h6>
+        <p>Total jobs in database, new jobs this week, saved/applied job tracking, scan success rate, and last successful scan timestamp</p>
       </div>
 
-      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(255, 152, 0, 0.05); border-radius: 8px; border-left: 3px solid #ff9800;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #ff9800;"><strong>Database & System Metrics</strong></h6>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Query duration tracking, active connection pool utilization, database operations by type, memory usage, and Python garbage collection metrics</p>
-      </div>
-    </div>
-
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-server"></i> API Endpoints & Architecture</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
-      <p style="margin: 0 0 0.5rem 0;"><strong>Public Endpoints:</strong> Main job board with search/filters, individual job details, admin login, JSON API for jobs/stats, health check, Prometheus metrics</p>
-      <p style="margin: 0;"><strong>Protected Endpoints (Session Auth or API Token):</strong> Manual job scan trigger, automatic cleanup of old jobs (30+ days)</p>
-    </div>
-
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-cloud"></i> Deployment Options</h5>
-    <div style="margin: 1rem 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-      <div style="padding: 1rem; background: rgba(76, 175, 80, 0.1); border-radius: 8px; border-left: 3px solid #4caf50;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><i class="fas fa-rocket"></i> Render (Recommended)</h6>
-        <p style="margin: 0; font-size: 0.9rem;">Easiest deployment with built-in cron job support, automatic HTTPS, and zero-config environment</p>
-      </div>
-
-      <div style="padding: 1rem; background: rgba(33, 150, 243, 0.1); border-radius: 8px; border-left: 3px solid #2196f3;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #2196f3;"><i class="fab fa-docker"></i> Fly.io</h6>
-        <p style="margin: 0; font-size: 0.9rem;">Docker-based deployment with generous free tier and global edge network support</p>
-      </div>
-
-      <div style="padding: 1rem; background: rgba(255, 152, 0, 0.1); border-radius: 8px; border-left: 3px solid #ff9800;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #ff9800;"><i class="fas fa-server"></i> VPS</h6>
-        <p style="margin: 0; font-size: 0.9rem;">Full control deployment on DigitalOcean, AWS Lightsail, or Ubuntu Server with Docker Compose</p>
+      <div class="callout callout-warn">
+        <h6><strong>Database & System Metrics</strong></h6>
+        <p>Query duration tracking, active connection pool utilization, database operations by type, memory usage, and Python garbage collection metrics</p>
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-shield-alt"></i> Security Features</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-server"></i> API Endpoints & Architecture</h5>
+    <div class="callout">
+      <p><strong>Public Endpoints:</strong> Main job board with search/filters, individual job details, admin login, JSON API for jobs/stats, health check, Prometheus metrics</p>
+      <p><strong>Protected Endpoints (Session Auth or API Token):</strong> Manual job scan trigger, automatic cleanup of old jobs (30+ days)</p>
+    </div>
+
+    <h5><i class="fas fa-cloud"></i> Deployment Options</h5>
+    <div class="callout-grid">
+      <div class="callout callout-ok">
+        <h6><i class="fas fa-rocket"></i> Render (Recommended)</h6>
+        <p>Easiest deployment with built-in cron job support, automatic HTTPS, and zero-config environment</p>
+      </div>
+
+      <div class="callout callout-info">
+        <h6><i class="fab fa-docker"></i> Fly.io</h6>
+        <p>Docker-based deployment with generous free tier and global edge network support</p>
+      </div>
+
+      <div class="callout callout-warn">
+        <h6><i class="fas fa-server"></i> VPS</h6>
+        <p>Full control deployment on DigitalOcean, AWS Lightsail, or Ubuntu Server with Docker Compose</p>
+      </div>
+    </div>
+
+    <h5><i class="fas fa-shield-alt"></i> Security Features</h5>
+    <ul class="proj-list">
       <li><strong>Password-Protected Admin Panel:</strong> Secure authentication for manual job scanning operations</li>
       <li><strong>API Token Authentication:</strong> X-ADMIN-TOKEN header validation for cron job endpoints</li>
       <li><strong>Session Secret Encryption:</strong> Secure session management with cryptographic session keys</li>
@@ -402,70 +293,74 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <li><strong>Production Security Recommendations:</strong> Documented best practices for secure deployment</li>
     </ul>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-lightbulb"></i> Technical Highlights & Best Practices</h5>
-    <div style="margin: 1rem 0;">
-      <div style="margin-bottom: 0.8rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;"><strong>🐍 FastAPI Modern Python Backend</strong></span>
+    <h5><i class="fas fa-lightbulb"></i> Technical Highlights & Best Practices</h5>
+    <div>
+      <div class="progress-row">
+        <div class="progress-label">
+          <span><strong>FastAPI Modern Python Backend</strong></span>
         </div>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">Asynchronous API with automatic OpenAPI documentation, type hints, and validation</p>
+        <p>Asynchronous API with automatic OpenAPI documentation, type hints, and validation</p>
       </div>
 
-      <div style="margin-bottom: 0.8rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;"><strong>📊 Production Monitoring Stack</strong></span>
+      <div class="progress-row">
+        <div class="progress-label">
+          <span><strong>Production Monitoring Stack</strong></span>
         </div>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">Prometheus metrics with Grafana dashboards for real-time performance tracking and alerting</p>
+        <p>Prometheus metrics with Grafana dashboards for real-time performance tracking and alerting</p>
       </div>
 
-      <div style="margin-bottom: 0.8rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;"><strong>🔄 Automated Job Scheduling</strong></span>
+      <div class="progress-row">
+        <div class="progress-label">
+          <span><strong>Automated Job Scheduling</strong></span>
         </div>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">APScheduler for background tasks with configurable daily scanning and automatic cleanup</p>
+        <p>APScheduler for background tasks with configurable daily scanning and automatic cleanup</p>
       </div>
 
-      <div style="margin-bottom: 0.8rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;"><strong>🐳 Containerized Architecture</strong></span>
+      <div class="progress-row">
+        <div class="progress-label">
+          <span><strong>Containerized Architecture</strong></span>
         </div>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">Docker and Docker Compose setup for consistent deployment across all environments</p>
+        <p>Docker and Docker Compose setup for consistent deployment across all environments</p>
       </div>
 
-      <div style="margin-bottom: 0.8rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;"><strong>💾 Flexible Database Support</strong></span>
+      <div class="progress-row">
+        <div class="progress-label">
+          <span><strong>Flexible Database Support</strong></span>
         </div>
-        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">SQLite for development/small deployments, PostgreSQL support for production scale</p>
+        <p>SQLite for development/small deployments, PostgreSQL support for production scale</p>
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-tools"></i> Comprehensive Documentation</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(156, 39, 176, 0.05); border-radius: 8px; border-left: 3px solid #9c27b0;">
-      <p style="margin: 0 0 0.5rem 0;">✓ Quick Start Guide - Get monitoring running in 10 minutes</p>
-      <p style="margin: 0 0 0.5rem 0;">✓ Complete Monitoring Guide - Comprehensive documentation with examples</p>
-      <p style="margin: 0 0 0.5rem 0;">✓ Architecture Diagram - Visual guide to monitoring setup</p>
-      <p style="margin: 0 0 0.5rem 0;">✓ Docker Networking Guide - Tips for container deployments</p>
-      <p style="margin: 0 0 0.5rem 0;">✓ Prometheus Configuration Examples - Ready-to-use configs</p>
-      <p style="margin: 0;">✓ Alert Rules - Production-ready alerting setup</p>
+    <h5><i class="fas fa-tools"></i> Comprehensive Documentation</h5>
+    <div class="callout callout-purple">
+      <p>Quick Start Guide - Get monitoring running in 10 minutes</p>
+      <p>Complete Monitoring Guide - Comprehensive documentation with examples</p>
+      <p>Architecture Diagram - Visual guide to monitoring setup</p>
+      <p>Docker Networking Guide - Tips for container deployments</p>
+      <p>Prometheus Configuration Examples - Ready-to-use configs</p>
+      <p>Alert Rules - Production-ready alerting setup</p>
+    </div>
     </div>
   </div>
 </details>
 
-<details class="project-accordion">
-  <summary>
-    <h3><i class="fas fa-key"></i> Enterprise IAM Lab: Hybrid Identity Architecture</h3>
-    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
-  </summary>
-  
-  <div class="project-content">
-    <div class="accordion-badges">
-      <span style="background: rgba(255, 152, 0, 0.2); color: #ff9800; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #ff9800;">In Progress</span>
-      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Large Project</span>
-      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">Production-Grade</span>
+<details class="proj" id="enterprise-iam-lab" data-filter-item data-filter-group="proj" data-cat="identity">
+  <summary class="proj-card">
+    <div class="proj-top">
+      <span class="proj-kicker">Identity lab · Hybrid identity</span>
+      <span class="pill pill-warn">In progress</span>
     </div>
-
-    <div class="accordion-links">
+    <h3 class="proj-title">Enterprise IAM Lab: Hybrid Identity Architecture</h3>
+    <p class="proj-summary">A mid-size organisation's identity stack, built for real: on-prem Active Directory with a tiered admin model, federated to Okta Workforce Identity and Microsoft Entra ID over SAML, OIDC and WS-Fed, with network-aware conditional access and graduated MFA.</p>
+    <div class="tag-row"><span>Active Directory</span><span>Okta</span><span>Entra ID</span><span>SAML 2.0</span><span>OIDC</span><span>Conditional Access</span><span>PowerShell</span></div>
+    <div class="proj-foot">
+      <span><i class="fab fa-github"></i> noble-antwi/enterprise-iam-lab</span>
+      <span class="proj-open"><span class="when-closed">Read case study</span><span class="when-open">Collapse</span><i class="fas fa-chevron-down"></i></span>
+    </div>
+  </summary>
+  <div class="proj-body">
+    <div class="proj-body-inner">
+<div class="proj-links">
       <a href="https://github.com/noble-antwi/enterprise-iam-lab" target="_blank">
         <i class="fab fa-github"></i> GitHub Repository
       </a>
@@ -513,8 +408,8 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-rocket"></i> Key Features</h5>
+    <ul class="proj-list">
       <li><strong>Hybrid Identity Architecture:</strong> Seamless AD + OKTA + Microsoft Entra ID integration</li>
       <li><strong>Tiered Admin Model:</strong> Microsoft Tier 0/1/2 with privilege separation</li>
       <li><strong>Network-Based Conditional Access:</strong> IP zones, geographic controls, Tor blocking</li>
@@ -523,53 +418,57 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <li><strong>Automated Provisioning:</strong> OKTA Expression Language for dynamic group assignment</li>
     </ul>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-line"></i> Implementation Progress</h5>
-    <div style="margin: 1rem 0;">
-      <div style="margin-bottom: 0.8rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;">Phases 1-4</span>
-          <span style="color: #4caf50; font-weight: bold;">100%</span>
+    <h5><i class="fas fa-chart-line"></i> Implementation Progress</h5>
+    <div>
+      <div class="progress-row">
+        <div class="progress-label">
+          <span>Phases 1-4</span>
+          <b>100%</b>
         </div>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
-          <div style="height: 100%; width: 100%; background: #4caf50; border-radius: 3px;"></div>
+        <div class="bar">
+          <div class="bar-fill is-ok" style="width: 100%"></div>
         </div>
       </div>
-      <div style="margin-bottom: 0.8rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;">Phase 5 (Advanced Security)</span>
-          <span style="color: #ff9800; font-weight: bold;">40%</span>
+      <div class="progress-row">
+        <div class="progress-label">
+          <span>Phase 5 (Advanced Security)</span>
+          <b>40%</b>
         </div>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
-          <div style="height: 100%; width: 40%; background: #ff9800; border-radius: 3px;"></div>
+        <div class="bar">
+          <div class="bar-fill is-warn" style="width: 40%"></div>
         </div>
       </div>
       <div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;">Phase 6 (Entra ID)</span>
-          <span style="color: #9c27b0; font-weight: bold;">Planned</span>
+        <div class="progress-label">
+          <span>Phase 6 (Entra ID)</span>
+          <b>Planned</b>
         </div>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
-          <div style="height: 100%; width: 0%; background: #9c27b0; border-radius: 3px;"></div>
+        <div class="bar">
+          <div class="bar-fill is-purple" style="width: 0%"></div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </details>
 
-<details class="project-accordion">
-  <summary>
-    <h3><i class="fas fa-network-wired"></i> Enterprise Security Homelab: Cross-Platform Infrastructure</h3>
-    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
-  </summary>
-  
-  <div class="project-content">
-    <div class="accordion-badges">
-      <span style="background: rgba(255, 152, 0, 0.2); color: #ff9800; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #ff9800;">In Progress</span>
-      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Complex Lab</span>
-      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">Enterprise-Ready</span>
+<details class="proj" id="enterprise-security-homelab" data-filter-item data-filter-group="proj" data-cat="detection">
+  <summary class="proj-card">
+    <div class="proj-top">
+      <span class="proj-kicker">Infrastructure · Detection</span>
+      <span class="pill pill-warn">In progress</span>
     </div>
-
-    <div class="accordion-links">
+    <h3 class="proj-title">Enterprise Security Homelab</h3>
+    <p class="proj-summary">A six-VLAN lab behind pfSense with a Windows Server domain, Linux and Windows hosts under Ansible, Wazuh as the SIEM, Grafana and Prometheus for observability, and Tailscale for remote access. Blue Team first, Red Team VLAN reserved.</p>
+    <div class="tag-row"><span>pfSense</span><span>VLANs</span><span>Wazuh</span><span>Ansible</span><span>Windows Server 2022</span><span>Proxmox</span><span>Grafana</span></div>
+    <div class="proj-foot">
+      <span><i class="fab fa-github"></i> noble-antwi/enterprise-security-homelab</span>
+      <span class="proj-open"><span class="when-closed">Read case study</span><span class="when-open">Collapse</span><i class="fas fa-chevron-down"></i></span>
+    </div>
+  </summary>
+  <div class="proj-body">
+    <div class="proj-body-inner">
+<div class="proj-links">
       <a href="https://github.com/noble-antwi/enterprise-security-homelab" target="_blank">
         <i class="fab fa-github"></i> GitHub Repository
       </a>
@@ -615,8 +514,8 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features & Architecture</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-rocket"></i> Key Features & Architecture</h5>
+    <ul class="proj-list">
       <li><strong>pfSense Enterprise Firewall:</strong> Advanced VLAN routing with 6-VLAN segmentation and security policies</li>
       <li><strong>Cross-Platform Automation:</strong> Ansible managing 6 systems across Linux and Windows seamlessly with service accounts</li>
       <li><strong>Comprehensive Security Monitoring:</strong> Wazuh SIEM collecting and analyzing logs from all platforms in real-time</li>
@@ -626,55 +525,55 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <li><strong>VLAN Isolation:</strong> Management (10), BlueTeam SIEM (20), RedTeam Reserved (30), DevOps (40), Enterprise (50), Monitoring (60)</li>
     </ul>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-line"></i> Deployed Infrastructure</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
-      <p style="margin: 0 0 0.5rem 0;"><strong>Linux Systems (4):</strong> Ansible Controller (Ubuntu), TCM Ubuntu, Grafana Server (Ubuntu), Wazuh SIEM (Rocky Linux)</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Windows Systems (2):</strong> Windows Host Laptop (Dev/Testing), Windows Server 2022 (Enterprise Services)</p>
-      <p style="margin: 0;"><strong>Network:</strong> pfSense Firewall, TP-Link Managed Switch with VLAN support</p>
+    <h5><i class="fas fa-chart-line"></i> Deployed Infrastructure</h5>
+    <div class="callout">
+      <p><strong>Linux Systems (4):</strong> Ansible Controller (Ubuntu), TCM Ubuntu, Grafana Server (Ubuntu), Wazuh SIEM (Rocky Linux)</p>
+      <p><strong>Windows Systems (2):</strong> Windows Host Laptop (Dev/Testing), Windows Server 2022 (Enterprise Services)</p>
+      <p><strong>Network:</strong> pfSense Firewall, TP-Link Managed Switch with VLAN support</p>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-list-check"></i> Implementation Status</h5>
-    <div style="margin: 1rem 0;">
-      <div style="margin-bottom: 0.8rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;">Phase 1: Foundation (Network & Security)</span>
-          <span style="color: #4caf50; font-weight: bold;">100%</span>
+    <h5><i class="fas fa-list-check"></i> Implementation Status</h5>
+    <div>
+      <div class="progress-row">
+        <div class="progress-label">
+          <span>Phase 1: Foundation (Network & Security)</span>
+          <b>100%</b>
         </div>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
-          <div style="height: 100%; width: 100%; background: #4caf50; border-radius: 3px;"></div>
-        </div>
-      </div>
-      <div style="margin-bottom: 0.8rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;">Phase 2: Advanced Security & Monitoring</span>
-          <span style="color: #ff9800; font-weight: bold;">In Progress</span>
-        </div>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
-          <div style="height: 100%; width: 75%; background: #ff9800; border-radius: 3px;"></div>
+        <div class="bar">
+          <div class="bar-fill is-ok" style="width: 100%"></div>
         </div>
       </div>
-      <div style="margin-bottom: 0.8rem;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;">Phase 3: Red Team Capabilities</span>
-          <span style="color: #2196f3; font-weight: bold;">Planned</span>
+      <div class="progress-row">
+        <div class="progress-label">
+          <span>Phase 2: Advanced Security & Monitoring</span>
+          <b>In Progress</b>
         </div>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
-          <div style="height: 100%; width: 0%; background: #2196f3; border-radius: 3px;"></div>
+        <div class="bar">
+          <div class="bar-fill is-warn" style="width: 75%"></div>
+        </div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label">
+          <span>Phase 3: Red Team Capabilities</span>
+          <b>Planned</b>
+        </div>
+        <div class="bar">
+          <div class="bar-fill is-info" style="width: 0%"></div>
         </div>
       </div>
       <div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.3rem;">
-          <span style="font-size: 0.95rem;">Phase 4: DevSecOps Integration</span>
-          <span style="color: #9c27b0; font-weight: bold;">Future</span>
+        <div class="progress-label">
+          <span>Phase 4: DevSecOps Integration</span>
+          <b>Future</b>
         </div>
-        <div style="height: 6px; background: #e0e0e0; border-radius: 3px;">
-          <div style="height: 100%; width: 0%; background: #9c27b0; border-radius: 3px;"></div>
+        <div class="bar">
+          <div class="bar-fill is-purple" style="width: 0%"></div>
         </div>
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-shield-alt"></i> Use Cases & Capabilities</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-shield-alt"></i> Use Cases & Capabilities</h5>
+    <ul class="proj-list">
       <li><strong>Blue Team Operations:</strong> Comprehensive threat detection with Wazuh SIEM monitoring across all platforms</li>
       <li><strong>Cross-Platform Management:</strong> Unified Ansible automation for consistent Linux and Windows configuration</li>
       <li><strong>Infrastructure Observability:</strong> Real-time performance monitoring and dashboards via Grafana/Prometheus</li>
@@ -682,23 +581,27 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <li><strong>Security Research:</strong> Multi-platform testing environment for security tools and configurations</li>
       <li><strong>DevSecOps Development:</strong> Foundation for CI/CD security pipeline integration (future)</li>
     </ul>
+    </div>
   </div>
 </details>
 
-<details class="project-accordion">
-  <summary>
-    <h3><i class="fab fa-aws"></i> AWS Cost Optimizer</h3>
-    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
-  </summary>
-  
-  <div class="project-content">
-    <div class="accordion-badges">
-      <span style="background: rgba(255, 152, 0, 0.2); color: #ff9800; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #ff9800;">In Progress</span>
-      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Cloud Cost Management</span>
-      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">Automation</span>
+<details class="proj" id="aws-cost-optimizer" data-filter-item data-filter-group="proj" data-cat="cloud">
+  <summary class="proj-card">
+    <div class="proj-top">
+      <span class="proj-kicker">Cloud · Automation</span>
+      <span class="pill pill-warn">In progress</span>
     </div>
-
-    <div class="accordion-links">
+    <h3 class="proj-title">AWS Cost Optimizer</h3>
+    <p class="proj-summary">A Boto3 tool that scans an AWS account for idle and oversized resources, scores right-sizing and reserved-capacity opportunities, and can apply the safe ones behind an approval step.</p>
+    <div class="tag-row"><span>Python</span><span>Boto3</span><span>Cost Explorer</span><span>EC2</span><span>RDS</span><span>Automation</span></div>
+    <div class="proj-foot">
+      <span><i class="fab fa-github"></i> noble-antwi/aws-cost-optimizer</span>
+      <span class="proj-open"><span class="when-closed">Read case study</span><span class="when-open">Collapse</span><i class="fas fa-chevron-down"></i></span>
+    </div>
+  </summary>
+  <div class="proj-body">
+    <div class="proj-body-inner">
+<div class="proj-links">
       <a href="https://github.com/noble-antwi/aws-cost-optimizer" target="_blank">
         <i class="fab fa-github"></i> GitHub Repository
       </a>
@@ -734,8 +637,8 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-rocket"></i> Key Features</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-rocket"></i> Key Features</h5>
+    <ul class="proj-list">
       <li><strong>Infrastructure Analysis:</strong> Comprehensive scanning of AWS resources to identify underutilized and oversized instances</li>
       <li><strong>Intelligent Recommendations:</strong> Data-driven suggestions for cost optimization including instance rightsizing, reserved instance strategies, and storage optimization</li>
       <li><strong>Automated Remediation:</strong> Implement cost-saving actions automatically or with approval workflows</li>
@@ -743,93 +646,62 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <li><strong>Reporting Dashboard:</strong> Detailed reports and visualizations of optimization opportunities and savings</li>
     </ul>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-line"></i> Optimization Areas</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
-      <p style="margin: 0 0 0.5rem 0;"><strong>Compute Optimization:</strong> EC2 instance rightsizing, stopping idle instances, reserved instance recommendations</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Database Optimization:</strong> RDS instance rightsizing, storage optimization, backup retention policies</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Network Optimization:</strong> Unused Elastic IPs, cross-AZ data transfer optimization, NAT gateway efficiency</p>
-      <p style="margin: 0;"><strong>Storage Optimization:</strong> Unattached volumes, S3 storage class analysis, old snapshot cleanup</p>
+    <h5><i class="fas fa-chart-line"></i> Optimization Areas</h5>
+    <div class="callout">
+      <p><strong>Compute Optimization:</strong> EC2 instance rightsizing, stopping idle instances, reserved instance recommendations</p>
+      <p><strong>Database Optimization:</strong> RDS instance rightsizing, storage optimization, backup retention policies</p>
+      <p><strong>Network Optimization:</strong> Unused Elastic IPs, cross-AZ data transfer optimization, NAT gateway efficiency</p>
+      <p><strong>Storage Optimization:</strong> Unattached volumes, S3 storage class analysis, old snapshot cleanup</p>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-dollar-sign"></i> Cost-Saving Mechanisms</h5>
-    <div style="margin: 1rem 0;">
-      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>1. Right-Sizing Analysis</strong></h6>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Analyzes CPU, memory, and network utilization patterns over time to recommend optimal instance types. Organizations typically save 20-40% by downsizing over-provisioned instances.</p>
+    <h5><i class="fas fa-dollar-sign"></i> Cost-Saving Mechanisms</h5>
+    <div>
+      <div class="callout callout-ok">
+        <h6><strong>1. Right-Sizing Analysis</strong></h6>
+        <p>Analyzes CPU, memory, and network utilization patterns over time to recommend optimal instance types. Organizations typically save 20-40% by downsizing over-provisioned instances.</p>
       </div>
 
-      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>2. Reserved Instance (RI) Optimization</strong></h6>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Identifies consistent workloads suitable for Reserved Instances and Savings Plans, providing up to 70% savings compared to on-demand pricing. Tool recommends optimal RI purchase strategies.</p>
+      <div class="callout callout-ok">
+        <h6><strong>2. Reserved Instance (RI) Optimization</strong></h6>
+        <p>Identifies consistent workloads suitable for Reserved Instances and Savings Plans, providing up to 70% savings compared to on-demand pricing. Tool recommends optimal RI purchase strategies.</p>
       </div>
 
-      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>3. Idle Resource Elimination</strong></h6>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Detects and flags unused EC2 instances, RDS databases, EBS volumes, and Elastic IPs. Quick wins for cleanup typically yield 10-25% immediate cost reduction.</p>
+      <div class="callout callout-ok">
+        <h6><strong>3. Idle Resource Elimination</strong></h6>
+        <p>Detects and flags unused EC2 instances, RDS databases, EBS volumes, and Elastic IPs. Quick wins for cleanup typically yield 10-25% immediate cost reduction.</p>
       </div>
 
-      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>4. Storage Tiering</strong></h6>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Recommends moving infrequently accessed data to cheaper storage classes (S3 Standard-IA, Glacier). Can save 70-90% on storage costs for archival data.</p>
+      <div class="callout callout-ok">
+        <h6><strong>4. Storage Tiering</strong></h6>
+        <p>Recommends moving infrequently accessed data to cheaper storage classes (S3 Standard-IA, Glacier). Can save 70-90% on storage costs for archival data.</p>
       </div>
 
-      <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(76, 175, 80, 0.05); border-radius: 8px; border-left: 3px solid #4caf50;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #4caf50;"><strong>5. Automation Scheduling</strong></h6>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Implements automated start/stop schedules for non-production environments, saving 40-60% on compute for development and testing workloads.</p>
-      </div>
-    </div>
-
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-pie"></i> Business Benefits & ROI</h5>
-    <div style="margin: 1rem 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-      <div style="padding: 1rem; background: rgba(156, 39, 176, 0.1); border-radius: 8px; border-left: 3px solid #9c27b0;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #9c27b0;"><i class="fas fa-percent"></i> Cost Reduction</h6>
-        <p style="margin: 0; font-size: 0.9rem;">30-50% average monthly cloud cost reduction through comprehensive optimization</p>
-      </div>
-
-      <div style="padding: 1rem; background: rgba(156, 39, 176, 0.1); border-radius: 8px; border-left: 3px solid #9c27b0;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #9c27b0;"><i class="fas fa-clock"></i> Time Savings</h6>
-        <p style="margin: 0; font-size: 0.9rem;">Eliminates manual cost analysis; automated scanning runs continuously</p>
-      </div>
-
-      <div style="padding: 1rem; background: rgba(156, 39, 176, 0.1); border-radius: 8px; border-left: 3px solid #9c27b0;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #9c27b0;"><i class="fas fa-eye"></i> Visibility</h6>
-        <p style="margin: 0; font-size: 0.9rem;">Complete cost visibility with detailed reports and trend analysis</p>
-      </div>
-
-      <div style="padding: 1rem; background: rgba(156, 39, 176, 0.1); border-radius: 8px; border-left: 3px solid #9c27b0;">
-        <h6 style="margin: 0 0 0.5rem 0; color: #9c27b0;"><i class="fas fa-shield-alt"></i> Risk Mitigation</h6>
-        <p style="margin: 0; font-size: 0.9rem;">Approval workflows prevent accidental resource termination</p>
+      <div class="callout callout-ok">
+        <h6><strong>5. Automation Scheduling</strong></h6>
+        <p>Implements automated start/stop schedules for non-production environments, saving 40-60% on compute for development and testing workloads.</p>
       </div>
     </div>
-
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-target"></i> Real-World Impact Scenarios</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(33, 150, 243, 0.05); border-radius: 8px; border-left: 3px solid #2196f3;">
-      <p style="margin: 0 0 0.8rem 0;"><strong>Scenario 1 - Mid-Size SaaS Company ($50K/month AWS spend):</strong></p>
-      <p style="margin: 0 0 1rem 0; font-size: 0.95rem; color: var(--text-secondary);">Identifies 20+ oversized EC2 instances, unused RDS replicas, and abandoned S3 buckets. Estimated savings: $15K-18K/month (30-36% reduction)</p>
-
-      <p style="margin: 0 0 0.8rem 0;"><strong>Scenario 2 - Enterprise Organization ($500K/month AWS spend):</strong></p>
-      <p style="margin: 0 0 1rem 0; font-size: 0.95rem; color: var(--text-secondary);">Discovers cross-AZ data transfer inefficiencies, recommends Reserved Instance purchases, and identifies test environment waste. Potential savings: $125K-200K/month (25-40%)</p>
-
-      <p style="margin: 0 0 0.8rem 0;"><strong>Scenario 3 - Development-Heavy Organization:</strong></p>
-      <p style="margin: 0; font-size: 0.95rem; color: var(--text-secondary);">Implements automated scheduling for dev/test environments, consolidates resources, and archives old snapshots. Quick savings: $8K-12K/month with minimal effort</p>
     </div>
   </div>
 </details>
 
-<details class="project-accordion">
-  <summary>
-    <h3><i class="fas fa-clipboard-check"></i> Collins Aerospace IT Audit: Post-Incident Security Assessment</h3>
-    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
-  </summary>
-  
-  <div class="project-content">
-    <div class="accordion-badges">
-      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Completed</span>
-      <span style="background: rgba(244, 67, 54, 0.2); color: #f44336; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #f44336;">Academic Project</span>
-      <span style="background: rgba(33, 150, 243, 0.2); color: #2196f3; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #2196f3;">IT Audit</span>
+<details class="proj" id="collins-aerospace-audit" data-filter-item data-filter-group="proj" data-cat="assessment">
+  <summary class="proj-card">
+    <div class="proj-top">
+      <span class="proj-kicker">Assessment · IT audit</span>
+      <span class="pill pill-info">Academic · Completed</span>
     </div>
-
-    <div class="accordion-links">
+    <h3 class="proj-title">Collins Aerospace IT Audit: Post-Incident Assessment</h3>
+    <p class="proj-summary">A graduate IT-audit engagement on a simulated aerospace breach: COBIT-framed planning, NIST 800-30 risk assessment, CMMC Level 3 gap analysis, five headline findings, and a costed remediation roadmap.</p>
+    <div class="tag-row"><span>COBIT 2019</span><span>NIST 800-30</span><span>NIST 800-171</span><span>CMMC 2.0</span><span>ISO 27001</span><span>Risk assessment</span></div>
+    <div class="proj-foot">
+      <span><i class="fab fa-github"></i> noble-antwi/collins-aerospace-audit</span>
+      <span class="proj-open"><span class="when-closed">Read case study</span><span class="when-open">Collapse</span><i class="fas fa-chevron-down"></i></span>
+    </div>
+  </summary>
+  <div class="proj-body">
+    <div class="proj-body-inner">
+<div class="proj-links">
       <a href="https://github.com/noble-antwi/collins-aerospace-audit" target="_blank">
         <i class="fab fa-github"></i> GitHub Repository
       </a>
@@ -873,39 +745,39 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-exclamation-triangle"></i> Critical Audit Findings</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(244, 67, 54, 0.05); border-radius: 8px; border-left: 3px solid #f44336;">
-      <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
-        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
-          <td style="padding: 0.5rem 0;"><strong>1. Inadequate MFA</strong></td>
-          <td style="color: #f44336; font-weight: bold;">CRITICAL</td>
+    <h5><i class="fas fa-exclamation-triangle"></i> Critical Audit Findings</h5>
+    <div class="callout callout-danger">
+      <table class="findings-table">
+        <tr>
+          <td><strong>1. Inadequate MFA</strong></td>
+          <td class="sev sev-critical">CRITICAL</td>
           <td>60.5% of VPN accounts lack MFA</td>
         </tr>
-        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
-          <td style="padding: 0.5rem 0;"><strong>2. Privileged Access Gaps</strong></td>
-          <td style="color: #ff9800; font-weight: bold;">HIGH</td>
+        <tr>
+          <td><strong>2. Privileged Access Gaps</strong></td>
+          <td class="sev sev-high">HIGH</td>
           <td>No reviews in 30 months</td>
         </tr>
-        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
-          <td style="padding: 0.5rem 0;"><strong>3. Incident Response</strong></td>
-          <td style="color: #ff9800; font-weight: bold;">HIGH</td>
+        <tr>
+          <td><strong>3. Incident Response</strong></td>
+          <td class="sev sev-high">HIGH</td>
           <td>16-18 hour detection delay</td>
         </tr>
-        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
-          <td style="padding: 0.5rem 0;"><strong>4. Backup & DR</strong></td>
-          <td style="color: #f44336; font-weight: bold;">CRITICAL</td>
+        <tr>
+          <td><strong>4. Backup & DR</strong></td>
+          <td class="sev sev-critical">CRITICAL</td>
           <td>No air-gapped backups</td>
         </tr>
         <tr>
-          <td style="padding: 0.5rem 0;"><strong>5. Vendor Security</strong></td>
-          <td style="color: #2196f3; font-weight: bold;">MEDIUM</td>
+          <td><strong>5. Vendor Security</strong></td>
+          <td class="sev sev-medium">MEDIUM</td>
           <td>47 vendors unassessed</td>
         </tr>
       </table>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-folder-open"></i> Project Deliverables</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-folder-open"></i> Project Deliverables</h5>
+    <ul class="proj-list">
       <li><strong>Audit Planning Memo:</strong> Comprehensive planning documentation and scope definition</li>
       <li><strong>Executive Presentation:</strong> Board-level findings and recommendations presentation</li>
       <li><strong>Control Testing Procedures:</strong> Detailed testing methodology and evidence collection</li>
@@ -914,32 +786,36 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       <li><strong>NIST Risk Assessment:</strong> 8 complete assessment tables with threat modeling</li>
     </ul>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-chart-line"></i> Business Impact Analysis</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
-      <p style="margin: 0 0 0.5rem 0;"><strong>Direct Incident Costs:</strong> $15M+ in losses</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Operational Impact:</strong> 217 flights cancelled, 2.8M transactions lost</p>
-      <p style="margin: 0;"><strong>Compliance Risk:</strong> CMMC Level 3 certification required Q2 2026</p>
+    <h5><i class="fas fa-chart-line"></i> Business Impact Analysis</h5>
+    <div class="callout">
+      <p><strong>Direct Incident Costs:</strong> $15M+ in losses</p>
+      <p><strong>Operational Impact:</strong> 217 flights cancelled, 2.8M transactions lost</p>
+      <p><strong>Compliance Risk:</strong> CMMC Level 3 certification required Q2 2026</p>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-graduation-cap"></i> Academic Context</h5>
-    <p style="line-height: 1.8;">Completed as part of ITMM 586 - Information Technology Auditing at Illinois Institute of Technology (Fall 2025). The project included 12+ weekly discussions on audit concepts, ethics case studies, and real-world incident analysis including the CrowdStrike global outage (July 2024).</p>
+    <h5><i class="fas fa-graduation-cap"></i> Academic Context</h5>
+    <p>Completed as part of ITMM 586 - Information Technology Auditing at Illinois Institute of Technology (Fall 2025). The project included 12+ weekly discussions on audit concepts, ethics case studies, and real-world incident analysis including the CrowdStrike global outage (July 2024).</p>
+    </div>
   </div>
 </details>
 
-<details class="project-accordion">
-  <summary>
-    <h3><i class="fas fa-shield-virus"></i> Cyberdyne Systems: Enterprise Security Assessment</h3>
-    <span class="chevron"><i class="fas fa-chevron-down"></i></span>
-  </summary>
-  
-  <div class="project-content">
-    <div class="accordion-badges">
-      <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #4caf50;">Completed</span>
-      <span style="background: rgba(244, 67, 54, 0.2); color: #f44336; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #f44336;">Academic Project</span>
-      <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.25rem 0.6rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid #9c27b0;">Defense-in-Depth</span>
+<details class="proj" id="cyberdyne-security-assessment" data-filter-item data-filter-group="proj" data-cat="assessment">
+  <summary class="proj-card">
+    <div class="proj-top">
+      <span class="proj-kicker">Assessment · Security program</span>
+      <span class="pill pill-info">Academic · Completed</span>
     </div>
-
-    <div class="accordion-links">
+    <h3 class="proj-title">Cyberdyne Systems: Enterprise Security Assessment</h3>
+    <p class="proj-summary">A defense-in-depth program for a fictional 400-person manufacturer across two countries: 16 vulnerabilities, 13 technical controls, 11 policies, and a three-phase rollout that starts with the EOL fleet and identity.</p>
+    <div class="tag-row"><span>NIST CSF</span><span>NIST 800-171</span><span>Active Directory</span><span>SIEM</span><span>Defense in depth</span><span>Policy</span></div>
+    <div class="proj-foot">
+      <span><i class="fab fa-github"></i> noble-antwi/cyberdyne-security-assessment</span>
+      <span class="proj-open"><span class="when-closed">Read case study</span><span class="when-open">Collapse</span><i class="fas fa-chevron-down"></i></span>
+    </div>
+  </summary>
+  <div class="proj-body">
+    <div class="proj-body-inner">
+<div class="proj-links">
       <a href="https://github.com/noble-antwi/cyberdyne-security-assessment" target="_blank">
         <i class="fab fa-github"></i> GitHub Repository
       </a>
@@ -985,268 +861,91 @@ description: "Explore Noble Antwi's cloud security projects including AWS securi
       </div>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-exclamation-triangle"></i> Key Findings by Category</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(244, 67, 54, 0.05); border-radius: 8px; border-left: 3px solid #f44336;">
-      <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
-        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
-          <td style="padding: 0.5rem 0;"><strong>End-of-Life Systems</strong></td>
-          <td style="color: #f44336; font-weight: bold;">CRITICAL</td>
+    <h5><i class="fas fa-exclamation-triangle"></i> Key Findings by Category</h5>
+    <div class="callout callout-danger">
+      <table class="findings-table">
+        <tr>
+          <td><strong>End-of-Life Systems</strong></td>
+          <td class="sev sev-critical">CRITICAL</td>
           <td>800+ devices running EOL OS (Ubuntu 10.04, Windows 10 v1607)</td>
         </tr>
-        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
-          <td style="padding: 0.5rem 0;"><strong>Endpoint Protection</strong></td>
-          <td style="color: #f44336; font-weight: bold;">CRITICAL</td>
+        <tr>
+          <td><strong>Endpoint Protection</strong></td>
+          <td class="sev sev-critical">CRITICAL</td>
           <td>No centralized antivirus deployment</td>
         </tr>
-        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
-          <td style="padding: 0.5rem 0;"><strong>Data Protection</strong></td>
-          <td style="color: #f44336; font-weight: bold;">CRITICAL</td>
+        <tr>
+          <td><strong>Data Protection</strong></td>
+          <td class="sev sev-critical">CRITICAL</td>
           <td>Unencrypted data transport between facilities</td>
         </tr>
-        <tr style="border-bottom: 1px solid rgba(6, 182, 212, 0.2);">
-          <td style="padding: 0.5rem 0;"><strong>Access Management</strong></td>
-          <td style="color: #ff9800; font-weight: bold;">HIGH</td>
+        <tr>
+          <td><strong>Access Management</strong></td>
+          <td class="sev sev-high">HIGH</td>
           <td>No centralized identity management</td>
         </tr>
         <tr>
-          <td style="padding: 0.5rem 0;"><strong>Hardware Security</strong></td>
-          <td style="color: #ff9800; font-weight: bold;">HIGH</td>
+          <td><strong>Hardware Security</strong></td>
+          <td class="sev sev-high">HIGH</td>
           <td>Excessive USB ports, insufficient resources</td>
         </tr>
       </table>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-layer-group"></i> Defense-in-Depth Strategy</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
-      <p style="margin: 0 0 0.5rem 0;"><strong>Human Layer:</strong> 8 training programs including role-based specialized training</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Policy Layer:</strong> 11 security policies (AUP, Data Classification, Incident Response)</p>
-      <p style="margin: 0;"><strong>Technology Layer:</strong> 13 controls (AD, SIEM, VPN/MFA, Encryption, DLP)</p>
+    <h5><i class="fas fa-layer-group"></i> Defense-in-Depth Strategy</h5>
+    <div class="callout">
+      <p><strong>Human Layer:</strong> 8 training programs including role-based specialized training</p>
+      <p><strong>Policy Layer:</strong> 11 security policies (AUP, Data Classification, Incident Response)</p>
+      <p><strong>Technology Layer:</strong> 13 controls (AD, SIEM, VPN/MFA, Encryption, DLP)</p>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-tasks"></i> Recommended Controls (Phased)</h5>
-    <ul style="margin-left: 1.5rem; line-height: 1.8;">
+    <h5><i class="fas fa-tasks"></i> Recommended Controls (Phased)</h5>
+    <ul class="proj-list">
       <li><strong>Phase 1 (Immediate):</strong> OS Upgrade Program, Enterprise Endpoint Protection, Full-Disk Encryption, Active Directory</li>
       <li><strong>Phase 2:</strong> SIEM Implementation, VPN with MFA, Mobile Device Management, Host Firewalls</li>
       <li><strong>Phase 3:</strong> Standardized Imaging, Data Loss Prevention, Asset Management, USB Device Control</li>
     </ul>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-building"></i> Organization Profile</h5>
-    <div style="margin: 1rem 0; padding: 1rem; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border-left: 3px solid var(--accent);">
-      <p style="margin: 0 0 0.5rem 0;"><strong>Employees:</strong> 400 across 9 job categories</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Locations:</strong> California (HQ/R&D) and Taiwan (Manufacturing)</p>
-      <p style="margin: 0 0 0.5rem 0;"><strong>Device Mix:</strong> 300 Windows laptops, 200 Linux desktops, 150 Android tablets, 100+ servers</p>
-      <p style="margin: 0;"><strong>Compliance:</strong> CCPA, PDPC, NIST 800-171, FAR/DFARS</p>
+    <h5><i class="fas fa-building"></i> Organization Profile</h5>
+    <div class="callout">
+      <p><strong>Employees:</strong> 400 across 9 job categories</p>
+      <p><strong>Locations:</strong> California (HQ/R&D) and Taiwan (Manufacturing)</p>
+      <p><strong>Device Mix:</strong> 300 Windows laptops, 200 Linux desktops, 150 Android tablets, 100+ servers</p>
+      <p><strong>Compliance:</strong> CCPA, PDPC, NIST 800-171, FAR/DFARS</p>
     </div>
 
-    <h5 style="margin-top: 1.5rem;"><i class="fas fa-graduation-cap"></i> Academic Context</h5>
-    <p style="line-height: 1.8;">Completed as part of ITMO-X58 - Operating System Security at Illinois Institute of Technology (Fall 2025). This capstone project integrates concepts from Linux security mechanisms, Windows security technologies, mobile security, and defense-in-depth architecture.</p>
+    <h5><i class="fas fa-graduation-cap"></i> Academic Context</h5>
+    <p>Completed as part of ITMO-X58 - Operating System Security at Illinois Institute of Technology (Fall 2025). This capstone project integrates concepts from Linux security mechanisms, Windows security technologies, mobile security, and defense-in-depth architecture.</p>
+    </div>
   </div>
 </details>
-
-<div class="project-case-study">
-  <div class="project-header">
-    <h3 class="project-title">
-      <i class="fab fa-aws"></i>
-      Three-Tier Web Architecture on AWS
-    </h3>
-    <div class="project-links">
-      <a href="https://github.com/{{ site.social.github }}/aws-three-tier-architecture" class="project-link" target="_blank">
-        <i class="fab fa-github"></i> Source Code
-      </a>
-      <a href="#" class="project-link">
-        <i class="fas fa-external-link-alt"></i> Live Demo
-      </a>
-    </div>
-  </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-bullseye"></i> Project Objective</h5>
-    <p>Design and implement a highly available, fault-tolerant web application architecture on AWS following industry best practices for scalability, security, and cost optimization.</p>
-  </div>
-
-  <div class="tech-stack">
-    <span class="tech-tag">AWS EC2</span>
-    <span class="tech-tag">Application Load Balancer</span>
-    <span class="tech-tag">Amazon RDS</span>
-    <span class="tech-tag">Auto Scaling</span>
-    <span class="tech-tag">CloudFormation</span>
-    <span class="tech-tag">VPC</span>
-    <span class="tech-tag">IAM</span>
-    <span class="tech-tag">CloudWatch</span>
-  </div>
-
-  <div class="challenge-solution">
-    <div class="challenge">
-      <h5><i class="fas fa-exclamation-triangle"></i> Challenge</h5>
-      <p>Create a scalable architecture that can handle variable traffic loads while maintaining high availability across multiple availability zones, with proper database isolation and security controls.</p>
-    </div>
-    <div class="solution">
-      <h5><i class="fas fa-lightbulb"></i> Solution</h5>
-      <p>Implemented a three-tier architecture with web servers in public subnets, application servers in private subnets, and RDS in database subnets across multiple AZs with automated scaling and monitoring.</p>
-    </div>
-  </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-cogs"></i> Key Implementation Details</h5>
-    <ul style="margin-left: 1rem; line-height: 1.8;">
-      <li><strong>Infrastructure as Code:</strong> Used CloudFormation templates for consistent, repeatable deployments</li>
-      <li><strong>High Availability:</strong> Multi-AZ deployment with health checks and automated failover</li>
-      <li><strong>Security:</strong> Implemented security groups, NACLs, and IAM roles following least privilege principle</li>
-      <li><strong>Monitoring:</strong> CloudWatch dashboards and alarms for proactive incident response</li>
-      <li><strong>Cost Optimization:</strong> Reserved instances and auto-scaling policies to minimize costs</li>
-    </ul>
-  </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-chart-line"></i> Results & Impact</h5>
-    <p>Successfully deployed a production-ready architecture capable of handling 10,000+ concurrent users with 99.9% uptime, 30% cost reduction through optimization, and automated scaling that responds to traffic within 2 minutes.</p>
-  </div>
 </div>
 
-<div class="card">
-  <h3><i class="fab fa-microsoft"></i> Multi-Factor Authentication in Azure</h3>
-  <p><strong>Technologies:</strong> Azure Active Directory, Conditional Access, RBAC, PowerShell</p>
-  <p>Implemented comprehensive identity and access management solutions for a simulated enterprise environment. Configured MFA policies, conditional access rules, and role-based access control to enhance organizational security posture.</p>
-  
-  <div style="margin-top: 1rem;">
-    <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Azure AD</span>
-    <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">MFA</span>
-    <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Conditional Access</span>
-    <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">RBAC</span>
-  </div>
-</div>
+<div class="filter-empty" data-filter-group="proj"><p>No projects in this category yet.</p></div>
 
-<div class="card">
-  <h3><i class="fas fa-network-wired"></i> Network Traffic Analysis with Wireshark</h3>
-  <p><strong>Technologies:</strong> Wireshark, tcpdump, Network Protocols, Security Analysis</p>
-  <p>Conducted in-depth packet analysis to identify and investigate security threats including reconnaissance attempts, port scanning, and brute force attacks. Developed expertise in reading network protocols and identifying malicious patterns in traffic flows.</p>
-  
-  <div style="margin-top: 1rem;">
-    <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Wireshark</span>
-    <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Packet Analysis</span>
-    <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem;">Threat Detection</span>
-    <span style="background: var(--bg-light); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">Forensics</span>
-  </div>
-</div>
-
-<div class="project-case-study">
-  <div class="project-header">
-    <h3 class="project-title">
-      <i class="fas fa-shield-alt"></i>
-      Enterprise SIEM Implementation with Wazuh
-    </h3>
-    <div class="project-links">
-      <a href="https://github.com/{{ site.social.github }}/wazuh-siem-deployment" class="project-link" target="_blank">
-        <i class="fab fa-github"></i> Configuration
-      </a>
-      <a href="#" class="project-link">
-        <i class="fas fa-file-alt"></i> Documentation
-      </a>
+<section class="home-section" style="margin-top: 4rem;">
+  <div class="section-head">
+    <div>
+      <h2>Smaller labs</h2>
+      <p>Shorter exercises that fed into the bigger builds. More of these live in the <a href="/blog?posts=lab-notes" class="section-link">lab notes</a>.</p>
     </div>
   </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-bullseye"></i> Project Objective</h5>
-    <p>Deploy and configure a comprehensive Security Information and Event Management (SIEM) solution using Wazuh to monitor, detect, and respond to security threats across a hybrid cloud environment.</p>
-  </div>
-
-  <div class="tech-stack">
-    <span class="tech-tag">Wazuh SIEM</span>
-    <span class="tech-tag">Elasticsearch</span>
-    <span class="tech-tag">Kibana</span>
-    <span class="tech-tag">Linux</span>
-    <span class="tech-tag">Docker</span>
-    <span class="tech-tag">Python</span>
-    <span class="tech-tag">Suricata</span>
-    <span class="tech-tag">MITRE ATT&CK</span>
-  </div>
-
-  <div class="challenge-solution">
-    <div class="challenge">
-      <h5><i class="fas fa-exclamation-triangle"></i> Challenge</h5>
-      <p>Organization needed centralized security monitoring across 200+ endpoints with custom detection rules, automated threat response, and compliance reporting for SOC 2 requirements.</p>
+  <div class="mini-grid">
+    <div class="mini-card" data-filter-item data-filter-group="proj" data-cat="identity">
+      <h3><i class="fab fa-microsoft"></i> Multi-Factor Authentication in Azure</h3>
+      <p>Configured MFA, conditional access rules and role-based access control for a simulated enterprise tenant in Entra ID, scripted with PowerShell.</p>
+      <div class="tag-row"><span>Entra ID</span><span>MFA</span><span>Conditional Access</span><span>RBAC</span><span>PowerShell</span></div>
     </div>
-    <div class="solution">
-      <h5><i class="fas fa-lightbulb"></i> Solution</h5>
-      <p>Designed and deployed a scalable Wazuh cluster with custom detection rules, automated incident response playbooks, and real-time dashboards for security analysts.</p>
+    <div class="mini-card" data-filter-item data-filter-group="proj" data-cat="detection">
+      <h3><i class="fas fa-network-wired"></i> Network Traffic Analysis with Wireshark</h3>
+      <p>Packet-level investigation of reconnaissance, port scanning and brute-force attempts: reading the protocols, spotting the patterns, and writing up what the traffic actually showed.</p>
+      <div class="tag-row"><span>Wireshark</span><span>tcpdump</span><span>Packet analysis</span><span>Threat detection</span></div>
     </div>
   </div>
+</section>
 
-  <div class="project-section">
-    <h5><i class="fas fa-cogs"></i> Key Implementation Details</h5>
-    <ul style="margin-left: 1rem; line-height: 1.8;">
-      <li><strong>Architecture:</strong> Multi-node Wazuh cluster with load balancing and high availability</li>
-      <li><strong>Detection Rules:</strong> Custom rules based on MITRE ATT&CK framework for advanced threat detection</li>
-      <li><strong>Integration:</strong> Connected with Active Directory, firewalls, and cloud services for comprehensive coverage</li>
-      <li><strong>Automation:</strong> Python-based response scripts for automatic threat containment</li>
-      <li><strong>Dashboards:</strong> Executive and analyst dashboards for different stakeholder needs</li>
-    </ul>
-  </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-chart-line"></i> Results & Impact</h5>
-    <p>Reduced mean time to detection (MTTD) from 4 hours to 15 minutes, automated 80% of Level 1 SOC tasks, and achieved 100% compliance with SOC 2 security monitoring requirements. Blocked 150+ security incidents in the first month.</p>
-  </div>
-</div>
-
-<div class="project-case-study">
-  <div class="project-header">
-    <h3 class="project-title">
-      <i class="fab fa-aws"></i>
-      Secure Static Website with Global CDN
-    </h3>
-    <div class="project-links">
-      <a href="https://github.com/{{ site.social.github }}/secure-static-website" class="project-link" target="_blank">
-        <i class="fab fa-github"></i> Infrastructure
-      </a>
-    </div>
-  </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-bullseye"></i> Project Objective</h5>
-    <p>Build and deploy a secure, globally distributed static website with SSL/TLS encryption, custom domain configuration, and CDN optimization for improved performance and security.</p>
-  </div>
-
-  <div class="tech-stack">
-    <span class="tech-tag">AWS S3</span>
-    <span class="tech-tag">CloudFront</span>
-    <span class="tech-tag">Route 53</span>
-    <span class="tech-tag">ACM</span>
-    <span class="tech-tag">IAM</span>
-    <span class="tech-tag">CloudFormation</span>
-    <span class="tech-tag">Lambda@Edge</span>
-  </div>
-
-  <div class="challenge-solution">
-    <div class="challenge">
-      <h5><i class="fas fa-exclamation-triangle"></i> Challenge</h5>
-      <p>Create a cost-effective, secure hosting solution for a static website with global reach, automatic SSL renewal, and protection against common web attacks.</p>
-    </div>
-    <div class="solution">
-      <h5><i class="fas fa-lightbulb"></i> Solution</h5>
-      <p>Implemented a serverless architecture using S3 for storage, CloudFront for global distribution, and Lambda@Edge for dynamic security headers and redirects.</p>
-    </div>
-  </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-cogs"></i> Key Implementation Details</h5>
-    <ul style="margin-left: 1rem; line-height: 1.8;">
-      <li><strong>Security:</strong> Implemented security headers, HTTPS redirect, and S3 bucket policies for access control</li>
-      <li><strong>Performance:</strong> Configured CloudFront caching and compression for optimal load times</li>
-      <li><strong>Monitoring:</strong> CloudWatch metrics and alarms for uptime and performance monitoring</li>
-      <li><strong>Automation:</strong> CI/CD pipeline for automated deployments and invalidations</li>
-    </ul>
-  </div>
-
-  <div class="project-section">
-    <h5><i class="fas fa-chart-line"></i> Results & Impact</h5>
-    <p>Achieved 99.99% uptime, reduced page load times by 60% globally, and maintained hosting costs under $2/month while serving 10,000+ monthly visitors with enterprise-level security.</p>
-  </div>
-</div>
-
-<div style="text-align: center; margin-top: 3rem;">
-  <p style="color: var(--text-light); font-size: 1.1rem;">Interested in seeing more of my work?</p>
-  <a href="https://github.com/{{ site.social.github }}" class="btn" target="_blank">
-    <i class="fab fa-github"></i> View on GitHub
-  </a>
+<div class="cta-band">
+  <p>The repositories are public, and the documentation is written so someone else could rebuild the lab.</p>
+  <a href="https://github.com/{{ site.social.github }}" class="btn" target="_blank" rel="noopener"><i class="fab fa-github"></i> Browse GitHub</a>
+  <a href="/contact" class="btn btn-secondary"><i class="fas fa-envelope"></i> Get in touch</a>
 </div>
