@@ -1,13 +1,12 @@
 /* ============================================================
-   NOBLE ANTWI — UI EFFECTS
-   Scroll progress · Scroll reveal · Card spotlight
+   NOBLE ANTWI — SITE SCRIPTS
+   Scroll progress · Scroll reveal · Filter tabs (URL-persisted)
    ============================================================ */
 
 (function () {
   'use strict';
 
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 
   /* ============================================================
      SCROLL PROGRESS BAR
@@ -38,11 +37,13 @@
       '.work-card',
       '.post-card-v2',
       '.about-v2',
-      '.skill-category',
+      'details.proj',
+      '.mini-card',
       '.cert-card',
-      '.project-case-study',
-      '.post-header',
-      '.post-footer',
+      '.article-row',
+      '.course-row',
+      '.stat-strip',
+      '.cta-band',
       '.post-body > h2',
       '.post-body > h3',
       '.post-body > p',
@@ -55,13 +56,15 @@
     ];
 
     var elements = document.querySelectorAll(selectors.join(','));
+    var staggered = ['focus-card', 'work-card', 'post-card-v2', 'proj', 'cert-card', 'mini-card'];
 
     elements.forEach(function (el, i) {
       el.classList.add('reveal-item');
-      if (el.classList.contains('skill-category') || el.classList.contains('cert-card') ||
-          el.classList.contains('focus-card') || el.classList.contains('work-card') ||
-          el.classList.contains('post-card-v2')) {
-        el.style.transitionDelay = ((i % 3) * 0.08) + 's';
+      for (var k = 0; k < staggered.length; k++) {
+        if (el.classList.contains(staggered[k])) {
+          el.style.transitionDelay = ((i % 3) * 0.08) + 's';
+          break;
+        }
       }
     });
 
@@ -72,28 +75,101 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.07, rootMargin: '0px 0px -30px 0px' });
+    }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
 
     elements.forEach(function (el) { observer.observe(el); });
   }
 
   /* ============================================================
-     CARD SPOTLIGHT  (cursor-following glow inside each card)
+     FILTER TABS
+     Markup contract:
+       <div data-filter-group="posts">
+         <button class="filter-tab" data-filter="all">…</button>
+         <button class="filter-tab" data-filter="learning">…</button>
+       </div>
+       …
+       <div data-filter-item data-filter-group="posts" data-cat="learning">…</div>
+       <div class="filter-empty" data-filter-group="posts">…</div>
+     The active tab is written to ?<group>=<value> so a refresh
+     (or a shared link) lands on the same view.
   ============================================================ */
-  function initCardSpotlight() {
-    if (isTouch) return;
+  function initFilters() {
+    var groups = document.querySelectorAll('[data-filter-group]:not([data-filter-item])');
+    if (!groups.length) return;
 
-    document.querySelectorAll('.card, .skill-category, .cert-card, .project-case-study').forEach(function (card) {
-      card.addEventListener('mousemove', function (e) {
-        var r = card.getBoundingClientRect();
-        card.style.setProperty('--sx', ((e.clientX - r.left) / r.width  * 100) + '%');
-        card.style.setProperty('--sy', ((e.clientY - r.top)  / r.height * 100) + '%');
-        card.classList.add('spotlight-active');
+    var params = new URLSearchParams(window.location.search);
+
+    groups.forEach(function (bar) {
+      var group = bar.getAttribute('data-filter-group');
+      var tabs = bar.querySelectorAll('.filter-tab[data-filter]');
+      if (!tabs.length) return;
+
+      var items = document.querySelectorAll('[data-filter-item][data-filter-group="' + group + '"]');
+      var empty = document.querySelector('.filter-empty[data-filter-group="' + group + '"]');
+
+      function apply(value, pushUrl) {
+        var shown = 0;
+        items.forEach(function (item) {
+          var cats = (item.getAttribute('data-cat') || '').split(/\s+/);
+          var match = value === 'all' || cats.indexOf(value) !== -1;
+          item.classList.toggle('is-hidden', !match);
+          if (match) shown++;
+        });
+
+        tabs.forEach(function (tab) {
+          var active = tab.getAttribute('data-filter') === value;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+
+        if (empty) empty.classList.toggle('is-visible', shown === 0);
+
+        if (pushUrl && window.history && window.history.replaceState) {
+          var p = new URLSearchParams(window.location.search);
+          if (value === 'all') p.delete(group); else p.set(group, value);
+          var qs = p.toString();
+          window.history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
+        }
+      }
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          apply(tab.getAttribute('data-filter'), true);
+        });
       });
-      card.addEventListener('mouseleave', function () {
-        card.classList.remove('spotlight-active');
+
+      var initial = params.get(group) || 'all';
+      var valid = false;
+      tabs.forEach(function (tab) { if (tab.getAttribute('data-filter') === initial) valid = true; });
+      apply(valid ? initial : 'all', false);
+    });
+  }
+
+  /* ============================================================
+     PROJECT CARDS
+     Only one case study open at a time; opening scrolls it into
+     view; a ?project=<id> link opens that card on load.
+  ============================================================ */
+  function initProjects() {
+    var cards = document.querySelectorAll('details.proj');
+    if (!cards.length) return;
+
+    cards.forEach(function (card) {
+      card.addEventListener('toggle', function () {
+        if (!card.open) return;
+        cards.forEach(function (other) { if (other !== card && other.open) other.open = false; });
+        setTimeout(function () {
+          var top = card.getBoundingClientRect().top + window.pageYOffset - 84;
+          window.scrollTo({ top: top, behavior: reducedMotion ? 'auto' : 'smooth' });
+        }, 60);
       });
     });
+
+    var wanted = new URLSearchParams(window.location.search).get('project') || (window.location.hash || '').replace('#', '');
+    if (wanted) {
+      var target = document.getElementById(wanted);
+      if (target && target.tagName === 'DETAILS') target.open = true;
+    }
   }
 
   /* ============================================================
@@ -102,7 +178,8 @@
   function boot() {
     initScrollProgress();
     initScrollReveal();
-    initCardSpotlight();
+    initFilters();
+    initProjects();
   }
 
   if (document.readyState === 'loading') {

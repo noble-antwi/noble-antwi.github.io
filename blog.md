@@ -1,372 +1,166 @@
-
 ---
 layout: default
 title: Blog
-description: "Noble Antwi's technical blog - lab notes, project updates, learning journals, and cloud security articles covering AWS, Azure, IAM, and DevSecOps."
+description: "Noble Antwi's writing: lab notes from the homelab and IAM builds, certification study logs, and published articles on AWS security, identity, and threat analysis."
 ---
 
-<h1><i class="fas fa-blog"></i> Writing & Notes</h1>
+<div class="page-head">
+  <p class="page-kicker">Writing</p>
+  <h1 class="page-title">Lab notes, study logs, and the occasional long read</h1>
+  <p class="page-lead">Raw notes from what I'm building and studying, written as I go, plus polished articles published on Medium.</p>
+</div>
 
-<p style="text-align: center; font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 3rem;">
-  Personal learning notes from my day-to-day journey, alongside polished articles published on Medium.
-</p>
+{% assign posts = site.posts %}
+{% assign learning_count = posts | where: "category", "learning" | size %}
+{% assign labnotes_count = posts | where: "category", "lab-notes" | size %}
+{% assign project_count = posts | where: "category", "project-update" | size %}
+{% assign cloudsec_count = posts | where: "category", "cloud-security" | size %}
+{% assign til_count = posts | where: "category", "til" | size %}
 
-<!-- ======================================================== -->
-<!-- SECTION 1: MY LEARNING JOURNAL                           -->
-<!-- ======================================================== -->
-{% assign local_posts = site.posts %}
-{% if local_posts.size > 0 %}
-
-<div style="background: rgba(6, 182, 212, 0.04); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: 14px; padding: 2rem; margin-bottom: 3rem;">
-
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+<section class="blog-section" id="journal">
+  <div class="section-head">
     <div>
-      <h2 style="margin: 0;"><i class="fas fa-book-open"></i> My Learning Journal</h2>
-      <p style="color: var(--text-secondary); margin: 0.5rem 0 0; font-size: 0.95rem;">Raw, personal notes - things I have built, things I have learnt, things that confused me and how I figured them out.</p>
+      <h2>Journal</h2>
+      <p>{{ posts.size }} entries. Things I built, things I learned, and the parts that confused me until they didn't.</p>
     </div>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.9rem; border-radius: 20px; font-size: 0.85rem; border: 1px solid rgba(6, 182, 212, 0.4); white-space: nowrap; align-self: flex-start;">{{ local_posts.size }} {% if local_posts.size == 1 %}entry{% else %}entries{% endif %}</span>
+    <a href="/feed.xml" class="section-link"><i class="fas fa-rss"></i> RSS</a>
   </div>
 
-  <!-- Category Filter Tabs -->
-  <div id="blog-filter-tabs" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; padding-bottom: 1.2rem; border-bottom: 1px solid rgba(6, 182, 212, 0.15);">
-
-    {% assign all_count = local_posts.size %}
-    <button onclick="filterPosts('all')" data-tab="all" class="blog-tab active-tab" style="background: rgba(6,182,212,0.2); color: #06b6d4; border: 1px solid rgba(6,182,212,0.5); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-      All <span style="background: rgba(6,182,212,0.3); padding: 0.1rem 0.5rem; border-radius: 10px; font-size: 0.78rem; margin-left: 0.3rem;">{{ all_count }}</span>
-    </button>
-
-    {% assign learning_count = local_posts | where: "category", "learning" | size %}
-    {% if learning_count > 0 %}
-    <button onclick="filterPosts('learning')" data-tab="learning" class="blog-tab" style="background: transparent; color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-      <i class="fas fa-graduation-cap" style="font-size: 0.78rem;"></i> Learning <span style="background: rgba(255,255,255,0.08); padding: 0.1rem 0.5rem; border-radius: 10px; font-size: 0.78rem; margin-left: 0.3rem;">{{ learning_count }}</span>
-    </button>
-    {% endif %}
-
-    {% assign labnotes_count = local_posts | where: "category", "lab-notes" | size %}
-    {% if labnotes_count > 0 %}
-    <button onclick="filterPosts('lab-notes')" data-tab="lab-notes" class="blog-tab" style="background: transparent; color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-      <i class="fas fa-flask" style="font-size: 0.78rem;"></i> Lab Notes <span style="background: rgba(255,255,255,0.08); padding: 0.1rem 0.5rem; border-radius: 10px; font-size: 0.78rem; margin-left: 0.3rem;">{{ labnotes_count }}</span>
-    </button>
-    {% endif %}
-
-    {% assign project_count = local_posts | where: "category", "project-update" | size %}
-    {% if project_count > 0 %}
-    <button onclick="filterPosts('project-update')" data-tab="project-update" class="blog-tab" style="background: transparent; color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-      <i class="fas fa-code-branch" style="font-size: 0.78rem;"></i> Projects <span style="background: rgba(255,255,255,0.08); padding: 0.1rem 0.5rem; border-radius: 10px; font-size: 0.78rem; margin-left: 0.3rem;">{{ project_count }}</span>
-    </button>
-    {% endif %}
-
-    {% assign cloudsec_count = local_posts | where: "category", "cloud-security" | size %}
-    {% if cloudsec_count > 0 %}
-    <button onclick="filterPosts('cloud-security')" data-tab="cloud-security" class="blog-tab" style="background: transparent; color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-      <i class="fas fa-cloud" style="font-size: 0.78rem;"></i> Cloud Security <span style="background: rgba(255,255,255,0.08); padding: 0.1rem 0.5rem; border-radius: 10px; font-size: 0.78rem; margin-left: 0.3rem;">{{ cloudsec_count }}</span>
-    </button>
-    {% endif %}
-
-    {% assign til_count = local_posts | where: "category", "til" | size %}
-    {% if til_count > 0 %}
-    <button onclick="filterPosts('til')" data-tab="til" class="blog-tab" style="background: transparent; color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-      <i class="fas fa-lightbulb" style="font-size: 0.78rem;"></i> TIL <span style="background: rgba(255,255,255,0.08); padding: 0.1rem 0.5rem; border-radius: 10px; font-size: 0.78rem; margin-left: 0.3rem;">{{ til_count }}</span>
-    </button>
-    {% endif %}
-
+  <div class="filter-tabs" data-filter-group="posts" role="group" aria-label="Filter posts">
+    <button class="filter-tab is-active" data-filter="all" aria-pressed="true">All <span class="count">{{ posts.size }}</span></button>
+    {% if labnotes_count > 0 %}<button class="filter-tab" data-filter="lab-notes" aria-pressed="false"><i class="fas fa-flask"></i> Lab notes <span class="count">{{ labnotes_count }}</span></button>{% endif %}
+    {% if learning_count > 0 %}<button class="filter-tab" data-filter="learning" aria-pressed="false"><i class="fas fa-graduation-cap"></i> Learning <span class="count">{{ learning_count }}</span></button>{% endif %}
+    {% if project_count > 0 %}<button class="filter-tab" data-filter="project-update" aria-pressed="false"><i class="fas fa-code-branch"></i> Project updates <span class="count">{{ project_count }}</span></button>{% endif %}
+    {% if cloudsec_count > 0 %}<button class="filter-tab" data-filter="cloud-security" aria-pressed="false"><i class="fas fa-cloud"></i> Cloud security <span class="count">{{ cloudsec_count }}</span></button>{% endif %}
+    {% if til_count > 0 %}<button class="filter-tab" data-filter="til" aria-pressed="false"><i class="fas fa-lightbulb"></i> TIL <span class="count">{{ til_count }}</span></button>{% endif %}
   </div>
 
-  <!-- Post count indicator -->
-  <div id="post-count-label" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-    Showing all {{ local_posts.size }} entries
-  </div>
-
-  <!-- All Posts -->
-  <div id="posts-grid" style="display: grid; gap: 1.2rem;">
-  {% for post in local_posts %}
-    <div class="post-card" data-category="{{ post.category }}" style="background: var(--bg-light); border: 1px solid rgba(6, 182, 212, 0.15); border-left: 4px solid var(--accent); border-radius: 10px; padding: 1.3rem 1.5rem; transition: opacity 0.2s, transform 0.2s;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.7rem;">
-        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-          {% if post.category == "lab-notes" %}
-            <span style="background: rgba(76, 175, 80, 0.2); color: #4caf50; padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.78rem; border: 1px solid #4caf50;"><i class="fas fa-flask"></i> Lab Notes</span>
-          {% elsif post.category == "project-update" %}
-            <span style="background: rgba(33, 150, 243, 0.2); color: #2196f3; padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.78rem; border: 1px solid #2196f3;"><i class="fas fa-code-branch"></i> Project Update</span>
-          {% elsif post.category == "til" %}
-            <span style="background: rgba(255, 193, 7, 0.2); color: #ffc107; padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.78rem; border: 1px solid #ffc107;"><i class="fas fa-lightbulb"></i> TIL</span>
-          {% elsif post.category == "learning" %}
-            <span style="background: rgba(156, 39, 176, 0.2); color: #9c27b0; padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.78rem; border: 1px solid #9c27b0;"><i class="fas fa-graduation-cap"></i> Learning</span>
-          {% elsif post.category == "cloud-security" %}
-            <span style="background: rgba(6, 182, 212, 0.2); color: var(--accent); padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.78rem; border: 1px solid var(--accent);"><i class="fas fa-cloud"></i> Cloud Security</span>
-          {% else %}
-            <span style="background: rgba(6, 182, 212, 0.2); color: var(--accent); padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.78rem; border: 1px solid var(--accent);"><i class="fas fa-pen"></i> {{ post.category }}</span>
-          {% endif %}
-          {% if post.read_time %}<span style="color: var(--text-muted); font-size: 0.8rem;"><i class="fas fa-clock"></i> {{ post.read_time }} min read</span>{% endif %}
-        </div>
-        <span style="color: var(--text-muted); font-size: 0.82rem; white-space: nowrap;"><i class="fas fa-calendar"></i> {{ post.date | date: "%b %-d, %Y" }}</span>
+  <div class="post-grid-v2">
+    {% for post in posts %}
+    <a href="{{ post.url }}" class="post-card-v2" data-filter-item data-filter-group="posts" data-cat="{{ post.category }}">
+      <div class="post-meta-v2">
+        {% if post.category %}<span class="cat">{{ post.category | replace: "-", " " }}</span><span>·</span>{% endif %}
+        <span>{{ post.date | date: "%b %-d, %Y" }}</span>
+        {% if post.read_time %}<span>·</span><span>{{ post.read_time }} min</span>{% endif %}
       </div>
-      <h3 style="margin: 0 0 0.5rem; font-size: 1.08rem; color: var(--text-light);">{{ post.title }}</h3>
-      <p style="color: var(--text-secondary); margin-bottom: 0.9rem; font-size: 0.92rem; line-height: 1.65;">{{ post.excerpt | strip_html | truncate: 180 }}</p>
-      {% if post.tags %}
-      <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.9rem;">
-        {% for tag in post.tags %}
-        <span style="background: rgba(6, 182, 212, 0.08); color: var(--accent); padding: 0.1rem 0.45rem; border-radius: 6px; font-size: 0.77rem;">{{ tag }}</span>
-        {% endfor %}
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncate: 160 }}</p>
+      {% if post.tags and post.tags.size > 0 %}
+      <div class="tag-row">
+        {% for tag in post.tags limit:4 %}<span>{{ tag }}</span>{% endfor %}
       </div>
       {% endif %}
-      <a href="{{ post.url }}" style="color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.92rem;">Read entry <i class="fas fa-arrow-right"></i></a>
-    </div>
-  {% endfor %}
+    </a>
+    {% endfor %}
   </div>
 
-  <!-- Empty state when filter has no results -->
-  <div id="no-results" style="display: none; text-align: center; padding: 2rem; color: var(--text-secondary);">
-    <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.4;"></i>
+  <div class="filter-empty" data-filter-group="posts">
+    <i class="fas fa-search" style="font-size: 1.6rem; opacity: 0.5;"></i>
     <p>No posts in this category yet.</p>
   </div>
+</section>
 
-  <!-- Show more button -->
-  <div id="show-more-wrap" style="display: none; text-align: center; margin-top: 1.5rem;">
-    <button id="show-more-btn" onclick="showMore()" style="background: transparent; color: #06b6d4; border: 1px solid rgba(6,182,212,0.4); padding: 0.6rem 1.8rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-      Show next 10
-    </button>
+<section class="blog-section" id="articles">
+  <div class="section-head">
+    <div>
+      <h2>Published articles</h2>
+      <p>Longer, edited pieces on Medium and AWS in Plain English.</p>
+    </div>
+    <a href="https://medium.com/@noble-antwi" class="section-link" target="_blank" rel="noopener">Medium profile <i class="fas fa-external-link-alt"></i></a>
   </div>
 
-</div>
-{% endif %}
-
-<!-- ======================================================== -->
-<!-- SECTION 2: PUBLISHED ARTICLES (Medium)                   -->
-<!-- ======================================================== -->
-<div style="margin-bottom: 1rem;">
-  <h2 style="margin: 0 0 0.5rem;"><i class="fas fa-newspaper"></i> Published Articles</h2>
-  <p style="color: var(--text-secondary); font-size: 0.95rem; margin: 0 0 0.5rem;">Long-form, polished articles published on <a href="https://medium.com/@noble-antwi" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600;">Medium</a>. Structured write-ups with in-depth coverage across cloud security, cybersecurity, and infrastructure.</p>
-</div>
-
-<h3 style="margin-top: 2rem;"><i class="fab fa-aws"></i> AWS and Cloud Security</h3>
-
-<div class="card">
-  <h3><i class="fas fa-lock"></i> Why Cloud Security is No Longer Optional for Growing Businesses</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> July 8, 2025</p>
-  <p>Cloud computing has fundamentally reshaped how businesses operate. This article explores why cloud security is critical for growing businesses and the evolving threat landscape in modern cloud environments.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Cloud Security</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">AWS</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Best Practices</span>
+  <div class="filter-tabs" data-filter-group="articles" role="group" aria-label="Filter articles">
+    <button class="filter-tab is-active" data-filter="all" aria-pressed="true">All <span class="count">11</span></button>
+    <button class="filter-tab" data-filter="aws" aria-pressed="false"><i class="fab fa-aws"></i> AWS &amp; cloud <span class="count">6</span></button>
+    <button class="filter-tab" data-filter="threat" aria-pressed="false"><i class="fas fa-crosshairs"></i> Threat analysis <span class="count">5</span></button>
   </div>
-  <a href="https://aws.plainenglish.io/why-cloud-security-is-no-longer-optional-for-growing-businesses-812f04a708cb" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
-</div>
 
-<div class="card">
-  <h3><i class="fas fa-shield-alt"></i> Using Service Control Policies (SCPs) to Restrict AWS Account Access</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> April 16, 2025 &nbsp;|&nbsp; AWS in Plain English</p>
-  <p>A comprehensive hands-on guide on implementing Service Control Policies to enforce security controls and restrict access across AWS accounts. Learn how to leverage AWS Organizations for effective multi-account security governance.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">AWS Organizations</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">SCPs</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">IAM</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Access Control</span>
+  <div class="article-list">
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="aws" href="https://aws.plainenglish.io/why-cloud-security-is-no-longer-optional-for-growing-businesses-812f04a708cb" target="_blank" rel="noopener">
+      <div>
+        <h3>Why Cloud Security Is No Longer Optional for Growing Businesses</h3>
+        <div class="article-meta"><b>AWS in Plain English</b> · July 8, 2025 · Cloud security, AWS, best practices</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="aws" href="https://aws.plainenglish.io/using-service-control-policies-scps-to-restrict-aws-account-access-a-hands-on-guide-f818be31c88f" target="_blank" rel="noopener">
+      <div>
+        <h3>Using Service Control Policies (SCPs) to Restrict AWS Account Access: A Hands-On Guide</h3>
+        <div class="article-meta"><b>AWS in Plain English</b> · April 16, 2025 · AWS Organizations, SCPs, IAM</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="aws" href="https://medium.com/@noble-antwi/building-an-aws-multi-account-structure-with-aws-organizations-hands-on-guide-e09a0f0d2bf6" target="_blank" rel="noopener">
+      <div>
+        <h3>Building an AWS Multi-Account Structure with AWS Organizations</h3>
+        <div class="article-meta"><b>Medium</b> · April 15, 2025 · AWS Organizations, multi-account, governance</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="aws" href="https://medium.com/@noble-antwi/guardduty-runtime-monitoring-for-ec2-a-hands-on-guide-with-troubleshooting-3d4976cb4158" target="_blank" rel="noopener">
+      <div>
+        <h3>GuardDuty Runtime Monitoring for EC2: A Hands-On Guide with Troubleshooting</h3>
+        <div class="article-meta"><b>Medium</b> · February 27, 2025 · GuardDuty, EC2, threat detection</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="aws" href="https://medium.com/@noble-antwi/implementing-envelope-encryption-with-aws-kms-a-step-by-step-guide-91fda46879c4" target="_blank" rel="noopener">
+      <div>
+        <h3>Implementing Envelope Encryption with AWS KMS: A Step-by-Step Guide</h3>
+        <div class="article-meta"><b>Medium</b> · February 16, 2025 · KMS, encryption, data security</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="aws" href="https://aws.plainenglish.io/data-loss-prevention-in-the-cloud-a-comprehensive-guide-with-a-focus-on-aws-d49e37f31b39" target="_blank" rel="noopener">
+      <div>
+        <h3>Data Loss Prevention in the Cloud: A Comprehensive Guide with a Focus on AWS</h3>
+        <div class="article-meta"><b>AWS in Plain English</b> · Data protection, DLP, compliance</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="threat" href="https://medium.com/@noble-antwi/digital-deception-dissecting-a-phishing-email-and-its-malicious-payload-e1eb61985a0a" target="_blank" rel="noopener">
+      <div>
+        <h3>Digital Deception: Dissecting a Phishing Email and Its Malicious Payload</h3>
+        <div class="article-meta"><b>Medium</b> · January 13, 2025 · Phishing, malware analysis, threat intel</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="threat" href="https://medium.com/@noble-antwi/advanced-techniques-in-email-header-analysis-for-phishing-detection-c5567f1caa00" target="_blank" rel="noopener">
+      <div>
+        <h3>Advanced Techniques in Email Header Analysis for Phishing Detection</h3>
+        <div class="article-meta"><b>Medium</b> · January 13, 2025 · Email forensics, header analysis, detection</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="threat" href="https://medium.com/@noble-antwi/phishing-attack-detection-and-response-a-case-study-of-mighty-solutions-inc-c8c302fea859" target="_blank" rel="noopener">
+      <div>
+        <h3>Phishing Detection and Mitigation in Practice: The Mighty Solutions, Inc. Case</h3>
+        <div class="article-meta"><b>Medium</b> · January 10, 2025 · Incident response, mitigation, case study</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="threat" href="https://medium.com/@noble-antwi/microsoft-security-updates-critical-fixes-and-zero-day-vulnerabilities-5398b24aa041" target="_blank" rel="noopener">
+      <div>
+        <h3>Microsoft Security Updates: Critical Fixes and Zero-Day Vulnerabilities</h3>
+        <div class="article-meta"><b>Medium</b> · January 2025 · Security updates, vulnerabilities, patch management</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
+    <a class="article-row" data-filter-item data-filter-group="articles" data-cat="threat aws" href="https://medium.com/@noble-antwi/launching-an-ec2-linux-hands-on-lab-94a1a6d6d49b" target="_blank" rel="noopener">
+      <div>
+        <h3>Launching an EC2 Linux Hands-On Lab</h3>
+        <div class="article-meta"><b>Medium</b> · 2025 · EC2, Linux, hands-on lab</div>
+      </div>
+      <span class="article-go">Read <i class="fas fa-arrow-right"></i></span>
+    </a>
   </div>
-  <a href="https://aws.plainenglish.io/using-service-control-policies-scps-to-restrict-aws-account-access-a-hands-on-guide-f818be31c88f" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
-</div>
 
-<div class="card">
-  <h3><i class="fas fa-sitemap"></i> Building an AWS Multi-Account Structure with AWS Organizations</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> April 15, 2025</p>
-  <p>A practical hands-on lab walkthrough on implementing AWS Organizations for multi-account management. Learn the steps to structure multiple AWS accounts for scalability, security, and cost optimization.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">AWS Organizations</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Multi-Account</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Infrastructure</span>
+  <div class="filter-empty" data-filter-group="articles">
+    <p>No articles in this category yet.</p>
   </div>
-  <a href="https://medium.com/@noble-antwi/building-an-aws-multi-account-structure-with-aws-organizations-hands-on-guide-e09a0f0d2bf6?postPublishedType=repub" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
+</section>
+
+<div class="cta-band">
+  <p>Want to talk through any of this, or working on something similar?</p>
+  <a href="/contact" class="btn"><i class="fas fa-envelope"></i> Get in touch</a>
 </div>
-
-<div class="card">
-  <h3><i class="fas fa-satellite"></i> GuardDuty - Runtime Monitoring for EC2: A Hands-on Guide</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> February 27, 2025</p>
-  <p>Learn how to implement AWS GuardDuty for runtime monitoring of EC2 instances. Includes hands-on implementation steps and troubleshooting techniques for detecting and responding to threats in your AWS environment.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">GuardDuty</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">EC2</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Threat Detection</span>
-  </div>
-  <a href="https://medium.com/@noble-antwi/guardduty-runtime-monitoring-for-ec2-a-hands-on-guide-with-troubleshooting-3d4976cb4158" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
-</div>
-
-<div class="card">
-  <h3><i class="fas fa-key"></i> Implementing Envelope Encryption with AWS KMS</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> February 16, 2025</p>
-  <p>A step-by-step guide on implementing envelope encryption using AWS Key Management Service (KMS). Understand how to secure your data at rest with advanced cryptographic techniques.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">KMS</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Encryption</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Data Security</span>
-  </div>
-  <a href="https://medium.com/@noble-antwi/implementing-envelope-encryption-with-aws-kms-a-step-by-step-guide-91fda46879c4" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
-</div>
-
-<h2 style="margin-top: 3rem;"><i class="fas fa-exclamation-triangle"></i> Security and Threat Analysis</h2>
-
-<div class="card">
-  <h3><i class="fas fa-envelope"></i> Digital Deception: Dissecting a Phishing Email and Its Malicious Payload</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> January 13, 2025</p>
-  <p>A deep technical analysis of a phishing attack, breaking down the attack chain, payload analysis, and indicators of compromise. Learn how to identify and respond to sophisticated phishing attempts.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Phishing</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Malware Analysis</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Threat Intel</span>
-  </div>
-  <a href="https://medium.com/@noble-antwi/digital-deception-dissecting-a-phishing-email-and-its-malicious-payload-e1eb61985a0a" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
-</div>
-
-<div class="card">
-  <h3><i class="fas fa-code"></i> Advanced Techniques in Email Header Analysis for Phishing Detection</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> January 13, 2025</p>
-  <p>Master the techniques of email header analysis to detect and prevent phishing attacks. Learn how to trace email origins, identify spoofing attempts, and extract valuable forensic information from email metadata.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Email Forensics</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Header Analysis</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Detection</span>
-  </div>
-  <a href="https://medium.com/@noble-antwi/advanced-techniques-in-email-header-analysis-for-phishing-detection-c5567f1caa00" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
-</div>
-
-<div class="card">
-  <h3><i class="fas fa-shield-alt"></i> Phishing Detection and Mitigation in Practice: The Mighty Solutions, Inc. Case</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> January 10, 2025</p>
-  <p>A real-world case study on identifying and mitigating phishing attacks in an organisational context. Learn practical strategies for threat detection, incident response, and employee security awareness.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Incident Response</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Mitigation</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Case Study</span>
-  </div>
-  <a href="https://medium.com/@noble-antwi/phishing-attack-detection-and-response-a-case-study-of-mighty-solutions-inc-c8c302fea859" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
-</div>
-
-<div class="card">
-  <h3><i class="fas fa-database"></i> Data Loss Prevention in the Cloud: A Comprehensive Guide with a Focus on AWS</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> AWS in Plain English</p>
-  <p>Learn comprehensive data loss prevention strategies in cloud environments with a deep focus on AWS. Understand how to protect sensitive data at rest and in transit using AWS services and best practices.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Data Protection</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">DLP</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Compliance</span>
-  </div>
-  <a href="https://aws.plainenglish.io/data-loss-prevention-in-the-cloud-a-comprehensive-guide-with-a-focus-on-aws-d49e37f31b39" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
-</div>
-
-<div class="card">
-  <h3><i class="fas fa-shield-alt"></i> Microsoft Security Updates: Critical Fixes and Zero-Day Vulnerabilities</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> January 2025</p>
-  <p>Stay informed on the latest Microsoft security updates, critical patches, and zero-day vulnerability disclosures. Learn how to prioritise and implement security updates in your Microsoft environment.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Security Updates</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Vulnerability</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Patch Management</span>
-  </div>
-  <a href="https://medium.com/@noble-antwi/microsoft-security-updates-critical-fixes-and-zero-day-vulnerabilities-5398b24aa041" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
-</div>
-
-<h2 style="margin-top: 3rem;"><i class="fas fa-server"></i> Infrastructure and Hands-On Labs</h2>
-
-<div class="card">
-  <h3><i class="fas fa-cloud-upload-alt"></i> Launching an EC2 Linux Hands-On Lab</h3>
-  <p style="color: var(--text-muted); margin-bottom: 1rem;"><i class="fas fa-calendar"></i> 2025</p>
-  <p>A practical hands-on guide to launching and configuring EC2 Linux instances on AWS. Learn best practices for instance configuration, security, and management in a lab environment.</p>
-  <div style="margin: 1.5rem 0;">
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">EC2</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; margin-right: 0.5rem; border: 1px solid var(--accent);">Linux</span>
-    <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent); padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem; border: 1px solid var(--accent);">Hands-On Lab</span>
-  </div>
-  <a href="https://medium.com/@noble-antwi/launching-an-ec2-linux-hands-on-lab-94a1a6d6d49b" target="_blank" style="display: inline-block; margin-top: 1rem; color: var(--accent); text-decoration: none; font-weight: 600;">Read Full Article <i class="fas fa-arrow-right"></i></a>
-</div>
-
-<div style="background: rgba(6, 182, 212, 0.1); border-left: 4px solid var(--accent); padding: 2rem; border-radius: 12px; margin-top: 3rem; text-align: center;">
-  <h3 style="color: var(--accent); margin-bottom: 1rem;">Want to Read More?</h3>
-  <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Visit my Medium profile for the complete collection of articles and stay updated with new technical write-ups.</p>
-  <a href="https://medium.com/@noble-antwi" target="_blank" style="display: inline-block; padding: 0.8rem 2rem; background: var(--accent); color: var(--bg-dark); text-decoration: none; border-radius: 8px; font-weight: 600;">Visit Medium Profile <i class="fas fa-arrow-right"></i></a>
-</div>
-
-<div style="text-align: center; margin-top: 2rem;">
-  <p style="color: var(--text-light);">Want to discuss these topics or collaborate?</p>
-  <a href="/contact" class="btn">Get In Touch</a>
-</div>
-
-<!-- ======================================================== -->
-<!-- FILTER JAVASCRIPT                                         -->
-<!-- ======================================================== -->
-<script>
-var BATCH = 10;
-var activeCategory = 'all';
-var currentLimit = BATCH;
-
-function getMatchingCards() {
-  var all = document.querySelectorAll('.post-card');
-  var matched = [];
-  all.forEach(function(card) {
-    if (activeCategory === 'all' || card.getAttribute('data-category') === activeCategory) {
-      matched.push(card);
-    }
-  });
-  return matched;
-}
-
-function applyFilter() {
-  var all = document.querySelectorAll('.post-card');
-  var matched = getMatchingCards();
-  var countLabel = document.getElementById('post-count-label');
-  var noResults = document.getElementById('no-results');
-  var showMoreWrap = document.getElementById('show-more-wrap');
-  var showMoreBtn = document.getElementById('show-more-btn');
-
-  all.forEach(function(card) {
-    card.style.display = 'none';
-  });
-
-  matched.forEach(function(card, index) {
-    if (index < currentLimit) {
-      card.style.display = 'block';
-    }
-  });
-
-  var shown = Math.min(currentLimit, matched.length);
-  var remaining = matched.length - shown;
-
-  if (matched.length === 0) {
-    noResults.style.display = 'block';
-    countLabel.style.display = 'none';
-    showMoreWrap.style.display = 'none';
-  } else {
-    noResults.style.display = 'none';
-    countLabel.style.display = 'block';
-    countLabel.textContent = 'Showing ' + shown + ' of ' + matched.length + (matched.length === 1 ? ' entry' : ' entries');
-
-    if (remaining > 0) {
-      showMoreWrap.style.display = 'block';
-      var nextBatch = Math.min(BATCH, remaining);
-      showMoreBtn.textContent = 'Show next ' + nextBatch + ' (' + remaining + ' remaining)';
-    } else {
-      showMoreWrap.style.display = 'none';
-    }
-  }
-}
-
-function filterPosts(category) {
-  activeCategory = category;
-  currentLimit = BATCH;
-
-  document.querySelectorAll('.blog-tab').forEach(function(tab) {
-    var isActive = tab.getAttribute('data-tab') === category;
-    tab.style.background = isActive ? 'rgba(6,182,212,0.2)' : 'transparent';
-    tab.style.color = isActive ? '#06b6d4' : 'var(--text-secondary)';
-    tab.style.borderColor = isActive ? 'rgba(6,182,212,0.5)' : 'rgba(255,255,255,0.1)';
-  });
-
-  applyFilter();
-}
-
-function showMore() {
-  currentLimit += BATCH;
-  applyFilter();
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  applyFilter();
-});
-</script>
