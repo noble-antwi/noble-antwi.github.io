@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { byDateDesc, SERIES, categoryLabel } from '../../lib/site';
+import { ARTICLES } from '../../data/articles';
+
+const posts = (await getCollection('posts')).sort(byDateDesc);
+const series = SERIES.map((s) => ({ ...s, posts: posts.filter(s.match) })).filter((s) => s.posts.length > 0);
+const categories = [...new Set(posts.map((p) => p.data.category))];
+const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))].sort((a, b) => b - a);
+---
+
+<Base title="Writing" description="Lab notes from the homelab and IAM builds, certification study logs, and published articles on AWS security, identity, and threat analysis.">
+  <div class="container">
+    <header class="page-head">
+      <span class="kicker">Writing</span>
+      <h1 class="display h1">Lab notes, study logs, and the occasional long read.</h1>
+      <p class="lead">{posts.length} journal entries written as I go, plus {ARTICLES.length} edited articles on Medium and AWS in Plain English. <a href="/feed.xml">RSS</a> if you prefer a reader.</p>
+    </header>
+
+    <section class="section" style="padding-top:0;">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Series</span>
+          <h2 class="display h2">Read in order.</h2>
+        </div>
+      </div>
+      <div class="series-grid">
+        {series.map((s) => (
+          <a class="series-card" href={`/writing/?posts=${s.id}#journal`}>
+            <h3>{s.title}</h3>
+            <p>{s.blurb}</p>
+            <span class="count">{s.posts.length} {s.posts.length === 1 ? 'entry' : 'entries'} · {s.posts[s.posts.length - 1].data.date.getUTCFullYear()}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section" id="journal">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Journal</span>
+          <h2 class="display h2">Everything, newest first.</h2>
+        </div>
+      </div>
+      <div class="filter-tabs" data-filter-group="posts" role="group" aria-label="Filter posts">
+        <button class="filter-tab is-active" data-filter="all" aria-pressed="true">All <span class="count">{posts.length}</span></button>
+        {categories.map((c) => (
+          <button class="filter-tab" data-filter={c} aria-pressed="false">{categoryLabel(c)} <span class="count">{posts.filter((p) => p.data.category === c).length}</span></button>
+        ))}
+        {series.map((s) => (
+          <button class="filter-tab" data-filter={s.id} aria-pressed="false">{s.title} <span class="count">{s.posts.length}</span></button>
+        ))}
+      </div>
+      {years.map((y) => (
+        <>
+          <h3 class="year-label display">{y}</h3>
+          <PostList posts={posts.filter((p) => p.data.date.getUTCFullYear() === y)} filterGroup="posts" />
+        </>
+      ))}
+      <p class="filter-empty" data-filter-group="posts">No posts in this group yet.</p>
+    </section>
+
+    <section class="section" id="articles">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Published articles</span>
+          <h2 class="display h2">Longer, edited pieces.</h2>
+        </div>
+        <a class="section-link" href="https://medium.com/@noble-antwi" target="_blank" rel="noopener">Medium profile</a>
+      </div>
+      <div class="filter-tabs" data-filter-group="articles" role="group" aria-label="Filter articles">
+        <button class="filter-tab is-active" data-filter="all" aria-pressed="true">All <span class="count">{ARTICLES.length}</span></button>
+        <button class="filter-tab" data-filter="aws" aria-pressed="false">AWS &amp; cloud <span class="count">{ARTICLES.filter((a) => a.cat === 'aws').length}</span></button>
+        <button class="filter-tab" data-filter="threat" aria-pressed="false">Threat analysis <span class="count">{ARTICLES.filter((a) => a.cat === 'threat').length}</span></button>
+      </div>
+      <div class="article-list">
+        {ARTICLES.map((a) => (
+          <a class="article-row" href={a.href} target="_blank" rel="noopener" data-filter-item data-filter-group="articles" data-cat={a.cat}>
+            <div>
+              <h3>{a.title}</h3>
+              <div class="meta"><b>{a.outlet}</b> · {a.date} · {a.topics}</div>
+            </div>
+            <span class="go">Read ↗</span>
+          </a>
+        ))}
+      </div>
+      <p class="filter-empty" data-filter-group="articles">No articles in this group.</p>
+    </section>
+  </div>
+</Base>

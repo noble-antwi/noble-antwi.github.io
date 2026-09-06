@@ -1,0 +1,106 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import PostList from '../../../components/PostList.astro';
+import { byDateDesc, WORK_CATEGORIES } from '../../../lib/site';
+
+export async function getStaticPaths() {
+  const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+  return work.map((w, i) => ({
+    params: { slug: w.id },
+    props: { work: w, prev: work[i - 1] ?? null, next: work[i + 1] ?? null },
+  }));
+}
+
+const { work, prev, next } = Astro.props;
+const d = work.data;
+const { Content } = await render(work);
+const pill = d.status === 'complete' ? 'pill-ok' : d.status === 'active' ? 'pill-warn' : 'pill-info';
+
+const related = d.relatedTags.length
+  ? (await getCollection('posts')).filter((p) => p.data.tags.some((t) => d.relatedTags.includes(t))).sort(byDateDesc).slice(0, 5)
+  : [];
+---
+
+<Base title={d.title} description={d.summary}>
+  <div class="container">
+    <header class="work-head">
+      <div>
+        <span class="kicker">{d.kicker}</span>
+        <h1 class="display h1">{d.title}</h1>
+        <p class="lead">{d.summary}</p>
+      </div>
+      <dl class="work-meta">
+        <div><dt>Status</dt><dd><span class={`pill ${pill}`}>{d.statusLabel}</span></dd></div>
+        <div><dt>Area</dt><dd>{WORK_CATEGORIES[d.category]}</dd></div>
+        {d.period && <div><dt>Period</dt><dd>{d.period}</dd></div>}
+        {d.role && <div><dt>Role</dt><dd>{d.role}</dd></div>}
+        <div class="span"><dt>Links</dt><dd>
+          {d.repo && <a href={d.repo} target="_blank" rel="noopener">Repository ↗</a>}
+          {d.docs && <> · <a href={d.docs} target="_blank" rel="noopener">{d.docsLabel ?? 'Documentation'} ↗</a></>}
+        </dd></div>
+        <div class="span"><dt>Stack</dt><dd><div class="tags">{d.stack.map((t) => <span>{t}</span>)}</div></dd></div>
+      </dl>
+    </header>
+
+    {d.hero && (
+      <figure class="hero-figure">
+        <a class="frame" href={d.hero.src} target="_blank" rel="noopener" style="display:block;">
+          <Image src={d.hero} alt={d.heroAlt ?? ''} widths={[720, 1200, 1800]} sizes="(max-width: 72rem) 100vw, 72rem" />
+        </a>
+        {d.heroCaption && <figcaption>{d.heroCaption} Click to open full size.</figcaption>}
+      </figure>
+    )}
+
+    {d.stats.length > 0 && (
+      <div class="work-stats">
+        {d.stats.map((s) => <div><strong>{s.value}</strong><span>{s.label}</span></div>)}
+      </div>
+    )}
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {d.gallery.length > 0 && (
+      <section class="section" id="evidence">
+        <div class="section-head">
+          <div>
+            <span class="kicker">Evidence</span>
+            <h2 class="display h2">What it looks like when it is actually configured.</h2>
+            <p>Screenshots from the build, named and captioned so each one can be traced to the configuration it proves.</p>
+          </div>
+        </div>
+        <div class="gallery">
+          {d.gallery.map((g) => (
+            <figure>
+              <a class="frame" href={g.src.src} target="_blank" rel="noopener">
+                <Image src={g.src} alt={g.alt} width={800} densities={[1, 1.5]} />
+              </a>
+              {g.caption && <figcaption>{g.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <span class="kicker">Related writing</span>
+            <h2 class="display h2">Notes from the same work.</h2>
+          </div>
+          <a class="section-link" href="/writing/">All writing</a>
+        </div>
+        <PostList posts={related} />
+      </section>
+    )}
+
+    <nav class="pager" aria-label="More projects">
+      {prev ? <a href={`/work/${prev.id}/`}><small>← Previous</small><span class="t">{prev.data.title}</span></a> : <span></span>}
+      {next && <a class="next" href={`/work/${next.id}/`}><small>Next →</small><span class="t">{next.data.title}</span></a>}
+    </nav>
+  </div>
+</Base>
