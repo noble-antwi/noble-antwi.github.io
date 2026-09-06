@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+const updated = 'September 2026';
+---
+
+<Base title="Now" description="What Noble Antwi is building, studying and reading right now.">
+  <div class="container">
+    <header class="page-head">
+      <span class="kicker">Now · updated {updated}</span>
+      <h1 class="display h1">What I am doing this month.</h1>
+      <p class="lead">A <a href="https://nownownow.com/about" target="_blank" rel="noopener">now page</a>: the short, current answer to "what are you working on?", kept honest by being dated.</p>
+    </header>
+
+    <div class="now-grid">
+      <div>
+        <h3>Building</h3>
+        <ul>
+          <li>Rolling Wazuh agents across the <a href="/work/enterprise-security-homelab/">Biira Bank lab</a> now that SIEM01 is back on dedicated hardware, then first custom detections against DC01 telemetry.</li>
+          <li>Rebuilding the Ansible controller (ANS01) and the monitoring host (MON01) as Proxmox guests.</li>
+          <li>Hardening the last three pfSense rulesets (BlueTeam, DevOps, Monitoring) to default-deny, each rule justified and mapped.</li>
+          <li>Phase 5.2 of the <a href="/work/enterprise-iam-lab/">IAM lab</a>: adaptive, risk-based MFA in Okta.</li>
+          <li>Configuring HashiCorp Vault on the DevOps VLAN, following the <a href="/writing/?posts=vault">Vault notes</a>.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Studying</h3>
+        <ul>
+          <li>AZ-104 Azure Administrator: prep course at 93%, exam next.</li>
+          <li>SC-200 Security Operations Analyst: prep course at 89%.</li>
+          <li>Practical SOC Analyst (TCM Security): SOC 101 at 40%, working through the investigation labs.</li>
+          <li>M.S. Cybersecurity &amp; Digital Forensics coursework at Illinois Tech.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Thinking about</h3>
+        <ul>
+          <li>Treating an AI agent as a non-human identity: an AD service account, short-lived Vault credentials, firewall-scoped reach and a Wazuh audit trail, built in the lab.</li>
+          <li>What "evidence" means for a homelab: naming, registers and change logs that an auditor could follow, not just screenshots.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Open to</h3>
+        <ul>
+          <li>Cloud Security, IAM and Identity Security engineering roles, Chicago or remote.</li>
+          <li>Comparing notes on hybrid identity design and homelab builds. <a href="/contact/">Say hello</a>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</Base>

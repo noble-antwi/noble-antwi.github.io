@@ -1,0 +1,92 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { postPath, postUrl, formatDate, isoDate, categoryLabel, seriesFor, byDateDesc, SITE } from '../lib/site';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('posts')).sort(byDateDesc);
+  return posts.map((post, i) => ({
+    params: { slug: postPath(post) },
+    props: { post, newer: posts[i - 1] ?? null, older: posts[i + 1] ?? null },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
+const d = post.data;
+const { Content, headings } = await render(post);
+const series = seriesFor(post);
+const seriesPosts = series ? (await getCollection('posts')).filter(series.match).sort((a, b) => a.data.date.getTime() - b.data.date.getTime()) : [];
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const description = d.description ?? (post.body ?? '').replace(/<[^>]+>/g, '').replace(/[#*_`>\[\]]/g, '').replace(/\s+/g, ' ').trim().slice(0, 157) + '…';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: d.title,
+  datePublished: d.date.toISOString(),
+  author: { '@type': 'Person', name: SITE.author, url: SITE.url },
+  publisher: { '@type': 'Person', name: SITE.author },
+  url: new URL(postUrl(post), SITE.url).toString(),
+  description,
+  keywords: d.tags.join(', '),
+};
+---
+
+<Base title={d.title} description={description} type="article" published={d.date} tags={d.tags} jsonLd={jsonLd}>
+  <div class="container">
+    <article>
+      <header class="post-hero">
+        <span class="kicker">{categoryLabel(d.category)}{series ? ` · ${series.title}` : ''}</span>
+        <h1>{d.title}</h1>
+        <div class="meta">
+          <time datetime={isoDate(d.date)}>{formatDate(d.date)}</time>
+          {d.read_time && <span>{d.read_time} min read</span>}
+          <span>{SITE.author}</span>
+        </div>
+        {d.tags.length > 0 && <div class="tags">{d.tags.map((t) => <span>{t}</span>)}</div>}
+      </header>
+
+      {toc.length >= 4 && (
+        <details class="toc">
+          <summary>Contents</summary>
+          <ol>
+            {toc.map((h) => (
+              <li style={h.depth === 3 ? 'margin-left:1.2rem;font-size:0.86rem;' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
+            ))}
+          </ol>
+        </details>
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {series && seriesPosts.length > 1 && (
+        <aside class="series-nav" aria-label="Series">
+          <span class="kicker">Series · {series.title}</span>
+          <span class="small muted">{series.blurb}</span>
+          <ol>
+            {seriesPosts.map((p) => (
+              <li aria-current={p.id === post.id ? 'true' : undefined}>
+                {p.id === post.id ? <span>{p.data.title}</span> : <a href={postUrl(p)}>{p.data.title}</a>}
+              </li>
+            ))}
+          </ol>
+        </aside>
+      )}
+
+      <div class="author">
+        <div class="avatar" aria-hidden="true">NA</div>
+        <div>
+          <b>{SITE.author}</b>
+          <span>{SITE.tagline} · M.S. Cybersecurity &amp; Digital Forensics candidate, Illinois Tech · <a href="/contact/">Get in touch</a></span>
+        </div>
+      </div>
+
+      <nav class="pager" aria-label="Adjacent posts" style="max-width:var(--measure);">
+        {older ? <a href={postUrl(older)}><small>← Older</small><span class="t">{older.data.title}</span></a> : <span></span>}
+        {newer && <a class="next" href={postUrl(newer)}><small>Newer →</small><span class="t">{newer.data.title}</span></a>}
+      </nav>
+    </article>
+  </div>
+</Base>

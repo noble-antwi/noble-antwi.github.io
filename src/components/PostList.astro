@@ -1,0 +1,23 @@
+---
+import { postUrl, formatDate, isoDate, categoryLabel, seriesFor, type Post } from '../lib/site';
+
+interface Props {
+  posts: Post[];
+  filterGroup?: string;
+}
+const { posts, filterGroup } = Astro.props;
+---
+
+<ul class="post-list">
+  {posts.map((p) => {
+    const s = seriesFor(p);
+    const cats = [p.data.category, s?.id].filter(Boolean).join(' ');
+    return (
+      <li data-filter-item={filterGroup ? '' : undefined} data-filter-group={filterGroup} data-cat={filterGroup ? cats : undefined}>
+        <time datetime={isoDate(p.data.date)}>{formatDate(p.data.date, 'short')}</time>
+        <a class="title" href={postUrl(p)}>{p.data.title}</a>
+        <span class="meta">{s ? s.title : categoryLabel(p.data.category)}{p.data.read_time ? ` · ${p.data.read_time} min` : ''}</span>
+      </li>
+    );
+  })}
+</ul>
