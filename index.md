@@ -1,499 +1,142 @@
-
 ---
 layout: default
 title: Home
+description: "Noble Antwi: Cloud Security and Identity Engineer. AWS and Azure IAM, Entra ID, Okta, Active Directory, HashiCorp Vault, Zero Trust, and detection engineering with Wazuh and Microsoft Sentinel."
 ---
 
-<div class="profile-section">
-  <img src="assets/profile.jpg" alt="Noble Antwi - Cloud Security Engineer" class="profile-img" loading="lazy"/>
-  <h1>Welcome to my digital space : I'm Noble Antwi</h1>
-  <h3>Here, I share my journey through cloud security, infrastructure architecture, and cybersecurity, with a strong focus on identity and access management and threat detection strategies. I'm glad you're here!</h3>
-  
-  <div class="social-links">
-    <a href="https://linkedin.com/in/{{ site.social.linkedin }}" class="social-link" target="_blank">
-      <i class="fab fa-linkedin-in"></i>
+<section class="hero-v2">
+  <p class="hero-eyebrow">Hi, I'm Noble Antwi</p>
+  <h1 class="hero-title">I secure identities <span class="hero-accent">and the cloud they live in.</span></h1>
+  <p class="hero-lead">Cloud Security and Identity Engineer. I design least-privilege access on AWS and Azure, run hybrid identity across Active Directory, Entra ID and Okta, manage secrets with HashiCorp Vault, and build the detection that catches what slips through.</p>
+  <div class="hero-actions">
+    <a href="/projects" class="btn"><i class="fas fa-folder-open"></i> See my work</a>
+    <a href="/contact" class="btn btn-secondary"><i class="fas fa-envelope"></i> Get in touch</a>
+  </div>
+  <div class="hero-social">
+    <a href="https://linkedin.com/in/{{ site.social.linkedin }}" class="social-link" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+    <a href="https://github.com/{{ site.social.github }}" class="social-link" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+    <a href="mailto:{{ site.social.email }}" class="social-link" aria-label="Email"><i class="fas fa-envelope"></i></a>
+  </div>
+</section>
+
+<div class="proof-strip">
+  <a href="/cloud-certifications" class="proof-item"><i class="fab fa-aws"></i> AWS Security Specialty</a>
+  <a href="/cloud-certifications" class="proof-item"><i class="fas fa-cloud"></i> CCSP</a>
+  <a href="/cloud-certifications" class="proof-item"><i class="fab fa-microsoft"></i> SC-300 Identity Administrator</a>
+  <a href="/cloud-certifications" class="proof-item"><i class="fas fa-id-badge"></i> Okta Certified Professional</a>
+  <a href="/security-certifications" class="proof-item"><i class="fas fa-shield-alt"></i> CompTIA Security+</a>
+  <span class="proof-item"><i class="fas fa-graduation-cap"></i> M.S. Cybersecurity, Illinois Tech</span>
+</div>
+
+<section class="home-section">
+  <div class="section-head">
+    <div>
+      <h2>What I focus on</h2>
+      <p>Three areas, and they overlap on purpose: identity is the control plane for the cloud, and detection is how you know the controls held.</p>
+    </div>
+  </div>
+  <div class="focus-grid">
+    <div class="focus-card">
+      <div class="focus-icon"><i class="fas fa-user-shield"></i></div>
+      <h3>Identity &amp; Access Management</h3>
+      <p>Workforce identity end to end: directory design, SSO and federation, conditional access, privileged access, and the lifecycle work that keeps entitlements honest.</p>
+      <div class="tag-row">
+        <span>Active Directory</span><span>Entra ID</span><span>Okta</span><span>SAML / OIDC</span><span>Conditional Access</span><span>PAM</span><span>Zero Trust</span>
+      </div>
+    </div>
+    <div class="focus-card">
+      <div class="focus-icon"><i class="fas fa-cloud"></i></div>
+      <h3>Cloud Security</h3>
+      <p>Least-privilege IAM, posture assessment, and infrastructure as code on AWS and Azure, with secrets kept out of the codebase and out of the tickets.</p>
+      <div class="tag-row">
+        <span>AWS IAM</span><span>Azure RBAC</span><span>Terraform</span><span>HashiCorp Vault</span><span>Prowler</span><span>ScoutSuite</span>
+      </div>
+    </div>
+    <div class="focus-card">
+      <div class="focus-icon"><i class="fas fa-crosshairs"></i></div>
+      <h3>Detection &amp; Response</h3>
+      <p>Getting the right telemetry into a SIEM, mapping detections to ATT&amp;CK, and running the response playbook when identity or cloud controls are the ones being tested.</p>
+      <div class="tag-row">
+        <span>Wazuh</span><span>Microsoft Sentinel</span><span>MITRE ATT&amp;CK</span><span>pfSense</span><span>Wireshark</span><span>Incident Response</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="home-section">
+  <div class="section-head">
+    <div>
+      <h2>Featured work</h2>
+      <p>Labs I build and document as if a team had to inherit them.</p>
+    </div>
+    <a href="/projects" class="section-link">All projects <i class="fas fa-arrow-right"></i></a>
+  </div>
+  <div class="work-grid">
+    <div class="work-card">
+      <div class="work-kicker">Identity lab</div>
+      <h3>Enterprise IAM Lab: Hybrid Identity</h3>
+      <p>A production-style hybrid identity environment: on-prem Active Directory federated with Okta Workforce Identity and Microsoft Entra ID, with SAML, OIDC and conditional access policies modelled on a mid-size organisation.</p>
+      <div class="tag-row">
+        <span>Active Directory</span><span>Okta</span><span>Entra ID</span><span>SAML 2.0</span><span>OIDC</span><span>PowerShell</span>
+      </div>
+      <div class="work-links">
+        <a href="https://github.com/noble-antwi/enterprise-iam-lab" target="_blank" rel="noopener"><i class="fab fa-github"></i> Repository</a>
+        <a href="/projects">Case study</a>
+      </div>
+    </div>
+    <div class="work-card">
+      <div class="work-kicker">Infrastructure + detection</div>
+      <h3>Enterprise Security Homelab</h3>
+      <p>A segmented lab network behind pfSense, with a Windows Server domain controller, Linux and Windows hosts managed by Ansible, Wazuh for SIEM, and Grafana for visibility. Built as a Blue Team environment first.</p>
+      <div class="tag-row">
+        <span>pfSense</span><span>VLANs</span><span>Windows Server 2022</span><span>Wazuh</span><span>Ansible</span><span>Proxmox</span>
+      </div>
+      <div class="work-links">
+        <a href="https://github.com/noble-antwi/enterprise-security-homelab" target="_blank" rel="noopener"><i class="fab fa-github"></i> Repository</a>
+        <a href="/projects">Case study</a>
+      </div>
+    </div>
+    <div class="work-card">
+      <div class="work-kicker">Cloud posture</div>
+      <h3>Cloud Security Posture Dashboard</h3>
+      <p>Terraform deploys deliberately misconfigured AWS and Azure resources, Prowler and ScoutSuite scan them, and a Flask dashboard normalises the findings with remediation guidance and compliance mapping.</p>
+      <div class="tag-row">
+        <span>Terraform</span><span>AWS</span><span>Azure</span><span>Prowler</span><span>ScoutSuite</span><span>Python</span>
+      </div>
+      <div class="work-links">
+        <a href="https://github.com/noble-antwi/cloud-security-posture-dashboard" target="_blank" rel="noopener"><i class="fab fa-github"></i> Repository</a>
+        <a href="/projects">Case study</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="home-section">
+  <div class="section-head">
+    <div>
+      <h2>Latest writing</h2>
+      <p>Lab notes and study logs, written as I go.</p>
+    </div>
+    <a href="/blog" class="section-link">All posts <i class="fas fa-arrow-right"></i></a>
+  </div>
+  <div class="post-grid-v2">
+    {% for post in site.posts limit:3 %}
+    <a href="{{ post.url }}" class="post-card-v2">
+      <div class="post-meta-v2">
+        {% if post.category %}<span class="cat">{{ post.category | replace: "-", " " }}</span><span>·</span>{% endif %}
+        <span>{{ post.date | date: "%b %-d, %Y" }}</span>
+        {% if post.read_time %}<span>·</span><span>{{ post.read_time }} min</span>{% endif %}
+      </div>
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncate: 150 }}</p>
     </a>
-    <a href="https://github.com/{{ site.social.github }}" class="social-link" target="_blank">
-      <i class="fab fa-github"></i>
-    </a>
-    <a href="mailto:{{ site.social.email }}" class="social-link">
-      <i class="fas fa-envelope"></i>
-    </a>
+    {% endfor %}
   </div>
-</div>
+</section>
 
-<div class="card">
-  <h2><i class="fas fa-user"></i> About Me</h2>
-  <p>Hi, I'm Noble Antwi, a <strong>Cloud Security enthusiast</strong> and cybersecurity professional with over 4 years of hands-on experience in managing and securing IT infrastructures. I'm currently pursuing a Master's degree in <em>Cybersecurity and Digital Forensics</em> at the <strong>Illinois Institute of Technology</strong>, where I'm deepening my expertise in areas like digital forensics, incident response, and cloud-native security.</p>
-  
-  <p>My passion lies in <strong>cloud architecture, threat detection, identity and access management (IAM), and infrastructure protection</strong>. I've built a strong foundation in system administration and cloud engineering. Now, I'm focused on building secure, scalable systems across AWS, Azure, and Google Cloud. Whether it's implementing zero trust models, hardening Linux environments, or exploring the inner workings of modern SIEM tools, I thrive in roles that demand critical thinking and proactive defense.</p>
-  
-  <p>Outside of cybersecurity, I'm someone who values balance and creativity. Music keeps me grounded. I enjoy everything from Gospel and Lovers Rock to Afrobeat, Highlife, and HipLife. I'm also a proud supporter of Chelsea FC, even though I don't always have the time to watch every match.</p>
-  
-  <p>At my core, I'm a learner and a builder. I believe that technology, when used with purpose, can drive real and lasting impact. I'm always open to collaborating on meaningful projects or connecting with others who are passionate about innovation and security.</p>
-</div>
-
-<div class="card">
-  <h2><i class="fas fa-cogs"></i> Technical Skills & Expertise</h2>
-  <div class="skills-grid">
-    <div class="skill-category">
-      <h4><i class="fas fa-cloud"></i> Cloud Platforms & Services</h4>
-      <div class="skill-item">
-        <span class="skill-name">Amazon Web Services (AWS)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Microsoft Azure</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Google Cloud Platform</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Kubernetes (K8s)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-shield-alt"></i> SIEM & Security Monitoring</h4>
-      <div class="skill-item">
-        <span class="skill-name">Wazuh SIEM</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Splunk</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Elastic Stack (ELK)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Microsoft Sentinel</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-search"></i> Digital Forensics & Incident Response</h4>
-      <div class="skill-item">
-        <span class="skill-name">Autopsy Forensic Suite</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Volatility Memory Analysis</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">SANS DFIR Tools</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Incident Response Planning</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-network-wired"></i> Network Security & Analysis</h4>
-      <div class="skill-item">
-        <span class="skill-name">Wireshark</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Nmap & Network Scanning</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Firewall Configuration</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Network Traffic Analysis</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-bug"></i> Vulnerability Management & Testing</h4>
-      <div class="skill-item">
-        <span class="skill-name">Nessus Vulnerability Scanner</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">OpenVAS</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Metasploit Framework</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Penetration Testing</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-exclamation-triangle"></i> Risk & Compliance Management</h4>
-      <div class="skill-item">
-        <span class="skill-name">Risk Assessment & Analysis</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">NIST Cybersecurity Framework</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">ISO 27001/27002</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">PCI DSS Compliance</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-code"></i> Programming & Scripting</h4>
-      <div class="skill-item">
-        <span class="skill-name">Python</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">PowerShell</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Bash/Linux Shell</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">SQL</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-user-shield"></i> Identity & Access Management (IAM)</h4>
-      <div class="skill-item">
-        <span class="skill-name">AWS IAM & Access Controls</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Azure Active Directory (Entra ID)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Multi-Factor Authentication (MFA)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Zero Trust Architecture</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Privileged Access Management (PAM)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category">
-      <h4><i class="fas fa-cogs"></i> Infrastructure Automation & DevSecOps</h4>
-      <div class="skill-item">
-        <span class="skill-name">Ansible Automation & Configuration</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Infrastructure as Code (Terraform)</span>
-        <div class="skill-level">
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled advanced"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">Docker & Containerization</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-      <div class="skill-item">
-        <span class="skill-name">CI/CD Security Integration</span>
-        <div class="skill-level">
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot filled"></div>
-          <div class="skill-dot"></div>
-          <div class="skill-dot"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="card">
-  <h2><i class="fas fa-rocket"></i> What I Do</h2>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
-    <div style="text-align: center; padding: 1rem;">
-      <i class="fas fa-cloud" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-      <h3>☁️ Cloud Security & Architecture</h3>
-      <p>Designing and securing cloud environments on AWS, Azure, and GCP, with a focus on Zero Trust, least privilege, and compliance-driven architectures.</p>
-    </div>
-    <div style="text-align: center; padding: 1rem;">
-      <i class="fas fa-key" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-      <h3>🔐 Identity & Access Management (IAM)</h3>
-      <p>Implementing and optimizing IAM policies, roles, and authentication strategies to ensure secure, frictionless access across systems and services.</p>
-    </div>
-    <div style="text-align: center; padding: 1rem;">
-      <i class="fas fa-shield-alt" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-      <h3>🛡️ Threat Detection & Incident Response</h3>
-      <p>Proactively identifying, investigating, and responding to threats using SIEM tools, telemetry, and network behavior analysis to reduce dwell time and improve response.</p>
-    </div>
-    <div style="text-align: center; padding: 1rem;">
-      <i class="fas fa-server" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-      <h3>🧰 System Hardening & Infrastructure Defense</h3>
-      <p>Locking down systems through secure baselining, patch management, and automated monitoring to ensure resilience against common and emerging threats.</p>
-    </div>
-    <div style="text-align: center; padding: 1rem;">
-      <i class="fas fa-graduation-cap" style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
-      <h3>📈 Continuous Learning & Knowledge Sharing</h3>
-      <p>Actively exploring new cybersecurity trends, tools, and frameworks. Passionate about community building, mentorship, and sharing practical knowledge through labs and projects.</p>
-    </div>
-  </div>
-</div>
-
-<div class="card">
-  <h2><i class="fas fa-map"></i> My Journey</h2>
-  <p>This website showcases my professional evolution from system administration to cloud security engineering. Here you'll find:</p>
-  
-  <ul style="list-style: none; padding: 0; margin-top: 1rem;">
-    <li style="margin-bottom: 0.8rem;"><i class="fas fa-project-diagram" style="color: var(--accent-color); margin-right: 0.5rem;"></i> <strong>Technical Projects</strong> - Real-world implementations and labs</li>
-    <li style="margin-bottom: 0.8rem;"><i class="fas fa-certificate" style="color: var(--accent-color); margin-right: 0.5rem;"></i> <strong>Professional Certifications</strong> - Industry-recognized credentials</li>
-    <li style="margin-bottom: 0.8rem;"><i class="fas fa-blog" style="color: var(--accent-color); margin-right: 0.5rem;"></i> <strong>Technical Blog</strong> - Insights and tutorials</li>
-    <li style="margin-bottom: 0.8rem;"><i class="fas fa-network-wired" style="color: var(--accent-color); margin-right: 0.5rem;"></i> <strong>Security Labs</strong> - Hands-on experiments and research</li>
-  </ul>
-</div>
-
-<div style="text-align: center; margin: 3rem 0;">
-  <blockquote style="font-size: 1.2rem; font-style: italic; color: var(--text-light); border-left: 4px solid var(--accent-color); padding-left: 1rem; margin: 2rem 0;">
-    "Build with purpose. Defend with precision. Share with clarity."
-  </blockquote>
-  
-  <div style="margin-top: 2rem;">
-    <a href="/projects" class="btn">View My Projects</a>
-    <a href="/contact" class="btn" style="margin-left: 1rem;">Get In Touch</a>
-  </div>
-</div>
+<section class="home-section about-v2">
+  <h2>About</h2>
+  <p>I spent four years administering and securing IT infrastructure before moving fully into security, and I am now completing an M.S. in Cybersecurity and Digital Forensics at the Illinois Institute of Technology. The through-line in my work is identity: who or what is asking, what it should be allowed to do, and how you would know if that went wrong.</p>
+  <p>I document everything I build, partly so others can reuse it and partly because writing it down is how I find the gaps.</p>
+  <p class="about-note">Off the clock: Gospel, Lovers Rock, Afrobeat and Highlife, and Chelsea FC on the weekends I can manage it.</p>
+</section>
