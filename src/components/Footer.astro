@@ -1,0 +1,39 @@
+---
+import { SITE } from '../lib/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Noble Antwi</h4>
+        <p style="margin:0;max-width:30rem;">Cloud Security and Identity Engineer in Chicago. I build and document identity and cloud security environments the way a regulated organisation would have to, and I write down what I learn on the way.</p>
+      </div>
+      <div>
+        <h4>Site</h4>
+        <ul>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/writing/">Writing</a></li>
+          <li><a href="/credentials/">Credentials</a></li>
+          <li><a href="/now/">Now</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Elsewhere</h4>
+        <ul>
+          <li><a href={`https://github.com/${SITE.github}`} target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href={SITE.medium} target="_blank" rel="noopener">Medium</a></li>
+          <li><a href={`mailto:${SITE.email}`}>Email</a></li>
+          <li><a href="/feed.xml">RSS</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© {year} {SITE.author}</span>
+      <span>Built with Astro · <a href={`https://github.com/${SITE.github}/noble-antwi.github.io`} target="_blank" rel="noopener" style="color:inherit;">source</a></span>
+    </div>
+  </div>
+</footer>

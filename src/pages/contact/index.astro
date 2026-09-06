@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import { SITE } from '../../lib/site';
+---
+
+<Base title="Contact" description="Get in touch with Noble Antwi, Cloud Security and Identity Engineer in Chicago. Open to cloud security, IAM, and identity security roles.">
+  <div class="container">
+    <header class="page-head">
+      <span class="kicker">Contact</span>
+      <h1 class="display h1">Let's talk.</h1>
+      <p class="lead">Open to Cloud Security, IAM and Identity Security roles, and to conversations with people working on the same problems. Email is the fastest way to reach me; I usually reply within a day.</p>
+    </header>
+
+    <div class="contact-grid">
+      <a class="contact-card" href={`mailto:${SITE.email}`}><span class="kicker">Email</span><b>Write to me</b><span>{SITE.email}</span></a>
+      <a class="contact-card" href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener"><span class="kicker">LinkedIn</span><b>Connect</b><span>in/{SITE.linkedin}</span></a>
+      <a class="contact-card" href={`https://github.com/${SITE.github}`} target="_blank" rel="noopener"><span class="kicker">GitHub</span><b>Read the code</b><span>@{SITE.github}</span></a>
+      <a class="contact-card" href={SITE.medium} target="_blank" rel="noopener"><span class="kicker">Medium</span><b>Longer articles</b><span>@noble-antwi</span></a>
+    </div>
+
+    <section class="section">
+      <div class="now-grid">
+        <div>
+          <h3>Roles</h3>
+          <ul>
+            <li>Cloud Security Engineer</li>
+            <li>IAM / Identity Security Engineer</li>
+            <li>Security Engineer with a detection focus</li>
+            <li>{SITE.location}, or remote</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Collaboration</h3>
+          <ul>
+            <li>Open-source identity and cloud security tooling</li>
+            <li>Lab write-ups and technical writing</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Conversation</h3>
+          <ul>
+            <li>Hybrid identity design, homelab builds, the certification path</li>
+            <li>If you are earlier on the road, ask. I remember what it was like.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
