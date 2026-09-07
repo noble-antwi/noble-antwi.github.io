@@ -4,7 +4,7 @@ export interface Article {
   date: string;
   topics: string;
   href: string;
-  cat: 'aws' | 'threat';
+  cat: 'aws' | 'threat' | 'other';
 }
 
 export const ARTICLES: Article[] = [

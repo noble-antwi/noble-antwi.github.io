@@ -17,6 +17,9 @@ stats:
   - { value: "13", label: "Technical controls" }
   - { value: "11", label: "Security policies" }
   - { value: "800+", label: "Devices assessed" }
+hero: ../../assets/work/cyberdyne-security-assessment/diagram.svg
+heroAlt: "Defense-in-depth layers (human, policy, technology) with the key findings and a three-phase rollout"
+heroCaption: "Three layers of control and the rollout order. Identity goes in Phase 1 because every later control depends on it."
 ---
 
 Conduct a comprehensive enterprise security assessment for Cyberdyne Systems Corporation, a fictional AI and robotics manufacturing company with 400 employees across California and Taiwan. The assessment identifies critical vulnerabilities and provides a complete defense-in-depth security program addressing technology, policy, and human factors.

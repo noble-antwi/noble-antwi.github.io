@@ -3,9 +3,10 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { byDateDesc, SERIES, categoryLabel } from '../../lib/site';
-import { ARTICLES } from '../../data/articles';
+import { getArticles } from '../../lib/medium';
 
 const posts = (await getCollection('posts')).sort(byDateDesc);
+const ARTICLES = await getArticles();
 const series = SERIES.map((s) => ({ ...s, posts: posts.filter(s.match) })).filter((s) => s.posts.length > 0);
 const categories = [...new Set(posts.map((p) => p.data.category))];
 const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))].sort((a, b) => b - a);

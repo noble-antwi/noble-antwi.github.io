@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="Inter, -apple-system, Segoe UI, Roboto, sans-serif" font-size="15">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#0b6b63"/></marker>
+    <style>
+      .t{font-family:Georgia,'Iowan Old Style',serif;fill:#16181d}
+      .k{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;letter-spacing:1.6px;fill:#0b6b63}
+      .m{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;fill:#7b8089}
+      .s{fill:#4a4f58;font-size:13px}
+      .box{fill:#ffffff;stroke:#ddd7cb;stroke-width:1.2}
+      .acc{fill:#0b6b63}
+      .ln{stroke:#0b6b63;stroke-width:1.6;fill:none;marker-end:url(#a)}
+    </style>
+  </defs>
+  <rect width="1200" height="640" fill="#f8f6f1"/>
+
+  <text x="60" y="58" class="k">CLOUD SECURITY POSTURE DASHBOARD · PIPELINE</text>
+  <text x="60" y="100" class="t" font-size="30">Deploy the misconfiguration, then prove the scanner finds it.</text>
+  <text x="60" y="126" class="s">Five stages, two clouds, one findings schema. Every run ends with a remediation the operator can dry-run first.</text>
+
+  <!-- stage boxes -->
+  <g>
+    <rect x="60" y="190" width="196" height="150" rx="10" class="box"/>
+    <rect x="60" y="190" width="196" height="4" class="acc"/>
+    <text x="80" y="222" class="k">01 · DEPLOY</text>
+    <text x="80" y="252" class="t" font-size="20">Terraform</text>
+    <text x="80" y="278" class="s">Intentionally misconfigured</text>
+    <text x="80" y="296" class="s">S3, IAM, storage accounts,</text>
+    <text x="80" y="314" class="s">NSGs and Key Vaults.</text>
+  </g>
+  <g>
+    <rect x="286" y="190" width="196" height="150" rx="10" class="box"/>
+    <rect x="286" y="190" width="196" height="4" class="acc"/>
+    <text x="306" y="222" class="k">02 · SCAN</text>
+    <text x="306" y="252" class="t" font-size="20">Prowler · ScoutSuite</text>
+    <text x="306" y="278" class="s">500+ checks across AWS</text>
+    <text x="306" y="296" class="s">and Azure, run against the</text>
+    <text x="306" y="314" class="s">resources just deployed.</text>
+  </g>
+  <g>
+    <rect x="512" y="190" width="196" height="150" rx="10" class="box"/>
+    <rect x="512" y="190" width="196" height="4" class="acc"/>
+    <text x="532" y="222" class="k">03 · AGGREGATE</text>
+    <text x="532" y="252" class="t" font-size="20">Python</text>
+    <text x="532" y="278" class="s">Normalises both tools into</text>
+    <text x="532" y="296" class="s">one JSON schema: severity,</text>
+    <text x="532" y="314" class="s">resource, control, fix.</text>
+  </g>
+  <g>
+    <rect x="738" y="190" width="196" height="150" rx="10" class="box"/>
+    <rect x="738" y="190" width="196" height="4" class="acc"/>
+    <text x="758" y="222" class="k">04 · VISUALISE</text>
+    <text x="758" y="252" class="t" font-size="20">Flask · Chart.js</text>
+    <text x="758" y="278" class="s">Severity breakdown, cloud</text>
+    <text x="758" y="296" class="s">comparison, searchable</text>
+    <text x="758" y="314" class="s">findings, CSV / JSON export.</text>
+  </g>
+  <g>
+    <rect x="964" y="190" width="176" height="150" rx="10" class="box"/>
+    <rect x="964" y="190" width="176" height="4" class="acc"/>
+    <text x="984" y="222" class="k">05 · REMEDIATE</text>
+    <text x="984" y="252" class="t" font-size="20">AWS CLI</text>
+    <text x="984" y="278" class="s">Encryption, public-access</text>
+    <text x="984" y="296" class="s">block, versioning, Access</text>
+    <text x="984" y="314" class="s">Analyzer. Dry-run first.</text>
+  </g>
+
+  <!-- arrows between stages -->
+  <path d="M256 265 L284 265" class="ln"/>
+  <path d="M482 265 L510 265" class="ln"/>
+  <path d="M708 265 L736 265" class="ln"/>
+  <path d="M934 265 L962 265" class="ln"/>
+
+  <!-- feedback loop -->
+  <path d="M1052 340 L1052 372 L158 372 L158 342" fill="none" stroke="#0b6b63" stroke-width="1.4" stroke-dasharray="5 5" marker-end="url(#a)"/>
+  <text x="600" y="366" text-anchor="middle" class="m">re-scan after remediation to confirm the finding closed</text>
+
+  <!-- inputs row -->
+  <g>
+    <rect x="60" y="420" width="520" height="150" rx="10" class="box"/>
+    <text x="80" y="450" class="k">TARGETS</text>
+    <text x="80" y="480" class="t" font-size="18">AWS</text>
+    <text x="80" y="502" class="s">S3 buckets · IAM Access Analyzer · CloudTrail · security groups</text>
+    <text x="80" y="520" class="s">EC2 · RDS encryption · Lambda</text>
+    <text x="340" y="480" class="t" font-size="18">Azure</text>
+    <text x="340" y="502" class="s">Storage accounts · NSGs · Key Vault</text>
+    <text x="340" y="520" class="s">VMs · SQL Database · Entra ID</text>
+    <text x="80" y="552" class="m">mapped to CIS 1.4 · 1.5 · 2.0 · NIST · PCI-DSS · HIPAA · GDPR</text>
+  </g>
+  <g>
+    <rect x="620" y="420" width="520" height="150" rx="10" class="box"/>
+    <text x="640" y="450" class="k">WHY IT EXISTS</text>
+    <text x="640" y="480" class="s">Scanner validation before production use.</text>
+    <text x="640" y="502" class="s">A safe sandbox for learning cloud misconfigurations.</text>
+    <text x="640" y="524" class="s">A DevSecOps pipeline pattern: scan, aggregate, fix, re-scan.</text>
+    <text x="640" y="552" class="m">github.com/noble-antwi/cloud-security-posture-dashboard</text>
+  </g>
+
+  <text x="1140" y="618" text-anchor="end" class="m">noble-antwi.github.io</text>
+</svg>

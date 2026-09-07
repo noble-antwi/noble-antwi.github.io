@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="Inter, -apple-system, Segoe UI, Roboto, sans-serif" font-size="15">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#0b6b63"/></marker>
+    <style>
+      .t{font-family:Georgia,'Iowan Old Style',serif;fill:#16181d}
+      .k{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;letter-spacing:1.6px;fill:#0b6b63}
+      .m{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;fill:#7b8089}
+      .s{fill:#4a4f58;font-size:13px}
+      .box{fill:#ffffff;stroke:#ddd7cb;stroke-width:1.2}
+      .ln{stroke:#0b6b63;stroke-width:1.6;fill:none;marker-end:url(#a)}
+    </style>
+  </defs>
+  <rect width="1200" height="640" fill="#f8f6f1"/>
+
+  <text x="60" y="58" class="k">AWS COST OPTIMIZER · HOW A RECOMMENDATION IS MADE</text>
+  <text x="60" y="100" class="t" font-size="30">Observe, score, recommend, and only then touch anything.</text>
+  <text x="60" y="126" class="s">Boto3 reads the account; a set of analyzers turn utilisation into ranked savings; an approval gate sits in front of every change.</text>
+
+  <!-- column 1: account -->
+  <g>
+    <rect x="60" y="180" width="230" height="300" rx="10" class="box"/>
+    <rect x="60" y="180" width="230" height="4" fill="#0b6b63"/>
+    <text x="80" y="212" class="k">01 · READ</text>
+    <text x="80" y="242" class="t" font-size="20">AWS account</text>
+    <text x="80" y="272" class="s">Cost Explorer spend by service</text>
+    <text x="80" y="294" class="s">CloudWatch CPU, memory, network</text>
+    <text x="80" y="316" class="s">Trusted Advisor checks</text>
+    <text x="80" y="338" class="s">EC2 · RDS · EBS · EIP · S3</text>
+    <text x="80" y="360" class="s">Snapshots · NAT · load balancers</text>
+    <text x="80" y="400" class="m">read-only IAM role</text>
+    <text x="80" y="418" class="m">no write permissions here</text>
+  </g>
+  <path d="M290 330 L340 330" class="ln"/>
+
+  <!-- column 2: analyzers -->
+  <g>
+    <rect x="342" y="180" width="300" height="300" rx="10" class="box"/>
+    <rect x="342" y="180" width="300" height="4" fill="#0b6b63"/>
+    <text x="362" y="212" class="k">02 · ANALYZE</text>
+    <text x="362" y="242" class="t" font-size="20">Five analyzers</text>
+    <text x="362" y="274" class="s"><tspan fill="#16181d" font-weight="600">Right-size</tspan>  oversized instances from utilisation</text>
+    <text x="362" y="300" class="s"><tspan fill="#16181d" font-weight="600">Idle</tspan>  unattached volumes, unused IPs, quiet DBs</text>
+    <text x="362" y="326" class="s"><tspan fill="#16181d" font-weight="600">Commit</tspan>  steady workloads for RIs / Savings Plans</text>
+    <text x="362" y="352" class="s"><tspan fill="#16181d" font-weight="600">Tier</tspan>  cold S3 data to IA or Glacier</text>
+    <text x="362" y="378" class="s"><tspan fill="#16181d" font-weight="600">Schedule</tspan>  stop non-prod out of hours</text>
+    <text x="362" y="418" class="m">each finding: resource, evidence,</text>
+    <text x="362" y="436" class="m">estimated monthly saving, risk</text>
+  </g>
+  <path d="M642 330 L692 330" class="ln"/>
+
+  <!-- column 3: report + gate -->
+  <g>
+    <rect x="694" y="180" width="200" height="140" rx="10" class="box"/>
+    <rect x="694" y="180" width="200" height="4" fill="#0b6b63"/>
+    <text x="714" y="212" class="k">03 · RECOMMEND</text>
+    <text x="714" y="242" class="t" font-size="20">Ranked report</text>
+    <text x="714" y="270" class="s">Savings by size, with the</text>
+    <text x="714" y="290" class="s">evidence behind each one.</text>
+  </g>
+  <g>
+    <rect x="694" y="340" width="200" height="140" rx="10" fill="#f0ece4" stroke="#ddd7cb"/>
+    <text x="714" y="372" class="k">04 · APPROVE</text>
+    <text x="714" y="402" class="t" font-size="20">Human gate</text>
+    <text x="714" y="430" class="s">Nothing changes without</text>
+    <text x="714" y="450" class="s">an explicit approval.</text>
+  </g>
+  <path d="M794 320 L794 338" class="ln"/>
+  <path d="M894 410 L944 410" class="ln"/>
+
+  <!-- column 4: apply -->
+  <g>
+    <rect x="946" y="340" width="194" height="140" rx="10" class="box"/>
+    <rect x="946" y="340" width="194" height="4" fill="#0b6b63"/>
+    <text x="966" y="372" class="k">05 · APPLY</text>
+    <text x="966" y="402" class="t" font-size="20">Remediate</text>
+    <text x="966" y="430" class="s">Resize, stop, delete, tier.</text>
+    <text x="966" y="450" class="s">Track realised savings.</text>
+  </g>
+
+  <!-- status -->
+  <rect x="60" y="520" width="1080" height="56" rx="8" fill="#ffffff" stroke="#ddd7cb"/>
+  <text x="80" y="543" class="k">STATUS · IN PROGRESS</text>
+  <text x="80" y="563" class="s">Collectors and the right-size and idle analyzers exist; the approval workflow and savings tracking are the current work. No savings figures are claimed until they are measured.</text>
+  <text x="1140" y="618" text-anchor="end" class="m">github.com/noble-antwi/aws-cost-optimizer</text>
+</svg>
