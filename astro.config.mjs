@@ -26,6 +26,5 @@ export default defineConfig({
     '/in-progress': '/credentials/',
     '/training-courses': '/credentials/training/',
     '/resume': '/credentials/',
-    '/resume/': '/credentials/',
   },
 });
