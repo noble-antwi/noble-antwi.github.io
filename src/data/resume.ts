@@ -79,7 +79,7 @@ export const ROLES: Role[] = [
     start: 'Nov 2021',
     end: 'Oct 2022',
     bullets: [
-      'Administered Active Directory and Microsoft Entra ID for 5,000+ users: provisioning, group policy and access audits.',
+      'Administered Active Directory and Microsoft Entra ID in a global estate serving 50,000+ adidas employees: provisioning, group policy and access audits.',
       'Enforced RBAC, least privilege and Conditional Access, reducing over-privileged accounts by 25% through quarterly access reviews.',
       'Managed the service-account lifecycle for non-human identities across Windows and cloud environments.',
       'Automated provisioning workflows in PowerShell, cutting manual onboarding effort by 30%.',
