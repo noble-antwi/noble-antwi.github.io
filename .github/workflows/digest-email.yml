@@ -22,6 +22,8 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'digest')
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Fetch the issue
         env:
           GH_TOKEN: ${{ github.token }}
@@ -34,23 +36,9 @@ jobs:
 
       - name: Render the email
         run: |
-          npx --yes marked --gfm -i body.md -o body.html
-          TITLE=$(cat title.txt); URL=$(cat url.txt)
-          cat > email.html <<EOF
-          <!doctype html><html><body style="margin:0;background:#f8f6f1;color:#16181d;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
-          <div style="max-width:640px;margin:0 auto;padding:32px 24px;">
-            <p style="font-family:Menlo,Consolas,monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#0b6b63;margin:0 0 8px;">nobleantwi.com &middot; weekly</p>
-            <h1 style="font-family:Georgia,serif;font-weight:400;font-size:28px;line-height:1.15;margin:0 0 20px;">${TITLE}</h1>
-            <div style="font-size:16px;line-height:1.6;">
-          $(cat body.html)
-            </div>
-            <p style="margin:28px 0 0;padding-top:16px;border-top:1px solid #ddd7cb;font-size:13px;color:#5f646d;">
-              <a href="${URL}" style="color:#0b6b63;">Open this digest on GitHub</a> &middot; close the issue there once you have read or acted on it.
-            </p>
-          </div></body></html>
-          EOF
-          jq -n --rawfile html email.html --rawfile text body.md --arg subject "$TITLE" \
-            '{from: "Lab digest <digest@nobleantwi.com>", to: ["nobleantwi3@gmail.com"], subject: $subject, html: $html, text: $text}' > payload.json
+          mkdir -p /tmp/render && cp scripts/digest-email.mjs /tmp/render/ && (cd /tmp/render && npm init -y >/dev/null && npm install marked >/dev/null 2>&1)
+          node /tmp/render/digest-email.mjs body.md "$(cat title.txt)" "$(cat url.txt)" > email.html
+          jq -n --rawfile html email.html --rawfile text body.md --arg subject "$(cat title.txt)"             '{from: "Lab digest <digest@nobleantwi.com>", to: ["nobleantwi3@gmail.com"], subject: $subject, html: $html, text: $text}' > payload.json
 
       - name: Send through Resend
         env:
