@@ -1,0 +1,99 @@
+---
+/* The lab at a glance, drawn in currentColor so it belongs to both themes.
+   Paths draw themselves in on load; reduced-motion users get the finished drawing. */
+const vlans = [
+  { id: '10', name: 'Management', host: 'ANS01 · PVE' },
+  { id: '20', name: 'BlueTeam', host: 'SIEM01' },
+  { id: '30', name: 'RedTeam', host: 'KALI01' },
+  { id: '40', name: 'DevOps', host: 'VAULT01' },
+  { id: '50', name: 'EnterpriseLAN', host: 'DC01' },
+  { id: '60', name: 'Monitoring', host: 'MON01' },
+];
+---
+
+<figure class="schematic" aria-label="Schematic of the lab: internet into pfSense, six VLANs behind it, and the domain controller federated to Okta and Entra ID">
+  <svg viewBox="0 0 1170 220" xmlns="http://www.w3.org/2000/svg" role="img">
+    <defs>
+      <marker id="sch-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker>
+    </defs>
+
+    <!-- internet -->
+    <g class="node">
+      <ellipse cx="70" cy="110" rx="46" ry="26" />
+      <text x="70" y="115" text-anchor="middle" class="lbl">internet</text>
+    </g>
+    <path class="wire w1" d="M116 110 L182 110" marker-end="url(#sch-arrow)"/>
+
+    <!-- pfSense -->
+    <g class="node">
+      <rect x="184" y="80" width="112" height="60" rx="8"/>
+      <text x="240" y="106" text-anchor="middle" class="lbl strong">pfSense</text>
+      <text x="240" y="126" text-anchor="middle" class="lbl small">default deny</text>
+    </g>
+    <path class="wire w2" d="M296 110 L352 110" marker-end="url(#sch-arrow)"/>
+
+    <!-- switch / trunk -->
+    <g class="node">
+      <rect x="354" y="94" width="86" height="32" rx="6"/>
+      <text x="397" y="115" text-anchor="middle" class="lbl small">802.1Q trunk</text>
+    </g>
+
+    <!-- VLAN fan-out -->
+    {vlans.map((v, i) => {
+      const x = 490 + i * 96;
+      return (
+        <g class="node vlan" style={`--i:${i}`}>
+          <path class="wire w3" d={`M440 110 C 465 110, ${x - 20} ${i < 3 ? 40 : 180}, ${x} ${i < 3 ? 40 : 180}`} />
+          <rect x={x} y={i < 3 ? 22 : 162} width="84" height="36" rx="6"/>
+          <text x={x + 42} y={i < 3 ? 38 : 178} text-anchor="middle" class="lbl small">VLAN {v.id}</text>
+          <text x={x + 42} y={i < 3 ? 52 : 192} text-anchor="middle" class="lbl tiny">{v.name}</text>
+          <text x={x + 42} y={i < 3 ? 72 : 152} text-anchor="middle" class="lbl tiny host">{v.host}</text>
+        </g>
+      );
+    })}
+
+    <!-- identity: DC01 (VLAN 50) to Okta / Entra, outbound only -->
+    <path class="wire w4 dashed" d="M958 176 C 1000 176, 1010 60, 1054 60" marker-end="url(#sch-arrow)"/>
+    <text x="1004" y="130" text-anchor="middle" class="lbl tiny">AD Agent · outbound only</text>
+    <g class="node">
+      <rect x="1056" y="30" width="100" height="60" rx="30"/>
+      <text x="1106" y="56" text-anchor="middle" class="lbl strong">Okta</text>
+      <text x="1106" y="76" text-anchor="middle" class="lbl small">Entra ID</text>
+    </g>
+  </svg>
+  <figcaption>The lab at a glance: a default-deny firewall, six segments, and a domain controller that reaches the cloud identity providers but is never reached from them.</figcaption>
+</figure>
+
+<style>
+  .schematic { margin: 0; padding: 2rem 0 0; color: var(--ink-2); }
+  .schematic svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .schematic .node rect, .schematic .node ellipse { fill: var(--paper); stroke: currentColor; stroke-width: 1.4; }
+  .schematic .lbl { font-family: var(--font-mono); font-size: 13px; fill: var(--ink-2); }
+  .schematic .lbl.strong { fill: var(--ink); font-size: 15px; }
+  .schematic .lbl.small { font-size: 11px; letter-spacing: 0.04em; }
+  .schematic .lbl.tiny { font-size: 10px; fill: var(--ink-3); letter-spacing: 0.04em; }
+  .schematic .lbl.host { fill: var(--accent); }
+  .schematic .wire { fill: none; stroke: currentColor; stroke-width: 1.4; }
+  .schematic .wire.dashed { stroke: var(--accent); stroke-dasharray: 5 5; }
+  .schematic figcaption { margin-top: 1rem; }
+
+  /* draw-in */
+  .schematic .wire { stroke-dasharray: 600; stroke-dashoffset: 600; animation: sch-draw 1.1s ease-out forwards; }
+  .schematic .wire.dashed { animation: sch-draw-dashed 1.1s ease-out forwards; animation-delay: 1.4s; }
+  .schematic .w2 { animation-delay: 0.3s; }
+  .schematic .w3 { animation-delay: calc(0.6s + var(--i, 0) * 0.08s); }
+  .schematic .node { opacity: 0; animation: sch-fade 0.5s ease-out forwards; }
+  .schematic .node.vlan { animation-delay: calc(0.9s + var(--i, 0) * 0.08s); }
+  .schematic .node:not(.vlan):nth-of-type(2) { animation-delay: 0.2s; }
+  .schematic .node:not(.vlan):nth-of-type(3) { animation-delay: 0.5s; }
+  .schematic .node:last-of-type { animation-delay: 1.6s; }
+  @keyframes sch-draw { to { stroke-dashoffset: 0; } }
+  @keyframes sch-draw-dashed { from { stroke-dashoffset: 600; } to { stroke-dashoffset: 0; } }
+  @keyframes sch-fade { to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .schematic .wire { stroke-dashoffset: 0; animation: none; }
+    .schematic .wire.dashed { stroke-dasharray: 5 5; }
+    .schematic .node { opacity: 1; animation: none; }
+  }
+  @media (max-width: 700px) { .schematic { display: none; } }
+</style>
