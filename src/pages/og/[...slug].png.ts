@@ -68,7 +68,7 @@ export const GET: APIRoute = async ({ props }) => {
                 { type: 'div', props: { style: { fontFamily: 'Instrument Serif', fontSize: 40, color: INK, marginRight: 22 }, children: SITE.title } },
                 { type: 'div', props: { style: { fontSize: 22, color: INK2 }, children: SITE.tagline } },
               ] } },
-              { type: 'div', props: { style: { fontFamily: 'JetBrains Mono', fontSize: 20, color: ACCENT }, children: 'noble-antwi.github.io' } },
+              { type: 'div', props: { style: { fontFamily: 'JetBrains Mono', fontSize: 20, color: ACCENT }, children: 'nobleantwi.com' } },
             ] } },
           ] } },
         ],

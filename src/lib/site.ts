@@ -5,7 +5,7 @@ export const SITE = {
   tagline: 'Cloud Security & Identity Engineer',
   description:
     'Cloud Security and Identity Engineer in Chicago. AWS and Azure IAM, Entra ID, Okta, Active Directory, HashiCorp Vault, Zero Trust, and detection engineering with Wazuh and Microsoft Sentinel.',
-  url: 'https://noble-antwi.github.io',
+  url: 'https://nobleantwi.com',
   author: 'Noble Antwi',
   email: 'nobleantwi3@gmail.com',
   github: 'noble-antwi',

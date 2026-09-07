@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://noble-antwi.github.io',
+  site: 'https://nobleantwi.com',
   // 'preserve' keeps `folder/index.astro` -> `folder/index.html` and the
   // dynamic post route `[...slug].astro` -> `<slug>.html`, which is how the
   // Jekyll-era post URLs were shaped. Nothing that Google has indexed breaks.
