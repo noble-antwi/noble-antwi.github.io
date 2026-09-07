@@ -59,41 +59,41 @@
   </g>
 
   <!-- findings table -->
-  <text x="60" y="330" class="k">FINDINGS · BY SEVERITY</text>
+  <text x="60" y="330" class="k">FINDINGS · BY SEVERITY · NIST 800-53 CONTROL MAPPING IN THE REPORT</text>
   <g>
     <rect x="60" y="346" width="1080" height="46" rx="8" class="box"/>
     <text x="80" y="374" class="sev" fill="#b3261e">CRITICAL</text>
     <text x="180" y="374" class="t" font-size="16">Inadequate MFA</text>
     <text x="520" y="374" class="s">60.5% of VPN accounts have no second factor</text>
-    <text x="1120" y="374" text-anchor="end" class="m">AC-2 · IA-2</text>
+    <text x="1120" y="374" text-anchor="end" class="m">Finding 1</text>
   </g>
   <g>
     <rect x="60" y="398" width="1080" height="46" rx="8" class="box"/>
     <text x="80" y="426" class="sev" fill="#b3261e">CRITICAL</text>
     <text x="180" y="426" class="t" font-size="16">Backup and disaster recovery</text>
     <text x="520" y="426" class="s">No air-gapped or immutable backups</text>
-    <text x="1120" y="426" text-anchor="end" class="m">CP-9 · CP-10</text>
+    <text x="1120" y="426" text-anchor="end" class="m">Finding 2</text>
   </g>
   <g>
     <rect x="60" y="450" width="1080" height="46" rx="8" class="box"/>
     <text x="80" y="478" class="sev" fill="#b45309">HIGH</text>
     <text x="180" y="478" class="t" font-size="16">Privileged access</text>
     <text x="520" y="478" class="s">No access review in 30 months</text>
-    <text x="1120" y="478" text-anchor="end" class="m">AC-6 · AC-2(3)</text>
+    <text x="1120" y="478" text-anchor="end" class="m">Finding 3</text>
   </g>
   <g>
     <rect x="60" y="502" width="1080" height="46" rx="8" class="box"/>
     <text x="80" y="530" class="sev" fill="#b45309">HIGH</text>
     <text x="180" y="530" class="t" font-size="16">Incident response</text>
     <text x="520" y="530" class="s">16 to 18 hour detection delay</text>
-    <text x="1120" y="530" text-anchor="end" class="m">IR-4 · SI-4</text>
+    <text x="1120" y="530" text-anchor="end" class="m">Finding 4</text>
   </g>
   <g>
     <rect x="60" y="554" width="1080" height="46" rx="8" class="box"/>
     <text x="80" y="582" class="sev" fill="#1d4ed8">MEDIUM</text>
     <text x="180" y="582" class="t" font-size="16">Vendor security</text>
     <text x="520" y="582" class="s">47 third parties never assessed</text>
-    <text x="1120" y="582" text-anchor="end" class="m">SR-6 · SA-9</text>
+    <text x="1120" y="582" text-anchor="end" class="m">Finding 5</text>
   </g>
   <text x="1140" y="626" text-anchor="end" class="m">github.com/noble-antwi/collins-aerospace-audit</text>
 </svg>
