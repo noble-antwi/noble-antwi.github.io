@@ -1,6 +1,6 @@
 # noble-antwi.github.io
 
-Personal site of Noble Antwi, Cloud Security & Identity Engineer. Live at [noble-antwi.github.io](https://noble-antwi.github.io/).
+Personal site of Noble Antwi, Cloud Security & Identity Engineer. Live at [nobleantwi.com](https://nobleantwi.com/) (the old noble-antwi.github.io address redirects).
 
 Built with [Astro](https://astro.build) and deployed to GitHub Pages by the workflow in `.github/workflows/deploy.yml` on every push to `main`.
 
