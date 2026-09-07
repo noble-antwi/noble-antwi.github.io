@@ -19,7 +19,7 @@ export const ROLES: Role[] = [
     title: 'IT Security Specialist',
     org: 'City of Chicago, Department of Aviation',
     location: 'Chicago, IL',
-    start: '2026',
+    start: 'Aug 2026',
     end: 'Present',
     current: true,
     bullets: [],
