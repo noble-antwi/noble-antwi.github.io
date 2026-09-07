@@ -25,5 +25,7 @@ export default defineConfig({
     '/security-certifications': '/credentials/',
     '/in-progress': '/credentials/',
     '/training-courses': '/credentials/training/',
+    '/resume': '/credentials/',
+    '/resume/': '/credentials/',
   },
 });
