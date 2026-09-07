@@ -23,6 +23,9 @@ stats:
   - { value: "15", label: "Security groups" }
   - { value: "3", label: "Auth policy rules" }
 gallery:
+  - src: ../../assets/work/enterprise-iam-lab/auth-flow.svg
+    alt: "Flow diagram: a sign-in is classified by network zone, then matched against three authentication policy rules in priority order"
+    caption: "How a sign-in is decided: zone first, then the first matching policy. Below it, where the identity comes from and where it goes."
   - src: ../../assets/work/enterprise-iam-lab/p1-okta-branded-login.png
     alt: "Biira Bank branded Okta sign-in page"
     caption: "The branded sign-in page at login.biira.online. The bank has a real domain, a real tenant and a real brand, so the lab reads like an organisation."

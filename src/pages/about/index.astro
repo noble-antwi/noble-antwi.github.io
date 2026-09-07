@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { SITE } from '../../lib/site';
+import PathDiagram from '../../components/PathDiagram.astro';
 ---
 
 <Base title="About" description="Who Noble Antwi is: an identity and cloud security engineer who came to security through infrastructure, and who documents everything he builds.">
@@ -9,6 +10,8 @@ import { SITE } from '../../lib/site';
       <span class="kicker">About</span>
       <h1 class="display h1">I came to security through the plumbing, <em>and stayed for the identity.</em></h1>
     </header>
+
+    <PathDiagram />
 
     <div class="prose">
       <p>I grew up in Ghana and studied computer science and engineering at the University of Mines and Technology in Tarkwa. My first security job was in a hospital: Active Directory, Windows Server, vulnerability scans, and the realisation that in a place where a locked-out account can delay care, "who can access what" is not an abstract question. That question has been the thread ever since.</p>

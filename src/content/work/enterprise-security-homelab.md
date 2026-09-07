@@ -23,6 +23,9 @@ stats:
   - { value: "17", label: "Runbooks published" }
   - { value: "10", label: "Systems in the estate" }
 gallery:
+  - src: ../../assets/work/enterprise-security-homelab/packet-path.svg
+    alt: "Flow diagram: a packet from the Kali guest passes the VLAN-aware bridge and the trunk to pfSense, where the RedTeam ruleset permits only DNS, NTP and internet"
+    caption: "The path of one packet from the attack segment: tagged at the guest, carried on the trunk, decided by the RedTeam ruleset. Everything not listed is blocked and logged."
   - src: ../../assets/work/enterprise-security-homelab/net-01-switch-vlan-table.png
     alt: "802.1Q VLAN table on the TP-Link managed switch"
     caption: "The 802.1Q VLAN table on the managed switch: six VLANs, two trunk ports, six access ports."

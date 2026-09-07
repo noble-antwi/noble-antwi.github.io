@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" font-family="Inter, -apple-system, Segoe UI, Roboto, sans-serif" font-size="15">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#0b6b63"/></marker>
+    <style>
+      .t{font-family:Georgia,'Iowan Old Style',serif;fill:#16181d}
+      .k{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;letter-spacing:1.6px;fill:#0b6b63}
+      .m{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;fill:#7b8089}
+      .s{fill:#4a4f58;font-size:13px}
+      .box{fill:#ffffff;stroke:#ddd7cb;stroke-width:1.2}
+      .ln{stroke:#0b6b63;stroke-width:1.6;fill:none;marker-end:url(#a)}
+      .deny{fill:#fdf2f2;stroke:#e5b4b4}
+      .hard{fill:#fff8ea;stroke:#e6cf9a}
+      .std{fill:#eef7f4;stroke:#a9d6cc}
+    </style>
+  </defs>
+  <rect width="1200" height="640" fill="#f8f6f1"/>
+
+  <text x="60" y="58" class="k">ENTERPRISE IAM LAB · HOW A SIGN-IN IS DECIDED</text>
+  <text x="60" y="100" class="t" font-size="30">Where you are decides what you must prove.</text>
+  <text x="60" y="126" class="s">A request is classified by network zone first; then the authentication policies apply in priority order and the first match wins.</text>
+
+  <!-- request -->
+  <g>
+    <rect x="60" y="200" width="150" height="90" rx="10" class="box"/>
+    <text x="80" y="230" class="k">REQUEST</text>
+    <text x="80" y="258" class="t" font-size="18">Employee</text>
+    <text x="80" y="278" class="s">login.biira.online</text>
+  </g>
+  <path d="M210 245 L258 245" class="ln"/>
+
+  <!-- zones -->
+  <g>
+    <rect x="260" y="170" width="260" height="150" rx="10" class="box"/>
+    <rect x="260" y="170" width="260" height="4" fill="#0b6b63"/>
+    <text x="280" y="200" class="k">01 · NETWORK ZONES</text>
+    <text x="280" y="228" class="s"><tspan fill="#16181d" font-weight="600">Corporate</tspan>  IP zone: the office egress addresses</text>
+    <text x="280" y="252" class="s"><tspan fill="#16181d" font-weight="600">Allowed countries</tspan>  dynamic geographic zone</text>
+    <text x="280" y="276" class="s"><tspan fill="#16181d" font-weight="600">Anonymisers</tspan>  Tor exit nodes, threat feed</text>
+    <text x="280" y="304" class="m">the request is tagged before any password is checked</text>
+  </g>
+  <path d="M520 245 L568 245" class="ln"/>
+
+  <!-- policies -->
+  <g>
+    <rect x="570" y="150" width="380" height="190" rx="10" class="box"/>
+    <rect x="570" y="150" width="380" height="4" fill="#0b6b63"/>
+    <text x="590" y="180" class="k">02 · AUTHENTICATION POLICY · FIRST MATCH WINS</text>
+    <rect x="590" y="194" width="340" height="36" rx="6" class="deny"/>
+    <text x="602" y="217" class="s"><tspan fill="#16181d" font-weight="600">Priority 1</tspan>  Restricted country or Tor exit</text>
+    <text x="920" y="217" text-anchor="end" class="k" fill="#b3261e">DENY</text>
+    <rect x="590" y="238" width="340" height="36" rx="6" class="hard"/>
+    <text x="602" y="261" class="s"><tspan fill="#16181d" font-weight="600">Priority 2</tspan>  Public network</text>
+    <text x="920" y="261" text-anchor="end" class="k" fill="#9a4a06">HARDWARE MFA</text>
+    <rect x="590" y="282" width="340" height="36" rx="6" class="std"/>
+    <text x="602" y="305" class="s"><tspan fill="#16181d" font-weight="600">Priority 3</tspan>  Corporate network</text>
+    <text x="920" y="305" text-anchor="end" class="k">STANDARD MFA</text>
+  </g>
+  <path d="M950 245 L998 245" class="ln"/>
+
+  <!-- outcome -->
+  <g>
+    <rect x="1000" y="200" width="140" height="90" rx="10" class="box"/>
+    <text x="1020" y="230" class="k">RESULT</text>
+    <text x="1020" y="258" class="t" font-size="18">Session</text>
+    <text x="1020" y="278" class="s">or a logged refusal</text>
+  </g>
+
+  <!-- identity sources below -->
+  <text x="60" y="400" class="k">WHERE THE IDENTITY COMES FROM</text>
+  <g>
+    <rect x="60" y="416" width="330" height="120" rx="10" class="box"/>
+    <text x="80" y="446" class="t" font-size="18">Active Directory · on premises</text>
+    <text x="80" y="470" class="s">Source of record for employees. Tiered admin</text>
+    <text x="80" y="490" class="s">accounts (Tier 0) never leave the domain.</text>
+    <text x="80" y="518" class="m">ad.biira.online · DC01 · VLAN 50</text>
+  </g>
+  <path d="M390 476 L438 476" class="ln"/>
+  <text x="414" y="462" text-anchor="middle" class="m">agent</text>
+  <g>
+    <rect x="440" y="416" width="330" height="120" rx="10" class="box"/>
+    <text x="460" y="446" class="t" font-size="18">Okta Workforce Identity</text>
+    <text x="460" y="470" class="s">Primary IdP. Users and groups synced every</text>
+    <text x="460" y="490" class="s">15 minutes; dynamic groups by AD attributes.</text>
+    <text x="460" y="518" class="m">SAML 2.0 · OIDC · SWA · group-based assignment</text>
+  </g>
+  <path d="M770 476 L818 476" class="ln"/>
+  <g>
+    <rect x="820" y="416" width="320" height="120" rx="10" class="box"/>
+    <text x="840" y="446" class="t" font-size="18">Applications</text>
+    <text x="840" y="470" class="s">Dropbox Business (SAML, provisioned).</text>
+    <text x="840" y="490" class="s">Box (SWA, password vaulted).</text>
+    <text x="840" y="518" class="m">Microsoft 365 via Entra ID in phase 6</text>
+  </g>
+
+  <text x="1140" y="618" text-anchor="end" class="m">github.com/noble-antwi/enterprise-iam-lab</text>
+</svg>

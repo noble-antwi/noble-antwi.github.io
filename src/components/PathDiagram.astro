@@ -1,0 +1,42 @@
+---
+/* The route so far, sectors only. Inline so it follows the theme. */
+const stops = [
+  { where: 'Tarkwa, Ghana', what: 'B.Sc. Computer Science & Engineering' },
+  { where: 'Kpando, Ghana', what: 'Hospital security: AD, Windows Server, scans' },
+  { where: 'Neustadt, Germany', what: 'IAM analyst at a global sportswear group' },
+  { where: 'Accra, Ghana', what: 'Cloud, then cloud security, at a fintech' },
+  { where: 'Chicago, IL', what: 'Bank IT risk · university Okta · M.S. · IT security' },
+];
+---
+
+<figure class="path" aria-label="Route: Tarkwa, Kpando, Neustadt, Accra, Chicago">
+  <svg viewBox="0 0 1000 160" xmlns="http://www.w3.org/2000/svg" role="img">
+    <path class="line" d="M40 90 C 200 40, 300 140, 500 90 S 800 40, 960 90" />
+    {stops.map((s, i) => {
+      const xs = [40, 270, 500, 730, 960];
+      const ys = [96, 60, 96, 60, 96];
+      const x = xs[i], y = ys[i];
+      return (
+        <g class="stop" style={`--i:${i}`}>
+          <circle cx={x} cy={y} r="6" />
+          <text x={x} y={i % 2 ? y - 34 : y + 24} text-anchor={i === 0 ? 'start' : i === 4 ? 'end' : 'middle'} class="where">{s.where}</text>
+          <text x={x} y={i % 2 ? y - 18 : y + 40} text-anchor={i === 0 ? 'start' : i === 4 ? 'end' : 'middle'} class="what">{s.what}</text>
+        </g>
+      );
+    })}
+  </svg>
+</figure>
+
+<style>
+  .path { margin: 2.5rem 0 3rem; color: var(--ink-2); }
+  .path svg { width: 100%; height: auto; overflow: visible; display: block; }
+  .path .line { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: path-draw 1.6s ease-out forwards; }
+  .path circle { fill: var(--paper); stroke: var(--accent); stroke-width: 2.5; }
+  .path .where { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; fill: var(--accent); }
+  .path .what { font-size: 12px; fill: var(--ink-2); }
+  .path .stop { opacity: 0; animation: path-fade 0.5s ease-out forwards; animation-delay: calc(0.3s + var(--i) * 0.3s); }
+  @keyframes path-draw { to { stroke-dashoffset: 0; } }
+  @keyframes path-fade { to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .path .line { stroke-dashoffset: 0; animation: none; } .path .stop { opacity: 1; animation: none; } }
+  @media (max-width: 700px) { .path { display: none; } }
+</style>

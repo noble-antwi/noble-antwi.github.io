@@ -1,5 +1,6 @@
 ---
 import { SITE } from '../lib/site';
+import Mark from './Mark.astro';
 
 const path = Astro.url.pathname;
 const items = [
@@ -15,6 +16,7 @@ const items = [
 <header class="site-header">
   <div class="container">
     <a class="wordmark" href="/">
+      <Mark size={26} />
       <span class="name">{SITE.title}</span>
       <span class="tag">{SITE.tagline}</span>
     </a>

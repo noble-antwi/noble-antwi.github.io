@@ -58,7 +58,15 @@ export const GET: APIRoute = async ({ props }) => {
         style: { width: 1200, height: 630, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: PAPER, padding: '64px 72px', fontFamily: 'Inter' },
         children: [
           { type: 'div', props: { style: { display: 'flex', flexDirection: 'column' }, children: [
-            { type: 'div', props: { style: { fontFamily: 'JetBrains Mono', fontSize: 22, letterSpacing: 4, textTransform: 'uppercase', color: ACCENT, marginBottom: 28 }, children: kicker } },
+            { type: 'div', props: { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }, children: [
+              { type: 'div', props: { style: { fontFamily: 'JetBrains Mono', fontSize: 22, letterSpacing: 4, textTransform: 'uppercase', color: ACCENT, paddingTop: 6 }, children: kicker } },
+              { type: 'svg', props: { width: 56, height: 56, viewBox: '0 0 64 64', children: [
+                { type: 'rect', props: { width: 64, height: 64, rx: 14, fill: INK } },
+                { type: 'circle', props: { cx: 32, cy: 26, r: 14, stroke: '#5fd3c6', strokeWidth: 6, fill: 'none' } },
+                { type: 'rect', props: { x: 28.5, y: 38, width: 7, height: 18, rx: 3.5, fill: '#5fd3c6' } },
+                { type: 'rect', props: { x: 35, y: 47, width: 8, height: 5, rx: 2.5, fill: '#5fd3c6' } },
+              ] } },
+            ] } },
             { type: 'div', props: { style: { fontFamily: 'Instrument Serif', fontSize: size, lineHeight: 1.06, letterSpacing: -1, color: INK, maxWidth: 1040 }, children: title } },
           ] } },
           { type: 'div', props: { style: { display: 'flex', flexDirection: 'column' }, children: [
