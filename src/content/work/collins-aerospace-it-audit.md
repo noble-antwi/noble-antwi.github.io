@@ -19,7 +19,7 @@ stats:
   - { value: "$2.3B", label: "Contracts at risk" }
 hero: ../../assets/work/collins-aerospace-it-audit/diagram.svg
 heroAlt: "Audit lifecycle from planning through risk assessment, control testing and reporting to remediation, with the five findings ranked by severity"
-heroCaption: "The engagement as it ran, and the five findings with the NIST 800-53 controls each one maps to."
+heroCaption: "The engagement as it ran, and the five findings ranked by severity."
 ---
 
 Conduct a comprehensive IT audit engagement of Collins Aerospace's information security controls following a simulated cybersecurity incident. This graduate-level project demonstrates practical application of IT audit frameworks, risk assessment methodologies, CMMC Level 3 gap analysis, and remediation planning for an enterprise aerospace organization.

@@ -12,74 +12,72 @@
   </defs>
   <rect width="1200" height="640" fill="#f8f6f1"/>
 
-  <text x="60" y="58" class="k">AWS COST OPTIMIZER · HOW A RECOMMENDATION IS MADE</text>
-  <text x="60" y="100" class="t" font-size="30">Observe, score, recommend, and only then touch anything.</text>
-  <text x="60" y="126" class="s">Boto3 reads the account; a set of analyzers turn utilisation into ranked savings; an approval gate sits in front of every change.</text>
+  <text x="60" y="58" class="k">AWS COST OPTIMIZER · HOW A FINDING IS MADE</text>
+  <text x="60" y="100" class="t" font-size="30">Read every region, measure what is actually used, report what is not.</text>
+  <text x="60" y="126" class="s">A read-only Boto3 CLI. Detection thresholds are configurable; the output is a report, not a change.</text>
 
-  <!-- column 1: account -->
+  <!-- column 1: inventory -->
   <g>
-    <rect x="60" y="180" width="230" height="300" rx="10" class="box"/>
-    <rect x="60" y="180" width="230" height="4" fill="#0b6b63"/>
-    <text x="80" y="212" class="k">01 · READ</text>
-    <text x="80" y="242" class="t" font-size="20">AWS account</text>
-    <text x="80" y="272" class="s">Cost Explorer spend by service</text>
-    <text x="80" y="294" class="s">CloudWatch CPU, memory, network</text>
-    <text x="80" y="316" class="s">Trusted Advisor checks</text>
-    <text x="80" y="338" class="s">EC2 · RDS · EBS · EIP · S3</text>
-    <text x="80" y="360" class="s">Snapshots · NAT · load balancers</text>
-    <text x="80" y="400" class="m">read-only IAM role</text>
-    <text x="80" y="418" class="m">no write permissions here</text>
+    <rect x="60" y="180" width="250" height="300" rx="10" class="box"/>
+    <rect x="60" y="180" width="250" height="4" fill="#0b6b63"/>
+    <text x="80" y="212" class="k">01 · INVENTORY</text>
+    <text x="80" y="242" class="t" font-size="20">All regions, in parallel</text>
+    <text x="80" y="272" class="s">EC2 instances</text>
+    <text x="80" y="294" class="s">EBS volumes and snapshots</text>
+    <text x="80" y="316" class="s">Elastic IPs</text>
+    <text x="80" y="338" class="s">RDS instances</text>
+    <text x="80" y="400" class="m">IAM: describe / list / get only</text>
+    <text x="80" y="418" class="m">no write permissions required</text>
   </g>
-  <path d="M290 330 L340 330" class="ln"/>
+  <path d="M310 330 L358 330" class="ln"/>
 
-  <!-- column 2: analyzers -->
+  <!-- column 2: measure -->
   <g>
-    <rect x="342" y="180" width="300" height="300" rx="10" class="box"/>
-    <rect x="342" y="180" width="300" height="4" fill="#0b6b63"/>
-    <text x="362" y="212" class="k">02 · ANALYZE</text>
-    <text x="362" y="242" class="t" font-size="20">Five analyzers</text>
-    <text x="362" y="274" class="s"><tspan fill="#16181d" font-weight="600">Right-size</tspan>  oversized instances from utilisation</text>
-    <text x="362" y="300" class="s"><tspan fill="#16181d" font-weight="600">Idle</tspan>  unattached volumes, unused IPs, quiet DBs</text>
-    <text x="362" y="326" class="s"><tspan fill="#16181d" font-weight="600">Commit</tspan>  steady workloads for RIs / Savings Plans</text>
-    <text x="362" y="352" class="s"><tspan fill="#16181d" font-weight="600">Tier</tspan>  cold S3 data to IA or Glacier</text>
-    <text x="362" y="378" class="s"><tspan fill="#16181d" font-weight="600">Schedule</tspan>  stop non-prod out of hours</text>
-    <text x="362" y="418" class="m">each finding: resource, evidence,</text>
-    <text x="362" y="436" class="m">estimated monthly saving, risk</text>
+    <rect x="360" y="180" width="250" height="300" rx="10" class="box"/>
+    <rect x="360" y="180" width="250" height="4" fill="#0b6b63"/>
+    <text x="380" y="212" class="k">02 · MEASURE</text>
+    <text x="380" y="242" class="t" font-size="20">CloudWatch metrics</text>
+    <text x="380" y="272" class="s">Average CPU over 7 days</text>
+    <text x="380" y="294" class="s">Database connections over 7 days</text>
+    <text x="380" y="316" class="s">Volume attachment state and age</text>
+    <text x="380" y="338" class="s">Snapshot age</text>
+    <text x="380" y="360" class="s">Elastic IP association</text>
+    <text x="380" y="400" class="m">real utilisation, not guesses</text>
   </g>
-  <path d="M642 330 L692 330" class="ln"/>
+  <path d="M610 330 L658 330" class="ln"/>
 
-  <!-- column 3: report + gate -->
+  <!-- column 3: detect -->
   <g>
-    <rect x="694" y="180" width="200" height="140" rx="10" class="box"/>
-    <rect x="694" y="180" width="200" height="4" fill="#0b6b63"/>
-    <text x="714" y="212" class="k">03 · RECOMMEND</text>
-    <text x="714" y="242" class="t" font-size="20">Ranked report</text>
-    <text x="714" y="270" class="s">Savings by size, with the</text>
-    <text x="714" y="290" class="s">evidence behind each one.</text>
+    <rect x="660" y="180" width="250" height="300" rx="10" class="box"/>
+    <rect x="660" y="180" width="250" height="4" fill="#0b6b63"/>
+    <text x="680" y="212" class="k">03 · DETECT</text>
+    <text x="680" y="242" class="t" font-size="20">Configurable thresholds</text>
+    <text x="680" y="272" class="s"><tspan fill="#16181d" font-weight="600">Idle EC2</tspan>  CPU below 5%</text>
+    <text x="680" y="294" class="s"><tspan fill="#16181d" font-weight="600">Unattached EBS</tspan>  for N days</text>
+    <text x="680" y="316" class="s"><tspan fill="#16181d" font-weight="600">Old snapshots</tspan>  beyond 90 days</text>
+    <text x="680" y="338" class="s"><tspan fill="#16181d" font-weight="600">Unused EIPs</tspan>  not associated</text>
+    <text x="680" y="360" class="s"><tspan fill="#16181d" font-weight="600">Idle RDS</tspan>  CPU below 5%, under 1 connection</text>
+    <text x="680" y="400" class="m">each finding carries an estimated</text>
+    <text x="680" y="418" class="m">monthly and annual saving</text>
   </g>
-  <g>
-    <rect x="694" y="340" width="200" height="140" rx="10" fill="#f0ece4" stroke="#ddd7cb"/>
-    <text x="714" y="372" class="k">04 · APPROVE</text>
-    <text x="714" y="402" class="t" font-size="20">Human gate</text>
-    <text x="714" y="430" class="s">Nothing changes without</text>
-    <text x="714" y="450" class="s">an explicit approval.</text>
-  </g>
-  <path d="M794 320 L794 338" class="ln"/>
-  <path d="M894 410 L944 410" class="ln"/>
+  <path d="M910 330 L958 330" class="ln"/>
 
-  <!-- column 4: apply -->
+  <!-- column 4: report -->
   <g>
-    <rect x="946" y="340" width="194" height="140" rx="10" class="box"/>
-    <rect x="946" y="340" width="194" height="4" fill="#0b6b63"/>
-    <text x="966" y="372" class="k">05 · APPLY</text>
-    <text x="966" y="402" class="t" font-size="20">Remediate</text>
-    <text x="966" y="430" class="s">Resize, stop, delete, tier.</text>
-    <text x="966" y="450" class="s">Track realised savings.</text>
+    <rect x="960" y="180" width="180" height="300" rx="10" class="box"/>
+    <rect x="960" y="180" width="180" height="4" fill="#0b6b63"/>
+    <text x="980" y="212" class="k">04 · REPORT</text>
+    <text x="980" y="242" class="t" font-size="20">Three formats</text>
+    <text x="980" y="272" class="s">JSON for automation</text>
+    <text x="980" y="294" class="s">CSV for spreadsheets</text>
+    <text x="980" y="316" class="s">HTML for people</text>
+    <text x="980" y="400" class="m">the decision to act</text>
+    <text x="980" y="418" class="m">stays with a human</text>
   </g>
 
-  <!-- status -->
+  <!-- footnote -->
   <rect x="60" y="520" width="1080" height="56" rx="8" fill="#ffffff" stroke="#ddd7cb"/>
-  <text x="80" y="543" class="k">STATUS · IN PROGRESS</text>
-  <text x="80" y="563" class="s">Collectors and the right-size and idle analyzers exist; the approval workflow and savings tracking are the current work. No savings figures are claimed until they are measured.</text>
+  <text x="80" y="543" class="k">DESIGN CHOICE</text>
+  <text x="80" y="563" class="s">The tool never modifies an account. It makes waste visible with evidence and a number attached, so that stopping, resizing or deleting is a deliberate decision rather than a script's side effect.</text>
   <text x="1140" y="618" text-anchor="end" class="m">github.com/noble-antwi/aws-cost-optimizer</text>
 </svg>
