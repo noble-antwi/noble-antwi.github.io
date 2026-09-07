@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="Inter, -apple-system, Segoe UI, Roboto, sans-serif" font-size="15">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#0b6b63"/></marker>
+    <style>
+      .t{font-family:Georgia,'Iowan Old Style',serif;fill:#16181d}
+      .k{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;letter-spacing:1.6px;fill:#0b6b63}
+      .m{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;fill:#7b8089}
+      .s{fill:#4a4f58;font-size:13px}
+      .box{fill:#ffffff;stroke:#ddd7cb;stroke-width:1.2}
+      .ln{stroke:#0b6b63;stroke-width:1.6;fill:none;marker-end:url(#a)}
+      .sev{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;letter-spacing:1px;font-weight:600}
+    </style>
+  </defs>
+  <rect width="1200" height="640" fill="#f8f6f1"/>
+
+  <text x="60" y="58" class="k">COLLINS AEROSPACE IT AUDIT · ENGAGEMENT AND FINDINGS</text>
+  <text x="60" y="100" class="t" font-size="30">A post-incident audit, run the way a real one is run.</text>
+  <text x="60" y="126" class="s">Graduate engagement, ITMM 586. Simulated breach: $15M+ losses, 217 flights cancelled, CMMC Level 3 due Q2 2026.</text>
+
+  <!-- lifecycle -->
+  <g>
+    <rect x="60" y="170" width="200" height="110" rx="10" class="box"/><rect x="60" y="170" width="200" height="4" fill="#0b6b63"/>
+    <text x="80" y="200" class="k">PLAN</text>
+    <text x="80" y="226" class="t" font-size="18">COBIT 2019 · COSO</text>
+    <text x="80" y="248" class="s">Planning memo, scope,</text>
+    <text x="80" y="266" class="s">stakeholders, ethics.</text>
+  </g>
+  <path d="M260 225 L278 225" class="ln"/>
+  <g>
+    <rect x="280" y="170" width="200" height="110" rx="10" class="box"/><rect x="280" y="170" width="200" height="4" fill="#0b6b63"/>
+    <text x="300" y="200" class="k">ASSESS RISK</text>
+    <text x="300" y="226" class="t" font-size="18">NIST SP 800-30</text>
+    <text x="300" y="248" class="s">8 assessment tables,</text>
+    <text x="300" y="266" class="s">18 risks, threat model.</text>
+  </g>
+  <path d="M480 225 L498 225" class="ln"/>
+  <g>
+    <rect x="500" y="170" width="200" height="110" rx="10" class="box"/><rect x="500" y="170" width="200" height="4" fill="#0b6b63"/>
+    <text x="520" y="200" class="k">TEST CONTROLS</text>
+    <text x="520" y="226" class="t" font-size="18">800-53 · 800-171 · CMMC</text>
+    <text x="520" y="248" class="s">Test procedures, evidence,</text>
+    <text x="520" y="266" class="s">Level 3 gap analysis.</text>
+  </g>
+  <path d="M700 225 L718 225" class="ln"/>
+  <g>
+    <rect x="720" y="170" width="200" height="110" rx="10" class="box"/><rect x="720" y="170" width="200" height="4" fill="#0b6b63"/>
+    <text x="740" y="200" class="k">REPORT</text>
+    <text x="740" y="226" class="t" font-size="18">Five findings</text>
+    <text x="740" y="248" class="s">Incident timeline, root</text>
+    <text x="740" y="266" class="s">cause, board deck.</text>
+  </g>
+  <path d="M920 225 L938 225" class="ln"/>
+  <g>
+    <rect x="940" y="170" width="200" height="110" rx="10" class="box"/><rect x="940" y="170" width="200" height="4" fill="#0b6b63"/>
+    <text x="960" y="200" class="k">REMEDIATE</text>
+    <text x="960" y="226" class="t" font-size="18">Costed roadmap</text>
+    <text x="960" y="248" class="s">$4.5M+ programme,</text>
+    <text x="960" y="266" class="s">$2.3B contracts at risk.</text>
+  </g>
+
+  <!-- findings table -->
+  <text x="60" y="330" class="k">FINDINGS · BY SEVERITY</text>
+  <g>
+    <rect x="60" y="346" width="1080" height="46" rx="8" class="box"/>
+    <text x="80" y="374" class="sev" fill="#b3261e">CRITICAL</text>
+    <text x="180" y="374" class="t" font-size="16">Inadequate MFA</text>
+    <text x="520" y="374" class="s">60.5% of VPN accounts have no second factor</text>
+    <text x="1120" y="374" text-anchor="end" class="m">AC-2 · IA-2</text>
+  </g>
+  <g>
+    <rect x="60" y="398" width="1080" height="46" rx="8" class="box"/>
+    <text x="80" y="426" class="sev" fill="#b3261e">CRITICAL</text>
+    <text x="180" y="426" class="t" font-size="16">Backup and disaster recovery</text>
+    <text x="520" y="426" class="s">No air-gapped or immutable backups</text>
+    <text x="1120" y="426" text-anchor="end" class="m">CP-9 · CP-10</text>
+  </g>
+  <g>
+    <rect x="60" y="450" width="1080" height="46" rx="8" class="box"/>
+    <text x="80" y="478" class="sev" fill="#b45309">HIGH</text>
+    <text x="180" y="478" class="t" font-size="16">Privileged access</text>
+    <text x="520" y="478" class="s">No access review in 30 months</text>
+    <text x="1120" y="478" text-anchor="end" class="m">AC-6 · AC-2(3)</text>
+  </g>
+  <g>
+    <rect x="60" y="502" width="1080" height="46" rx="8" class="box"/>
+    <text x="80" y="530" class="sev" fill="#b45309">HIGH</text>
+    <text x="180" y="530" class="t" font-size="16">Incident response</text>
+    <text x="520" y="530" class="s">16 to 18 hour detection delay</text>
+    <text x="1120" y="530" text-anchor="end" class="m">IR-4 · SI-4</text>
+  </g>
+  <g>
+    <rect x="60" y="554" width="1080" height="46" rx="8" class="box"/>
+    <text x="80" y="582" class="sev" fill="#1d4ed8">MEDIUM</text>
+    <text x="180" y="582" class="t" font-size="16">Vendor security</text>
+    <text x="520" y="582" class="s">47 third parties never assessed</text>
+    <text x="1120" y="582" text-anchor="end" class="m">SR-6 · SA-9</text>
+  </g>
+  <text x="1140" y="626" text-anchor="end" class="m">github.com/noble-antwi/collins-aerospace-audit</text>
+</svg>

@@ -17,6 +17,9 @@ stats:
   - { value: "30+", label: "Metrics tracked" }
   - { value: "3", label: "Job sources" }
   - { value: "3", label: "Deployment targets" }
+hero: ../../assets/work/iam-job-scout/diagram.svg
+heroAlt: "Architecture diagram: three job APIs feeding a FastAPI service with PostgreSQL, a Jinja UI, and Prometheus and Grafana for monitoring"
+heroCaption: "Three sources in, one de-duplicated board out, with the service reporting on itself through Prometheus and Grafana."
 ---
 
 Build an automated, production-grade web application that helps junior to mid-level Identity & Access Management (IAM) professionals discover relevant job opportunities across the USA. The application automatically searches for IAM job postings using multiple job APIs (JSearch, Adzuna, and RemoteOK) with intelligent deduplication, filters out senior positions, and presents them in a clean, searchable interface with smart filtering and monitoring capabilities.

@@ -15,6 +15,9 @@ stats:
   - { value: "2", label: "Cloud platforms" }
   - { value: "6+", label: "Compliance frameworks" }
   - { value: "5", label: "Pipeline stages" }
+hero: ../../assets/work/cloud-security-posture-dashboard/diagram.svg
+heroAlt: "Pipeline diagram: deploy misconfigured resources with Terraform, scan with Prowler and ScoutSuite, aggregate into one schema, visualise in Flask, remediate with dry-run"
+heroCaption: "The five-stage pipeline. Remediation loops back into a re-scan so a finding is only closed when the scanner agrees."
 ---
 
 Build a comprehensive multi-cloud security assessment platform that automates the deployment of intentionally misconfigured cloud resources, performs security scanning using industry-standard tools, aggregates findings into unified formats, and visualizes results through an interactive dashboard with automated remediation guidance and compliance mapping.

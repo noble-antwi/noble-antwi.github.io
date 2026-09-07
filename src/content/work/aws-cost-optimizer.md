@@ -10,6 +10,9 @@ period: "2025 to present"
 repo: https://github.com/noble-antwi/aws-cost-optimizer
 stack: ["Python", "Boto3", "Cost Explorer", "EC2", "RDS"]
 relatedTags: ["aws"]
+hero: ../../assets/work/aws-cost-optimizer/diagram.svg
+heroAlt: "Flow diagram: read the AWS account with Boto3, run five analyzers, produce a ranked report, pass an approval gate, then apply"
+heroCaption: "How a recommendation is made. Reads are done with a read-only role; nothing is changed without an explicit approval."
 ---
 
 Develop an automated AWS cost optimization tool that identifies and implements cost-saving opportunities across AWS infrastructure. This project combines infrastructure analysis, intelligent recommendations, and automated remediation to help organizations reduce cloud spending without compromising performance or reliability.
