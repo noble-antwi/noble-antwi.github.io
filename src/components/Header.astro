@@ -5,6 +5,7 @@ const path = Astro.url.pathname;
 const items = [
   { href: '/work/', label: 'Work', match: /^\/work/ },
   { href: '/writing/', label: 'Writing', match: /^\/writing|^\/(lab-notes|learning|project-update|cloud-security|til)\// },
+  { href: '/about/', label: 'About', match: /^\/about/ },
   { href: '/credentials/', label: 'Credentials', match: /^\/credentials/ },
   { href: '/now/', label: 'Now', match: /^\/now/ },
   { href: '/contact/', label: 'Contact', match: /^\/contact/ },
@@ -13,7 +14,7 @@ const items = [
 
 <header class="site-header">
   <div class="container">
-    <a class="wordmark" href="/" aria-label={`${SITE.title}, home`}>
+    <a class="wordmark" href="/">
       <span class="name">{SITE.title}</span>
       <span class="tag">{SITE.tagline}</span>
     </a>

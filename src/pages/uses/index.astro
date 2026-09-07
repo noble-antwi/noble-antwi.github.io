@@ -1,0 +1,86 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const groups = [
+  {
+    title: 'The lab',
+    blurb: 'Everything the case studies run on. It is deliberately modest hardware; the point is the design, not the spec sheet.',
+    items: [
+      ['Firewall', 'pfSense on a dedicated box, holding the gateway on all six VLANs so every inter-segment packet is a firewall decision.'],
+      ['Switching', 'A TP-Link TL-SG108E managed switch carrying 802.1Q tags, with a second switch trunked to the hypervisor.'],
+      ['Hypervisor', 'Proxmox VE on an 8-core, 32 GiB machine with 2.67 TiB of storage, on a trunk port with a single VLAN-aware bridge. Nightly backups to a separate disk.'],
+      ['Domain', 'DC01, Windows Server 2025, the domain controller for ad.biira.online with AD-integrated DNS.'],
+      ['SIEM', 'SIEM01, Wazuh 4.14 on a dedicated 16 GB box after the original host died and forced a better topology.'],
+      ['Observability', 'Grafana and Prometheus as a Proxmox guest.'],
+      ['Attack host', 'KALI01 on its own VLAN with no standing path to anything else.'],
+      ['Remote access', 'Tailscale over WireGuard, with its ability to bypass per-interface rules recorded as an accepted risk rather than ignored.'],
+      ['Secrets', 'HashiCorp Vault, staged on the DevOps VLAN.'],
+      ['Automation', 'Ansible with a dedicated service account, SSH ED25519 keys for Linux and WinRM for Windows.'],
+    ],
+  },
+  {
+    title: 'Identity',
+    blurb: 'The cloud half of the identity lab.',
+    items: [
+      ['Primary IdP', 'Okta Workforce Identity, integrator tenant, branded at login.biira.online, reached from AD through the Okta AD Agent over outbound HTTPS only.'],
+      ['Second directory', 'Microsoft Entra ID, with hybrid sync and Microsoft 365 planned for the next phase.'],
+      ['Test applications', 'Dropbox Business over SAML 2.0 with provisioning; Box over SWA, to cover both protocol families.'],
+    ],
+  },
+  {
+    title: 'Cloud and code',
+    blurb: 'What the tooling projects are written with.',
+    items: [
+      ['Languages', 'Python for anything with an API in it, PowerShell for anything with a domain in it, Bash for glue.'],
+      ['Infrastructure as code', 'Terraform for the posture-dashboard targets on AWS and Azure.'],
+      ['Scanners', 'Prowler for AWS, ScoutSuite for Azure.'],
+      ['Containers', 'Docker and Docker Compose; Kubernetes at the KCNA level.'],
+      ['Monitoring in apps', 'Prometheus metrics and Grafana dashboards, even for small services, because a service that cannot report on itself is not finished.'],
+    ],
+  },
+  {
+    title: 'This site',
+    blurb: 'For anyone who wants to build something similar.',
+    items: [
+      ['Framework', 'Astro, static output, deployed to GitHub Pages by a GitHub Actions workflow on every push.'],
+      ['Type', 'Instrument Serif for display, Inter for text, JetBrains Mono for anything that is data.'],
+      ['Images', 'Screenshots go in as PNG and come out as responsive WebP; the 1.3 MB Okta login page ships at 26 kB.'],
+      ['Writing', 'Markdown in a content collection with the original Jekyll URLs preserved, so nothing indexed broke in the rebuild.'],
+      ['Assistant', 'Claude Code, for the rebuild and for most of the documentation tooling in the lab repositories.'],
+    ],
+  },
+];
+---
+
+<Base title="Uses" description="The hardware, software and services behind Noble Antwi's labs, projects and this site.">
+  <div class="container">
+    <header class="page-head">
+      <span class="kicker">Uses</span>
+      <h1 class="display h1">What the labs, the projects and this site are made of.</h1>
+      <p class="lead">A <a href="https://uses.tech" target="_blank" rel="noopener">uses page</a>, kept current with the lab. If you are building something similar and want to compare notes, <a href="/contact/">write to me</a>.</p>
+    </header>
+
+    {groups.map((g) => (
+      <section class="section">
+        <div class="section-head">
+          <div>
+            <h2 class="display h2">{g.title}</h2>
+            <p>{g.blurb}</p>
+          </div>
+        </div>
+        <dl class="uses">
+          {g.items.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+        </dl>
+      </section>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .uses { margin: 0; display: grid; gap: 0.9rem; max-width: 52rem; }
+  .uses div { display: grid; grid-template-columns: 10rem 1fr; gap: 1.2rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line); }
+  .uses div:last-child { border-bottom: 0; }
+  .uses dt { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); padding-top: 0.25rem; }
+  .uses dd { margin: 0; color: var(--ink-2); line-height: 1.6; }
+  @media (max-width: 600px) { .uses div { grid-template-columns: 1fr; gap: 0.25rem; } }
+</style>

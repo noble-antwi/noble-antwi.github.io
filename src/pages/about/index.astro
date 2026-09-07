@@ -1,0 +1,37 @@
+---
+import Base from '../../layouts/Base.astro';
+import { SITE } from '../../lib/site';
+---
+
+<Base title="About" description="Who Noble Antwi is: an identity and cloud security engineer who came to security through infrastructure, and who documents everything he builds.">
+  <div class="container">
+    <header class="page-head">
+      <span class="kicker">About</span>
+      <h1 class="display h1">I came to security through the plumbing, <em>and stayed for the identity.</em></h1>
+    </header>
+
+    <div class="prose">
+      <p>I grew up in Ghana and studied computer science and engineering at the University of Mines and Technology in Tarkwa. My first security job was in a hospital: Active Directory, Windows Server, vulnerability scans, and the realisation that in a place where a locked-out account can delay care, "who can access what" is not an abstract question. That question has been the thread ever since.</p>
+
+      <p>It took me through an identity and access role at a global sportswear company in Germany, where the directory was a small city and every access review had an audit trail behind it; through cloud engineering and then cloud security at a fintech in Accra, where AWS IAM roles, security groups and log pipelines were the day job; through a summer in a bank's IT risk team in Chicago, mapping COBIT controls and automating the reporting that used to take a week; and through administering Okta for a university of eight and a half thousand people. Along the way I finished a master's in cybersecurity and digital forensics at Illinois Tech, and I now work in IT security in Chicago.</p>
+
+      <h2>What I actually believe about this work</h2>
+
+      <p><strong>Identity is the control plane.</strong> Most cloud incidents are not exotic exploits; they are a credential, a role, or a trust relationship that was broader than anyone remembered. If you get identity right, the rest of the security programme has something to stand on. If you get it wrong, the rest is decoration.</p>
+
+      <p><strong>A control you cannot evidence does not exist.</strong> A firewall rule with no justification, a policy nobody can point to, a backup nobody has restored: these are findings waiting to be written. I build my labs the way an auditor would want to read them, with rule registers, change logs and screenshots named so they can be traced to what they prove. It is slower. It is also the only version that is worth anything in a real organisation.</p>
+
+      <p><strong>Writing it down is part of building it.</strong> Every project here has documentation someone else could rebuild from, and the <a href="/writing/">journal</a> keeps the mistakes as well as the fixes. Partly that is generosity; mostly it is that writing is how I find out what I did not understand.</p>
+
+      <h2>What I am working toward</h2>
+
+      <p>The two labs, a <a href="/work/enterprise-iam-lab/">hybrid identity estate</a> and the <a href="/work/enterprise-security-homelab/">segmented network</a> it runs on, are built for a fictional regulated bank because financial services is where segmentation, least privilege and evidence are least optional. The next thing I want to build on top of them is the governance of a non-human identity: an AI agent with an account in the directory, short-lived credentials from Vault, a firewall-scoped reach, and an audit trail in the SIEM. I think that is the identity problem of the next few years, and I would rather have built it in a lab before I meet it in production.</p>
+
+      <h2>Off the clock</h2>
+
+      <p>Gospel, Lovers Rock, Afrobeat and Highlife, roughly in that order depending on the day. Chelsea FC, on the weekends I can manage it. And a standing curiosity about how systems fail, which is either a professional asset or a personality trait; I have stopped trying to tell the difference.</p>
+
+      <p>If any of this sounds like your work too, <a href="/contact/">write to me</a>. Email is {SITE.email}.</p>
+    </div>
+  </div>
+</Base>
