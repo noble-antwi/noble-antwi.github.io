@@ -1,0 +1,66 @@
+name: Email the lab digest
+
+# The weekly cloud routine opens an issue labelled "digest". GitHub does not
+# notify an account about issues it created itself, so this workflow emails
+# the body through Resend instead. It can also be run by hand for any issue.
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Issue number to email
+        required: true
+
+permissions:
+  issues: read
+  contents: read
+
+jobs:
+  email:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'digest')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.inputs.issue || github.event.issue.number }}
+        run: |
+          gh issue view "$NUMBER" --repo "$GITHUB_REPOSITORY" --json title,body,url > issue.json
+          jq -r .title issue.json > title.txt
+          jq -r .body  issue.json > body.md
+          jq -r .url   issue.json > url.txt
+
+      - name: Render the email
+        run: |
+          npx --yes marked --gfm -i body.md -o body.html
+          TITLE=$(cat title.txt); URL=$(cat url.txt)
+          cat > email.html <<EOF
+          <!doctype html><html><body style="margin:0;background:#f8f6f1;color:#16181d;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+          <div style="max-width:640px;margin:0 auto;padding:32px 24px;">
+            <p style="font-family:Menlo,Consolas,monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#0b6b63;margin:0 0 8px;">nobleantwi.com &middot; weekly</p>
+            <h1 style="font-family:Georgia,serif;font-weight:400;font-size:28px;line-height:1.15;margin:0 0 20px;">${TITLE}</h1>
+            <div style="font-size:16px;line-height:1.6;">
+          $(cat body.html)
+            </div>
+            <p style="margin:28px 0 0;padding-top:16px;border-top:1px solid #ddd7cb;font-size:13px;color:#5f646d;">
+              <a href="${URL}" style="color:#0b6b63;">Open this digest on GitHub</a> &middot; close the issue there once you have read or acted on it.
+            </p>
+          </div></body></html>
+          EOF
+          jq -n --rawfile html email.html --rawfile text body.md --arg subject "$TITLE" \
+            '{from: "Lab digest <digest@nobleantwi.com>", to: ["nobleantwi3@gmail.com"], subject: $subject, html: $html, text: $text}' > payload.json
+
+      - name: Send through Resend
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          if [ -z "$RESEND_API_KEY" ]; then
+            echo "RESEND_API_KEY secret is not set; skipping the email. Add it under Settings > Secrets and variables > Actions."
+            exit 0
+          fi
+          code=$(curl -s -o response.json -w '%{http_code}' -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer $RESEND_API_KEY" -H "Content-Type: application/json" -d @payload.json)
+          cat response.json; echo
+          [ "$code" = "200" ] || [ "$code" = "201" ] || { echo "Resend returned HTTP $code"; exit 1; }
