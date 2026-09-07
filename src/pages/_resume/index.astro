@@ -1,0 +1,126 @@
+---
+import Base from '../../layouts/Base.astro';
+import { SITE } from '../../lib/site';
+import { SUMMARY, ROLES, EDUCATION, SKILLS, PROJECTS } from '../../data/resume';
+import { CERTS } from '../../data/certifications';
+
+const certNames = CERTS.map((c) => c.short);
+---
+
+<Base title="Résumé" description="Noble Antwi's résumé: Cloud Security and Identity Engineer in Chicago. Experience across identity governance, Active Directory, Entra ID, Okta, AWS security and IT risk.">
+  <div class="container resume">
+    <header class="page-head resume-head">
+      <span class="kicker">Résumé</span>
+      <h1 class="display h1">Noble W. Antwi</h1>
+      <p class="lead">{SITE.tagline} · {SITE.location}</p>
+      <p class="resume-contact mono">
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a> ·
+        <a href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener">linkedin.com/in/{SITE.linkedin}</a> ·
+        <a href={`https://github.com/${SITE.github}`} target="_blank" rel="noopener">github.com/{SITE.github}</a> ·
+        <a href="/">noble-antwi.github.io</a>
+      </p>
+      <div class="resume-actions no-print">
+        <button class="btn" type="button" onclick="window.print()">Save as PDF</button>
+        <a class="btn btn-ghost" href="/contact/">Get in touch</a>
+      </div>
+    </header>
+
+    <section class="resume-section">
+      <h2 class="resume-h">Summary</h2>
+      <p class="resume-summary">{SUMMARY}</p>
+    </section>
+
+    <section class="resume-section">
+      <h2 class="resume-h">Experience</h2>
+      {ROLES.map((r) => (
+        <article class="role">
+          <div class="role-head">
+            <div>
+              <h3>{r.title}</h3>
+              <div class="role-org">{r.org} · {r.location}</div>
+            </div>
+            <div class="role-dates mono">{r.start} – {r.end}</div>
+          </div>
+          {r.bullets.length > 0 && <ul>{r.bullets.map((b) => <li>{b}</li>)}</ul>}
+        </article>
+      ))}
+    </section>
+
+    <section class="resume-section">
+      <h2 class="resume-h">Selected projects</h2>
+      {PROJECTS.map((p) => (
+        <article class="role">
+          <div class="role-head"><h3><a href={p.href}>{p.title}</a></h3></div>
+          <p class="role-blurb">{p.blurb}</p>
+        </article>
+      ))}
+    </section>
+
+    <section class="resume-section">
+      <h2 class="resume-h">Skills</h2>
+      <dl class="skills">
+        {SKILLS.map((s) => <div><dt>{s.group}</dt><dd>{s.items}</dd></div>)}
+      </dl>
+    </section>
+
+    <section class="resume-section">
+      <h2 class="resume-h">Certifications</h2>
+      <p class="role-blurb">{certNames.join(' · ')}. <a href="/credentials/" class="no-print">Verification links</a></p>
+    </section>
+
+    <section class="resume-section">
+      <h2 class="resume-h">Education</h2>
+      {EDUCATION.map((e) => (
+        <article class="role">
+          <div class="role-head">
+            <div><h3>{e.degree}</h3><div class="role-org">{e.school} · {e.location}</div></div>
+            {e.note && <div class="role-dates mono">{e.note}</div>}
+          </div>
+        </article>
+      ))}
+    </section>
+  </div>
+</Base>
+
+<style>
+  .resume { max-width: 52rem; }
+  .resume-head { padding-bottom: 1.5rem; max-width: none; }
+  .resume-contact { font-size: 0.8rem; color: var(--ink-2); margin: 0.8rem 0 0; }
+  .resume-contact a { color: var(--ink-2); text-decoration: none; border-bottom: 1px solid var(--line-2); }
+  .resume-contact a:hover { color: var(--accent-ink); border-color: var(--accent); }
+  .resume-actions { display: flex; gap: 0.6rem; margin-top: 1.5rem; }
+  .resume-section { padding: 1.8rem 0; border-top: 1px solid var(--line); }
+  .resume-h { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 500; margin-bottom: 1.1rem; }
+  .resume-summary { font-size: 1.08rem; line-height: 1.7; color: var(--ink); margin: 0; }
+  .role { margin-bottom: 1.5rem; }
+  .role:last-child { margin-bottom: 0; }
+  .role-head { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; flex-wrap: wrap; }
+  .role h3 { font-size: 1.08rem; font-weight: 600; }
+  .role h3 a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line-2); }
+  .role-org { color: var(--ink-2); font-size: 0.95rem; margin-top: 0.15rem; }
+  .role-dates { font-size: 0.76rem; color: var(--ink-3); white-space: nowrap; }
+  .role ul { margin: 0.6rem 0 0; padding-left: 1.2rem; color: var(--ink-2); font-size: 0.97rem; line-height: 1.6; }
+  .role li + li { margin-top: 0.3rem; }
+  .role li::marker { color: var(--ink-3); }
+  .role-blurb { color: var(--ink-2); font-size: 0.97rem; margin: 0.4rem 0 0; line-height: 1.6; }
+  .skills { display: grid; gap: 0.7rem; margin: 0; }
+  .skills div { display: grid; grid-template-columns: 11rem 1fr; gap: 1rem; }
+  .skills dt { font-weight: 600; font-size: 0.92rem; }
+  .skills dd { margin: 0; color: var(--ink-2); font-size: 0.95rem; line-height: 1.55; }
+  @media (max-width: 600px) { .skills div { grid-template-columns: 1fr; gap: 0.15rem; } }
+
+  @media print {
+    :global(.site-header), :global(.site-footer), :global(.skip-link), .no-print { display: none !important; }
+    :global(body) { background: #fff; color: #111; font-size: 10.5pt; }
+    :global(body::before) { display: none; }
+    .resume { max-width: none; padding: 0; }
+    .resume-head { padding: 0 0 0.8rem; }
+    .resume-head .h1 { font-size: 26pt; }
+    .resume-head .lead { font-size: 12pt; margin-top: 0.3rem; }
+    .resume-section { padding: 0.9rem 0; page-break-inside: auto; }
+    .role { page-break-inside: avoid; margin-bottom: 0.8rem; }
+    .role ul { font-size: 10pt; }
+    a { color: inherit; text-decoration: none; border: 0 !important; }
+    @page { margin: 16mm 18mm; }
+  }
+</style>

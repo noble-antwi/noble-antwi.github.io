@@ -12,8 +12,8 @@ export interface Cert {
   issued?: string;
   expires?: string;
   credential?: string;
-  verify: string;
-  verifyLabel: string;
+  verify?: string;
+  verifyLabel?: string;
   studyLog?: string;
   short: string; // label for the home strip
 }
@@ -88,6 +88,11 @@ export const CERTS: Cert[] = [
     id: 'dp-900', title: 'Azure Data Fundamentals (DP-900)', issuer: 'Microsoft', domain: 'platform', image: credly('70eb1e3f-d4de-4377-a062-b20fb29594ea', 'azure-data-fundamentals-600x600.png'),
     blurb: 'Core data concepts and how relational, non-relational and analytics workloads are implemented on Azure.',
     verify: 'https://www.credly.com/badges/f1082e80-2124-4f61-9e02-3d049ec7f281/public_url', verifyLabel: 'Verify on Credly', short: 'DP-900',
+  },
+  {
+    id: 'sc-900', title: 'Security, Compliance, and Identity Fundamentals (SC-900)', issuer: 'Microsoft', domain: 'security', mark: 'MS',
+    blurb: 'The vocabulary of the Microsoft security stack: identity concepts, Entra ID, Defender, Purview and the shared responsibility model.',
+    short: 'SC-900',
   },
   {
     id: 'security-plus', title: 'CompTIA Security+ CE', issuer: 'CompTIA', domain: 'security', image: credly('80d8a06a-c384-42bf-ad36-db81bce5adce', 'blob'),
