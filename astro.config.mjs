@@ -26,5 +26,6 @@ export default defineConfig({
     '/in-progress': '/credentials/',
     '/training-courses': '/credentials/training/',
     '/resume': '/credentials/',
+    '/learning/2026/04/14/ccna-day01-network-devices': '/writing/',
   },
 });

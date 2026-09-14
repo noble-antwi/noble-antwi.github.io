@@ -34,7 +34,6 @@ export const COURSES: Course[] = [
 
   { title: 'Certified Kubernetes Administrator (CKA) with Practice Tests', platform: 'Udemy', instructor: 'KodeKloud', state: 'planned' },
   { title: 'Microsoft Sentinel & Microsoft Defender for Cloud', platform: 'Udemy', instructor: 'Christopher Net', state: 'planned' },
-  { title: 'Master Cisco CCNA 200-301: Comprehensive All-in-One Course', platform: 'Udemy', instructor: 'Jeremy McDowell', state: 'planned' },
   { title: 'Nmap for Ethical Hackers: Ultimate Hands-On Course', platform: 'Udemy', instructor: 'David Greer', state: 'planned' },
   { title: 'AKYLADE AI Security Foundation: Full Course & Practice Exam', platform: 'Udemy', instructor: 'Jason Dion', state: 'planned' },
   { title: 'Complete Linux Training Course', platform: 'Udemy', instructor: 'Imran Afzal', state: 'planned' },
