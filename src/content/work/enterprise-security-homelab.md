@@ -1,7 +1,7 @@
 ---
 title: "Enterprise Security Homelab"
 kicker: "Infrastructure · Detection · Biira Bank"
-summary: "A six-VLAN, default-deny network for a fictional regional bank: pfSense, managed switching, a Proxmox hypervisor on a trunk port, a Windows Server 2025 domain controller, a Wazuh SIEM with three agents reporting and four CIS baselines recorded, and every firewall rule justified and mapped to a NIST control."
+summary: "A six-VLAN, default-deny network for a fictional regional bank: pfSense, managed switching, a Proxmox hypervisor on a trunk port, a Windows Server 2025 domain controller, a Wazuh SIEM with three agents reporting, a Greenbone scanner whose identity is administrator on member machines and nothing on the domain, and every firewall rule justified and mapped to a NIST control."
 category: detection
 status: active
 statusLabel: "In active build"
@@ -11,9 +11,9 @@ period: "2025 to present"
 role: "Design, build, operate, document"
 repo: https://github.com/noble-antwi/enterprise-security-homelab
 docs: https://github.com/noble-antwi/enterprise-security-homelab/tree/main/docs
-docsLabel: "17 runbooks (md + PDF)"
-stack: ["pfSense", "802.1Q VLANs", "Proxmox VE", "Windows Server 2025", "Wazuh 4.14", "Kali Linux", "Ansible", "Tailscale", "CIS Benchmarks"]
-relatedTags: ["homelab", "proxmox", "pfsense", "vlan", "networking", "wazuh", "siem"]
+docsLabel: "19 runbooks (md + PDF)"
+stack: ["pfSense", "802.1Q VLANs", "Proxmox VE", "Windows Server 2025", "Wazuh 4.14", "Greenbone CE", "Group Policy", "Kali Linux", "Ansible", "Tailscale", "CIS Benchmarks"]
+relatedTags: ["homelab", "proxmox", "pfsense", "vlan", "networking", "wazuh", "siem", "greenbone", "group-policy"]
 hero: ../../assets/work/enterprise-security-homelab/network-architecture.png
 heroAlt: "Network architecture diagram: internet, pfSense, two switches and six VLAN security zones with firewall status"
 heroCaption: "Current-state architecture. Switch 1 trunks to pfSense and to Switch 2, which carries every tagged VLAN to the Proxmox host; the six zones show their firewall hardening status."
@@ -74,6 +74,24 @@ gallery:
   - src: ../../assets/work/enterprise-security-homelab/dc-01-rename-to-dc01.png
     alt: "Renaming the Windows Server host to DC01"
     caption: "DC01, the Windows Server 2025 domain controller, being brought into the role-based naming scheme."
+  - src: ../../assets/work/enterprise-security-homelab/scan-identity-chain.svg
+    alt: "Diagram: a service account sits in a security group, a Group Policy scoped to the member OUs places that group in each machine's local Administrators, and the Domain Controllers OU sits outside the link"
+    caption: "How the scanner becomes an administrator of member machines without gaining anything on the domain. Four links, each doing one job, and the Domain Controllers OU deliberately outside the chain."
+  - src: ../../assets/work/enterprise-security-homelab/scan-16-gpo-local-administrators-item.png
+    alt: "Group Policy Preferences local group item adding a security group to the built-in Administrators group"
+    caption: "The grant itself. Action Update so existing administrators survive, the built-in Administrators group picked from the list so its well-known identifier is stored rather than a typed name, and the member added rather than the list replaced."
+  - src: ../../assets/work/enterprise-security-homelab/scanner-logon-rights.svg
+    alt: "Diagram of the five Windows logon types, four denied to the scan identity and only network logon permitted"
+    caption: "Five ways to sign in to Windows, four of them closed to the scanner. Its password is stored in a database and never expires, so the design assumes the credential leaks and narrows what a leak is worth."
+  - src: ../../assets/work/enterprise-security-homelab/sys-10-rdp-refused-svc-greenbone.png
+    alt: "Windows refusing a Remote Desktop sign-in for the scanner service account"
+    caption: "The closed door, tried. The account is an administrator of this machine and the password is correct, and Windows still refuses, because deny overrides both. A configuration screen is not proof that a right is enforced."
+  - src: ../../assets/work/enterprise-security-homelab/scan-17-feed-status-all-loaded.png
+    alt: "Greenbone feed status page showing all four feeds loaded and scanning available"
+    caption: "All four feeds loaded, after an initial load of about four hours and three separate failures. In this deployment the feeds never update themselves, so how often they are refreshed is a control rather than housekeeping."
+  - src: ../../assets/work/enterprise-security-homelab/web-02-securityheaders-after-aplus.png
+    alt: "An independent security header grader reporting A plus for biirabank.com"
+    caption: "The public tier after hardening, graded from outside rather than from the hosting platform's own dashboard. It started at F."
 ---
 
 ## The scenario
@@ -89,10 +107,10 @@ Internet enters through **pfSense**, which holds the `.1` gateway on all six VLA
 | VLAN | Zone | Subnet | What lives there |
 |------|------|--------|------------------|
 | 10 | Management | `192.168.10.0/24` | pfSense, PVE01 (the hypervisor), ADM01 (the admin workstation), a lab Ubuntu box |
-| 20 | BlueTeam | `192.168.20.0/24` | SIEM01: Wazuh manager, indexer and dashboard |
+| 20 | BlueTeam | `192.168.20.0/24` | SIEM01: Wazuh manager, indexer and dashboard. SCAN01: Greenbone vulnerability scanner |
 | 30 | RedTeam | `192.168.30.0/24` | KALI01, the attack host, as a Proxmox guest |
 | 40 | DevOps | `192.168.40.0/24` | APP01, two web applications behind Tailscale Serve; VAULT01 planned |
-| 50 | EnterpriseLAN | `192.168.50.0/24` | DC01, Windows Server 2025 domain controller |
+| 50 | EnterpriseLAN | `192.168.50.0/24` | DC01, the `corp.biirabank.com` domain controller; WKS01, the first member workstation |
 | 60 | Monitoring | `192.168.60.0/24` | MON01, Grafana and Prometheus, being rebuilt as a guest |
 
 Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's network placement is one tag on its virtual NIC. Moving the hypervisor from an access port to the trunk without locking myself out is written up in [Proxmox on a Trunk Port](/lab-notes/2026/05/25/proxmox-vlan-trunk-configuration.html).
@@ -104,6 +122,10 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 - **KALI01**, the attack host, as a Proxmox guest on VLAN 30 with no standing path to any other segment, no ICMP-to-any, and a clean-install snapshot to roll back to after every exercise. Its containment is proven by a test from the host itself, and the runbook is explicit about what that test does and does not prove.
 - **SIEM01**, Wazuh 4.14.7, rebuilt on dedicated hardware after the original host died. The failure became a role swap: the 16 GB machine that had been running Grafana went to the memory-hungry, data-bearing SIEM, and monitoring moves to a hypervisor guest. Written up in [Standing Up Wazuh Twice](/lab-notes/2026/09/08/standing-up-wazuh-twice.html).
 - **Three agents reporting**: DC01, ADM01 and PVE01, each with its own firewall rule on the interface its traffic actually arrives on. Enrolling ADM01 exposed that its traffic was bypassing the firewall over Tailscale; the fix, and the evidence, are in the runbook.
+- **SCAN01**, a Greenbone Community Edition scanner on VLAN 20 with all four feeds loaded and 186,567 vulnerability tests, built as a VM rather than a container because a scanner stores administrative credentials for everything it scans. Nessus Essentials was the first choice and was ruled out on its own current terms: five addresses on a thirty-day licence cannot cover nine hosts, or sustain a loop of scanning, fixing and scanning again. Written up in [A Scanner That Is Not a Domain Admin](/lab-notes/2026/09/14/a-scanner-that-is-not-a-domain-admin.html).
+- **A scan identity that is an administrator on member machines and nothing on the domain.** One service account in one group, and a Group Policy that places that group in each machine's local Administrators, linked to the member OUs only so the Domain Controllers OU sits structurally outside the grant. Four of the five ways to sign in to Windows are then denied to the account, leaving network logon alone, and the closed door is proven by a Remote Desktop session refused with the correct password.
+- **A forest rebuilt from an export**, `corp.biirabank.com` replacing the retired `ad.biira.online`, by demoting and repromoting the same hardware rather than renaming it. A password typed back under a different keyboard layout locked the controller out after the promotion reboot, and the recovery is recorded as an incident rather than quietly fixed.
+- **A public tier**, `biirabank.com`, served as Cloudflare Worker static assets and graded F to A+ by an independent header checker. Testing found the site still answering on its default `workers.dev` hostname, where none of the zone-level controls applied.
 - **Four CIS baselines recorded before any hardening**, one per host and operating system. They are the "before" half of a before-and-after, and the runbook explains why the four scores must not be read as a ranking.
 - **DC01**, a Windows Server 2025 domain controller with AD-integrated forward and reverse DNS zones and a clean `dcdiag`. It was the first agent.
 - **Nightly Proxmox backups** to a separate physical disk with a tested restore (NIST CP-9), and SHA256 verification of every installation image before use (SI-7).
@@ -117,13 +139,17 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 
 **Measure before you harden.** Every host's CIS baseline was captured on enrolment and cannot be recreated later. A score on its own proves nothing; a score that moves proves the work happened, which is what an auditor is actually asking for.
 
+**Privilege is a chain, and every link should be removable.** The scanner is an administrator of a machine only while the account is in the group, the group is in that machine's Administrators list, and the machine is in the policy's scope. Break any link and the access is gone. The retirement procedure was written at the same time as the grant, because the mechanism that adds the membership leaves it behind when the policy stops applying.
+
 **Naming is a control.** Every machine follows `<ROLE><NN>` (`DC01`, `SIEM01`, `KALI01`, `APP01`) and every screenshot follows `<area>-<NN>-<subject>`, so evidence can be traced to the configuration it proves. That is what CIS Control 12.4 and NIST AU-3 actually ask for.
 
 ## What is next
 
 - The last unmonitored host: a `DEV-01` rule and a Wazuh agent on APP01, the first real rule on the DEVOPS interface.
 - Harden DC01 and ADM01 against their CIS baselines (both 26%), re-run the assessment and record the delta.
-- Write the BLUETEAM, DEVOPS and MONITORING rulesets, which are still permissive; the BlueTeam one will be driven by the needs of a Nessus Essentials scanner on VLAN 20.
+- Run the first scans: credentialed against WKS01, and unauthenticated against DC01 alongside its Wazuh configuration assessment, because there is no least-privilege way to credential-scan a domain controller.
+- Write the BLUETEAM, DEVOPS and MONITORING rulesets, which are still permissive. The BlueTeam one is now driven by the traffic SCAN01 actually needs, and a scanner has to cross every boundary the firewall exists to enforce.
+- Close the scanner's password debt: VAULT01 issuing a short-lived credential per scan, retiring the non-expiring password that is currently recorded as a tracked exception.
 - Rebuild MON01 and ANS01 as Proxmox guests, and give Vault its own guest (VAULT01) rather than a share of APP01.
 - Scope Tailscale to close hardening item H-02, and build PAW01, a dedicated administrative workstation, to close H-01.
 - Rebuild the identity estate on the bank's new public domain, `biirabank.com`, with a new forest and a new Okta org, from a decision record this time. That work opens a Version 2 chapter here and in the IAM case study.
