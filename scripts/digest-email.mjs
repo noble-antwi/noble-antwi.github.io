@@ -117,7 +117,7 @@ const html = `<!doctype html>
     </td></tr>
 
     <tr><td style="padding:22px 8px 0;font-size:12px;line-height:1.6;color:${C.ink3};">
-      Written every Monday by a routine that reads your public repositories and compares them with <a href="https://nobleantwi.com" style="color:${C.accent};">nobleantwi.com</a>. It never changes anything on its own.
+      Written every Friday evening by a routine that reads your public repositories and compares them with <a href="https://nobleantwi.com" style="color:${C.accent};">nobleantwi.com</a>. It never changes anything on its own.
       <br>Manage the routine at <a href="https://claude.ai/code/routines" style="color:${C.accent};">claude.ai/code/routines</a>.
     </td></tr>
 

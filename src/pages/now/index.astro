@@ -15,11 +15,12 @@ const updated = 'September 2026';
       <div>
         <h3>Building</h3>
         <ul>
-          <li>The last unmonitored host in the <a href="/work/enterprise-security-homelab/">Biira Bank lab</a>: a Wazuh agent on APP01 and the first real rule on the DevOps interface. Three agents already report.</li>
+          <li>The first credentialed scan from <a href="/work/enterprise-security-homelab/">SCAN01</a>, now that the scanner has an identity that is an administrator on member machines and nothing on the domain. <a href="/lab-notes/2026/09/14/a-scanner-that-is-not-a-domain-admin.html">How that was scoped.</a></li>
+          <li>The last unmonitored host in the lab: a Wazuh agent on APP01 and the first real rule on the DevOps interface. Three agents already report.</li>
           <li>Hardening DC01 and ADM01 against their CIS baselines (both 26%) and recording the delta. <a href="/lab-notes/2026/09/08/standing-up-wazuh-twice.html">Why the baseline came first.</a></li>
           <li>Rebuilding MON01 and ANS01 as Proxmox guests, and giving Vault its own guest on the DevOps VLAN.</li>
           <li>Writing the last three pfSense rulesets (BlueTeam, DevOps, Monitoring) to default-deny, each rule justified and mapped.</li>
-          <li>Rebuilding the <a href="/work/enterprise-iam-lab/">identity lab</a> on the bank's new domain, biirabank.com: a new forest and a new Okta org, from a decision record this time.</li>
+          <li>Rebuilding the <a href="/work/enterprise-iam-lab/">identity lab</a>. The forest is done and running as corp.biirabank.com; the Okta org comes next, in Terraform so it can be replayed rather than reclicked.</li>
         </ul>
       </div>
       <div>

@@ -1,10 +1,10 @@
 ---
 title: "Enterprise IAM Lab: Hybrid Identity for a Regulated Bank"
 kicker: "Identity · Hybrid identity · Biira Bank"
-summary: "On-prem Active Directory with a tiered admin model, federated to Okta Workforce Identity and Microsoft Entra ID over SAML, OIDC and SWA, with network-aware conditional access and graduated MFA. Built to the regulatory drivers a real bank would have to satisfy."
+summary: "On-prem Active Directory with a tiered admin model, federated to Okta Workforce Identity and Microsoft Entra ID over SAML, OIDC and SWA, with network-aware conditional access and graduated MFA. Built to the regulatory drivers a real bank would have to satisfy, and now being rebuilt on a new forest from a written decision record."
 category: identity
 status: active
-statusLabel: "Phase 5 of 6"
+statusLabel: "Phase 5 of 6 · rebuilding"
 order: 10
 featured: true
 period: "2025 to present"
@@ -12,8 +12,8 @@ role: "Design, build, operate, document"
 repo: https://github.com/noble-antwi/enterprise-iam-lab
 docs: https://github.com/noble-antwi/enterprise-iam-lab/tree/main/docs/guides
 docsLabel: "Phase guides"
-stack: ["Active Directory", "Windows Server 2025", "Okta Workforce Identity", "Microsoft Entra ID", "SAML 2.0", "OIDC", "SWA", "Okta Expression Language", "PowerShell", "Conditional Access"]
-relatedTags: ["okta", "sc-300", "identity", "iam", "entra-id"]
+stack: ["Active Directory", "Windows Server 2025", "Okta Workforce Identity", "Microsoft Entra ID", "SAML 2.0", "OIDC", "SWA", "Okta Expression Language", "PowerShell", "Conditional Access", "Terraform"]
+relatedTags: ["okta", "sc-300", "identity", "iam", "entra-id", "active-directory"]
 hero: ../../assets/work/enterprise-iam-lab/iam-architecture.png
 heroAlt: "Hybrid identity architecture diagram: network zones and authentication policies above Okta and Entra ID, with Active Directory on premises reached by the Okta AD Agent"
 heroCaption: "Authentication flows top to bottom. A request is evaluated against the network zones first, then against the authentication policies in priority order. Okta is the primary IdP; Active Directory stays the source of record, reached by the AD Agent over outbound HTTPS only."
@@ -28,7 +28,7 @@ gallery:
     caption: "How a sign-in is decided: zone first, then the first matching policy. Below it, where the identity comes from and where it goes."
   - src: ../../assets/work/enterprise-iam-lab/p1-okta-branded-login.png
     alt: "Biira Bank branded Okta sign-in page"
-    caption: "The branded sign-in page at login.biira.online. The bank has a real domain, a real tenant and a real brand, so the lab reads like an organisation."
+    caption: "The branded sign-in page from version one, on the domain since retired. The bank has a real domain, a real tenant and a real brand, so the lab reads like an organisation rather than a demo."
   - src: ../../assets/work/enterprise-iam-lab/p2-admin-groups.png
     alt: "Tiered admin groups in Active Directory Users and Computers"
     caption: "Tier 0, 1 and 2 admin groups. Domain admins never touch workstations; workstation admins never touch domain controllers."
@@ -62,6 +62,18 @@ gallery:
   - src: ../../assets/work/enterprise-iam-lab/p5-tor-blocking-logs.png
     alt: "Okta system log entries for blocked Tor attempts"
     caption: "The same event in the system log: the evidence an investigator would pull."
+  - src: ../../assets/work/enterprise-iam-lab/dc-02-server-manager-corp-biirabank.png
+    alt: "Server Manager on the rebuilt domain controller reporting the new forest"
+    caption: "Version two, first proof: the same hardware promoted as the first controller of a new forest, with directory services, DNS and storage all reporting healthy. Taken after a lockout that cost most of an evening to recover."
+  - src: ../../assets/work/enterprise-iam-lab/dc-03-directory-rebuild-ous-users.png
+    alt: "Organisational units and user accounts recreated in the new directory"
+    caption: "The directory replayed from the export taken before the irreversible step. Twenty organisational units and the full account set, recreated by script rather than by hand, so the rebuild has a known baseline instead of an accreted one."
+  - src: ../../assets/work/enterprise-iam-lab/dc-04-security-groups-rebuilt.png
+    alt: "Security groups recreated in the new forest"
+    caption: "Security groups rebuilt. Rights in this estate are granted to groups and never to accounts, so the group list is the part of the directory that has to come back exactly."
+  - src: ../../assets/work/enterprise-iam-lab/dc-05-group-membership-verified.png
+    alt: "Group membership read back from the directory for verification"
+    caption: "Membership read back from the directory rather than assumed from the script that wrote it. The difference between a migration that ran and a migration that worked."
 ---
 
 ## The scenario
@@ -72,7 +84,7 @@ The identity estate runs on the network documented in the sibling [Enterprise Se
 
 ## Architecture
 
-**Active Directory** (`ad.biira.online`, on DC01, Windows Server 2025, VLAN 50) is the source of record for employee identity. **Okta Workforce Identity** is the primary identity provider that applications federate to, reached through the Okta AD Agent over outbound HTTPS only, so nothing on the internet can initiate a connection to the domain controller. **Microsoft Entra ID** is the second cloud directory, planned for hybrid synchronisation and Microsoft 365 in Phase 6.
+**Active Directory** (`corp.biirabank.com`, on DC01, Windows Server 2025, VLAN 50) is the source of record for employee identity. The forest was rebuilt under that name in September 2026; the paragraph on version two below explains why, and what is still being restored on top of it. **Okta Workforce Identity** is the primary identity provider that applications federate to, reached through the Okta AD Agent over outbound HTTPS only, so nothing on the internet can initiate a connection to the domain controller. **Microsoft Entra ID** is the second cloud directory, planned for hybrid synchronisation and Microsoft 365 in Phase 6.
 
 Authentication is evaluated in two layers. First the request is classified by **network zone**: an IP zone for the corporate network, a dynamic geographic zone for allowed countries, and a threat zone that recognises Tor exit nodes. Then the **authentication policies** apply in priority order, and the first match decides the assurance required:
 
@@ -97,8 +109,21 @@ Authentication is evaluated in two layers. First the request is classified by **
 
 **Where you are changes what you must prove.** Graduated MFA by network zone is more honest than a blanket policy: it pushes hardware-backed factors to the risky context (public networks) without punishing every corporate login, and it makes a deny-by-geography rule a first-class control rather than an afterthought.
 
+## Version two: a new forest, and a decision record first
+
+The estate described above was built on `ad.biira.online`. That domain is being retired, and the public brand moved to `biirabank.com`, which left the directory named after something the bank no longer owns. Two other things happened at the same time. The Okta org was deleted for inactivity, which is what the free integrator tier does and is nobody's fault but mine. And the first build had grown by accretion, without a written record of why any name was chosen.
+
+So version two starts from a decision record, `ADR-001`, written before anything was touched.
+
+**The internal forest is `corp.biirabank.com`, not `biirabank.com`.** A domain controller becomes the authoritative DNS server for its own domain name. Naming the forest after the public domain would have made the controller authoritative for the public zone, so the bank's own website would have stopped resolving from inside the lab. The `corp.` prefix keeps the two namespaces apart, and a sign-in suffix means users still type `name@biirabank.com` and never see the internal name.
+
+**A rebuild, not a rename.** Renaming a forest is supported and reboots every machine twice with no clean rollback, and that cost is the same whether the directory holds thirty-five accounts or thirty-five thousand. Exporting the directory, demoting the controller and promoting it into a new forest was the better trade at this size. The export was taken first, because the demotion is the one irreversible moment.
+
+What this cost, honestly: every member machine lost its domain membership and has to rejoin, and the Okta directory agent points at a domain that no longer exists. What it bought: a directory rebuilt to a scripted baseline, a namespace that does not collide with the public site, and a written reason for both.
+
 ## What is next
 
+- **Rebuild the Okta org**, configured with Terraform this time, so the tenant is a file in the repository rather than a sequence of clicks that cannot be replayed. Repoint the directory agent at the new forest.
 - **Phase 5.2 to 5.5:** adaptive, risk-based MFA; device trust and posture; privileged access management; behavioural analytics.
 - **Phase 6:** Entra ID hybrid synchronisation, seamless SSO and Microsoft 365, with federation decisions between Okta and Entra documented as a decision record.
-- Grow the endpoint estate on the homelab side so the identity policies have realistic workstations to protect.
+- Grow the endpoint estate on the homelab side so the identity policies have realistic workstations to protect. The first member workstation, WKS01, is joined and inside policy scope.
