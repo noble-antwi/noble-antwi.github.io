@@ -217,7 +217,7 @@ The AZ-900 is the foundation. The natural next step is **AZ-104**, the Azure Adm
 
 I already have the AZ-104 course from Udemy at 93% completion. The gap between course completion and exam readiness is where Tutorial Dojo will come in again.
 
-Alongside that, I am continuing with CCNA networking fundamentals and CompTIA Server+ as preparation for infrastructure work. Both are running in parallel.
+Alongside that, I am continuing with CompTIA Server+ as preparation for infrastructure work.
 
 The study notes will keep coming.
 
