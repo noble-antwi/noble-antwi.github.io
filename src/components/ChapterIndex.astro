@@ -1,0 +1,78 @@
+---
+import { CHAPTERS, STATUS_LABEL, fileUrl, pdfUrl, repoUrl } from '../data/chapters';
+
+interface Props { slug: string }
+const index = CHAPTERS[Astro.props.slug];
+if (!index) return;
+
+const ownRepo = index.repos[0].name;
+const total = index.groups.reduce((n, g) => n + g.items.length, 0);
+const pill: Record<string, string> = {
+  current: 'pill-ok',
+  progress: 'pill-warn',
+  planning: 'pill-info',
+  earlier: 'pill-plain',
+  v1: 'pill-plain',
+};
+---
+
+<section class="section chapters" id="chapters" aria-labelledby="chapters-h">
+  <div class="section-head">
+    <div>
+      <span class="kicker">The build, chapter by chapter</span>
+      <h2 class="display h2" id="chapters-h">Everything written so far, <em>with the source one click away.</em></h2>
+      <p>{index.intro} Anything not marked is current.</p>
+    </div>
+    <span class="chapters-count mono">{total} entries · {index.repos.length} repositories</span>
+  </div>
+
+  <ul class="repo-cards" role="list">
+    {index.repos.map((r, i) => (
+      <li class:list={['repo-card', { own: i === 0 }]}>
+        <span class="role">{i === 0 ? 'This project' : r.role}</span>
+        <a class="name" href={repoUrl(r.name)} target="_blank" rel="noopener">
+          <span class="owner">noble-antwi/</span>{r.name}<span class="arrow" aria-hidden="true">↗</span>
+        </a>
+        <p>{r.summary}</p>
+        {r.site && <a class="site" href={r.site} target="_blank" rel="noopener">{r.site.replace('https://', '')} ↗</a>}
+      </li>
+    ))}
+  </ul>
+
+  <div class="chapter-groups">
+    {index.groups.map((g) => (
+      <div class="chapter-group">
+        <div class="group-head">
+          <h3>{g.title}</h3>
+          <span class="group-count mono">{g.items.length} {g.items.length === 1 ? 'entry' : 'entries'}</span>
+          {g.note && <p>{g.note}</p>}
+        </div>
+        <details class="group-body" open={!g.collapsed}>
+        <summary class="mono">Show all {g.items.length}</summary>
+        <ol class="chapter-list" role="list">
+          {g.items.map((c) => (
+            <li>
+              <span class="num">{c.num}</span>
+              <div class="body">
+                <a class="title" href={fileUrl(c)} target="_blank" rel="noopener">
+                  {c.title}<span class="sr-only"> (opens on GitHub)</span>
+                </a>
+                <p>{c.summary}</p>
+                {c.note && <p class="note">{c.note}</p>}
+                {c.repo !== ownRepo && <p class="from mono">from {c.repo}</p>}
+              </div>
+              <div class="side">
+                {c.status !== 'current' && <span class={`pill ${pill[c.status]}`}>{STATUS_LABEL[c.status]}</span>}
+                <span class="links mono">
+                  <a href={fileUrl(c)} target="_blank" rel="noopener" aria-label={`Read ${c.title} on GitHub`}>{c.tree ? 'Browse' : 'Read'} ↗</a>
+                  {c.pdf && <a href={pdfUrl(c)} target="_blank" rel="noopener" aria-label={`${c.title} as PDF`}>PDF ↗</a>}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ol>
+        </details>
+      </div>
+    ))}
+  </div>
+</section>
