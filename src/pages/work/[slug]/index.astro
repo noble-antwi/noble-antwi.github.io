@@ -3,6 +3,8 @@ import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../../layouts/Base.astro';
 import PostList from '../../../components/PostList.astro';
+import ChapterIndex from '../../../components/ChapterIndex.astro';
+import { CHAPTERS } from '../../../data/chapters';
 import { byDateDesc, WORK_CATEGORIES } from '../../../lib/site';
 
 export async function getStaticPaths() {
@@ -16,6 +18,7 @@ export async function getStaticPaths() {
 const { work, prev, next } = Astro.props;
 const d = work.data;
 const { Content } = await render(work);
+const hasChapters = Boolean(CHAPTERS[work.id]);
 const pill = d.status === 'complete' ? 'pill-ok' : d.status === 'active' ? 'pill-warn' : 'pill-info';
 
 const related = d.relatedTags.length
@@ -59,9 +62,21 @@ const related = d.relatedTags.length
       </div>
     )}
 
-    <div class="prose">
+    {hasChapters && (
+      <nav class="work-jump" aria-label="On this page">
+        <span>On this page</span>
+        <a href="#overview">Overview</a>
+        <a href="#chapters">Chapters</a>
+        {d.gallery.length > 0 && <a href="#evidence">Evidence</a>}
+        {related.length > 0 && <a href="#writing">Writing</a>}
+      </nav>
+    )}
+
+    <div class="prose" id="overview">
       <Content />
     </div>
+
+    <ChapterIndex slug={work.id} />
 
     {d.gallery.length > 0 && (
       <section class="section" id="evidence">
@@ -86,7 +101,7 @@ const related = d.relatedTags.length
     )}
 
     {related.length > 0 && (
-      <section class="section">
+      <section class="section" id="writing">
         <div class="section-head">
           <div>
             <span class="kicker">Related writing</span>
