@@ -1,113 +1,268 @@
 ---
-/* The lab at a glance, drawn in currentColor so it belongs to both themes.
-   Paths draw themselves in on load; reduced-motion users get the finished drawing. */
-// One hue per zone. Used only for the zone's outline and its host label,
-// so the drawing stays a drawing rather than a chart.
-const ZONE_HUE: Record<string, string> = {
-  '10': 'var(--c-cloud)',
-  '20': 'var(--c-detection)',
-  '30': 'var(--c-offence)',
-  '40': 'var(--c-identity)',
-  '50': 'var(--c-assessment)',
-  '60': 'var(--ink-3)',
-};
+/* The lab, drawn the way an architecture diagram is drawn: a path across the
+   top (internet, firewall, both switches, hypervisor), a tagged fabric, and
+   the six segments hanging off it. Facts come from docs/01 and the host
+   inventory in the homelab README, including Switch 1 port 1 trunking to
+   pfSense and port 2 trunking to Switch 2. */
 
-const vlans = [
-  { id: '10', name: 'Management', host: 'PVE01 · ADM01' },
-  { id: '20', name: 'BlueTeam', host: 'SIEM01 · SCAN01' },
-  { id: '30', name: 'RedTeam', host: 'KALI01' },
-  { id: '40', name: 'DevOps', host: 'APP01' },
-  { id: '50', name: 'EnterpriseLAN', host: 'DC01 · WKS01' },
-  { id: '60', name: 'Monitoring', host: 'MON01 · next' },
+interface Host { name: string; note: string; kind: 'server' | 'pc' | 'vm' }
+interface Zone {
+  id: string; name: string; subnet: string; hue: string;
+  hardened: boolean; hosts: Host[];
+}
+
+const zones: Zone[] = [
+  {
+    id: '10', name: 'Management', subnet: '192.168.10.0/24', hue: 'var(--c-cloud)', hardened: true,
+    hosts: [
+      { name: 'PVE01', note: 'hypervisor', kind: 'server' },
+      { name: 'ADM01', note: 'admin laptop', kind: 'pc' },
+      { name: 'ANS01', note: 'rebuilding', kind: 'vm' },
+    ],
+  },
+  {
+    id: '20', name: 'BlueTeam', subnet: '192.168.20.0/24', hue: 'var(--c-detection)', hardened: false,
+    hosts: [
+      { name: 'SIEM01', note: 'Wazuh manager', kind: 'server' },
+      { name: 'SCAN01', note: 'Greenbone', kind: 'vm' },
+    ],
+  },
+  {
+    id: '30', name: 'RedTeam', subnet: '192.168.30.0/24', hue: 'var(--c-offence)', hardened: true,
+    hosts: [{ name: 'KALI01', note: 'attack host', kind: 'vm' }],
+  },
+  {
+    id: '40', name: 'DevOps', subnet: '192.168.40.0/24', hue: 'var(--c-assessment)', hardened: false,
+    hosts: [
+      { name: 'APP01', note: 'web apps', kind: 'server' },
+      { name: 'VAULT01', note: 'planned', kind: 'vm' },
+    ],
+  },
+  {
+    id: '50', name: 'EnterpriseLAN', subnet: '192.168.50.0/24', hue: 'var(--c-identity)', hardened: true,
+    hosts: [
+      { name: 'DC01', note: 'corp.biirabank.com', kind: 'server' },
+      { name: 'WKS01', note: 'domain joined', kind: 'vm' },
+    ],
+  },
+  {
+    id: '60', name: 'Monitoring', subnet: '192.168.60.0/24', hue: 'var(--ink-3)', hardened: false,
+    hosts: [{ name: 'MON01', note: 'rebuilding', kind: 'vm' }],
+  },
 ];
+
+const CARD_W = 185, CARD_GAP = 18, CARD_X0 = 24, CARD_Y = 214, CARD_H = 224;
+const zoneX = (i: number) => CARD_X0 + i * (CARD_W + CARD_GAP);
+const SPINE_Y = 178;
 ---
 
-<figure class="schematic" aria-label="Schematic of the lab: internet into pfSense, six VLANs behind it, and the domain controller federated to Okta and Entra ID">
-  <svg viewBox="0 0 1170 220" xmlns="http://www.w3.org/2000/svg" role="img">
+<figure class="schematic" aria-labelledby="sch-title">
+  <svg viewBox="0 0 1240 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-describedby="sch-desc">
+    <title id="sch-title">Biira Bank lab network architecture</title>
+    <desc id="sch-desc">
+      The internet reaches a pfSense firewall, which trunks on port 1 of Switch 1. Port 2 of Switch 1
+      trunks to Switch 2, which carries the tagged VLANs to the Proxmox hypervisor. Six VLAN segments
+      hang off the tagged fabric: Management, BlueTeam, RedTeam, DevOps, EnterpriseLAN and Monitoring.
+      The domain controller on the EnterpriseLAN segment reaches Okta and Microsoft Entra ID outbound only.
+    </desc>
+
     <defs>
-      <marker id="sch-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker>
+      <marker id="ar" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0L10 5 0 10z" fill="currentColor" />
+      </marker>
+      <marker id="ar-dash" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0L10 5 0 10z" fill="var(--c-identity)" />
+      </marker>
     </defs>
 
-    <!-- internet -->
-    <g class="node">
-      <ellipse cx="70" cy="110" rx="46" ry="26" />
-      <text x="70" y="115" text-anchor="middle" class="lbl">internet</text>
-    </g>
-    <path class="wire w1" d="M116 110 L182 110" marker-end="url(#sch-arrow)"/>
+    {/* ---------------------------------------------------------- top path */}
+    <g class="row">
+      <g class="box plain" style="--d:0s">
+        <rect x="24" y="30" width="146" height="78" rx="10" />
+        <path class="ico" d="M40 74a9 9 0 0 1 2-17 12 12 0 0 1 22 3 7 7 0 0 1-2 14z" />
+        <text x="76" y="64" class="t1">Internet</text>
+        <text x="76" y="80" class="t2">untrusted</text>
+      </g>
+      <path class="link" d="M170 69 L204 69" marker-end="url(#ar)" style="--d:0.15s" />
 
-    <!-- pfSense -->
-    <g class="node">
-      <rect x="184" y="80" width="112" height="60" rx="8"/>
-      <text x="240" y="106" text-anchor="middle" class="lbl strong">pfSense</text>
-      <text x="240" y="126" text-anchor="middle" class="lbl small">default deny</text>
-    </g>
-    <path class="wire w2" d="M296 110 L352 110" marker-end="url(#sch-arrow)"/>
+      <g class="box accent" style="--d:0.2s">
+        <rect x="206" y="30" width="186" height="78" rx="10" />
+        <path class="ico" d="M220 52h24v18h-24zM220 61h24M228 52v9M236 61v9" />
+        <text x="256" y="56" class="t1">FW01 · pfSense</text>
+        <text x="256" y="72" class="t2">gateway on all six VLANs</text>
+        <text x="256" y="88" class="t2 hi">default deny</text>
+      </g>
+      <path class="link thick" d="M392 69 L430 69" marker-end="url(#ar)" style="--d:0.35s" />
+      <text x="411" y="58" class="t3 mid">trunk</text>
 
-    <!-- switch / trunk -->
-    <g class="node">
-      <rect x="354" y="94" width="86" height="32" rx="6"/>
-      <text x="397" y="115" text-anchor="middle" class="lbl small">802.1Q trunk</text>
+      <g class="box" style="--d:0.4s">
+        <rect x="432" y="30" width="196" height="78" rx="10" />
+        <path class="ico" d="M446 54h24v16h-24zM450 59h9l-3-3M466 65h-9l3 3" />
+        <text x="482" y="56" class="t1">SW01 · TL-SG108E</text>
+        <text x="482" y="72" class="t2">P1 trunk, P2 trunk</text>
+        <text x="482" y="88" class="t2">P3 to P8 access, one VLAN each</text>
+      </g>
+      <path class="link thick" d="M628 69 L666 69" marker-end="url(#ar)" style="--d:0.55s" />
+      <text x="647" y="58" class="t3 mid">P2</text>
+
+      <g class="box" style="--d:0.6s">
+        <rect x="668" y="30" width="168" height="78" rx="10" />
+        <path class="ico" d="M682 54h24v16h-24zM686 59h9l-3-3M702 65h-9l3 3" />
+        <text x="718" y="64" class="t1">SW02</text>
+        <text x="718" y="80" class="t2">carries the tagged VLANs</text>
+      </g>
+      <path class="link thick" d="M836 69 L874 69" marker-end="url(#ar)" style="--d:0.75s" />
+
+      <g class="box" style="--d:0.8s">
+        <rect x="876" y="30" width="200" height="78" rx="10" />
+        <path class="ico" d="M890 50h24v9h-24zM890 63h24v9h-24zM895 54.5h2M895 67.5h2" />
+        <text x="926" y="56" class="t1">PVE01 · Proxmox VE</text>
+        <text x="926" y="72" class="t2">one VLAN-aware bridge</text>
+        <text x="926" y="88" class="t2">a guest's segment is one tag</text>
+      </g>
     </g>
 
-    <!-- VLAN fan-out -->
-    {vlans.map((v, i) => {
-      const x = 490 + i * 96;
+    {/* ------------------------------------------------- the tagged fabric */}
+    <path class="link drop" d={`M540 108 L540 ${SPINE_Y}`} style="--d:0.9s" />
+    <path class="link drop dashed" d={`M976 108 L976 ${SPINE_Y}`} style="--d:0.95s" />
+    <path class="spine" d={`M24 ${SPINE_Y} L1216 ${SPINE_Y}`} style="--d:1s" />
+    <text x="1216" y={SPINE_Y - 10} class="t3" text-anchor="end">802.1Q tagged fabric</text>
+
+    {/* ---------------------------------------------------------- segments */}
+    {zones.map((z, i) => {
+      const x = zoneX(i);
+      const cx = x + CARD_W / 2;
       return (
-        <g class="node vlan" style={`--i:${i};--zone:${ZONE_HUE[v.id]}`}>
-          <path class="wire w3" d={`M440 110 C 465 110, ${x - 20} ${i < 3 ? 40 : 180}, ${x} ${i < 3 ? 40 : 180}`} />
-          <rect x={x} y={i < 3 ? 22 : 162} width="84" height="36" rx="6"/>
-          <text x={x + 42} y={i < 3 ? 38 : 178} text-anchor="middle" class="lbl small">VLAN {v.id}</text>
-          <text x={x + 42} y={i < 3 ? 52 : 192} text-anchor="middle" class="lbl tiny">{v.name}</text>
-          <text x={x + 42} y={i < 3 ? 72 : 152} text-anchor="middle" class="lbl tiny host">{v.host}</text>
+        <g class="zone" style={`--zone:${z.hue};--d:${1.05 + i * 0.07}s`}>
+          <path class="link drop zn" d={`M${cx} ${SPINE_Y} L${cx} ${CARD_Y}`} />
+          <rect class="card" x={x} y={CARD_Y} width={CARD_W} height={CARD_H} rx="10" />
+          <rect class="cap" x={x} y={CARD_Y} width={CARD_W} height="4" rx="2" />
+
+          <text x={x + 14} y={CARD_Y + 30} class="t1 zn-id">VLAN {z.id}</text>
+          <text x={x + 14} y={CARD_Y + 48} class="t1">{z.name}</text>
+          <text x={x + 14} y={CARD_Y + 66} class="t2 mono">{z.subnet}</text>
+
+          <g class={z.hardened ? 'badge ok' : 'badge open'}>
+            <rect x={x + 14} y={CARD_Y + 78} width={z.hardened ? 92 : 84} height="18" rx="9" />
+            <text x={x + 14 + (z.hardened ? 46 : 42)} y={CARD_Y + 91} class="t3" text-anchor="middle">
+              {z.hardened ? 'default deny' : 'permissive'}
+            </text>
+          </g>
+
+          {z.hosts.map((h, j) => {
+            const hy = CARD_Y + 110 + j * 38;
+            return (
+              <g class="host">
+                <rect x={x + 12} y={hy} width={CARD_W - 24} height="32" rx="6" />
+                {h.kind === 'server' && <path class="ico sm" d={`M${x + 22} ${hy + 10}h12v5h-12zM${x + 22} ${hy + 18}h12v5h-12z`} />}
+                {h.kind === 'pc' && <path class="ico sm" d={`M${x + 22} ${hy + 9}h13v10h-13zM${x + 26} ${hy + 21}h5`} />}
+                {h.kind === 'vm' && <path class="ico sm dash" d={`M${x + 22} ${hy + 9}h13v13h-13z`} />}
+                <text x={x + 44} y={hy + 14} class="t1 sm">{h.name}</text>
+                <text x={x + 44} y={hy + 26} class="t2 sm">{h.note}</text>
+              </g>
+            );
+          })}
         </g>
       );
     })}
 
-    <!-- identity: DC01 (VLAN 50) to Okta / Entra, outbound only -->
-    <path class="wire w4 dashed" d="M958 176 C 1000 176, 1010 60, 1054 60" marker-end="url(#sch-arrow)"/>
-    <text x="1004" y="130" text-anchor="middle" class="lbl tiny">AD Agent · outbound only</text>
-    <g class="node">
-      <rect x="1056" y="30" width="100" height="60" rx="30"/>
-      <text x="1106" y="56" text-anchor="middle" class="lbl strong">Okta</text>
-      <text x="1106" y="76" text-anchor="middle" class="lbl small">Entra ID</text>
+    {/* ------------------------------------------------- cloud identity leg */}
+    <path class="link idp" d={`M${zoneX(4) + CARD_W / 2} ${CARD_Y + CARD_H} L${zoneX(4) + CARD_W / 2} 506`} marker-end="url(#ar-dash)" />
+    <text x={zoneX(4) + CARD_W / 2 - 10} y={CARD_Y + CARD_H + 30} class="t3 idp-l" text-anchor="end">AD Agent, outbound only</text>
+
+    <g class="box idp-box" style="--d:1.6s">
+      <rect x={zoneX(4) - 30} y="508" width="246" height="72" rx="10" />
+      <text x={zoneX(4) + 93} y="536" class="t1">Okta · Microsoft Entra ID</text>
+      <text x={zoneX(4) + 93} y="554" class="t2">nothing inbound reaches DC01</text>
+    </g>
+
+    {/* ------------------------------------------------------------- legend */}
+    <g class="legend">
+      <path class="link thick" d="M24 600 L64 600" />
+      <text x="72" y="604" class="t3">trunk, all VLANs tagged</text>
+      <path class="link" d="M236 600 L276 600" />
+      <text x="284" y="604" class="t3">access, one VLAN</text>
+      <path class="link dashed" d="M424 600 L464 600" />
+      <text x="472" y="604" class="t3">tagged to a guest, or outbound only</text>
+      <rect class="swatch ok" x="756" y="593" width="14" height="14" rx="4" />
+      <text x="778" y="604" class="t3">ruleset written, three of six</text>
+      <rect class="swatch open" x="1010" y="593" width="14" height="14" rx="4" />
+      <text x="1032" y="604" class="t3">still permissive</text>
     </g>
   </svg>
-  <figcaption>The lab at a glance: a default-deny firewall, six segments, and a domain controller that reaches the cloud identity providers but is never reached from them.</figcaption>
+
+  <figcaption>
+    Current state. Two switches: port 1 of Switch 1 trunks to pfSense, port 2 trunks to Switch 2, which
+    carries the tagged VLANs to the hypervisor. Physical hosts land on a single-VLAN access port; a guest's
+    segment is one tag on its virtual NIC.
+  </figcaption>
 </figure>
 
 <style>
-  .schematic { margin: 0; padding: 2rem 0 0; color: var(--ink-2); }
+  .schematic { margin: 0; padding: 2.5rem 0 0; color: var(--ink-2); }
   .schematic svg { width: 100%; height: auto; display: block; overflow: visible; }
-  .schematic .node rect, .schematic .node ellipse { fill: var(--paper); stroke: currentColor; stroke-width: 1.4; }
-  .schematic .vlan rect { stroke: var(--zone, currentColor); stroke-width: 1.8; }
-  .schematic .vlan .wire { stroke: var(--zone, currentColor); opacity: 0.75; }
-  .schematic .vlan .lbl.host { fill: var(--zone, var(--accent)); }
-  .schematic .lbl { font-family: var(--font-mono); font-size: 13px; fill: var(--ink-2); }
-  .schematic .lbl.strong { fill: var(--ink); font-size: 15px; }
-  .schematic .lbl.small { font-size: 11px; letter-spacing: 0.04em; }
-  .schematic .lbl.tiny { font-size: 10px; fill: var(--ink-3); letter-spacing: 0.04em; }
-  .schematic .lbl.host { fill: var(--accent); }
-  .schematic .wire { fill: none; stroke: currentColor; stroke-width: 1.4; }
-  .schematic .wire.dashed { stroke: var(--accent); stroke-dasharray: 5 5; }
-  .schematic figcaption { margin-top: 1rem; }
 
-  /* draw-in */
-  .schematic .wire { stroke-dasharray: 600; stroke-dashoffset: 600; animation: sch-draw 1.1s ease-out forwards; }
-  .schematic .wire.dashed { animation: sch-draw-dashed 1.1s ease-out forwards; animation-delay: 1.4s; }
-  .schematic .w2 { animation-delay: 0.3s; }
-  .schematic .w3 { animation-delay: calc(0.6s + var(--i, 0) * 0.08s); }
-  .schematic .node { opacity: 0; animation: sch-fade 0.5s ease-out forwards; }
-  .schematic .node.vlan { animation-delay: calc(0.9s + var(--i, 0) * 0.08s); }
-  .schematic .node:not(.vlan):nth-of-type(2) { animation-delay: 0.2s; }
-  .schematic .node:not(.vlan):nth-of-type(3) { animation-delay: 0.5s; }
-  .schematic .node:last-of-type { animation-delay: 1.6s; }
+  /* boxes */
+  .schematic .box rect { fill: var(--paper); stroke: var(--line-2); stroke-width: 1.2; }
+  .schematic .box.accent rect { stroke: var(--accent); }
+  .schematic .box.plain rect { fill: var(--paper-2); stroke: var(--line); }
+  .schematic .ico { fill: none; stroke: var(--ink-3); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .schematic .box.accent .ico { stroke: var(--accent); }
+  .schematic .ico.sm { stroke-width: 1.3; stroke: var(--zone, var(--ink-3)); }
+  .schematic .ico.sm.dash { stroke-dasharray: 3 2.5; }
+
+  /* type */
+  .schematic text { font-family: inherit; }
+  .schematic .t1 { font-size: 13px; font-weight: 600; fill: var(--ink); text-anchor: middle; }
+  .schematic .t2 { font-size: 10.5px; fill: var(--ink-3); text-anchor: middle; }
+  .schematic .t2.hi { fill: var(--accent); font-weight: 600; }
+  .schematic .t3 { font-family: var(--font-mono); font-size: 9.5px; fill: var(--ink-3); letter-spacing: 0.04em; }
+  .schematic .zone .t1, .schematic .zone .t2, .schematic .row .t1, .schematic .row .t2 { text-anchor: start; }
+  .schematic .t3.mid { text-anchor: middle; }
+  .schematic .t1.sm { font-size: 11.5px; }
+  .schematic .t2.sm { font-size: 9.5px; }
+  .schematic .mono { font-family: var(--font-mono); font-size: 9.5px; }
+  .schematic .zn-id { fill: var(--zone); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; }
+
+  /* links */
+  .schematic .link { fill: none; stroke: var(--line-2); stroke-width: 1.3; }
+  .schematic .link.thick { stroke: var(--ink-3); stroke-width: 2.2; }
+  .schematic .link.dashed { stroke-dasharray: 5 4; }
+  .schematic .link.drop { stroke: var(--line-2); }
+  .schematic .link.drop.zn { stroke: var(--zone); opacity: 0.55; }
+  .schematic .spine { fill: none; stroke: var(--ink-3); stroke-width: 2.2; }
+  .schematic .link.idp { stroke: var(--c-identity); stroke-width: 1.4; stroke-dasharray: 5 4; }
+  .schematic .idp-l { fill: var(--c-identity); }
+  .schematic .idp-box rect { stroke: var(--c-identity); fill: var(--paper); }
+
+  /* zone cards */
+  .schematic .card { fill: var(--paper); stroke: var(--line); stroke-width: 1.2; }
+  .schematic .cap { fill: var(--zone); }
+  .schematic .host rect { fill: var(--paper-2); stroke: none; }
+  .schematic .badge rect { fill: none; stroke-width: 1; }
+  .schematic .badge.ok rect { stroke: var(--ok); }
+  .schematic .badge.ok .t3 { fill: var(--ok); }
+  .schematic .badge.open rect { stroke: var(--warn); }
+  .schematic .badge.open .t3 { fill: var(--warn); }
+  .schematic .swatch.ok { fill: none; stroke: var(--ok); stroke-width: 1.4; }
+  .schematic .swatch.open { fill: none; stroke: var(--warn); stroke-width: 1.4; }
+
+  .schematic figcaption { margin-top: 1.1rem; }
+
+  /* draw-in, the same restraint as before */
+  .schematic .box, .schematic .zone, .schematic .idp-box { opacity: 0; animation: sch-fade 0.5s ease-out forwards; animation-delay: var(--d, 0s); }
+  .schematic .link, .schematic .spine { stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: sch-draw 0.9s ease-out forwards; animation-delay: var(--d, 0s); }
+  .schematic .link.dashed, .schematic .link.idp { animation-name: sch-draw-dashed; }
+  .schematic .zone .link { animation-delay: var(--d, 0s); }
+  .schematic .legend .link { animation: none; stroke-dashoffset: 0; stroke-dasharray: none; }
+  .schematic .legend .link.dashed { stroke-dasharray: 5 4; }
   @keyframes sch-draw { to { stroke-dashoffset: 0; } }
-  @keyframes sch-draw-dashed { from { stroke-dashoffset: 600; } to { stroke-dashoffset: 0; } }
+  @keyframes sch-draw-dashed { to { stroke-dashoffset: 0; } }
   @keyframes sch-fade { to { opacity: 1; } }
   @media (prefers-reduced-motion: reduce) {
-    .schematic .wire { stroke-dashoffset: 0; animation: none; }
-    .schematic .wire.dashed { stroke-dasharray: 5 5; }
-    .schematic .node { opacity: 1; animation: none; }
+    .schematic .link, .schematic .spine { stroke-dashoffset: 0; animation: none; }
+    .schematic .link.dashed, .schematic .link.idp { stroke-dasharray: 5 4; }
+    .schematic .box, .schematic .zone, .schematic .idp-box { opacity: 1; animation: none; }
   }
-  @media (max-width: 700px) { .schematic { display: none; } }
+  @media (max-width: 860px) { .schematic { display: none; } }
 </style>
