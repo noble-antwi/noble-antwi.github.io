@@ -161,6 +161,24 @@ A configuration screen cannot prove a right is enforced, so I tried the closed d
 
 The account is an administrator of that machine. The password is correct. Windows refuses before a desktop appears and explains exactly why. Deny overrides both.
 
+## The scan, and what the SIEM made of it
+
+The first credentialed scan ran on 19 September. Two things had to be true on the Windows side beyond the rights above: the Remote Registry service had to start, and the machine's own firewall had to accept a connection on the file sharing port from the scanner. Both were delivered by the same policy, and the firewall rule is scoped to the scanner's address alone rather than to the whole segment.
+
+![The scanner proving it can reach the workstation on the file sharing port, addressed by name rather than by address](/assets/posts/scan01-greenbone/sys-15-scan01-reaches-wks01-by-name.png)
+
+Note the name. The workstation holds a DHCP lease, so the target is `wks01.corp.biirabank.com` and not an address that will belong to something else next month. Making that name resolve from the scanner's segment was its own story, told in [The Zone That Did Not Exist](/lab-notes/2026/09/19/the-zone-that-did-not-exist.html).
+
+![The credentialed baseline task running in Greenbone](/assets/posts/scan01-greenbone/scan-25-greenbone-credentialed-baseline-running.png)
+
+Then the part I did not plan for. While the scan ran, the SIEM lit up.
+
+![Wazuh reading the scan's sign-ins as possible pass-the-hash](/assets/posts/scan01-greenbone/siem-21-wks01-scan-logon-events.png)
+
+Roughly two thousand successful sign-ins in a single hour, all from one service account, all against one workstation, and Wazuh classifying them as "possible pass-the-hash attack". The rule is not wrong. A scanner authenticating hundreds of times a minute looks exactly like credential abuse, because mechanically it is the same behaviour with different intent.
+
+That is the argument for the alert I still owe this account: not an alert on the scan account signing in, which would fire constantly and be muted within a week, but an alert on it signing in **outside a scan window**. The difference between those two rules is the difference between a useful detection and noise.
+
 ## What this does not solve
 
 An administrator arriving over the network can still do real damage. These rights narrow what a stolen credential is worth; they do not neutralise it. Two things still owed: a Wazuh alert on any use of the scanner account outside a scan window, and Vault issuing a short-lived credential per scan so the non-expiring password stops being a standing exception.

@@ -89,6 +89,12 @@ gallery:
   - src: ../../assets/work/enterprise-security-homelab/scan-17-feed-status-all-loaded.png
     alt: "Greenbone feed status page showing all four feeds loaded and scanning available"
     caption: "All four feeds loaded, after an initial load of about four hours and three separate failures. In this deployment the feeds never update themselves, so how often they are refreshed is a control rather than housekeeping."
+  - src: ../../assets/work/enterprise-security-homelab/scan-25-greenbone-credentialed-baseline-running.png
+    alt: "Greenbone showing a credentialed baseline scan task running against the first domain-joined workstation"
+    caption: "The first credentialed scan, 19 September. The target is a name rather than an address, because the workstation holds a DHCP lease and a pinned address would eventually point at something else."
+  - src: ../../assets/work/enterprise-security-homelab/siem-21-wks01-scan-logon-events.png
+    alt: "Wazuh events showing thousands of successful sign-ins by the scan account, classified as possible pass-the-hash"
+    caption: "What the SIEM made of it: about two thousand successful sign-ins in an hour from one service account, flagged as possible credential abuse. The rule is not wrong, which is the argument for alerting on this account only outside a scan window."
   - src: ../../assets/work/enterprise-security-homelab/web-02-securityheaders-after-aplus.png
     alt: "An independent security header grader reporting A plus for biirabank.com"
     caption: "The public tier after hardening, graded from outside rather than from the hosting platform's own dashboard. It started at F."
@@ -147,7 +153,8 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 
 - The last unmonitored host: a `DEV-01` rule and a Wazuh agent on APP01, the first real rule on the DEVOPS interface.
 - Harden DC01 and ADM01 against their CIS baselines (both 26%), re-run the assessment and record the delta.
-- Run the first scans: credentialed against WKS01, and unauthenticated against DC01 alongside its Wazuh configuration assessment, because there is no least-privilege way to credential-scan a domain controller.
+- Read the first credentialed scan's findings and start the remediation loop. The scan itself ran on 19 September; an unauthenticated scan of DC01 is still owed, because there is no least-privilege way to credential-scan a domain controller.
+- Alert on the scan account signing in outside a scan window, now that a scan is known to look like credential abuse to the SIEM.
 - Write the BLUETEAM, DEVOPS and MONITORING rulesets, which are still permissive. The BlueTeam one is now driven by the traffic SCAN01 actually needs, and a scanner has to cross every boundary the firewall exists to enforce.
 - Close the scanner's password debt: VAULT01 issuing a short-lived credential per scan, retiring the non-expiring password that is currently recorded as a tracked exception.
 - Rebuild MON01 and ANS01 as Proxmox guests, and give Vault its own guest (VAULT01) rather than a share of APP01.
