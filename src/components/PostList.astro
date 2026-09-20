@@ -13,7 +13,7 @@ const { posts, filterGroup } = Astro.props;
     const s = seriesFor(p);
     const cats = [p.data.category, s?.id].filter(Boolean).join(' ');
     return (
-      <li data-filter-item={filterGroup ? '' : undefined} data-filter-group={filterGroup} data-cat={filterGroup ? cats : undefined}>
+      <li data-topic={p.data.category} data-filter-item={filterGroup ? '' : undefined} data-filter-group={filterGroup} data-cat={filterGroup ? cats : undefined}>
         <time datetime={isoDate(p.data.date)}>{formatDate(p.data.date, 'short')}</time>
         <a class="title" href={postUrl(p)}>{p.data.title}</a>
         <span class="meta">{s ? s.title : categoryLabel(p.data.category)}{p.data.read_time ? ` · ${p.data.read_time} min` : ''}</span>
