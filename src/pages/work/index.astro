@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import WorkCard from '../../components/WorkCard.astro';
+import EstateDiagram from '../../components/EstateDiagram.astro';
 import { WORK_CATEGORIES } from '../../lib/site';
 
 const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
@@ -22,6 +23,8 @@ const counts = Object.fromEntries(Object.keys(WORK_CATEGORIES).map((k) => [k, wo
       <div><strong>{work.filter((w) => w.data.gallery.length > 0).reduce((n, w) => n + w.data.gallery.length, 0)}</strong><span>Evidence screenshots</span></div>
       <div><strong>{work.length}</strong><span>Public repositories</span></div>
     </div>
+
+    <EstateDiagram />
 
     <div class="filter-tabs" data-filter-group="work" role="group" aria-label="Filter projects">
       <button class="filter-tab is-active" data-filter="all" aria-pressed="true">All <span class="count">{work.length}</span></button>
