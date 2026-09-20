@@ -57,7 +57,7 @@ const SPINE_Y = 178;
 ---
 
 <figure class="schematic" aria-labelledby="sch-title">
-  <svg viewBox="0 0 1240 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-describedby="sch-desc">
+  <svg class="full" viewBox="0 0 1240 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-describedby="sch-desc">
     <title id="sch-title">Biira Bank lab network architecture</title>
     <desc id="sch-desc">
       The internet reaches a pfSense firewall, which trunks on port 1 of Switch 1. Port 2 of Switch 1
@@ -191,6 +191,50 @@ const SPINE_Y = 178;
     </g>
   </svg>
 
+  <svg class="compact" viewBox="0 0 360 690" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The same lab, stacked: internet, pfSense, two switches, then the six VLAN segments and the cloud identity providers.">
+    <defs>
+      <marker id="ar-c" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0L10 5 0 10z" fill="currentColor" />
+      </marker>
+    </defs>
+
+    <g class="box plain"><rect x="0" y="0" width="360" height="40" rx="8" /><text x="16" y="25" class="t1">Internet</text><text x="344" y="25" class="t2 end">untrusted</text></g>
+    <path class="link" d="M180 40 L180 58" marker-end="url(#ar-c)" />
+
+    <g class="box accent"><rect x="0" y="60" width="360" height="46" rx="8" /><text x="16" y="82" class="t1">FW01 · pfSense</text><text x="16" y="98" class="t2">gateway on all six VLANs, default deny</text></g>
+    <path class="link thick" d="M180 106 L180 124" marker-end="url(#ar-c)" />
+
+    <g class="box"><rect x="0" y="126" width="360" height="46" rx="8" /><text x="16" y="148" class="t1">SW01 · SW02</text><text x="16" y="164" class="t2">P1 trunk to the firewall, P2 trunk to SW02, then Proxmox</text></g>
+    <path class="link thick" d="M180 172 L180 190" marker-end="url(#ar-c)" />
+
+    {zones.map((z, i) => {
+      const y = 196 + i * 56;
+      return (
+        <g class="zone row-c" style={`--zone:${z.hue}`}>
+          <rect class="card" x="0" y={y} width="360" height="48" rx="8" />
+          <rect class="cap-l" x="0" y={y} width="4" height="48" rx="2" />
+          <text x="16" y={y + 20} class="t1">VLAN {z.id} · {z.name}</text>
+          <text x="16" y={y + 36} class="t2 mono">{z.hosts.map((h) => h.name).join(' · ')}</text>
+          <g class={z.hardened ? 'badge ok' : 'badge open'}>
+            <rect x={z.hardened ? 268 : 276} y={y + 15} width={z.hardened ? 76 : 68} height="17" rx="8.5" />
+            <text x={z.hardened ? 306 : 310} y={y + 27} class="t3 mid">{z.hardened ? 'default deny' : 'permissive'}</text>
+          </g>
+        </g>
+      );
+    })}
+
+    <path class="link idp" d="M180 532 L180 556" marker-end="url(#ar-c)" />
+    <text x="190" y="548" class="t3 idp-l">from DC01 on VLAN 50, outbound only</text>
+    <g class="box idp-box"><rect x="0" y="558" width="360" height="46" rx="8" /><text x="16" y="580" class="t1">Okta · Microsoft Entra ID</text><text x="16" y="596" class="t2">reached from DC01, never the other way</text></g>
+
+    <g class="legend">
+      <rect class="swatch ok" x="0" y="632" width="12" height="12" rx="4" />
+      <text x="18" y="642" class="t3">ruleset written, three of six</text>
+      <rect class="swatch open" x="0" y="660" width="12" height="12" rx="4" />
+      <text x="18" y="670" class="t3">still permissive</text>
+    </g>
+  </svg>
+
   <figcaption>
     Current state. Two switches: port 1 of Switch 1 trunks to pfSense, port 2 trunks to Switch 2, which
     carries the tagged VLANs to the hypervisor. Physical hosts land on a single-VLAN access port; a guest's
@@ -264,5 +308,19 @@ const SPINE_Y = 178;
     .schematic .link.dashed, .schematic .link.idp { stroke-dasharray: 5 4; }
     .schematic .box, .schematic .zone, .schematic .idp-box { opacity: 1; animation: none; }
   }
-  @media (max-width: 860px) { .schematic { display: none; } }
+  .schematic .compact { display: none; }
+  .schematic .compact text { text-anchor: start; }
+  .schematic .compact .t2.end { text-anchor: end; }
+  .schematic .compact .t3.mid { text-anchor: middle; }
+  .schematic .row-c .t1 { font-size: 12.5px; }
+  .schematic .row-c .t2 { font-size: 9.5px; }
+  .schematic .t2.end { text-anchor: end; }
+  .schematic .cap-l { fill: var(--zone); }
+  .schematic .compact .box rect { fill: var(--paper); stroke: var(--line-2); }
+  .schematic .compact .link { stroke: var(--ink-3); }
+  @media (max-width: 860px) {
+    .schematic { padding-top: 2rem; }
+    .schematic .full { display: none; }
+    .schematic .compact { display: block; }
+  }
 </style>
