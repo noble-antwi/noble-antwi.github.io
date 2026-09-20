@@ -9,7 +9,7 @@ import path from 'node:path';
 import { getCollection } from 'astro:content';
 import { SITE, postPath, categoryLabel, seriesFor } from '../../lib/site';
 
-interface Card { slug: string; kicker: string; title: string }
+interface Card { slug: string; kicker: string; title: string; blurb?: string }
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await getCollection('posts');
@@ -28,10 +28,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   ];
   const cards: Card[] = [
     ...pages,
-    ...work.map((w) => ({ slug: `work/${w.id}`, kicker: w.data.kicker, title: w.data.title })),
+    ...work.map((w) => ({ slug: `work/${w.id}`, kicker: w.data.kicker, title: w.data.title, blurb: w.data.summary })),
     ...posts.map((p) => {
       const s = seriesFor(p);
-      return { slug: postPath(p), kicker: s ? `${categoryLabel(p.data.category)} · ${s.title}` : categoryLabel(p.data.category), title: p.data.title };
+      return { slug: postPath(p), kicker: s ? `${categoryLabel(p.data.category)} · ${s.title}` : categoryLabel(p.data.category), title: p.data.title, blurb: p.data.description };
     }),
   ];
   return cards.map((c) => ({ params: { slug: c.slug }, props: c }));
@@ -47,9 +47,13 @@ const fonts = Promise.all([
 const PAPER = '#f8f6f1', INK = '#16181d', INK2 = '#4a4f58', ACCENT = '#0b6b63', LINE = '#ddd7cb';
 
 export const GET: APIRoute = async ({ props }) => {
-  const { kicker, title } = props as Card;
+  const { kicker, title, blurb } = props as Card;
   const [serif, inter, mono] = await fonts;
   const size = title.length > 90 ? 52 : title.length > 60 ? 60 : title.length > 36 ? 70 : 82;
+  // One or two sentences, capped so the card never crowds.
+  const lede = (blurb ?? '').trim().replace(/\s+/g, ' ');
+  const first = lede.split(/(?<=\.)\s+/)[0] ?? '';
+  const sub = first.length > 170 ? first.slice(0, first.lastIndexOf(' ', 167)) + '…' : first;
 
   const svg = await satori(
     {
@@ -68,6 +72,7 @@ export const GET: APIRoute = async ({ props }) => {
               ] } },
             ] } },
             { type: 'div', props: { style: { fontFamily: 'Instrument Serif', fontSize: size, lineHeight: 1.06, letterSpacing: -1, color: INK, maxWidth: 1040 }, children: title } },
+            ...(sub ? [{ type: 'div', props: { style: { display: 'flex', marginTop: 26, paddingLeft: 20, borderLeft: `4px solid ${ACCENT}`, fontSize: 27, lineHeight: 1.45, color: INK2, maxWidth: 980 }, children: sub } }] : []),
           ] } },
           { type: 'div', props: { style: { display: 'flex', flexDirection: 'column' }, children: [
             { type: 'div', props: { style: { height: 2, width: 1056, background: LINE, marginBottom: 26 } } },

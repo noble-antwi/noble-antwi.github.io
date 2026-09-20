@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { rehypeFigures } from './src/plugins/rehype-figures.mjs';
 
 export default defineConfig({
   site: 'https://nobleantwi.com',
@@ -11,6 +12,7 @@ export default defineConfig({
   trailingSlash: 'ignore',
   integrations: [sitemap()],
   markdown: {
+    rehypePlugins: [rehypeFigures],
     shikiConfig: {
       themes: { light: 'github-light-high-contrast', dark: 'github-dark-dimmed' },
       wrap: false,

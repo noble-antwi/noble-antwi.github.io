@@ -17,6 +17,7 @@ const { Content, headings } = await render(post);
 const series = seriesFor(post);
 const seriesPosts = series ? (await getCollection('posts')).filter(series.match).sort((a, b) => a.data.date.getTime() - b.data.date.getTime()) : [];
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const shareUrl = new URL(postUrl(post), SITE.url).toString();
 const description = d.description ?? (post.body ?? '').replace(/<[^>]+>/g, '').replace(/[#*_`>\[\]]/g, '').replace(/\s+/g, ' ').trim().slice(0, 157) + '…';
 
 const jsonLd = {
@@ -33,7 +34,9 @@ const jsonLd = {
 ---
 
 <Base title={d.title} description={description} type="article" published={d.date} tags={d.tags} jsonLd={jsonLd}>
+  <div class="read-progress" aria-hidden="true"></div>
   <div class="container">
+    <div class="article-layout">
     <article>
       <header class="post-hero">
         <span class="kicker">{categoryLabel(d.category)}{series ? ` · ${series.title}` : ''}</span>
@@ -83,10 +86,66 @@ const jsonLd = {
         </div>
       </div>
 
-      <nav class="pager" aria-label="Adjacent posts" style="max-width:var(--measure);">
+      <nav class="pager" aria-label="Adjacent posts">
         {older ? <a href={postUrl(older)}><small>← Older</small><span class="t">{older.data.title}</span></a> : <span></span>}
         {newer && <a class="next" href={postUrl(newer)}><small>Newer →</small><span class="t">{newer.data.title}</span></a>}
       </nav>
+      <footer class="post-share">
+        <span class="kicker">Share this note</span>
+        <div class="share-row">
+          <a class="btn" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener">Share on LinkedIn</a>
+          <button class="btn btn-ghost" type="button" data-copy-link={shareUrl}>Copy link</button>
+        </div>
+      </footer>
     </article>
+
+    {toc.length >= 4 && (
+      <aside class="post-rail" aria-label="On this page">
+        <div class="rail-inner">
+          <span class="kicker">On this page</span>
+          <ol class="rail-toc">
+            {toc.map((h) => (
+              <li class:list={[h.depth === 3 && 'sub']}><a href={`#${h.slug}`}>{h.text}</a></li>
+            ))}
+          </ol>
+          <a class="rail-share" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener">Share on LinkedIn ↗</a>
+        </div>
+      </aside>
+    )}
+    </div>
   </div>
+
+  <script is:inline>
+    (() => {
+      const links = [...document.querySelectorAll('.rail-toc a')];
+      if (links.length) {
+        const map = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
+        const seen = new Set();
+        const mark = () => {
+          let current = null;
+          for (const id of map.keys()) {
+            const el = document.getElementById(id);
+            if (el && el.getBoundingClientRect().top < 140) current = id;
+          }
+          for (const [id, a] of map) a.parentElement.classList.toggle('here', id === current);
+        };
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) e.isIntersecting ? seen.add(e.target.id) : seen.delete(e.target.id);
+          mark();
+        }, { rootMargin: '-120px 0px -70% 0px' });
+        for (const id of map.keys()) { const el = document.getElementById(id); if (el) io.observe(el); }
+        addEventListener('scroll', mark, { passive: true });
+        mark();
+      }
+      const copy = document.querySelector('[data-copy-link]');
+      if (copy) copy.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(copy.dataset.copyLink);
+          const was = copy.textContent;
+          copy.textContent = 'Link copied';
+          setTimeout(() => { copy.textContent = was; }, 1800);
+        } catch { location.hash = ''; }
+      });
+    })();
+  </script>
 </Base>

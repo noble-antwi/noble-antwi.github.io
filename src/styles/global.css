@@ -498,6 +498,7 @@ figcaption { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink
 .prose h3 { font-size: 1.2rem; font-weight: 600; margin-top: 2em; margin-bottom: 0.3em; }
 .prose h4 { font-size: 1rem; font-weight: 600; margin-top: 1.6em; margin-bottom: 0.2em; }
 .prose h5, .prose h6 { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-top: 2em; margin-bottom: 0.3em; }
+.prose > p:first-of-type { font-size: 1.16rem; line-height: 1.65; color: var(--ink); }
 .prose p strong, .prose li strong { color: var(--ink); font-weight: 600; }
 .prose ul, .prose ol { padding-left: 1.4rem; }
 .prose li + li { margin-top: 0.35em; }
@@ -506,7 +507,13 @@ figcaption { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink
 .prose blockquote > :first-child { margin-top: 0; }
 .prose blockquote > :last-child { margin-bottom: 0; }
 .prose hr { border: 0; border-top: 1px solid var(--line); margin: 2.5em 0; }
-.prose img { border: 1px solid var(--line); border-radius: var(--radius-sm); margin: 1.5em 0; }
+.prose img { display: block; width: 100%; height: auto; border-radius: var(--radius-sm); }
+.prose > img { border: 1px solid var(--line); margin: 1.5em 0; }
+.prose figure { margin: 2.2em 0; }
+.prose figure .frame { display: block; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--paper-2); box-shadow: var(--shadow); transition: border-color 0.2s ease, transform 0.2s ease; }
+.prose figure .frame:hover { border-color: var(--accent-line); transform: translateY(-2px); }
+.prose figure .frame img { border-radius: 0; }
+.prose figure figcaption { font-family: var(--font-mono); font-size: 0.73rem; line-height: 1.55; color: var(--ink-3); margin-top: 0.7rem; padding-left: 0.9rem; border-left: 2px solid var(--accent-line); }
 .prose code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); border: 1px solid var(--line); padding: 0.1em 0.4em; border-radius: 4px; color: var(--ink); }
 .prose pre { margin: 1.5em 0; padding: 1.1rem 1.3rem; border-radius: var(--radius-sm); border: 1px solid var(--line); overflow-x: auto; font-size: 0.86rem; line-height: 1.6; background: var(--code-bg) !important; }
 .prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
@@ -517,6 +524,51 @@ figcaption { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink
 .prose td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
 .prose a { color: var(--accent-ink); }
 .prose .footnotes { font-size: 0.9rem; color: var(--ink-2); }
+
+/* ------------------------------------------------------------
+   Article layout: a centred reading column with a sticky rail
+   ------------------------------------------------------------ */
+.article-layout { display: grid; grid-template-columns: minmax(0, 1fr); justify-content: center; }
+.article-layout > article { min-width: 0; max-width: var(--measure); margin-inline: auto; width: 100%; }
+.article-layout .post-hero,
+.article-layout .toc,
+.article-layout .prose,
+.article-layout .series-nav,
+.article-layout .author,
+.article-layout .pager { max-width: none; }
+
+@media (min-width: 1060px) {
+  .article-layout { grid-template-columns: minmax(0, var(--measure)) 15rem; gap: 4rem; justify-content: center; }
+  .article-layout > article { margin-inline: 0; }
+  .article-layout > .post-rail { display: block; }
+  .article-layout .toc { display: none; }
+}
+
+.post-rail { display: none; }
+.rail-inner { position: sticky; top: 5.5rem; padding-top: 4rem; }
+.rail-inner .kicker { display: block; margin-bottom: 0.9rem; }
+.rail-toc { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+.rail-toc li { margin: 0; }
+.rail-toc li.sub a { padding-left: 1.6rem; font-size: 0.76rem; }
+.rail-toc a { display: block; padding: 0.35rem 0 0.35rem 0.9rem; margin-left: -1px; border-left: 1px solid transparent; font-size: 0.82rem; line-height: 1.4; color: var(--ink-3); text-decoration: none; transition: color 0.15s ease, border-color 0.15s ease; }
+.rail-toc a:hover { color: var(--ink); }
+.rail-toc li.here > a { color: var(--accent-ink); border-left-color: var(--accent); font-weight: 500; }
+.rail-share { display: inline-block; margin-top: 1.4rem; font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.03em; text-decoration: none; }
+.rail-share:hover { text-decoration: underline; }
+
+.post-share { margin-top: 3rem; padding-top: 1.6rem; border-top: 1px solid var(--line); }
+.post-share .kicker { display: block; margin-bottom: 0.9rem; }
+.share-row { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+.share-row .btn { font-size: 0.85rem; }
+
+/* A hairline that fills as the page is read. Progressive: browsers without
+   scroll-driven animations simply never see it. */
+.read-progress { position: fixed; inset: 0 0 auto 0; height: 2px; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); z-index: 60; }
+@supports (animation-timeline: scroll()) {
+  .read-progress { animation: read-grow linear; animation-timeline: scroll(root block); }
+}
+@keyframes read-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) { .read-progress { display: none; } }
 
 /* ------------------------------------------------------------
    Writing / posts
