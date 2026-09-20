@@ -48,6 +48,10 @@ dig @192.168.20.1 google.com
 
 `NOERROR`, a real answer, 48 milliseconds. The firewall's resolver was alive and healthy, and the rest of the network had been fine the whole time. **Asking a different server is the cheapest diagnostic in DNS**, and it immediately moved the fault from the firewall to the scanner itself.
 
+![The same technique during an earlier episode on the RedTeam segment: one resolver answers, the other times out, and /etc/resolv.conf proves the client was configured correctly. The fault is wherever the answer changes.](/assets/posts/dns-zone/red-08-dns-diagnosis-nslookup.png)
+
+That screenshot is from an earlier episode on another segment, kept here because it is the same technique: ask two resolvers, and let the one that answers tell you where the fault is not.
+
 `resolvectl status` showed the stub pointed at exactly the right upstream. Correct configuration, no answers. Restarting `systemd-resolved` cleared it: the stub had cached a dead state for an upstream that had bounced while I was applying changes.
 
 That produced a different failure, which was progress.
@@ -93,6 +97,10 @@ Dead configuration that looks meaningful is worse than no configuration. Anyone 
 It was on the same settings page, a few rows up.
 
 **Outgoing Network Interfaces: WAN only.**
+
+![The pfSense DNS Resolver settings page. Network Interfaces controls which addresses the resolver answers on. Outgoing Network Interfaces, below it, controls which interfaces it may send its own queries out of, and here it holds WAN alone.](/assets/posts/dns-zone/red-10-dns-resolver-interfaces.png)
+
+This capture is also from the earlier episode, which is the point: the field had been sitting on WAN since then, correct for a segment that only needed the public internet, and wrong the moment a zone lived inside the lab.
 
 That setting controls which interfaces the resolver may send its own queries out of. Restricted to WAN, it could reach the entire internet, which is why every public lookup worked perfectly. But the domain controller sits on an internal segment reachable only through a different interface, so queries for that one zone had nowhere to go. The resolver waited, timed out, returned SERVFAIL, and cached the failure.
 
