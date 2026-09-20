@@ -38,7 +38,7 @@ const jsonLd = {
   <div class="container">
     <div class="article-layout">
     <article>
-      <header class="post-hero">
+      <header class="post-hero" data-topic={d.category}>
         <span class="kicker">{categoryLabel(d.category)}{series ? ` · ${series.title}` : ''}</span>
         <h1>{d.title}</h1>
         <div class="meta">

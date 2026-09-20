@@ -28,7 +28,7 @@ const related = d.relatedTags.length
 
 <Base title={d.title} description={d.summary}>
   <div class="container">
-    <header class="work-head">
+    <header class="work-head" data-topic={d.category}>
       <div>
         <span class="kicker">{d.kicker}</span>
         <h1 class="display h1">{d.title}</h1>
@@ -57,7 +57,7 @@ const related = d.relatedTags.length
     )}
 
     {d.stats.length > 0 && (
-      <div class="work-stats">
+      <div class="work-stats" data-topic={d.category}>
         {d.stats.map((s) => <div><strong>{s.value}</strong><span>{s.label}</span></div>)}
       </div>
     )}

@@ -8,7 +8,7 @@ const d = work.data;
 const pill = d.status === 'complete' ? 'pill-ok' : d.status === 'active' ? 'pill-warn' : 'pill-info';
 ---
 
-<a class="work-card" href={`/work/${work.id}/`} data-filter-item={filterGroup ? '' : undefined} data-filter-group={filterGroup} data-cat={filterGroup ? d.category : undefined}>
+<a class="work-card" data-topic={d.category} href={`/work/${work.id}/`} data-filter-item={filterGroup ? '' : undefined} data-filter-group={filterGroup} data-cat={filterGroup ? d.category : undefined}>
   <div class="media">
     {d.hero ? (
       <Image src={d.hero} alt={d.heroAlt ?? ''} width={720} densities={[1, 2]} />

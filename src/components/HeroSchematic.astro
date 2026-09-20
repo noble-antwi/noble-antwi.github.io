@@ -1,6 +1,17 @@
 ---
 /* The lab at a glance, drawn in currentColor so it belongs to both themes.
    Paths draw themselves in on load; reduced-motion users get the finished drawing. */
+// One hue per zone. Used only for the zone's outline and its host label,
+// so the drawing stays a drawing rather than a chart.
+const ZONE_HUE: Record<string, string> = {
+  '10': 'var(--c-cloud)',
+  '20': 'var(--c-detection)',
+  '30': 'var(--c-offence)',
+  '40': 'var(--c-identity)',
+  '50': 'var(--c-assessment)',
+  '60': 'var(--ink-3)',
+};
+
 const vlans = [
   { id: '10', name: 'Management', host: 'PVE01 · ADM01' },
   { id: '20', name: 'BlueTeam', host: 'SIEM01 · SCAN01' },
@@ -42,7 +53,7 @@ const vlans = [
     {vlans.map((v, i) => {
       const x = 490 + i * 96;
       return (
-        <g class="node vlan" style={`--i:${i}`}>
+        <g class="node vlan" style={`--i:${i};--zone:${ZONE_HUE[v.id]}`}>
           <path class="wire w3" d={`M440 110 C 465 110, ${x - 20} ${i < 3 ? 40 : 180}, ${x} ${i < 3 ? 40 : 180}`} />
           <rect x={x} y={i < 3 ? 22 : 162} width="84" height="36" rx="6"/>
           <text x={x + 42} y={i < 3 ? 38 : 178} text-anchor="middle" class="lbl small">VLAN {v.id}</text>
@@ -68,6 +79,9 @@ const vlans = [
   .schematic { margin: 0; padding: 2rem 0 0; color: var(--ink-2); }
   .schematic svg { width: 100%; height: auto; display: block; overflow: visible; }
   .schematic .node rect, .schematic .node ellipse { fill: var(--paper); stroke: currentColor; stroke-width: 1.4; }
+  .schematic .vlan rect { stroke: var(--zone, currentColor); stroke-width: 1.8; }
+  .schematic .vlan .wire { stroke: var(--zone, currentColor); opacity: 0.75; }
+  .schematic .vlan .lbl.host { fill: var(--zone, var(--accent)); }
   .schematic .lbl { font-family: var(--font-mono); font-size: 13px; fill: var(--ink-2); }
   .schematic .lbl.strong { fill: var(--ink); font-size: 15px; }
   .schematic .lbl.small { font-size: 11px; letter-spacing: 0.04em; }
