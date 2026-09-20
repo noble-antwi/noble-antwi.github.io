@@ -96,6 +96,8 @@ It was on the same settings page, a few rows up.
 
 That setting controls which interfaces the resolver may send its own queries out of. Restricted to WAN, it could reach the entire internet, which is why every public lookup worked perfectly. But the domain controller sits on an internal segment reachable only through a different interface, so queries for that one zone had nowhere to go. The resolver waited, timed out, returned SERVFAIL, and cached the failure.
 
+![Before and after: with the resolver limited to the WAN interface, public names are answered and queries for the internal zone are never sent at all. With the internal interface added, the same query reaches the domain controller.](/assets/posts/dns-zone/query-path.svg)
+
 Every symptom lines up with that one setting. One zone fails while everything else works. The first attempt hangs and the retry answers instantly from cache. Nothing in any log says "refused", because nothing was refused. The packets were never sent.
 
 The fix was to add the internal interface. Deliberately **not** to set it to "All": the resolver has no business sourcing queries into the red team segment or any other zone that has no DNS in it. Two interfaces, named for the two jobs it actually has.
