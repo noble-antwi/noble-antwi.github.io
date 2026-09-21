@@ -50,8 +50,8 @@ const person = {
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="alternate" type="application/rss+xml" title={`${SITE.title} · Writing`} href="/feed.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <meta name="theme-color" content="#f8f6f1" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f3f7fc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#131211" media="(prefers-color-scheme: dark)" />
 
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content={SITE.title} />
@@ -73,8 +73,9 @@ const person = {
       (function () {
         var stored = null;
         try { stored = localStorage.getItem('theme'); } catch (e) {}
-        var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.dataset.theme = stored || (dark ? 'dark' : 'light');
+        // Dark is the brand default. A visitor's own choice, stored by the
+        // header toggle, always wins over it.
+        document.documentElement.dataset.theme = stored || 'dark';
       })();
     </script>
 
