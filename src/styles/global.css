@@ -5,14 +5,14 @@
    ============================================================ */
 
 :root {
-  --paper: #f8f6f1;
-  --paper-2: #f0ece4;
-  --paper-3: #e7e2d8;
+  --paper: #fdfaf4;
+  --paper-2: #f7f1e6;
+  --paper-3: #ede6d7;
   --ink: #16181d;
   --ink-2: #4a4f58;
   --ink-3: #4f545d;
-  --line: #ddd7cb;
-  --line-2: #cbc4b6;
+  --line: #e3dccd;
+  --line-2: #d3cab8;
   --accent: #0b6b63;
   --accent-ink: #085650;
   --accent-soft: rgba(11, 107, 99, 0.09);
@@ -30,7 +30,7 @@
   --ok-soft: rgba(21, 128, 61, 0.1);
   --info: #1d4ed8;
   --info-soft: rgba(29, 78, 216, 0.09);
-  --code-bg: #fdfcfa;
+  --code-bg: #fffdf8;
   --shadow: 0 1px 2px rgba(22, 24, 29, 0.05), 0 8px 24px -12px rgba(22, 24, 29, 0.18);
 
   --font-display: 'Instrument Serif', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
