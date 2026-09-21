@@ -88,7 +88,7 @@ The fault was now pinned between two points I could both reach myself: the firew
 
 My second theory was DNSSEC, since that was exactly what my custom options had been guessing at. I opened the resolver settings to confirm.
 
-**DNSSEC support was switched off.** It had never been on. My pre-emptive fix had been solving a problem that did not exist, which meant those two custom options had been inert the entire time, and my second theory was as wrong as my first.
+**DNSSEC support was switched off.** It had never been on. My pre-emptive fix had been solving a problem that did not exist, which meant those two custom options had been doing nothing the entire time, and my second theory was as wrong as my first.
 
 Dead configuration that looks meaningful is worse than no configuration. Anyone reading that box later, including me, would assume DNSSEC mattered here.
 
@@ -126,6 +126,6 @@ dig wks01.corp.biirabank.com
 
 **Change one thing at a time.** I applied an override and two custom options together, then spent the next twenty minutes unsure which had caused the outage. It was neither, but I could not know that.
 
-**Do not fix problems you have not confirmed.** The DNSSEC options were a reasonable guess that turned out to be inert, and they left misleading configuration behind. A guess that costs nothing to apply still costs something to leave in place.
+**Do not fix problems you have not confirmed.** The DNSSEC options were a reasonable guess that turned out to do nothing, and they left misleading configuration behind. A guess that costs nothing to apply still costs something to leave in place.
 
 **Targets should be names when addresses can move.** All of this existed to avoid pinning a scan to a DHCP address. The lookup now resolves at scan time, so the day that lease changes, nothing breaks and nobody has to notice.
