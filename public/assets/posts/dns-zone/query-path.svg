@@ -1,112 +1,99 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560" role="img" aria-labelledby="t d">
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="720" viewBox="0 0 680 720" role="img" aria-labelledby="t d">
   <title id="t">Where the query went, before and after the fix</title>
   <desc id="d">Before: the resolver on pfSense could send queries out of the WAN interface only, so public names were answered and queries for the internal zone were never sent, returning SERVFAIL. After: the internal interface is added, so the query for the internal zone reaches the domain controller and is answered.</desc>
 
   <style>
-    .bg { fill: #f8f6f1; }
-    .panel { fill: #ffffff; stroke: #ddd7cb; stroke-width: 1.2; }
-    .box { fill: #ffffff; stroke: #cbc4b6; stroke-width: 1.3; }
-    .box.fw { stroke: #0b6b63; }
-    .box.dc { stroke: #6d28d9; }
-    .box.net { fill: #f2efe9; stroke: #ddd7cb; }
-    .h { font-family: Georgia, 'Iowan Old Style', serif; font-size: 20px; fill: #16181d; }
-    .k { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 10px; letter-spacing: 1.6px; text-transform: uppercase; }
+    .bg { fill: #f7f8fa; }
+    .panel { fill: #ffffff; stroke: #d5dae3; stroke-width: 1.2; }
+    .box { fill: #ffffff; stroke: #c3cad6; stroke-width: 1.3; }
+    .box.fw { stroke: #0b6b63; stroke-width: 1.7; }
+    .box.good { stroke: #15803d; stroke-width: 1.5; }
+    .box.dc { stroke: #6d28d9; stroke-width: 1.7; }
+    .box.dead { stroke: #b91c1c; stroke-dasharray: 5 4; stroke-width: 1.5; }
+    .k { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; }
     .k.before { fill: #b91c1c; }
     .k.after { fill: #15803d; }
-    .n { font-family: Inter, system-ui, sans-serif; font-size: 13px; font-weight: 600; fill: #16181d; }
-    .s { font-family: Inter, system-ui, sans-serif; font-size: 11px; fill: #5f646d; }
-    .m { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 10.5px; fill: #4a4f58; }
-    .m.bad { fill: #b91c1c; }
-    .m.good { fill: #15803d; }
-    .w { fill: none; stroke: #9a958c; stroke-width: 1.6; }
+    .n { font-family: Inter, system-ui, sans-serif; font-size: 14.5px; font-weight: 600; fill: #16181d; }
+    .s { font-family: Inter, system-ui, sans-serif; font-size: 12.5px; fill: #4a4f58; }
+    .m { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; fill: #4a4f58; }
+    .m.bad { fill: #b91c1c; font-weight: 700; }
+    .m.good { fill: #15803d; font-weight: 700; }
+    .w { fill: none; stroke: #6b7280; stroke-width: 1.8; }
     .w.ok { stroke: #15803d; }
+    .w.int { stroke: #6d28d9; }
     .w.dead { stroke: #b91c1c; stroke-dasharray: 5 4; }
-    .x { stroke: #b91c1c; stroke-width: 2; stroke-linecap: round; }
+    .x { stroke: #b91c1c; stroke-width: 2.2; stroke-linecap: round; }
   </style>
 
-  <rect class="bg" width="980" height="560" />
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#6b7280"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#15803d"/></marker>
+    <marker id="ai" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="#6d28d9"/></marker>
+  </defs>
+
+  <rect class="bg" width="680" height="720" />
 
   <!-- ============================== BEFORE ============================== -->
-  <rect class="panel" x="24" y="24" width="932" height="244" rx="12" />
-  <text class="k before" x="48" y="54">Before · outgoing interfaces: WAN only</text>
+  <rect class="panel" x="20" y="20" width="640" height="330" rx="12" />
+  <text class="k before" x="40" y="48">Before · outgoing interfaces: WAN only</text>
 
-  <!-- scanner -->
-  <rect class="box" x="48" y="74" width="150" height="62" rx="8" />
-  <text class="n" x="66" y="100">SCAN01</text>
-  <text class="s" x="66" y="118">the scanner, VLAN 20</text>
+  <rect class="box" x="40" y="66" width="190" height="64" rx="8" />
+  <text class="n" x="56" y="93">SCAN01</text>
+  <text class="s" x="56" y="114">the scanner, VLAN 20</text>
+  <path class="w" d="M230 98 L276 98" marker-end="url(#a)" />
 
-  <path class="w" d="M198 105 L262 105" marker-end="url(#a)" />
-  <text class="m" x="206" y="96">asks</text>
+  <rect class="box fw" x="278" y="62" width="362" height="92" rx="8" />
+  <text class="n" x="296" y="88">pfSense resolver</text>
+  <text class="s" x="296" y="108">may send its own questions out of:</text>
+  <text class="m" x="296" y="130">WAN</text>
+  <text class="m bad" x="360" y="130">internal interfaces: none</text>
 
-  <!-- resolver -->
-  <rect class="box fw" x="264" y="66" width="190" height="120" rx="8" />
-  <text class="n" x="284" y="94">pfSense resolver</text>
-  <text class="s" x="284" y="112">may send queries out of</text>
-  <text class="m" x="284" y="132">WAN</text>
-  <text class="m bad" x="284" y="150">LAN interfaces: none</text>
-  <text class="s" x="284" y="170">one exit, so one answer</text>
+  <path class="w ok" d="M360 154 L180 196" marker-end="url(#ag)" />
+  <path class="w dead" d="M560 154 L500 192" />
 
-  <!-- public path works -->
-  <path class="w ok" d="M454 96 L604 96" marker-end="url(#ag)" />
-  <text class="m good" x="470" y="88">public names</text>
-  <rect class="box net" x="606" y="70" width="160" height="52" rx="8" />
-  <text class="n" x="624" y="92">Internet</text>
-  <text class="s" x="624" y="110">answers in milliseconds</text>
+  <rect class="box good" x="40" y="198" width="280" height="72" rx="8" />
+  <text class="m good" x="56" y="222">public names</text>
+  <text class="n" x="56" y="244">Internet · answered</text>
+  <text class="s" x="56" y="262">every public lookup works</text>
 
-  <!-- internal path dead -->
-  <path class="w dead" d="M454 156 L590 156" />
-  <text class="m bad" x="470" y="148">corp.biirabank.com</text>
-  <line class="x" x1="586" y1="146" x2="606" y2="166" />
-  <line class="x" x1="606" y1="146" x2="586" y2="166" />
-  <text class="m bad" x="622" y="152">never sent</text>
-  <text class="s" x="622" y="170">no refusal, nothing in any log</text>
+  <rect class="box dead" x="340" y="198" width="300" height="72" rx="8" />
+  <text class="m bad" x="356" y="222">corp.biirabank.com</text>
+  <text class="n" x="356" y="244">DC01 · never asked</text>
+  <text class="s" x="356" y="262">no refusal, nothing in any log</text>
+  <line class="x" x1="610" y1="212" x2="626" y2="228" />
+  <line class="x" x1="626" y1="212" x2="610" y2="228" />
 
-  <!-- dc unreached -->
-  <rect class="box" x="790" y="128" width="142" height="56" rx="8" opacity="0.45" />
-  <text class="n" x="806" y="152" opacity="0.5">DC01</text>
-  <text class="s" x="806" y="170" opacity="0.5">holds the zone</text>
-
-  <text class="m bad" x="48" y="222">the resolver waits, times out, returns SERVFAIL, and caches the failure</text>
-  <text class="s" x="48" y="244">so the retry comes back instantly, which is its own clue</text>
+  <text class="m bad" x="40" y="304">it waits, gives up, returns SERVFAIL, and caches it</text>
+  <text class="s" x="40" y="326">so the retry fails instantly, which is its own clue</text>
 
   <!-- ============================== AFTER =============================== -->
-  <rect class="panel" x="24" y="292" width="932" height="244" rx="12" />
-  <text class="k after" x="48" y="322">After · WAN plus the internal interface</text>
+  <rect class="panel" x="20" y="370" width="640" height="330" rx="12" />
+  <text class="k after" x="40" y="398">After · WAN plus the internal interface</text>
 
-  <rect class="box" x="48" y="342" width="150" height="62" rx="8" />
-  <text class="n" x="66" y="368">SCAN01</text>
-  <text class="s" x="66" y="386">the scanner, VLAN 20</text>
+  <rect class="box" x="40" y="416" width="190" height="64" rx="8" />
+  <text class="n" x="56" y="443">SCAN01</text>
+  <text class="s" x="56" y="464">the scanner, VLAN 20</text>
+  <path class="w" d="M230 448 L276 448" marker-end="url(#a)" />
 
-  <path class="w" d="M198 373 L262 373" marker-end="url(#a)" />
+  <rect class="box fw" x="278" y="412" width="362" height="92" rx="8" />
+  <text class="n" x="296" y="438">pfSense resolver</text>
+  <text class="s" x="296" y="458">may send its own questions out of:</text>
+  <text class="m" x="296" y="480">WAN</text>
+  <text class="m good" x="360" y="480">the interface facing DC01</text>
 
-  <rect class="box fw" x="264" y="334" width="190" height="120" rx="8" />
-  <text class="n" x="284" y="362">pfSense resolver</text>
-  <text class="s" x="284" y="380">may send queries out of</text>
-  <text class="m" x="284" y="400">WAN</text>
-  <text class="m good" x="284" y="418">the internal interface</text>
-  <text class="s" x="284" y="438">two exits, for its two jobs</text>
+  <path class="w ok" d="M360 504 L180 546" marker-end="url(#ag)" />
+  <path class="w int" d="M560 504 L500 544" marker-end="url(#ai)" />
 
-  <path class="w ok" d="M454 364 L604 364" marker-end="url(#ag)" />
-  <text class="m good" x="470" y="356">public names</text>
-  <rect class="box net" x="606" y="338" width="160" height="52" rx="8" />
-  <text class="n" x="624" y="360">Internet</text>
-  <text class="s" x="624" y="378">unchanged</text>
+  <rect class="box good" x="40" y="548" width="280" height="72" rx="8" />
+  <text class="m good" x="56" y="572">public names</text>
+  <text class="n" x="56" y="594">Internet · answered</text>
+  <text class="s" x="56" y="612">unchanged</text>
 
-  <path class="w ok" d="M454 424 L786 424" marker-end="url(#ag)" />
-  <text class="m good" x="470" y="416">corp.biirabank.com, by domain override</text>
-  <rect class="box dc" x="788" y="396" width="144" height="56" rx="8" />
-  <text class="n" x="804" y="420">DC01</text>
-  <text class="s" x="804" y="438">authoritative, 2 ms</text>
+  <rect class="box dc" x="340" y="548" width="300" height="72" rx="8" />
+  <text class="m" x="356" y="572" fill="#6d28d9">corp.biirabank.com</text>
+  <text class="n" x="356" y="594">DC01 · answered</text>
+  <text class="s" x="356" y="612">authoritative, 2 ms</text>
 
-  <text class="m good" x="48" y="490">NOERROR, the address, 390 ms cold and 1 ms from cache</text>
-  <text class="s" x="48" y="512">the scanner can target the workstation by name, so a new DHCP lease breaks nothing</text>
-
-  <defs>
-    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0L10 5 0 10z" fill="#9a958c" />
-    </marker>
-    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M0 0L10 5 0 10z" fill="#15803d" />
-    </marker>
-  </defs>
+  <text class="m good" x="40" y="654">NOERROR · 390 ms the first time, 1 ms from cache</text>
+  <text class="s" x="40" y="676">the scanner can now target the workstation by name</text>
 </svg>
