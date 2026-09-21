@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="272" viewBox="0 0 680 272" role="img" aria-labelledby="t d">
+  <title id="t">The three DNS answers worth knowing</title>
+  <desc id="d">NOERROR means it worked and the answer is in the reply. NXDOMAIN means the server is certain the name does not exist, which is a data problem. SERVFAIL means the server tried and could not answer, which is a plumbing problem.</desc>
+  <style>
+    .bg { fill: #f7f8fa; }
+    .card { fill: #ffffff; stroke: #d5dae3; stroke-width: 1.2; }
+    .code { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 17px; font-weight: 700; }
+    .h { font-family: Inter, system-ui, sans-serif; font-size: 14.5px; font-weight: 700; fill: #16181d; }
+    .p { font-family: Inter, system-ui, sans-serif; font-size: 12.5px; fill: #4a4f58; }
+    .k { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; fill: #5f646d; }
+  </style>
+  <rect class="bg" width="680" height="272" />
+
+  <rect class="card" x="20" y="20" width="206" height="232" rx="12" />
+  <rect x="20" y="20" width="206" height="5" rx="2" fill="#15803d" />
+  <text class="code" x="38" y="62" fill="#15803d">NOERROR</text>
+  <text class="h" x="38" y="94">It worked</text>
+  <text class="p" x="38" y="120">The server answered,</text>
+  <text class="p" x="38" y="138">and the answer is in</text>
+  <text class="p" x="38" y="156">the reply.</text>
+  <text class="k" x="38" y="232">nothing to fix</text>
+
+  <rect class="card" x="237" y="20" width="206" height="232" rx="12" />
+  <rect x="237" y="20" width="206" height="5" rx="2" fill="#a3521b" />
+  <text class="code" x="255" y="62" fill="#a3521b">NXDOMAIN</text>
+  <text class="h" x="255" y="94">A data problem</text>
+  <text class="p" x="255" y="120">The server is certain</text>
+  <text class="p" x="255" y="138">the name does not</text>
+  <text class="p" x="255" y="156">exist. Something is</text>
+  <text class="p" x="255" y="174">missing from a zone.</text>
+  <text class="k" x="255" y="232">look at the records</text>
+
+  <rect class="card" x="454" y="20" width="206" height="232" rx="12" />
+  <rect x="454" y="20" width="206" height="5" rx="2" fill="#b91c1c" />
+  <text class="code" x="472" y="62" fill="#b91c1c">SERVFAIL</text>
+  <text class="h" x="472" y="94">A plumbing problem</text>
+  <text class="p" x="472" y="120">The server tried and</text>
+  <text class="p" x="472" y="138">could not answer.</text>
+  <text class="p" x="472" y="156">Something in the path</text>
+  <text class="p" x="472" y="174">is unreachable or</text>
+  <text class="p" x="472" y="192">broken.</text>
+  <text class="k" x="472" y="232">look at the path</text>
+</svg>
