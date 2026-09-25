@@ -1,0 +1,209 @@
+---
+import Base from '../../layouts/Base.astro';
+import { NIW, FIELDS, DEGREES, TIMELINES, DO, DONT, SERVICES, ADDONS, RETAINER, STEPS } from '../../data/niw';
+
+const title = 'NIW Consulting';
+const description =
+  'EB-2 National Interest Waiver petition writing and record-building for professionals in any field. My own self-petition was approved; every petition I have worked on since has been approved. Each engagement starts with an individual review of your record, not a template.';
+---
+
+<Base title={title} description={description}>
+  <div class="container niw">
+    <header class="page-head niw-hero">
+      <span class="kicker">NIW Consulting · EB-2 National Interest Waiver</span>
+      <h1 class="display h1">I wrote my own EB-2 NIW petition and it was approved. <em>Now I help professionals build and write theirs.</em></h1>
+      <p class="lead">
+        I work with professionals across all fields, not only technical ones. Every engagement begins with an individual review of your background, because the evidence that carries a petition in your field is not the evidence that carries one in mine. There is no template.
+      </p>
+      <div class="actions">
+        <a class="btn" href="#inquiry">Book a Consultation</a>
+        <a class="btn btn-ghost" href="#pricing">See services and pricing</a>
+      </div>
+    </header>
+
+    <section class="track-band" aria-labelledby="track-h">
+      <p class="track-line" id="track-h">Every petition I have worked on has been approved.</p>
+      <p class="track-sub">My own self-petition was approved, and I have since worked with professionals preparing their own.</p>
+    </section>
+
+    <section class="section" aria-labelledby="who-h">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Who this is for</span>
+          <h2 class="display h2" id="who-h">Strong career. Record not yet petition-ready.</h2>
+        </div>
+      </div>
+      <div class="niw-two">
+        <div class="prose-block">
+          <p>Professionals preparing a self-petitioned EB-2 National Interest Waiver, in any discipline. The people I work with have real careers and real accomplishments. What they usually lack is a record that <em>shows</em> those accomplishments the way a petition has to: documented, independent, and legible to a reviewer who has never met them.</p>
+          <p>The approach is field-agnostic on purpose. The work is identifying what counts as evidence in <strong>your</strong> field, and that differs substantially across disciplines. A cited paper carries weight for a researcher. A deployed system, a standard adopted, a program that changed an outcome: those carry it elsewhere. Part of the job is knowing which is which.</p>
+        </div>
+        <div class="field-list">
+          <span class="kicker">Fields I have worked with or can work with</span>
+          <div class="tags">
+            {FIELDS.filter((f) => f !== 'Other').map((f) => <span>{f}</span>)}
+            <span>and others</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="review-h">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Individual case review</span>
+          <h2 class="display h2" id="review-h">The strategy is built from what is actually there.</h2>
+        </div>
+      </div>
+      <div class="prose-block">
+        <p>I do not work from templates, and I do not start writing on day one. Each engagement opens with a full review of your background: education, work history, publications, projects, professional standing, and the things you have done that nobody has written down yet. Only then is there a strategy, and it is yours rather than a form with your name in it.</p>
+        <p>That review is also where I tell you plainly what is missing. It is better to hear that from me, twelve months before filing, than from a reviewer afterwards.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="scope-h">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Scope</span>
+          <h2 class="display h2" id="scope-h">What I do, and what I don't.</h2>
+        </div>
+      </div>
+      <div class="compare">
+        <div class="compare-col do">
+          <span class="kicker">What I do</span>
+          <ul>{DO.map((d) => <li>{d}</li>)}</ul>
+        </div>
+        <div class="compare-col dont">
+          <span class="kicker">What I don't</span>
+          <ul>{DONT.map((d) => <li>{d}</li>)}</ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pricing" aria-labelledby="pricing-h">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Services and pricing</span>
+          <h2 class="display h2" id="pricing-h">Three ways to work together.</h2>
+          <p>Prices in US dollars. No payment is taken on this site; every engagement begins with a conversation.</p>
+        </div>
+      </div>
+      <div class="price-grid">
+        {SERVICES.map((s) => (
+          <article class:list={['price-card', { featured: s.recommended }]}>
+            {s.recommended && <span class="pill pill-accent">Recommended</span>}
+            <h3>{s.name}</h3>
+            <p class="price">{s.price}</p>
+            <ul>{s.includes.map((i) => <li>{i}</li>)}</ul>
+            {s.note && <p class="note">{s.note}</p>}
+            <a class:list={['btn', { 'btn-ghost': !s.recommended }]} href="#inquiry">Ask about this</a>
+          </article>
+        ))}
+      </div>
+      <div class="addons">
+        <span class="kicker">Add-ons</span>
+        <ul>{ADDONS.map((a) => <li><span>{a.name}</span><b>{a.price}</b></li>)}</ul>
+      </div>
+      <div class="retainer">
+        <div>
+          <span class="kicker">Separately</span>
+          <h3>{RETAINER.name}</h3>
+          <p>{RETAINER.who}</p>
+        </div>
+        <div class="retainer-price">
+          <b>{RETAINER.price}</b>
+          <span>{RETAINER.terms}</span>
+        </div>
+      </div>
+      <p class="pricing-note">{NIW.disclaimer}</p>
+    </section>
+
+    <section class="section" aria-labelledby="how-h">
+      <div class="section-head">
+        <div>
+          <span class="kicker">How it works</span>
+          <h2 class="display h2" id="how-h">Five steps, in order.</h2>
+        </div>
+      </div>
+      <ol class="steps">
+        {STEPS.map((s, i) => (
+          <li>
+            <span class="step-n" aria-hidden="true">{i + 1}</span>
+            <div>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="section" id="inquiry" aria-labelledby="inquiry-h">
+      <div class="section-head">
+        <div>
+          <span class="kicker">Consultation</span>
+          <h2 class="display h2" id="inquiry-h">Tell me about your work.</h2>
+          <p>A few details so the first conversation starts from your record rather than from zero. I reply personally, usually within two business days.</p>
+        </div>
+      </div>
+
+      <form class="inquiry" method="post" action={NIW.formEndpoint} novalidate={false}>
+        <div class="form-grid">
+          <div class="field">
+            <label for="f-name">Name <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required maxlength="120" />
+          </div>
+          <div class="field">
+            <label for="f-email">Email <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required maxlength="200" />
+          </div>
+          <div class="field">
+            <label for="f-role">Current role <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-role" name="role" type="text" autocomplete="organization-title" required maxlength="160" placeholder="e.g. Senior Data Scientist" />
+          </div>
+          <div class="field">
+            <label for="f-field">Field or discipline <span class="req" aria-hidden="true">*</span></label>
+            <select id="f-field" name="field" required>
+              <option value="" selected disabled>Choose one</option>
+              {FIELDS.map((f) => <option value={f}>{f}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-degree">Highest degree <span class="req" aria-hidden="true">*</span></label>
+            <select id="f-degree" name="degree" required>
+              <option value="" selected disabled>Choose one</option>
+              {DEGREES.map((d) => <option value={d}>{d}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-timeline">Target filing timeline <span class="req" aria-hidden="true">*</span></label>
+            <select id="f-timeline" name="timeline" required>
+              <option value="" selected disabled>Choose one</option>
+              {TIMELINES.map((t) => <option value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div class="field span">
+            <label for="f-background">Background and goals <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="f-background" name="background" rows="7" required maxlength="6000" aria-describedby="bg-help"></textarea>
+            <p class="help" id="bg-help">Your work in a few sentences, what you have published or built, and what you hope to file. Rough is fine.</p>
+          </div>
+          <div class="hp" aria-hidden="true">
+            <label for="f-company">Company</label>
+            <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+        </div>
+        {NIW.turnstileSiteKey && <div class="cf-turnstile" data-sitekey={NIW.turnstileSiteKey} data-theme="auto"></div>}
+        <div class="form-actions">
+          <button class="btn" type="submit">Request Consultation</button>
+          <p class="help">Nothing you write here is stored on this site. It goes to my inbox and nowhere else.</p>
+        </div>
+      </form>
+    </section>
+
+    <aside class="disclaimer-band" role="note" aria-label="Disclaimer">
+      <p>{NIW.disclaimer}</p>
+    </aside>
+  </div>
+
+  {NIW.turnstileSiteKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+</Base>

@@ -1,0 +1,35 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { NIW } from '../../../data/niw';
+---
+
+<Base title="Request received" description="Your NIW consultation request has been received.">
+  <div class="container niw">
+    <header class="page-head">
+      <span class="kicker">NIW Consulting</span>
+      <h1 class="display h1" id="thanks-h">Received, thank you.</h1>
+      <p class="lead" id="thanks-lead">I will read your background before I reply, so expect a considered answer rather than a quick one, usually within two business days. A confirmation is on its way to the email address you gave.</p>
+      <p class="lead err" id="thanks-err" hidden></p>
+      <div class="actions">
+        <a class="btn btn-ghost" href="/niw-consulting/">Back to NIW Consulting</a>
+      </div>
+    </header>
+
+    <aside class="disclaimer-band" role="note" aria-label="Disclaimer">
+      <p>{NIW.disclaimer}</p>
+    </aside>
+  </div>
+
+  <script is:inline>
+    // The worker sends people here with ?error=… when something went wrong.
+    (function () {
+      var e = new URLSearchParams(location.search).get('error');
+      if (!e) return;
+      document.getElementById('thanks-h').textContent = 'That did not go through.';
+      document.getElementById('thanks-lead').hidden = true;
+      var p = document.getElementById('thanks-err');
+      p.textContent = e + ' You can also email nobleantwi3@gmail.com directly.';
+      p.hidden = false;
+    })();
+  </script>
+</Base>
