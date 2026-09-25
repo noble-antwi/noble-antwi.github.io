@@ -147,7 +147,7 @@ const description =
         </div>
       </div>
 
-      <form class="inquiry" method="post" action={NIW.formEndpoint} novalidate={false}>
+      <form class="inquiry" method="post" action={NIW.formEndpoint} enctype="multipart/form-data">
         <div class="form-grid">
           <div class="field">
             <label for="f-name">Name <span class="req" aria-hidden="true">*</span></label>
@@ -187,6 +187,11 @@ const description =
             <textarea id="f-background" name="background" rows="7" required maxlength="6000" aria-describedby="bg-help"></textarea>
             <p class="help" id="bg-help">Your work in a few sentences, what you have published or built, and what you hope to file. Rough is fine.</p>
           </div>
+          <div class="field span">
+            <label for="f-cv">Your CV or résumé <span class="opt">optional, and the most useful thing you can send</span></label>
+            <input id="f-cv" name="cv" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" aria-describedby="cv-help" />
+            <p class="help" id="cv-help">PDF or Word, up to 10 MB. The detailed version, not the one-page one: I read it before the first conversation, and the strategy comes out of what is in it.</p>
+          </div>
           <div class="hp" aria-hidden="true">
             <label for="f-company">Company</label>
             <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off" />
@@ -195,7 +200,7 @@ const description =
         {NIW.turnstileSiteKey && <div class="cf-turnstile" data-sitekey={NIW.turnstileSiteKey} data-theme="auto"></div>}
         <div class="form-actions">
           <button class="btn" type="submit">Request Consultation</button>
-          <p class="help">Nothing you write here is stored on this site. It goes to my inbox and nowhere else.</p>
+          <p class="help">Nothing you write or attach here is stored on this site. It goes to my inbox and nowhere else.</p>
         </div>
       </form>
     </section>
@@ -206,4 +211,25 @@ const description =
   </div>
 
   {NIW.turnstileSiteKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+  <script is:inline>
+    // Catch an oversized or wrong-type CV before the upload starts.
+    (function () {
+      var input = document.getElementById('f-cv');
+      var help = document.getElementById('cv-help');
+      if (!input || !help) return;
+      var original = help.textContent;
+      input.addEventListener('change', function () {
+        var f = input.files && input.files[0];
+        input.setCustomValidity('');
+        help.textContent = original;
+        help.classList.remove('is-error');
+        if (!f) return;
+        var ok = /\.(pdf|docx?)$/i.test(f.name);
+        var msg = !ok ? 'That file is not a PDF or Word document.' : f.size > 10 * 1024 * 1024 ? 'That file is larger than 10 MB. Please export a smaller PDF.' : '';
+        if (msg) { input.setCustomValidity(msg); help.textContent = msg; help.classList.add('is-error'); }
+        else { help.textContent = f.name + ' (' + (f.size / 1024 / 1024).toFixed(1) + ' MB) is ready to send.'; }
+      });
+    })();
+  </script>
 </Base>

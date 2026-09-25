@@ -2,7 +2,8 @@
 
 A small Cloudflare Worker that receives the consultation form on
 nobleantwi.com/niw-consulting/ and emails it through Resend. Nothing is
-stored; the email is the record.
+stored; the email is the record. A CV (PDF or Word, up to 10 MB) can be
+attached and arrives as an attachment on the same email.
 
 ## Deploy, once
 

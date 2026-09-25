@@ -818,6 +818,15 @@ img.avatar { object-fit: cover; border: 1px solid var(--line-2); background: var
 .form-grid .span { grid-column: 1 / -1; }
 .field label { display: block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 0.45rem; }
 .field .req { color: var(--gold-ink); }
+.field .opt { text-transform: none; letter-spacing: 0; font-family: var(--font-body); font-size: 0.8rem; color: var(--ink-3); margin-left: 0.4rem; }
+.field input[type='file'] { padding: 0.5rem 0.6rem; cursor: pointer; border-style: dashed; background: var(--paper-2); }
+.field input[type='file']::file-selector-button {
+  font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--ink); background: var(--paper);
+  border: 1px solid var(--line-2); border-radius: 999px; padding: 0.4rem 0.9rem; margin-right: 0.9rem; cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.field input[type='file']:hover::file-selector-button { border-color: var(--accent-line); background: var(--accent-soft); }
+.field .help.is-error { color: var(--c-offence); }
 .field input, .field select, .field textarea {
   width: 100%; font: inherit; font-size: 1rem; color: var(--ink); background: var(--paper);
   border: 1px solid var(--line-2); border-radius: var(--radius-sm); padding: 0.7rem 0.85rem;

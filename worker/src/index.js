@@ -3,8 +3,8 @@
  *
  * POST /inquiry  (form-encoded from the page, or JSON)
  *   1. rejects bots: honeypot field, and Cloudflare Turnstile when configured
- *   2. validates the seven fields
- *   3. emails the inquiry to Noble through Resend, reply-to set to the sender
+ *   2. validates the seven fields and the optional CV (PDF or Word, 10 MB)
+ *   3. emails the inquiry to Noble through Resend with the CV attached
  *   4. emails the sender a short acknowledgement
  *   5. redirects a browser to the thanks page, or returns JSON to fetch()
  *
@@ -12,6 +12,8 @@
  */
 
 const FIELDS = ['name', 'email', 'role', 'field', 'degree', 'timeline', 'background'];
+const CV_MAX_BYTES = 10 * 1024 * 1024;
+const CV_TYPES = { pdf: 'application/pdf', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
 const LIMITS = { name: 120, email: 200, role: 160, field: 120, degree: 80, timeline: 60, background: 6000 };
 
 export default {
@@ -52,6 +54,20 @@ export default {
       if (!verified) return fail(request, env, cors, 400, 'The anti-spam check did not pass. Please try again.');
     }
 
+    // The CV is optional. When present it rides along as an attachment and
+    // is never written anywhere else.
+    let attachment = null;
+    const cv = data.cv;
+    if (cv && typeof cv === 'object' && typeof cv.arrayBuffer === 'function' && cv.size > 0) {
+      const ext = (cv.name || '').toLowerCase().split('.').pop();
+      if (!CV_TYPES[ext]) return fail(request, env, cors, 400, 'The CV must be a PDF or Word document.');
+      if (cv.size > CV_MAX_BYTES) return fail(request, env, cors, 400, 'The CV is larger than 10 MB. Please send a smaller file.');
+      const safeName = (cv.name || `cv.${ext}`).replace(/[^\w.\- ]+/g, '_').slice(0, 120);
+      attachment = { filename: safeName, content: toBase64(await cv.arrayBuffer()), content_type: CV_TYPES[ext] };
+      clean.cvName = safeName;
+      clean.cvSize = `${(cv.size / 1024 / 1024).toFixed(1)} MB`;
+    }
+
     if (!env.RESEND_API_KEY) return fail(request, env, cors, 500, 'The inquiry service is not configured yet.');
 
     const submitted = new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
@@ -65,6 +81,7 @@ export default {
       subject: `NIW inquiry: ${clean.name}, ${clean.field}`,
       text: inquiryText(clean, submitted, ip, country),
       html: inquiryHtml(clean, submitted, ip, country),
+      ...(attachment ? { attachments: [attachment] } : {}),
     });
 
     const toSender = send(env, {
@@ -140,6 +157,13 @@ async function send(env, payload) {
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+function toBase64(buf) {
+  const bytes = new Uint8Array(buf);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
 const LABELS = {
   name: 'Name', email: 'Email', role: 'Current role', field: 'Field or discipline',
   degree: 'Highest degree', timeline: 'Target filing timeline', background: 'Background and goals',
@@ -147,7 +171,8 @@ const LABELS = {
 
 function inquiryText(d, when, ip, country) {
   const lines = FIELDS.map((f) => `${LABELS[f]}: ${f === 'background' ? '\n' + d[f] : d[f]}`);
-  return `New NIW consultation request\n\n${lines.join('\n')}\n\nSubmitted ${when} from ${ip}${country ? ' (' + country + ')' : ''}.\nReply to this email to answer ${d.name} directly.`;
+  const cvLine = d.cvName ? `\nCV attached: ${d.cvName} (${d.cvSize})` : '\nNo CV attached.';
+  return `New NIW consultation request\n\n${lines.join('\n')}${cvLine}\n\nSubmitted ${when} from ${ip}${country ? ' (' + country + ')' : ''}.\nReply to this email to answer ${d.name} directly.`;
 }
 
 function inquiryHtml(d, when, ip, country) {
@@ -165,6 +190,9 @@ function inquiryHtml(d, when, ip, country) {
   <div style="font:13px/1.4 -apple-system,Segoe UI,sans-serif;color:#5a6678;margin-bottom:6px">Background and goals</div>
   <div style="white-space:pre-wrap;font:15px/1.6 -apple-system,Segoe UI,sans-serif;color:#172a44;background:#f7f4ef;border:1px solid #e0d8ca;border-radius:8px;padding:14px 16px">${esc(d.background)}</div>
 </td></tr>
+<tr><td style="padding:0 28px 18px;font:13px/1.5 -apple-system,Segoe UI,sans-serif;color:#172a44">
+  ${d.cvName ? `<span style="display:inline-block;padding:6px 10px;border:1px solid #cfc4b1;border-radius:6px;background:#f7f4ef">&#128206; CV attached: <b>${esc(d.cvName)}</b> (${esc(d.cvSize)})</span>` : '<span style="color:#5a6678">No CV attached.</span>'}
+</td></tr>
 <tr><td style="padding:14px 28px 22px;border-top:1px solid #e0d8ca;font:12px/1.5 -apple-system,Segoe UI,sans-serif;color:#5a6678">
   Submitted ${esc(when)} from ${esc(ip)}${country ? ' (' + esc(country) + ')' : ''}. Reply to this email to answer ${esc(d.name)} directly.
 </td></tr>
@@ -174,7 +202,7 @@ function inquiryHtml(d, when, ip, country) {
 function ackText(d) {
   return `Hi ${d.name},
 
-Thank you for your consultation request. I have received it and will read your background before I reply, so you can expect a considered answer rather than a quick one, usually within two business days.
+Thank you for your consultation request. I have received it${d.cvName ? ', with your CV,' : ''} and will read your background before I reply, so you can expect a considered answer rather than a quick one, usually within two business days.
 
 If anything changes in the meantime, just reply to this email.
 
@@ -194,7 +222,7 @@ function ackHtml(d) {
 </td></tr>
 <tr><td style="padding:20px 28px;font:15px/1.65 -apple-system,Segoe UI,sans-serif">
   <p style="margin:0 0 14px">Hi ${esc(d.name)},</p>
-  <p style="margin:0 0 14px">Thank you for your consultation request. I have received it and will read your background before I reply, so you can expect a considered answer rather than a quick one, usually within two business days.</p>
+  <p style="margin:0 0 14px">Thank you for your consultation request. I have received it${d.cvName ? ', with your CV,' : ''} and will read your background before I reply, so you can expect a considered answer rather than a quick one, usually within two business days.</p>
   <p style="margin:0 0 14px">If anything changes in the meantime, just reply to this email.</p>
   <p style="margin:0">Noble Antwi<br><span style="color:#5a6678">NIW Consulting · <a href="https://nobleantwi.com/niw-consulting/" style="color:#0f6b5f">nobleantwi.com/niw-consulting</a></span></p>
 </td></tr>
