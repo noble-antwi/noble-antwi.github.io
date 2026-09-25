@@ -24,6 +24,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     { slug: 'uses', kicker: 'Uses', title: 'What the labs, the projects and this site are made of.' },
     { slug: 'now', kicker: 'Now', title: 'What I am doing this month.' },
     { slug: 'contact', kicker: 'Contact', title: "Let's talk." },
+    { slug: 'niw-consulting', kicker: 'NIW Consulting · EB-2', title: 'Petition writing and record-building, from someone whose own petition was approved.', blurb: 'For professionals in any field preparing a self-petitioned EB-2 National Interest Waiver. Every engagement starts with an individual review of your record.' },
+    { slug: 'niw-consulting/thanks', kicker: 'NIW Consulting', title: 'Received, thank you.' },
     { slug: '404', kicker: '404', title: 'Nothing at this address.' },
   ];
   const cards: Card[] = [
@@ -44,7 +46,7 @@ const fonts = Promise.all([
   font('@fontsource/jetbrains-mono', 'jetbrains-mono-latin-500-normal.woff'),
 ]);
 
-const PAPER = '#f8f6f1', INK = '#16181d', INK2 = '#4a4f58', ACCENT = '#0b6b63', LINE = '#ddd7cb';
+const PAPER = '#f7f4ef', INK = '#172a44', INK2 = '#3f4d63', ACCENT = '#0f6b5f', LINE = '#e0d8ca', GOLD = '#ca8327';
 
 export const GET: APIRoute = async ({ props }) => {
   const { kicker, title, blurb } = props as Card;
@@ -65,17 +67,17 @@ export const GET: APIRoute = async ({ props }) => {
             { type: 'div', props: { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }, children: [
               { type: 'div', props: { style: { fontFamily: 'JetBrains Mono', fontSize: 22, letterSpacing: 4, textTransform: 'uppercase', color: ACCENT, paddingTop: 6 }, children: kicker } },
               { type: 'svg', props: { width: 56, height: 56, viewBox: '0 0 64 64', children: [
-                { type: 'rect', props: { width: 64, height: 64, rx: 14, fill: INK } },
+                { type: 'rect', props: { width: 64, height: 64, rx: 14, fill: '#123150' } },
                 { type: 'circle', props: { cx: 32, cy: 26, r: 14, stroke: '#5fd3c6', strokeWidth: 6, fill: 'none' } },
                 { type: 'rect', props: { x: 28.5, y: 38, width: 7, height: 18, rx: 3.5, fill: '#5fd3c6' } },
-                { type: 'rect', props: { x: 35, y: 47, width: 8, height: 5, rx: 2.5, fill: '#5fd3c6' } },
+                { type: 'rect', props: { x: 35, y: 47, width: 8, height: 5, rx: 2.5, fill: '#e0a24a' } },
               ] } },
             ] } },
             { type: 'div', props: { style: { fontFamily: 'Instrument Serif', fontSize: size, lineHeight: 1.06, letterSpacing: -1, color: INK, maxWidth: 1040 }, children: title } },
             ...(sub ? [{ type: 'div', props: { style: { display: 'flex', marginTop: 26, paddingLeft: 20, borderLeft: `4px solid ${ACCENT}`, fontSize: 27, lineHeight: 1.45, color: INK2, maxWidth: 980 }, children: sub } }] : []),
           ] } },
           { type: 'div', props: { style: { display: 'flex', flexDirection: 'column' }, children: [
-            { type: 'div', props: { style: { height: 2, width: 1056, background: LINE, marginBottom: 26 } } },
+            { type: 'div', props: { style: { display: 'flex', width: 1056, marginBottom: 26 }, children: [ { type: 'div', props: { style: { height: 3, width: 360, background: GOLD } } }, { type: 'div', props: { style: { height: 3, width: 696, background: ACCENT } } } ] } },
             { type: 'div', props: { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', width: 1056 }, children: [
               { type: 'div', props: { style: { display: 'flex', alignItems: 'baseline' }, children: [
                 { type: 'div', props: { style: { fontFamily: 'Instrument Serif', fontSize: 40, color: INK, marginRight: 22 }, children: SITE.title } },

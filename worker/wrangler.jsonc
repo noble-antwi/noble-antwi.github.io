@@ -1,0 +1,26 @@
+// Cloudflare Worker that receives the NIW consultation form and emails it.
+//
+// Deploy from this folder:
+//   npx wrangler login                       (once)
+//   npx wrangler secret put RESEND_API_KEY   (paste the key from resend.com)
+//   npx wrangler secret put TURNSTILE_SECRET (optional, from the Turnstile widget)
+//   npx wrangler deploy
+//
+// The custom domain below is created in DNS automatically on first deploy,
+// because the zone nobleantwi.com is already on Cloudflare.
+{
+  "name": "niw-inquiry",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-01",
+  "routes": [
+    { "pattern": "forms.nobleantwi.com", "custom_domain": true }
+  ],
+  "vars": {
+    "TO_EMAIL": "nobleantwi3@gmail.com",
+    "FROM_EMAIL": "NIW Consulting <consulting@nobleantwi.com>",
+    "REPLY_TO": "nobleantwi3@gmail.com",
+    "REDIRECT_URL": "https://nobleantwi.com/niw-consulting/thanks/",
+    "ALLOWED_ORIGINS": "https://nobleantwi.com,http://localhost:8878,http://localhost:4321"
+  },
+  "observability": { "enabled": true }
+}
