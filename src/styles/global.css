@@ -345,6 +345,10 @@ h1, h2, h3, h4 { color: var(--ink); margin: 0; line-height: 1.15; letter-spacing
 /* ------------------------------------------------------------
    Home
    ------------------------------------------------------------ */
+/* The hero glow below reaches past the column on purpose. Clip it at the
+   page edge so it never widens the page on a phone. `clip` (not `hidden`)
+   creates no scroll container, so sticky elements inside main still stick. */
+main { overflow-x: clip; }
 .hero { position: relative; padding: 5.5rem 0 4rem; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 3rem; align-items: end; }
 .hero::before {
   content: ''; position: absolute; z-index: -1; pointer-events: none;
