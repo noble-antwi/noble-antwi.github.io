@@ -73,9 +73,9 @@ const person = {
       (function () {
         var stored = null;
         try { stored = localStorage.getItem('theme'); } catch (e) {}
-        // Dark is the brand default. A visitor's own choice, stored by the
+        // Light is the default. A visitor's own choice, stored by the
         // header toggle, always wins over it.
-        document.documentElement.dataset.theme = stored || 'dark';
+        document.documentElement.dataset.theme = stored || 'light';
       })();
     </script>
 
