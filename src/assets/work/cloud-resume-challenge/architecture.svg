@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 330" width="680" height="330" role="img" aria-label="Cloud Resume Challenge architecture. Built today: the React and Vite app. Planned: the build deployed to an S3 bucket behind CloudFront, a visitor counter called from the page through API Gateway to a Python Lambda that stores the count in DynamoDB, all defined as code and deployed by GitHub Actions.">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+  </defs>
+  <style>
+    .t1 { font: 700 13px Inter, 'Segoe UI', sans-serif; fill: #0f172a; }
+    .t2 { font: 400 11.5px Inter, 'Segoe UI', sans-serif; fill: #475569; }
+    .lab { font: 700 10px 'JetBrains Mono', Consolas, monospace; letter-spacing: 0.08em; }
+    .built { fill: #dcfce7; stroke: #15803d; stroke-width: 1.8; }
+    .plan { fill: #ffffff; stroke: #94a3b8; stroke-width: 1.5; stroke-dasharray: 5 4; }
+  </style>
+  <rect width="680" height="330" rx="14" fill="#f8fafc"/>
+
+  <!-- visitor -->
+  <rect x="16" y="54" width="104" height="52" rx="26" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="68" y="85" class="t1" text-anchor="middle">Visitor</text>
+
+  <rect x="160" y="50" width="150" height="60" rx="10" class="plan"/>
+  <text x="235" y="76" class="t1" text-anchor="middle">CloudFront</text>
+  <text x="235" y="94" class="t2" text-anchor="middle">HTTPS and CDN</text>
+
+  <rect x="350" y="50" width="130" height="60" rx="10" class="plan"/>
+  <text x="415" y="76" class="t1" text-anchor="middle">S3 bucket</text>
+  <text x="415" y="94" class="t2" text-anchor="middle">the built site</text>
+
+  <rect x="530" y="50" width="134" height="60" rx="10" class="built"/>
+  <text x="597" y="76" class="t1" text-anchor="middle">React + Vite</text>
+  <text x="597" y="94" class="t2" text-anchor="middle">the resume app</text>
+
+  <path d="M120 80 L156 80" stroke="#475569" stroke-width="1.8" marker-end="url(#ah)"/>
+  <path d="M310 80 L346 80" stroke="#475569" stroke-width="1.8" marker-end="url(#ah)"/>
+  <path d="M530 80 L484 80" stroke="#475569" stroke-width="1.8" marker-end="url(#ah)"/>
+  <text x="506" y="70" class="t2" text-anchor="middle">build</text>
+
+  <!-- counter path -->
+  <path d="M415 110 L415 166" stroke="#475569" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+  <text x="423" y="142" class="t2">page calls the counter</text>
+
+  <rect x="350" y="170" width="150" height="60" rx="10" class="plan"/>
+  <text x="425" y="196" class="t1" text-anchor="middle">API Gateway</text>
+  <text x="425" y="214" class="t2" text-anchor="middle">one endpoint</text>
+
+  <rect x="160" y="170" width="150" height="60" rx="10" class="plan"/>
+  <text x="235" y="196" class="t1" text-anchor="middle">Lambda</text>
+  <text x="235" y="214" class="t2" text-anchor="middle">Python, with tests</text>
+
+  <rect x="16" y="170" width="104" height="60" rx="10" class="plan"/>
+  <text x="68" y="196" class="t1" text-anchor="middle">DynamoDB</text>
+  <text x="68" y="214" class="t2" text-anchor="middle">visitor count</text>
+
+  <path d="M350 200 L314 200" stroke="#475569" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+  <path d="M160 200 L124 200" stroke="#475569" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+
+  <!-- iac / ci -->
+  <rect x="16" y="254" width="648" height="44" rx="10" class="plan"/>
+  <text x="34" y="281" class="t1">Infrastructure as code + GitHub Actions</text>
+  <text x="330" y="281" class="t2">every resource defined as code, deployed on each push to main</text>
+
+  <!-- legend -->
+  <rect x="16" y="16" width="16" height="12" rx="3" class="built"/>
+  <text x="38" y="26" class="lab" fill="#15803d">BUILT</text>
+  <rect x="96" y="16" width="16" height="12" rx="3" class="plan"/>
+  <text x="118" y="26" class="lab" fill="#64748b">PLANNED</text>
+</svg>

@@ -16,7 +16,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const work = await getCollection('work');
   const pages: Card[] = [
     { slug: 'home', kicker: `${SITE.tagline} · ${SITE.location}`, title: 'I secure identities, and the cloud they live in.' },
-    { slug: 'work', kicker: 'Work', title: 'Seven projects, each with a repository and a write-up.' },
+    { slug: 'work', kicker: 'Work', title: 'Projects, each with a repository and a write-up.' },
     { slug: 'writing', kicker: 'Writing', title: 'Lab notes, study logs, and the occasional long read.' },
     { slug: 'credentials', kicker: 'Credentials', title: 'Eighteen credentials, weighted toward identity and cloud security.' },
     { slug: 'credentials/training', kicker: 'Training', title: 'The study behind the credentials.' },

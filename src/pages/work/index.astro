@@ -7,14 +7,16 @@ import { WORK_CATEGORIES } from '../../lib/site';
 
 const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
 const counts = Object.fromEntries(Object.keys(WORK_CATEGORIES).map((k) => [k, work.filter((w) => w.data.category === k).length]));
+const NUMBER_WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
+const howMany = NUMBER_WORDS[work.length] ?? String(work.length);
 ---
 
 <Base title="Work" description="Cloud security and identity projects by Noble Antwi: a hybrid identity lab across Active Directory, Okta and Entra ID, a segmented security homelab with Wazuh, a multi-cloud posture dashboard, and enterprise security assessments.">
   <div class="container">
     <header class="page-head">
       <span class="kicker">Work</span>
-      <h1 class="display h1">Seven projects, each with a repository and a write-up.</h1>
-      <p class="lead">Two long-running labs for a fictional bank, three tools, and two graduate assessments. Every case study covers the objective, the architecture, what got built, the decisions behind it, and what is next.</p>
+      <h1 class="display h1">{howMany} projects, each with a repository and a write-up.</h1>
+      <p class="lead">Two long-running labs and a public website for a fictional bank, a cloud build in progress, three tools, and two graduate assessments. Every case study covers the objective, the architecture, what got built, the decisions behind it, and what is next.</p>
     </header>
 
     <div class="stat-strip" style="margin-bottom:2.5rem;">

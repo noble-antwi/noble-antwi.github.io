@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" width="680" height="440" role="img" aria-label="Four machines and five steps. 1: SCAN01 scans WKS01 and finds TLS 1.0 and 1.1 on Remote Desktop. 2: DC01 pushes a Group Policy with four registry values to the Workstations OU. 3: the change is proved on WKS01 itself. 4: SCAN01 scans again and finds only TLS 1.2 and 1.3. 5: SIEM01 records the scanner's sign-ins without false alerts.">
+  <defs>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/></marker>
+    <marker id="v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#15803d"/></marker>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker>
+  </defs>
+  <style>
+    .n { font: 700 15px 'JetBrains Mono', Consolas, monospace; fill: #fff; }
+    .h { font: 700 9.5px Inter, 'Segoe UI', sans-serif; fill: #fff; letter-spacing: 0.1em; }
+    .t1 { font: 600 12.5px Inter, 'Segoe UI', sans-serif; fill: #0f172a; }
+    .t2 { font: 400 11.5px Inter, 'Segoe UI', sans-serif; fill: #334155; }
+    .m { font: 500 10.5px 'JetBrains Mono', Consolas, monospace; fill: #475569; }
+    .p { font: 700 10.5px 'JetBrains Mono', Consolas, monospace; }
+    .s { font: 700 11px 'JetBrains Mono', Consolas, monospace; fill: #fff; }
+    .sl { font: 600 11.5px Inter, 'Segoe UI', sans-serif; fill: #0f172a; }
+  </style>
+  <rect width="680" height="440" rx="14" fill="#f8fafc"/>
+
+  <!-- SCAN01 -->
+  <rect x="16" y="20" width="200" height="104" rx="10" fill="#fff" stroke="#2563eb" stroke-width="1.6"/>
+  <path d="M16 30 a10 10 0 0 1 10 -10 h180 a10 10 0 0 1 10 10 v20 h-200 z" fill="#2563eb"/>
+  <text x="28" y="45" class="n">SCAN01</text><text x="112" y="44" class="h">SCANNER VM</text>
+  <text x="28" y="72" class="t1">Greenbone</text>
+  <text x="28" y="92" class="m">192.168.20.3 · VLAN 20</text>
+  <text x="28" y="110" class="m">signs in as svc-greenbone</text>
+
+  <!-- WKS01 -->
+  <rect x="330" y="20" width="334" height="176" rx="10" fill="#fff" stroke="#0f766e" stroke-width="2"/>
+  <path d="M330 30 a10 10 0 0 1 10 -10 h314 a10 10 0 0 1 10 10 v20 h-334 z" fill="#0f766e"/>
+  <text x="342" y="45" class="n">WKS01</text><text x="414" y="44" class="h">WINDOWS WORKSTATION · VLAN 50</text>
+  <text x="342" y="72" class="t1">Remote Desktop, port 3389</text>
+  <text x="342" y="96" class="m">BEFORE</text>
+  <rect x="398" y="84" width="58" height="18" rx="9" fill="#fee2e2" stroke="#b91c1c"/><text x="406" y="97" class="p" fill="#b91c1c" text-decoration="line-through">TLS 1.0</text>
+  <rect x="462" y="84" width="58" height="18" rx="9" fill="#fee2e2" stroke="#b91c1c"/><text x="470" y="97" class="p" fill="#b91c1c" text-decoration="line-through">TLS 1.1</text>
+  <rect x="526" y="84" width="58" height="18" rx="9" fill="#dcfce7" stroke="#15803d"/><text x="534" y="97" class="p" fill="#15803d">TLS 1.2</text>
+  <text x="342" y="124" class="m">AFTER</text>
+  <rect x="398" y="112" width="58" height="18" rx="9" fill="#dcfce7" stroke="#15803d"/><text x="406" y="125" class="p" fill="#15803d">TLS 1.2</text>
+  <rect x="462" y="112" width="58" height="18" rx="9" fill="#dcfce7" stroke="#15803d"/><text x="470" y="125" class="p" fill="#15803d">TLS 1.3</text>
+  <line x1="342" y1="142" x2="652" y2="142" stroke="#cbd5e1" stroke-dasharray="4 4"/>
+  <circle cx="352" cy="164" r="10" fill="#0f766e"/><text x="348.5" y="168" class="s">3</text>
+  <text x="370" y="162" class="t1">Proved on the machine first</text>
+  <text x="370" y="180" class="t2">gpresult · registry values · reboot · RDP still works</text>
+
+  <!-- DC01 -->
+  <rect x="16" y="262" width="230" height="104" rx="10" fill="#fff" stroke="#7c3aed" stroke-width="1.6"/>
+  <path d="M16 272 a10 10 0 0 1 10 -10 h210 a10 10 0 0 1 10 10 v20 h-230 z" fill="#7c3aed"/>
+  <text x="28" y="287" class="n">DC01</text><text x="86" y="286" class="h">DOMAIN CONTROLLER</text>
+  <text x="28" y="314" class="t1">Active Directory · VLAN 50</text>
+  <text x="28" y="334" class="m">SEC-Workstation-TLS-Hardening</text>
+  <text x="28" y="352" class="m">linked to OU Workstations only</text>
+
+  <!-- SIEM01 -->
+  <rect x="404" y="300" width="260" height="104" rx="10" fill="#fff" stroke="#b45309" stroke-width="1.6"/>
+  <path d="M404 310 a10 10 0 0 1 10 -10 h240 a10 10 0 0 1 10 10 v20 h-260 z" fill="#b45309"/>
+  <text x="416" y="325" class="n">SIEM01</text><text x="494" y="324" class="h">WAZUH · VLAN 20</text>
+  <text x="416" y="352" class="t1">Scanner sign-in alerts per scan</text>
+  <text x="416" y="374" class="m">before: 2,051    after: 0</text>
+  <text x="416" y="392" class="t2">every sign-in still kept in the archive</text>
+
+  <!-- arrows -->
+  <path d="M216 52 L326 52" stroke="#b91c1c" stroke-width="2.4" marker-end="url(#r)"/>
+  <circle cx="246" cy="36" r="10" fill="#b91c1c"/><text x="242.5" y="40" class="s">1</text>
+  <text x="262" y="40" class="sl">Scan</text>
+
+  <path d="M216 106 L326 106" stroke="#15803d" stroke-width="2.4" marker-end="url(#g)"/>
+  <circle cx="246" cy="126" r="10" fill="#15803d"/><text x="242.5" y="130" class="s">4</text>
+  <text x="262" y="130" class="sl">Rescan</text>
+
+  <path d="M246 314 C 330 314, 360 260, 372 200" stroke="#7c3aed" stroke-width="2.4" fill="none" marker-end="url(#v)"/>
+  <circle cx="290" cy="352" r="10" fill="#7c3aed"/><text x="286.5" y="356" class="s">2</text>
+  <text x="306" y="350" class="sl">Group Policy:</text><text x="306" y="366" class="t2">4 registry values</text>
+
+  <path d="M560 196 L560 296" stroke="#b45309" stroke-width="2.4" marker-end="url(#a)"/>
+  <circle cx="580" cy="240" r="10" fill="#b45309"/><text x="576.5" y="244" class="s">5</text>
+  <text x="596" y="238" class="sl">Sign-ins</text><text x="596" y="254" class="t2">logged</text>
+</svg>
