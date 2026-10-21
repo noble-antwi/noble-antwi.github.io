@@ -34,8 +34,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
     { slug: 'uses', kicker: 'Uses', title: 'What the labs, the projects and this site are made of.' },
     { slug: 'now', kicker: 'Now', title: 'What I am doing this month.' },
     { slug: 'contact', kicker: 'Contact', title: "Let's talk." },
-    { slug: 'niw-consulting', kicker: 'NIW Consulting · EB-2', title: 'Petition writing and record-building, from someone whose own petition was approved.', blurb: 'For professionals in any field preparing a self-petitioned EB-2 National Interest Waiver. Every engagement starts with an individual review of your record.' },
-    { slug: 'niw-consulting/thanks', kicker: 'NIW Consulting', title: 'Received, thank you.' },
     { slug: '404', kicker: '404', title: 'Nothing at this address.' },
   ];
   const cards: Card[] = [
