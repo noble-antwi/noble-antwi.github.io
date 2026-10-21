@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 430" width="680" height="430" role="img" aria-label="Three Windows endpoints send events to SIEM01. Inside the Wazuh manager each event is decoded, matched against rules and scored. Events scoring 3 or more become alerts. With archives switched on, every event is also written to an archive index, whatever its score.">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker>
+  </defs>
+  <style>
+    .t1 { font: 700 14px Inter, 'Segoe UI', sans-serif; fill: #0f172a; }
+    .t2 { font: 400 12px Inter, 'Segoe UI', sans-serif; fill: #334155; }
+    .m  { font: 500 11px 'JetBrains Mono', Consolas, monospace; fill: #475569; }
+    .lab { font: 700 10.5px 'JetBrains Mono', Consolas, monospace; fill: #64748b; letter-spacing: 0.08em; }
+  </style>
+  <rect x="0" y="0" width="680" height="430" rx="14" fill="#f8fafc"/>
+
+  <text x="18" y="30" class="lab">WINDOWS ENDPOINTS</text>
+  <g>
+    <rect x="16" y="44" width="180" height="58" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="30" y="68" class="t1">DC01</text><text x="30" y="88" class="t2">domain controller · VLAN 50</text>
+    <rect x="16" y="116" width="180" height="58" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="30" y="140" class="t1">ADM01</text><text x="30" y="160" class="t2">admin workstation · VLAN 10</text>
+    <rect x="16" y="188" width="180" height="58" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="30" y="212" class="t1">WKS01</text><text x="30" y="232" class="t2">workstation · VLAN 50</text>
+    <text x="18" y="270" class="t2">Each runs Sysmon and a Wazuh agent.</text>
+    <text x="18" y="288" class="t2">Sysmon event 11 records every file</text>
+    <text x="18" y="306" class="t2">a process creates.</text>
+  </g>
+  <path d="M196 73 L246 90" stroke="#475569" stroke-width="1.8" fill="none" marker-end="url(#ah)"/>
+  <path d="M196 145 L246 145" stroke="#475569" stroke-width="1.8" fill="none" marker-end="url(#ah)"/>
+  <path d="M196 217 L246 200" stroke="#475569" stroke-width="1.8" fill="none" marker-end="url(#ah)"/>
+
+  <rect x="248" y="16" width="416" height="398" rx="12" fill="#fff" stroke="#0f766e" stroke-width="2"/>
+  <text x="266" y="42" class="t1">SIEM01</text><text x="326" y="42" class="t2">Wazuh manager · VLAN 20 · 192.168.20.2</text>
+
+  <rect x="266" y="58" width="380" height="42" rx="8" fill="#f1f5f9"/>
+  <text x="280" y="84" class="t1">1  Decode</text><text x="370" y="84" class="t2">split the raw event into named fields</text>
+  <path d="M456 100 L456 116" stroke="#475569" stroke-width="1.8" marker-end="url(#ah)"/>
+
+  <rect x="266" y="118" width="380" height="74" rx="8" fill="#f1f5f9"/>
+  <text x="280" y="142" class="t1">2  Match rules</text>
+  <text x="280" y="162" class="m">92213</text><text x="336" y="162" class="m">"file dropped in malware folder"</text><text x="584" y="162" class="m">level 15</text>
+  <text x="280" y="180" class="m">100010</text><text x="336" y="180" class="m">child of 92213, my exception</text><text x="584" y="180" class="m">level 0</text>
+  <path d="M456 192 L456 208" stroke="#475569" stroke-width="1.8" marker-end="url(#ah)"/>
+
+  <rect x="266" y="210" width="380" height="42" rx="8" fill="#f1f5f9"/>
+  <text x="280" y="236" class="t1">3  Score</text><text x="370" y="236" class="t2">the level of the deepest rule that matched</text>
+
+  <path d="M370 252 L356 282" stroke="#475569" stroke-width="1.8" marker-end="url(#ah)"/>
+  <path d="M540 252 L554 282" stroke="#b45309" stroke-width="1.8" marker-end="url(#aa)"/>
+
+  <rect x="266" y="284" width="184" height="88" rx="8" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="280" y="306" class="t1">Score 3 or more</text>
+  <text x="280" y="326" class="m">alerts.json</text>
+  <text x="280" y="344" class="m">wazuh-alerts-*</text>
+  <text x="280" y="362" class="t2">what the dashboard alerts on</text>
+
+  <rect x="462" y="284" width="184" height="88" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+  <text x="476" y="306" class="t1">Every event</text>
+  <text x="476" y="326" class="m">archives.json</text>
+  <text x="476" y="344" class="m">wazuh-archives-*</text>
+  <text x="476" y="362" class="t2">switched on 26 September</text>
+
+  <text x="266" y="398" class="t2">Before archives, an event that scored below 3 was never written anywhere.</text>
+</svg>
