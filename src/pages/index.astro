@@ -4,10 +4,10 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
 import Journey from '../components/Journey.astro';
+import SelectedWork from '../components/SelectedWork.astro';
 import { SITE, byDateDesc, SERIES } from '../lib/site';
 import { CERTS } from '../data/certifications';
 
-const work = (await getCollection('work')).filter((w) => w.data.featured).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
 const posts = (await getCollection('posts')).sort(byDateDesc);
 const latest = posts.slice(0, 5);
 const featuredCerts = CERTS.filter((c) => c.featured).concat(CERTS.filter((c) => c.id === 'security-plus'));
@@ -38,38 +38,7 @@ const seriesCounts = SERIES.map((s) => ({ ...s, count: posts.filter(s.match).len
       </dl>
     </section>
 
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <span class="kicker">Selected work</span>
-          <h2 class="display h2">Labs built like production, documented like an audit.</h2>
-        </div>
-        <a class="section-link" href="/work/">All projects</a>
-      </div>
-      <div>
-        {work.map((w) => (
-          <article class="feature">
-            <div class="feature-media">
-              {w.data.hero ? (
-                <a href={`/work/${w.id}/`}><Image src={w.data.hero} alt={w.data.heroAlt ?? ''} width={900} densities={[1, 1.5]} /></a>
-              ) : (
-                <div style="padding:2.5rem 2rem;">
-                  <span class="kicker">Stack</span>
-                  <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--ink-2);margin:0.8rem 0 0;line-height:1.7;">{w.data.stack.join(' · ')}</p>
-                </div>
-              )}
-            </div>
-            <div class="feature-body">
-              <span class="kicker">{w.data.kicker}</span>
-              <h3><a href={`/work/${w.id}/`}>{w.data.title}</a></h3>
-              <p>{w.data.summary}</p>
-              <div class="tags">{w.data.stack.slice(0, 6).map((t) => <span>{t}</span>)}</div>
-              <a class="section-link" href={`/work/${w.id}/`}>Read the case study</a>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
+    <SelectedWork />
 
     <section class="section">
       <div class="section-head">
