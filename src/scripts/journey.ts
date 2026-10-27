@@ -518,6 +518,9 @@ export function startJourney(root: HTMLElement) {
       // Lift the subject into the top half: aim below it, by a share of the distance.
       const dist = camPos.distanceTo(camLook);
       camLook.y -= dist * 0.2;
+    } else if (camera.aspect < 1.6) {
+      // Narrow landscape (small windows, tablets): step back so the right-hand subject stays in frame.
+      camPos.sub(camLook).multiplyScalar(1.6 / camera.aspect).add(camLook);
     }
   }
 
@@ -702,7 +705,8 @@ export function startJourney(root: HTMLElement) {
     /* ===== HTML ===== */
     for (const el of panels) {
       const a = +el.dataset.from!, b = +el.dataset.to!, f = +(el.dataset.fade ?? 0.0137);
-      const o = span(g, a, a + f) * (1 - span(g, b - f, b));
+      // The opening panel is already in at the very top; the rest fade in at their start.
+      const o = (a <= 0 ? 1 : span(g, a, a + f)) * (1 - span(g, b - f, b));
       el.style.opacity = String(o);
       el.style.transform = `translateY(${(1 - o) * 18}px)`;
       el.style.visibility = o > 0.01 ? 'visible' : 'hidden';
