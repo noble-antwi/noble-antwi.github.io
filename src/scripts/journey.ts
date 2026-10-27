@@ -531,12 +531,14 @@ export function startJourney(root: HTMLElement) {
   function readScroll() { const rect = root.getBoundingClientRect(); const total = root.offsetHeight - window.innerHeight; target = clamp(-rect.top / total); }
   const stopFocus = (i: number, g: number) => span(g, STOPS[i] - 0.013, STOPS[i] - 0.005) * (1 - span(g, STOPS[i] + 0.005, STOPS[i] + 0.013));
 
-  let frame = 0;
+  let frame = 0, last = performance.now();
   function tick() {
+    const now = performance.now(), dt = Math.min(0.25, (now - last) / 1000); last = now;
     if (html.classList.contains('gate-open')) { requestAnimationFrame(tick); return; }
     frame++;
     const forced = (window as unknown as { __jt?: number }).__jt;
-    if (forced !== undefined) t = target = forced; else t += (target - t) * 0.085;
+    // Ease by elapsed time, not frames, so a slow device catches up as fast as a quick one.
+    if (forced !== undefined) t = target = forced; else t += (target - t) * (1 - Math.exp(-5.3 * dt));
     const g = t;
     const tt = Math.min(JMAX, (g / J) * JMAX);
     const jEnd = 1 - span(g, 0.418, 0.428);
