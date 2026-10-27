@@ -1,7 +1,7 @@
 ---
 title: "Enterprise Security Homelab"
 kicker: "Infrastructure · Detection · Biira Bank"
-summary: "A six-VLAN, default-deny network for a fictional regional bank: pfSense, managed switching, a Proxmox hypervisor on a trunk port, a Windows Server 2025 domain controller, a Wazuh SIEM with four agents and its own detection rules, a Greenbone scanner whose identity is administrator on member machines and nothing on the domain, a first finding found, fixed and proved closed, and every firewall rule justified and mapped to a NIST control."
+summary: "A six-VLAN, default-deny network for a fictional regional bank: pfSense, managed switching, a Proxmox hypervisor on a trunk port, a Windows Server 2025 domain controller, a Wazuh SIEM with five agents and its own detection rules, including thirty for an internal application's identity log, a Greenbone scanner whose identity is administrator on member machines and nothing on the domain, a first finding found, fixed and proved closed, and every firewall rule justified and mapped to a NIST control."
 category: detection
 status: active
 statusLabel: "In active build"
@@ -20,7 +20,7 @@ heroCaption: "Current-state architecture on corp.biirabank.com. Switch 1 trunks 
 stats:
   - { value: "6", label: "VLAN security zones" }
   - { value: "3 / 6", label: "Rulesets hardened" }
-  - { value: "4", label: "Wazuh agents reporting" }
+  - { value: "5", label: "Wazuh agents reporting" }
   - { value: "4", label: "CIS baselines recorded" }
 gallery:
   - src: ../../assets/work/enterprise-security-homelab/packet-path.svg
@@ -157,8 +157,9 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 - **Management-plane isolation**, verified by before-and-after testing: VLAN 50 cannot reach the pfSense administrative interface on any address, while it keeps the DNS, NTP and internet access it legitimately needs.
 - **KALI01**, the attack host, as a Proxmox guest on VLAN 30 with no standing path to any other segment, no ICMP-to-any, and a clean-install snapshot to roll back to after every exercise. Its containment is proven by a test from the host itself, and the runbook is explicit about what that test does and does not prove.
 - **SIEM01**, Wazuh 4.14.7, rebuilt on dedicated hardware after the original host died. The failure became a role swap: the 16 GB machine that had been running Grafana went to the memory-hungry, data-bearing SIEM, and monitoring moves to a hypervisor guest. Written up in [Standing Up Wazuh Twice](/lab-notes/2026/09/08/standing-up-wazuh-twice.html).
-- **Four agents reporting**: DC01, ADM01, PVE01 and WKS01, each with its own firewall rule on the interface its traffic actually arrives on, and Sysmon on the three Windows machines. Enrolling ADM01 exposed that its traffic was bypassing the firewall over Tailscale; the fix, and the evidence, are in the runbook.
+- **Five agents reporting**: DC01, ADM01, PVE01, WKS01 and APP01, with Sysmon on the three Windows machines, and APP01 shipping an application's identity audit log rather than operating-system events. Enrolling ADM01 exposed that its traffic was bypassing the firewall over Tailscale; the fix, and the evidence, are in the runbook.
 - **Detection engineering, with the evidence kept.** A built-in rule fired at level 15 all day on PowerShell checking its own execution policy. It is now tuned by an exception that needs two conditions, so the rule still catches everything else, and the scanner's 2,051 sign-in alerts per scan became a silent rule for SCAN01 and a level 12 alert for the same account from anywhere else. Archives are on, so a silenced alert still leaves its event on the record. The rules live in the repository and are deployed from it. Written up in [The Alert That Cried Wolf](/lab-notes/2026/09/26/the-alert-that-cried-wolf.html).
+- **Detection rules for an application's identity log.** Stock Copilot, an internal app on APP01, writes an audit event for every sign-in, refused token, SCIM call, key rotation and break-glass use. Thirty Wazuh rules turn that log into alerts mapped to MITRE ATT&CK: forged SAML and unsigned tokens at level 12, password guessing counted per device, signing keys changed outside a declared rotation. They were tested before deployment against 61 sample events and a replay of 676 real ones, and went live on 23 October 2026: the app's attack probe produced 18 alerts, all decoded on SIEM01. The first password-guessing rule raised seven false alerts on the lab's own traffic, because it counted refusals by policy as well as wrong credentials; it now counts credentials only. The rules and their deployment steps live in the repository's `detections/` folder. Written up in [Watching the Front Door](/lab-notes/2026/10/27/watching-the-front-door.html).
 - **The first finding found, fixed and proved closed.** A credentialed scan found TLS 1.0 and 1.1 on WKS01's Remote Desktop. A scoped, reversible Group Policy removed them, each step was verified on the machine, and a third scan proved them gone from three directions. WMI stays closed to the scanner by decision, because it would let a stolen scan credential run commands everywhere. Written up in [Find, Fix, Prove](/lab-notes/2026/10/09/find-fix-prove.html).
 - **SCAN01**, a Greenbone Community Edition scanner on VLAN 20 with all four feeds loaded and 186,567 vulnerability tests, built as a VM rather than a container because a scanner stores administrative credentials for everything it scans. Nessus Essentials was the first choice and was ruled out on its own current terms: five addresses on a thirty-day licence cannot cover nine hosts, or sustain a loop of scanning, fixing and scanning again. Written up in [A Scanner That Is Not a Domain Admin](/lab-notes/2026/09/14/a-scanner-that-is-not-a-domain-admin.html).
 - **A scan identity that is an administrator on member machines and nothing on the domain.** One service account in one group, and a Group Policy that places that group in each machine's local Administrators, linked to the member OUs only so the Domain Controllers OU sits structurally outside the grant. Four of the five ways to sign in to Windows are then denied to the account, leaving network logon alone, and the closed door is proven by a Remote Desktop session refused with the correct password.
@@ -187,12 +188,11 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 
 ## What is next
 
-- The last unmonitored host: a `DEV-01` rule and a Wazuh agent on APP01, the first real rule on the DEVOPS interface.
 - Harden DC01 and ADM01 against their CIS baselines (both 26%), re-run the assessment and record the delta.
 - Keep the remediation loop turning. TLS on WKS01 was the first finding closed; the next pass extends the same pattern to servers and the domain controller once they are assessed, starting with an unauthenticated scan of DC01, because there is no least-privilege way to credential-scan a domain controller.
 - Track findings from open to closed in DefectDojo, now that the condition set for adopting it, three reports and one closed finding, has been met.
 - A retention policy for the new archive index, sized from the growth measured on the first day rather than an estimate.
-- Write the BLUETEAM, DEVOPS and MONITORING rulesets, which are still permissive. The BlueTeam one is now driven by the traffic SCAN01 actually needs, and a scanner has to cross every boundary the firewall exists to enforce.
+- Write the BLUETEAM, DEVOPS and MONITORING rulesets. The BlueTeam one is driven by the traffic SCAN01 actually needs, and the DevOps one starts with `DEV-01`, the rule that lets APP01's agent report to SIEM01.
 - Close the scanner's password debt: VAULT01 issuing a short-lived credential per scan, retiring the non-expiring password that is currently recorded as a tracked exception.
 - Rebuild MON01 and ANS01 as Proxmox guests, and give Vault its own guest (VAULT01) rather than a share of APP01.
 - Scope Tailscale to close hardening item H-02, and build PAW01, a dedicated administrative workstation, to close H-01.

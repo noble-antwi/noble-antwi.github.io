@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-const updated = 'September 2026';
+const updated = 'October 2026';
 ---
 
 <Base title="Now" description="What Noble Antwi is building, studying and reading right now.">
@@ -15,8 +15,8 @@ const updated = 'September 2026';
       <div>
         <h3>Building</h3>
         <ul>
-          <li>The first credentialed scan from <a href="/work/enterprise-security-homelab/">SCAN01</a>, now that the scanner has an identity that is an administrator on member machines and nothing on the domain. <a href="/lab-notes/2026/09/14/a-scanner-that-is-not-a-domain-admin.html">How that was scoped.</a></li>
-          <li>The last unmonitored host in the lab: a Wazuh agent on APP01 and the first real rule on the DevOps interface. Three agents already report.</li>
+          <li>Keeping the remediation loop turning. The first finding from <a href="/work/enterprise-security-homelab/">SCAN01</a> is fixed and proved closed; the next pass starts with an unauthenticated scan of DC01. <a href="/lab-notes/2026/10/09/find-fix-prove.html">How the first one closed.</a></li>
+          <li>Detection rules for an application's identity log, now live on SIEM01 with APP01 as the fifth agent. <a href="/lab-notes/2026/10/27/watching-the-front-door.html">What they watch, and what stays quiet.</a></li>
           <li>Hardening DC01 and ADM01 against their CIS baselines (both 26%) and recording the delta. <a href="/lab-notes/2026/09/08/standing-up-wazuh-twice.html">Why the baseline came first.</a></li>
           <li>Rebuilding MON01 and ANS01 as Proxmox guests, and giving Vault its own guest on the DevOps VLAN.</li>
           <li>Writing the last three pfSense rulesets (BlueTeam, DevOps, Monitoring) to default-deny, each rule justified and mapped.</li>
