@@ -167,6 +167,9 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
   .j-granted, .j-denied { display: none; margin-top: 1.2rem; }
   .journey.is-approved .j-ask, .journey.is-denied .j-ask { display: none; }
   .journey.is-approved .j-granted { display: block; animation: j-in 0.5s ease; }
+  /* The granted list grows the panel downward; lift it so the last link clears the ticker. */
+  .j-push { transition: top 0.5s ease; }
+  @media (min-width: 721px) { .journey.is-approved .j-push { top: max(5rem, calc(50% - 16rem)); } }
   .journey.is-denied .j-denied { display: block; animation: j-in 0.5s ease; }
   @keyframes j-in { from { opacity: 0; transform: translateY(10px); } }
   .j-links { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; gap: 0.6rem; }
