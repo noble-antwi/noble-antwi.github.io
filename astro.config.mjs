@@ -10,7 +10,8 @@ export default defineConfig({
   // Jekyll-era post URLs were shaped. Nothing that Google has indexed breaks.
   build: { format: 'preserve' },
   trailingSlash: 'ignore',
-  integrations: [sitemap()],
+  // /journey/ is an unlisted preview while the 3D walk-through is being built.
+  integrations: [sitemap({ filter: (page) => !page.includes('/journey') })],
   markdown: {
     rehypePlugins: [rehypeFigures],
     shikiConfig: {
