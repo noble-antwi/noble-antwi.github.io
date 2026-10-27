@@ -1,0 +1,113 @@
+---
+/* The homepage opening: one sign-in followed through identity, the network,
+   the cloud and detection, driven by scroll. The 3D world is in
+   src/scripts/journey.ts. With reduced motion or no WebGL the copy stacks
+   as plain sections instead. */
+import { SITE } from '../lib/site';
+
+const scenes = [
+  { from: 0.0, to: 0.11, n: SITE.tagline, k: SITE.location, h: 'I secure identities, and the cloud they live in.', p: 'Follow one sign-in through the lab I built to prove it: a Windows workstation, a domain, a firewall, two cloud identity providers, two clouds and a SIEM. Scroll.' },
+  { from: 0.13, to: 0.26, n: '01', k: 'Directory', h: 'Checked at home first.', p: 'The request reaches DC01, the domain controller on VLAN 50. Active Directory checks the password and issues a Kerberos ticket. Nothing has left the segment yet.' },
+  { from: 0.27, to: 0.37, n: '02', k: 'Network', h: 'Default deny.', p: 'To reach the cloud, DC01 must cross pfSense. Every interface denies by default; one written, justified rule lets this traffic out, and nothing comes back in uninvited.' },
+  { from: 0.38, to: 0.47, n: '03', k: 'Identity', h: 'Verified, then verified again.', p: 'Entra ID and Okta check the device and the second factor. No single system says yes on its own, and the providers are reached from DC01, never the other way round.' },
+  { from: 0.48, to: 0.60, n: '04', k: 'Cloud', h: 'Least privilege, in the cloud too.', p: 'The same identity reaches AWS and Azure by federation, with no standing keys. Posture is scanned with Prowler and ScoutSuite, every finding mapped to CIS, NIST and PCI, and idle resources found before they cost money.' },
+  { from: 0.62, to: 0.78, n: '05', k: 'Detection', h: 'On the record.', p: 'Every step was logged. Agents on WKS01 and DC01 ship their events through the firewall to SIEM01, where Wazuh decodes each one, alerts on the few that matter, and keeps the rest.' },
+  { from: 0.80, to: 0.91, n: '06', k: 'The estate', h: 'Built, documented, proven.', p: 'Six VLANs behind one default-deny firewall, a rebuilt forest federated to two cloud identity providers, two clouds under posture scanning, a SIEM with its own rules, and every decision written down.' },
+];
+---
+
+<section class="journey" id="journey" aria-label="The sign-in journey">
+  <div class="j-stage">
+    <canvas class="j-canvas" aria-hidden="true"></canvas>
+
+    <div class="j-copy">
+      {scenes.map((s, i) => (
+        <div class="j-panel" data-from={s.from} data-to={s.to}>
+          <span class="j-kicker">{s.n} · {s.k}</span>
+          {i === 0 ? <h1 class="j-h">{s.h}</h1> : <h2 class="j-h">{s.h}</h2>}
+          <p class="j-p">{s.p}</p>
+          {s.n === '04' && (
+            <div class="j-stats">
+              <div><b data-count="2" data-from="0.50">0</b><span>clouds</span></div>
+              <div><b data-count="500" data-from="0.51" data-suffix="+">0</b><span>posture checks</span></div>
+              <div><b data-count="0" data-from="0.52">0</b><span>standing keys</span></div>
+            </div>
+          )}
+          {s.n === '05' && (
+            <div class="j-stats">
+              <div><b data-count="39322" data-from="0.68">0</b><span>events decoded</span></div>
+              <div><b data-count="1963" data-from="0.70">0</b><span>alerts, about 5%</span></div>
+              <div><b data-count="100" data-from="0.72" data-suffix="%">0</b><span>kept in the archive</span></div>
+            </div>
+          )}
+          {s.n === '06' && (
+            <div class="j-stats">
+              <div><b data-count="6" data-from="0.82">0</b><span>VLANs</span></div>
+              <div><b data-count="3" data-from="0.83">0</b><span>identity providers</span></div>
+              <div><b data-count="2" data-from="0.84">0</b><span>clouds</span></div>
+              <div><b data-count="21" data-from="0.85">0</b><span>runbooks</span></div>
+            </div>
+          )}
+        </div>
+      ))}
+      <div class="j-panel j-end" data-from="0.93" data-to="1.5">
+        <span class="j-kicker">The work behind it</span>
+        <h2 class="j-h">Every step above is real, and written up.</h2>
+        <div class="actions">
+          <a class="btn" href="/work/">See the work</a>
+          <a class="btn btn-ghost" href="/writing/">Read the notes</a>
+        </div>
+      </div>
+    </div>
+
+    <a class="j-skip" href="#after-journey">Skip the journey ↓</a>
+    <div class="j-hint" aria-hidden="true">Scroll</div>
+  </div>
+</section>
+<div id="after-journey"></div>
+
+<script>
+  import { startJourney } from '../scripts/journey';
+  const root = document.getElementById('journey')!;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const gl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
+  if (still || !gl) root.classList.add('is-static');
+  else startJourney(root);
+</script>
+
+<style is:global>
+  .journey { position: relative; height: 1000vh; margin-bottom: 2rem; }
+  .j-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+  .j-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .j-copy { position: absolute; inset: 0; pointer-events: none; }
+  .j-panel {
+    position: absolute; left: max(1rem, calc((100vw - var(--wide)) / 2 + 1rem)); top: 50%; transform: translateY(-50%);
+    width: min(34rem, calc(100vw - 2rem)); opacity: 0; visibility: hidden; pointer-events: none;
+    will-change: opacity, transform;
+  }
+  .j-panel .actions, .j-panel a { pointer-events: auto; }
+  .j-kicker { display: block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.9rem; }
+  .j-h { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 5.2vw, 4.2rem); line-height: 1.02; letter-spacing: -0.03em; color: var(--ink); margin: 0 0 1rem; }
+  .j-p { font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1.55; color: var(--ink-2); max-width: 30rem; margin: 0; }
+  .j-stats { display: flex; gap: 2rem; margin-top: 1.6rem; flex-wrap: wrap; }
+  .j-stats b { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 3.6vw, 2.8rem); letter-spacing: -0.03em; color: var(--ink); line-height: 1; }
+  .j-stats span { display: block; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-top: 0.4rem; }
+  .j-end .actions { margin-top: 1.4rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .j-skip { position: absolute; right: 1.25rem; bottom: 1.25rem; font-size: 0.8rem; padding: 0.5rem 0.85rem; border-radius: 999px; border: 1px solid var(--line-2); background: color-mix(in srgb, var(--paper) 80%, transparent); color: var(--ink-2); text-decoration: none; backdrop-filter: blur(8px); }
+  .j-skip:hover { color: var(--ink); border-color: var(--accent-line); }
+  .j-hint { position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-3); animation: j-bob 2.2s ease-in-out infinite; }
+  @keyframes j-bob { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 6px); } }
+
+  /* No motion, or no WebGL: the copy stacks as plain sections. */
+  .journey.is-static { height: auto; }
+  .journey.is-static .j-stage { position: static; height: auto; overflow: visible; }
+  .journey.is-static .j-canvas, .journey.is-static .j-hint, .journey.is-static .j-skip { display: none; }
+  .journey.is-static .j-copy { position: static; pointer-events: auto; }
+  .journey.is-static .j-panel { position: static; transform: none; opacity: 1 !important; visibility: visible !important; width: auto; max-width: var(--measure); margin: 0 auto; padding: 3rem 1rem; }
+
+  @media (max-width: 720px) {
+    .j-panel { top: auto; bottom: 4.5rem; transform: none; }
+    .j-p { font-size: 0.95rem; }
+    .j-stats { gap: 1.2rem; }
+  }
+</style>

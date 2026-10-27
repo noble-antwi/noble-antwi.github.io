@@ -858,3 +858,9 @@ img.avatar { object-fit: cover; border: 1px solid var(--line-2); background: var
 /* Bold sans display headings: tighter tracking, colour instead of italics. */
 .display { letter-spacing: -0.03em; line-height: 1.04; }
 .display em { font-style: normal; }
+
+/* Homepage brief, under the journey */
+.brief { padding: 1.5rem 0 0.5rem; }
+.brief-grid { border-left: 0 !important; padding-left: 0 !important; grid-template-columns: repeat(4, 1fr) !important; gap: 2rem !important; border-top: 1px solid var(--line); padding-top: 1.5rem !important; }
+@media (max-width: 900px) { .brief-grid { grid-template-columns: 1fr 1fr !important; } }
+@media (max-width: 560px) { .brief-grid { grid-template-columns: 1fr !important; } }

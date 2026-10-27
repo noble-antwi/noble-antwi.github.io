@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
-import HeroSchematic from '../components/HeroSchematic.astro';
+import Journey from '../components/Journey.astro';
 import { SITE, byDateDesc, SERIES } from '../lib/site';
 import { CERTS } from '../data/certifications';
 
@@ -15,18 +15,10 @@ const seriesCounts = SERIES.map((s) => ({ ...s, count: posts.filter(s.match).len
 ---
 
 <Base>
+  <Journey />
   <div class="container">
-    <section class="hero">
-      <div>
-        <span class="kicker">{SITE.tagline} · {SITE.location}</span>
-        <h1 class="display h1">I secure identities, <em>and the cloud they live in.</em></h1>
-        <p class="lead">I design least-privilege access on AWS and Azure, run hybrid identity across Active Directory, Entra ID and Okta, keep secrets in HashiCorp Vault, and build the detection that catches what slips through. Then I write it down so someone else could rebuild it.</p>
-        <div class="actions">
-          <a class="btn" href="/work/">See the work</a>
-          <a class="btn btn-ghost" href="/writing/">Read the notes</a>
-        </div>
-      </div>
-      <dl class="hero-aside">
+    <section class="brief" aria-label="In brief">
+      <dl class="hero-aside brief-grid">
         <div>
           <dt>Currently</dt>
           <dd>Working in IT security in Chicago, and building a regulated-bank identity and network lab on the side. <a href="/now/">Now page</a></dd>
@@ -45,8 +37,6 @@ const seriesCounts = SERIES.map((s) => ({ ...s, count: posts.filter(s.match).len
         </div>
       </dl>
     </section>
-
-    <HeroSchematic />
 
     <section class="section">
       <div class="section-head">

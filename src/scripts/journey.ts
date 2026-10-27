@@ -1,7 +1,8 @@
-/* The sign-in journey: one request travelling through the Biira Bank lab,
-   driven by scroll. Everything is built in code from the lab's real layout
-   (six VLANs, pfSense between them, DC01, the identity providers, SIEM01).
-   No model files. Three.js only. */
+/* The sign-in journey: one request travelling through everything on this
+   site, driven by scroll. Identity (AD, Entra ID, Okta), the network
+   (pfSense and six VLANs), the cloud (AWS and Azure posture) and detection
+   (Wazuh). Everything is built in code from the lab's real layout. No model
+   files. Three.js only. */
 import * as THREE from 'three';
 
 type Vec = [number, number, number];
@@ -28,6 +29,7 @@ const HOSTS: { name: string; zone: number; x: number; z: number; h: number; role
 const WKS = { x: 10.6, z: 1.3 };
 const FW_Z = -7;
 const CLOUD: Vec = [0, 9, -15];
+const PLATFORM: Vec = [-10, 7.5, -17];
 const SIEM: Vec = [-9.8, 0.75, -0.9];
 const DC: Vec = [7.6, 0.8, -1.1];
 const GATE_DC: Vec = [6.5, 1.3, FW_Z + 0.14];
@@ -86,7 +88,7 @@ export function startJourney(root: HTMLElement) {
 
   const scene = new THREE.Scene();
   scene.background = WHITE.clone();
-  scene.fog = new THREE.Fog(WHITE.clone(), 18, 60);
+  scene.fog = new THREE.Fog(WHITE.clone(), 18, 70);
   const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0x334155, 1.1));
@@ -94,16 +96,17 @@ export function startJourney(root: HTMLElement) {
   sun.position.set(6, 14, 8);
   scene.add(sun);
 
-  /* ---------- the estate: six slabs, each with a glowing rim ---------- */
   const estate: THREE.Material[] = [];
+  const setOpacity = (s: THREE.Sprite, o: number) => { (s.material as THREE.SpriteMaterial).opacity = o; };
+
+  /* ---------- the estate: six slabs, each with a glowing rim ---------- */
   const slabGeo = new THREE.BoxGeometry(5, 0.22, 5);
   const rimGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(5.02, 0.24, 5.02));
   const zoneLabels: THREE.Sprite[] = [];
   for (const z of ZONES) {
     const slab = new THREE.Mesh(slabGeo, new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.55, metalness: 0.15, emissive: new THREE.Color(z.color), emissiveIntensity: 0.06, transparent: true }));
-    estate.push(slab.material);
     slab.position.set(z.x, 0, 0);
-    scene.add(slab);
+    scene.add(slab); estate.push(slab.material);
     const rim = new THREE.LineSegments(rimGeo, new THREE.LineBasicMaterial({ color: z.color, transparent: true, opacity: 0.9 }));
     rim.position.copy(slab.position);
     scene.add(rim); estate.push(rim.material);
@@ -116,17 +119,17 @@ export function startJourney(root: HTMLElement) {
   /* ---------- hosts: blocks with a lit edge ---------- */
   const hostLabels: THREE.Sprite[] = [];
   const hostMats: THREE.MeshStandardMaterial[] = [];
-  function block(x: number, y: number, z: number, w: number, h: number, d: number, color: number, glow = 0.15) {
+  function block(x: number, y: number, z: number, w: number, h: number, d: number, color: number, glow = 0.15, rimOpacity = 0.7) {
     const m = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.4, metalness: 0.35, emissive: new THREE.Color(color), emissiveIntensity: glow, transparent: true });
-    estate.push(m);
     const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
     b.position.set(x, y, z);
-    scene.add(b);
-    const e = new THREE.LineSegments(new THREE.EdgesGeometry(b.geometry), new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.7 }));
+    scene.add(b); estate.push(m);
+    const em = new THREE.LineBasicMaterial({ color, transparent: true, opacity: rimOpacity });
+    const e = new THREE.LineSegments(new THREE.EdgesGeometry(b.geometry), em);
     e.position.copy(b.position);
-    scene.add(e); estate.push(e.material);
+    scene.add(e); estate.push(em);
     hostMats.push(m);
-    return b;
+    return { mesh: b, mat: m, rim: em };
   }
   for (const h of HOSTS) {
     const zone = ZONES.find((z) => z.id === h.zone)!;
@@ -136,6 +139,7 @@ export function startJourney(root: HTMLElement) {
     l.scale.multiplyScalar(0.75);
     scene.add(l); hostLabels.push(l);
   }
+  const dcMat = hostMats[6], siemMat = hostMats[2];
 
   /* ---------- WKS01: a laptop with a sign-in screen ---------- */
   const laptop = new THREE.Group();
@@ -156,7 +160,6 @@ export function startJourney(root: HTMLElement) {
     { text: 'Sign in', size: 46, weight: 800, color: '#f8fafc', y: 110 },
     { text: 'n.antwi@corp.biirabank.com', size: 24, weight: 500, color: '#e2e8f0', y: 190, mono: true },
     { text: '●●●●●●●●●●●●', size: 24, weight: 500, color: '#e2e8f0', y: 246, mono: true },
-    { text: 'Sign in  →', size: 26, weight: 700, color: '#0f172a', y: 326 },
   ], 640, 420, '#0f172a');
   const sc = screenTex.image as HTMLCanvasElement; const g2 = sc.getContext('2d')!;
   g2.fillStyle = '#2dd4bf'; g2.fillRect(28, 298, 190, 56);
@@ -181,7 +184,7 @@ export function startJourney(root: HTMLElement) {
   scene.add(wallRim); estate.push(wallRim.material);
   const fwLabel = label('FW01 · pfSense', 'default deny on every interface');
   fwLabel.position.set(0, 4.0, FW_Z); fwLabel.scale.multiplyScalar(1.1);
-  scene.add(fwLabel); hostLabels.push(fwLabel);
+  scene.add(fwLabel);
   function gate(p: Vec, name: string) {
     const frame = new THREE.Mesh(new THREE.RingGeometry(0.42, 0.52, 48), new THREE.MeshBasicMaterial({ color: 0x22c55e, transparent: true, opacity: 0.0, side: THREE.DoubleSide, toneMapped: false, depthWrite: false }));
     frame.position.set(...p);
@@ -193,10 +196,8 @@ export function startJourney(root: HTMLElement) {
   }
   const gateDC = gate(GATE_DC, 'ENT-03 · outbound');
   const gateLog = gate(GATE_LOG, 'ENT-05 · agent → SIEM01');
-  // denied knocks: small red marks along the wall
-  const denyGeo = new THREE.PlaneGeometry(0.16, 0.16);
   const denyMat = new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0, toneMapped: false, side: THREE.DoubleSide, depthWrite: false });
-  const denies = new THREE.InstancedMesh(denyGeo, denyMat, 60);
+  const denies = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.16, 0.16), denyMat, 60);
   const dm = new THREE.Matrix4();
   for (let i = 0; i < 60; i++) {
     dm.makeTranslation(-17 + Math.random() * 34, 0.5 + Math.random() * 2.3, FW_Z + 0.1);
@@ -207,13 +208,11 @@ export function startJourney(root: HTMLElement) {
   /* ---------- identity providers: a halo of points high above ---------- */
   const haloN = 2600;
   const haloPos = new Float32Array(haloN * 3);
-  const haloSeed = new Float32Array(haloN);
   for (let i = 0; i < haloN; i++) {
     const a = Math.random() * Math.PI * 2, r = 3.2 + (Math.random() - 0.5) * 0.9;
     haloPos[i * 3] = Math.cos(a) * r;
     haloPos[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
     haloPos[i * 3 + 2] = Math.sin(a) * r;
-    haloSeed[i] = a;
   }
   const haloGeo = new THREE.BufferGeometry();
   haloGeo.setAttribute('position', new THREE.BufferAttribute(haloPos, 3));
@@ -224,8 +223,40 @@ export function startJourney(root: HTMLElement) {
   cloudLabel.position.set(CLOUD[0], CLOUD[1] + 1.6, CLOUD[2]); cloudLabel.scale.multiplyScalar(1.6);
   scene.add(cloudLabel);
 
+  /* ---------- the cloud: a floating platform of AWS and Azure resources ---------- */
+  const platform = new THREE.Group();
+  platform.position.set(...PLATFORM);
+  const platMats: THREE.Material[] = [];
+  const plat = new THREE.Mesh(new THREE.BoxGeometry(7.5, 0.18, 4.6), new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.5, metalness: 0.2, emissive: 0x2563eb, emissiveIntensity: 0.08, transparent: true, opacity: 0 }));
+  platform.add(plat); platMats.push(plat.material);
+  const platRim = new THREE.LineSegments(new THREE.EdgesGeometry(plat.geometry), new THREE.LineBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0 }));
+  platform.add(platRim); platMats.push(platRim.material);
+  const resources: { rim: THREE.LineBasicMaterial; flagged: boolean }[] = [];
+  const resGeo = new THREE.BoxGeometry(0.55, 0.55, 0.55);
+  for (let i = 0; i < 16; i++) {
+    const azure = i % 2 === 1;
+    const x = -3 + (i % 8) * 0.86, z = azure ? 0.9 : -0.9;
+    const h = 0.4 + ((i * 37) % 5) * 0.14;
+    const m = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.4, metalness: 0.3, emissive: new THREE.Color(azure ? 0x7c3aed : 0x2563eb), emissiveIntensity: 0.25, transparent: true, opacity: 0 });
+    const b = new THREE.Mesh(resGeo, m);
+    b.scale.y = h / 0.55;
+    b.position.set(x, 0.09 + h / 2, z);
+    platform.add(b); platMats.push(m);
+    const flagged = i === 2 || i === 7 || i === 9 || i === 13;
+    const rm = new THREE.LineBasicMaterial({ color: flagged ? 0xef4444 : (azure ? 0xa78bfa : 0x60a5fa), transparent: true, opacity: 0 });
+    const e = new THREE.LineSegments(new THREE.EdgesGeometry(resGeo), rm);
+    e.scale.copy(b.scale); e.position.copy(b.position);
+    platform.add(e); platMats.push(rm);
+    resources.push({ rim: rm, flagged });
+  }
+  scene.add(platform);
+  const platLabel = label('AWS · Azure', 'federated sign-in · no standing keys · posture scanned');
+  platLabel.position.set(PLATFORM[0], PLATFORM[1] + 1.25, PLATFORM[2]); platLabel.scale.multiplyScalar(1.5);
+  scene.add(platLabel);
+  const fixedColor = new THREE.Color(0x22c55e), flagColor = new THREE.Color(0xef4444);
+
   /* ---------- SIEM01's field: 2,500 event tiles on the BlueTeam slab ---------- */
-  const N = 50, tiles = new THREE.InstancedMesh(new THREE.BoxGeometry(0.082, 0.05, 0.082), new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6, emissive: 0x000000 }), N * N);
+  const N = 50, tiles = new THREE.InstancedMesh(new THREE.BoxGeometry(0.082, 0.05, 0.082), new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6, emissive: 0x000000, transparent: true }), N * N);
   const tm = new THREE.Matrix4();
   const tileXZ: [number, number][] = [];
   for (let i = 0; i < N * N; i++) {
@@ -236,14 +267,13 @@ export function startJourney(root: HTMLElement) {
     tileXZ.push([x, z]);
   }
   tiles.instanceMatrix.needsUpdate = true;
-  (tiles.material as THREE.Material).transparent = true;
   scene.add(tiles); estate.push(tiles.material as THREE.Material);
   const tileColor = new THREE.Color();
   const cA = new THREE.Color(0x14b8a6), cB = new THREE.Color(0x7c3aed), cDim = new THREE.Color(0x0f172a), cAlert = new THREE.Color(0xf59e0b);
 
   /* ---------- the request: a glowing orb with a trail ---------- */
-  const orb = new THREE.Mesh(new THREE.SphereGeometry(0.11, 24, 24), new THREE.MeshBasicMaterial({ color: 0x2dd4bf, toneMapped: false }));
-  const orbGlow = new THREE.Mesh(new THREE.SphereGeometry(0.26, 24, 24), new THREE.MeshBasicMaterial({ color: 0x2dd4bf, transparent: true, opacity: 0.25, toneMapped: false }));
+  const orb = new THREE.Mesh(new THREE.SphereGeometry(0.11, 24, 24), new THREE.MeshBasicMaterial({ color: 0x2dd4bf, toneMapped: false, transparent: true }));
+  const orbGlow = new THREE.Mesh(new THREE.SphereGeometry(0.26, 24, 24), new THREE.MeshBasicMaterial({ color: 0x2dd4bf, transparent: true, opacity: 0.25, toneMapped: false, depthWrite: false }));
   const orbLight = new THREE.PointLight(0x2dd4bf, 6, 6);
   orb.add(orbGlow); orb.add(orbLight);
   scene.add(orb);
@@ -257,26 +287,29 @@ export function startJourney(root: HTMLElement) {
 
   const screenPoint = new THREE.Vector3();
   const lidWorld = () => { screen.getWorldPosition(screenPoint); return screenPoint.clone(); };
-  // Leg A: screen -> DC01. Leg B: DC01 -> gate -> cloud. Leg C: WKS01 -> gate -> SIEM01.
+  // A: screen -> DC01. B: DC01 -> gate -> the identity halo. D: halo -> the cloud platform. C: WKS01 -> gate -> SIEM01.
   const legA = new THREE.CatmullRomCurve3([lidWorld(), new THREE.Vector3(9.6, 1.3, 0.4), v(DC)]);
   const legB = new THREE.CatmullRomCurve3([v(DC), new THREE.Vector3(7.2, 1.6, -3.5), v(GATE_DC), new THREE.Vector3(4.5, 4.5, -11), v(CLOUD)]);
+  const legD = new THREE.CatmullRomCurve3([v(CLOUD), new THREE.Vector3(-4, 9.5, -17), new THREE.Vector3(PLATFORM[0], PLATFORM[1] + 0.6, PLATFORM[2])]);
   const legC = new THREE.CatmullRomCurve3([lidWorld(), new THREE.Vector3(6, 1.6, -3), v(GATE_LOG), new THREE.Vector3(-6, 1.4, -3.5), v(SIEM)]);
 
   /* ---------- camera keyframes ---------- */
   const KEYS: Key[] = [
-    { t: 0.00, pos: [12.1, 1.0, 3.7], look: [10.95, 0.55, 1.45] },
-    { t: 0.10, pos: [11.9, 1.15, 3.3], look: [10.9, 0.55, 1.4] },
-    { t: 0.20, pos: [10.6, 2.4, 4.6], look: [8.9, 1.1, 0.0] },
-    { t: 0.30, pos: [9.6, 2.6, 2.4], look: [7.4, 1.2, -4.0] },
-    { t: 0.38, pos: [9.4, 2.4, -3.4], look: [6.3, 1.3, -7.2] },
-    { t: 0.44, pos: [8.0, 4.5, -6.5], look: [3.0, 6.0, -12.0] },
-    { t: 0.50, pos: [4.0, 13.5, -5.5], look: [0, 9, -15] },
-    { t: 0.58, pos: [-2, 5.0, 5.5], look: [-6, 1.2, -4] },
-    { t: 0.66, pos: [-12.6, 2.3, 4.2], look: [-9.3, 0.5, -0.7] },
-    { t: 0.74, pos: [-11.9, 0.95, 2.5], look: [-9.6, 0.25, -0.8] },
-    { t: 0.84, pos: [-1, 14, 22], look: [-2, -1, -4] },
-    { t: 0.93, pos: [0, 22, 30], look: [0, -7, -2] },
-    { t: 1.00, pos: [0, 26, 34], look: [0, -10, -1] },
+    { t: 0.00, pos: [11.5, 1.0, 4.1], look: [10.25, 0.5, 1.8] },
+    { t: 0.09, pos: [11.4, 1.15, 3.7], look: [10.3, 0.5, 1.75] },
+    { t: 0.17, pos: [10.6, 2.4, 4.6], look: [8.9, 1.1, 0.0] },
+    { t: 0.25, pos: [9.6, 2.6, 2.4], look: [7.4, 1.2, -4.0] },
+    { t: 0.31, pos: [9.4, 2.4, -3.4], look: [6.3, 1.3, -7.2] },
+    { t: 0.37, pos: [8.0, 4.5, -6.5], look: [3.0, 6.0, -12.0] },
+    { t: 0.42, pos: [4.0, 13.5, -5.5], look: [0, 9, -15] },
+    { t: 0.49, pos: [-3.5, 11.5, -9.5], look: [-9, 7.6, -17] },
+    { t: 0.56, pos: [-7.0, 9.6, -12.0], look: [-10, 7.4, -17] },
+    { t: 0.61, pos: [-2, 5.0, 5.5], look: [-6, 1.2, -4] },
+    { t: 0.68, pos: [-13.6, 2.6, 5.0], look: [-9.3, 0.5, -0.7] },
+    { t: 0.75, pos: [-12.8, 1.1, 3.2], look: [-9.6, 0.25, -0.8] },
+    { t: 0.84, pos: [-1, 15, 23], look: [-5, 0, -6] },
+    { t: 0.93, pos: [0, 23, 31], look: [0, -6, -4] },
+    { t: 1.00, pos: [0, 27, 35], look: [0, -9, -3] },
   ];
   const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
   function camAt(t: number) {
@@ -294,19 +327,15 @@ export function startJourney(root: HTMLElement) {
   let target = 0, t = 0, dark = false;
   let w = 0, h = 0;
   function resize() {
-    const r = root.getBoundingClientRect();
     w = root.clientWidth; h = window.innerHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.fov = w < h ? 56 : 42; camera.updateProjectionMatrix();
-    void r;
   }
   function readScroll() {
     const rect = root.getBoundingClientRect();
     const total = root.offsetHeight - window.innerHeight;
     target = clamp(-rect.top / total);
   }
-
-  function setOpacity(s: THREE.Sprite, o: number) { (s.material as THREE.SpriteMaterial).opacity = o; }
 
   let frame = 0;
   function tick() {
@@ -316,7 +345,7 @@ export function startJourney(root: HTMLElement) {
     const tt = t;
 
     // background: white open, dark middle, white close
-    const d = span(tt, 0.10, 0.20) * (1 - span(tt, 0.88, 0.96));
+    const d = span(tt, 0.09, 0.18) * (1 - span(tt, 0.88, 0.96));
     bg.copy(WHITE).lerp(SLATE, d);
     (scene.background as THREE.Color).copy(bg);
     scene.fog!.color.copy(bg);
@@ -324,24 +353,23 @@ export function startJourney(root: HTMLElement) {
     if (wantDark !== dark) { dark = wantDark; html.dataset.theme = dark ? 'dark' : (startTheme ?? 'light'); }
     renderer.toneMappingExposure = 1.05 - 0.25 * d;
 
-    const est = span(tt, 0.09, 0.19);
+    const est = span(tt, 0.08, 0.17);
     for (const m of estate) m.opacity = est * ((m as THREE.LineBasicMaterial).isLineBasicMaterial ? 0.8 : 1);
 
     camAt(tt);
     camera.position.copy(camPos);
     camera.lookAt(camLook);
 
-    // scene 1: laptop breathes
     lid.rotation.x = -0.32 + Math.sin(frame * 0.01) * 0.01;
 
     // the request's position
-    let p: THREE.Vector3 | null = null;
+    let p: THREE.Vector3;
     let orbOn = 1;
-    if (tt < 0.12) { p = lidWorld(); orbOn = span(tt, 0.04, 0.10); }
-    else if (tt < 0.28) p = legA.getPoint(span(tt, 0.12, 0.26));
-    else if (tt < 0.54) p = legB.getPoint(span(tt, 0.30, 0.52));
-    else if (tt < 0.58) { p = v(CLOUD); orbOn = 1 - span(tt, 0.54, 0.58); }
-    else if (tt < 0.76) { p = legC.getPoint(span(tt, 0.58, 0.72)); orbOn = span(tt, 0.58, 0.60) * (1 - span(tt, 0.73, 0.76)); }
+    if (tt < 0.11) { p = lidWorld(); orbOn = span(tt, 0.03, 0.09); }
+    else if (tt < 0.26) p = legA.getPoint(span(tt, 0.11, 0.24));
+    else if (tt < 0.46) p = legB.getPoint(span(tt, 0.27, 0.45));
+    else if (tt < 0.58) { p = legD.getPoint(span(tt, 0.47, 0.56)); orbOn = 1 - span(tt, 0.565, 0.59); }
+    else if (tt < 0.76) { p = legC.getPoint(span(tt, 0.61, 0.73)); orbOn = span(tt, 0.60, 0.62) * (1 - span(tt, 0.735, 0.76)); }
     else { p = v(SIEM); orbOn = 0; }
     orb.position.copy(p);
     orb.visible = orbOn > 0.01;
@@ -351,31 +379,40 @@ export function startJourney(root: HTMLElement) {
     trailPts.unshift(p.clone()); if (trailPts.length > trailN) trailPts.pop();
     for (let i = 0; i < trailN; i++) { const q = trailPts[Math.min(i, trailPts.length - 1)]; trailPos[i * 3] = q.x; trailPos[i * 3 + 1] = q.y; trailPos[i * 3 + 2] = q.z; }
     trailGeo.attributes.position.needsUpdate = true;
-    (trail.material as THREE.LineBasicMaterial).opacity = 0.55 * orbOn * span(tt, 0.12, 0.14);
+    (trail.material as THREE.LineBasicMaterial).opacity = 0.55 * orbOn * span(tt, 0.11, 0.13);
 
     // DC01 lights when the request arrives
-    const dcMat = hostMats[6]; dcMat.emissiveIntensity = 0.15 + 0.9 * span(tt, 0.25, 0.29) * (1 - span(tt, 0.56, 0.6));
+    dcMat.emissiveIntensity = 0.15 + 0.9 * span(tt, 0.22, 0.25) * (1 - span(tt, 0.48, 0.52));
 
     // the firewall: gates open as the request passes, denied knocks flicker on the wall
-    const gDC = span(tt, 0.36, 0.40) * (1 - span(tt, 0.56, 0.6));
+    const gDC = span(tt, 0.30, 0.34) * (1 - span(tt, 0.46, 0.50));
     gateDC.frame.material.opacity = gDC; gateDC.frame.visible = gDC > 0.01; setOpacity(gateDC.tag, gDC);
-    const gLog = span(tt, 0.62, 0.66) * (1 - span(tt, 0.82, 0.86));
+    const gLog = span(tt, 0.63, 0.67) * (1 - span(tt, 0.82, 0.86));
     gateLog.frame.material.opacity = gLog; gateLog.frame.visible = gLog > 0.01; setOpacity(gateLog.tag, gLog);
-    const fwOn = span(tt, 0.33, 0.38) * (1 - span(tt, 0.84, 0.9));
+    const fwOn = span(tt, 0.27, 0.32) * (1 - span(tt, 0.84, 0.9));
     denyMat.opacity = fwOn * (0.35 + 0.35 * Math.abs(Math.sin(frame * 0.07)));
-    setOpacity(fwLabel, fwOn * 0.9 + span(tt, 0.78, 0.84));
+    setOpacity(fwLabel, span(tt, 0.78, 0.84) * (1 - span(tt, 0.95, 1.0)));
 
     // the halo turns and brightens for the identity scene
-    const hOn = span(tt, 0.42, 0.50) * (1 - span(tt, 0.60, 0.66)) + span(tt, 0.78, 0.86) * 0.5;
+    const pull = span(tt, 0.78, 0.86) * (1 - span(tt, 0.95, 1.0));
+    const hOn = span(tt, 0.37, 0.43) * (1 - span(tt, 0.56, 0.61)) + pull * 0.5;
     halo.rotation.y = frame * 0.0025;
     (halo.material as THREE.PointsMaterial).opacity = hOn;
-    (halo.material as THREE.PointsMaterial).size = 0.07 + 0.05 * span(tt, 0.50, 0.54);
-    setOpacity(cloudLabel, span(tt, 0.46, 0.52) * (1 - span(tt, 0.6, 0.64)) + span(tt, 0.8, 0.86) * 0.9);
+    (halo.material as THREE.PointsMaterial).size = 0.07 + 0.05 * span(tt, 0.42, 0.46);
+    setOpacity(cloudLabel, span(tt, 0.40, 0.45) * (1 - span(tt, 0.55, 0.59)) + pull * 0.9);
+
+    // the cloud platform appears for the federation scene; flagged resources turn green as posture is fixed
+    const pOn = span(tt, 0.46, 0.51) * (1 - span(tt, 0.62, 0.66)) + pull;
+    for (const m of platMats) m.opacity = pOn * ((m as THREE.LineBasicMaterial).isLineBasicMaterial ? 0.85 : 1);
+    const fixed = span(tt, 0.53, 0.575);
+    for (const r of resources) if (r.flagged) r.rim.color.copy(flagColor).lerp(fixedColor, fixed);
+    platform.position.y = PLATFORM[1] + Math.sin(frame * 0.012) * 0.08;
+    setOpacity(platLabel, span(tt, 0.49, 0.53) * (1 - span(tt, 0.6, 0.64)) + pull * 0.9);
 
     // SIEM field: a wave of events spreads from SIEM01; alerts are the amber few
-    const fieldOn = span(tt, 0.64, 0.72) * (1 - span(tt, 0.90, 0.96));
+    const fieldOn = span(tt, 0.65, 0.73) * (1 - span(tt, 0.90, 0.96));
     if (fieldOn > 0 || frame % 30 === 0) {
-      const r = 0.2 + 6 * span(tt, 0.66, 0.80);
+      const r = 0.2 + 6 * span(tt, 0.67, 0.80);
       for (let i = 0; i < N * N; i++) {
         const [x, z] = tileXZ[i];
         const dist = Math.hypot(x - SIEM[0], z - SIEM[2]);
@@ -387,17 +424,15 @@ export function startJourney(root: HTMLElement) {
       }
       tiles.instanceColor!.needsUpdate = true;
     }
-    hostMats[2].emissiveIntensity = 0.15 + 1.0 * fieldOn;
+    siemMat.emissiveIntensity = 0.15 + 1.0 * fieldOn;
 
-    // labels: hosts and zones only in the pull-back
-    const lab = span(tt, 0.78, 0.86) * (1 - span(tt, 0.95, 1.0));
-    for (const s of hostLabels) if (s !== fwLabel) setOpacity(s, lab);
-    for (const s of zoneLabels) setOpacity(s, lab);
-    setOpacity(wksLabel, lab);
-    setOpacity(hostLabels[6], Math.max(lab, span(tt, 0.18, 0.22) * (1 - span(tt, 0.3, 0.34))));
-    setOpacity(hostLabels[2], Math.max(lab, span(tt, 0.62, 0.66) * (1 - span(tt, 0.76, 0.8))));
+    // labels: subject hosts while they are the subject, everything in the pull-back
+    for (const s of hostLabels) setOpacity(s, pull);
+    for (const s of zoneLabels) setOpacity(s, pull);
+    setOpacity(hostLabels[6], Math.max(pull, span(tt, 0.15, 0.19) * (1 - span(tt, 0.24, 0.28))));
+    setOpacity(hostLabels[2], Math.max(pull, span(tt, 0.63, 0.67) * (1 - span(tt, 0.76, 0.80))));
 
-    // HTML copy panels
+    // HTML copy panels and counters
     for (const el of panels) {
       const a = +el.dataset.from!, b = +el.dataset.to!;
       const o = span(tt, a, a + 0.03) * (1 - span(tt, b - 0.03, b));
