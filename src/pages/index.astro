@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Gate from '../components/Gate.astro';
 import Journey from '../components/Journey.astro';
-import SelectedWork from '../components/SelectedWork.astro';
+import CaseFiles from '../components/CaseFiles.astro';
 import WritingSection from '../components/WritingSection.astro';
 import { SITE } from '../lib/site';
 import { CERTS } from '../data/certifications';
@@ -34,9 +34,11 @@ const featuredCerts = CERTS.filter((c) => c.featured).concat(CERTS.filter((c) =>
         </div>
       </dl>
     </section>
+  </div>
 
-    <SelectedWork />
+  <CaseFiles />
 
+  <div class="container">
     <WritingSection />
 
     <section class="section">

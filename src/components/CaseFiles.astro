@@ -1,0 +1,234 @@
+---
+/* Moment two: the work as case files. The section pins and the files slide
+   sideways as the visitor scrolls; each file's architecture draws itself in
+   and its numbers count up when it comes into view. Narrow screens stack
+   the files and reveal them on scroll instead. */
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import { WORK_CATEGORIES } from '../lib/site';
+
+const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+const PICKS = ['enterprise-iam-lab', 'enterprise-security-homelab', 'cloud-security-posture-dashboard', 'biirabank-web', 'collins-aerospace-it-audit', 'iam-job-scout'];
+const files = PICKS.map((id) => all.find((w) => w.id === id)).filter((w): w is (typeof all)[number] => !!w);
+const total = all.length;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section class="cf" id="work-files" aria-label="Case files" style={`--cf-n: ${files.length}`}>
+  <div class="cf-stage">
+    <header class="cf-top">
+      <div class="cf-title">
+        <span class="kicker">Selected work</span>
+        <h2 class="display h2">Case files.</h2>
+      </div>
+      <nav class="cf-tabs" aria-label="Jump to a case file">
+        {files.map((w, i) => (
+          <button type="button" class="cf-tab" data-tab={i} style={`--c: var(--c-${w.data.category})`} aria-label={`Case ${pad(i + 1)}: ${w.data.title}`}>
+            <span class="cf-tabn">{pad(i + 1)}</span><span class="cf-tabt">{w.data.title.split(':')[0]}</span>
+          </button>
+        ))}
+      </nav>
+      <a class="cf-all" href="/work/">All {total} projects <span aria-hidden="true">→</span></a>
+    </header>
+
+    <div class="cf-track" data-track>
+      {files.map((w, i) => (
+        <article class="cf-file" data-file={i} style={`--c: var(--c-${w.data.category})`}>
+          <div class="cf-left">
+            <div class="cf-meta">
+              <span class="cf-case">Case {pad(i + 1)} / {pad(files.length)}</span>
+              <span class="cf-cat">{WORK_CATEGORIES[w.data.category]}</span>
+            </div>
+            <span class="cf-kicker">{w.data.kicker}</span>
+            <h3 class="cf-h">{w.data.title}</h3>
+            <p class="cf-p">{w.data.summary}</p>
+            <dl class="cf-stats">
+              {w.data.stats.slice(0, 4).map((s) => (
+                <div><dd data-value={s.value}>{s.value}</dd><dt>{s.label}</dt></div>
+              ))}
+            </dl>
+            <div class="cf-actions">
+              <a class="btn cf-open" href={`/work/${w.id}/`}>Open the case file <span aria-hidden="true">→</span></a>
+              {w.data.repo && <a class="cf-repo" href={w.data.repo} target="_blank" rel="noopener">Repository ↗</a>}
+            </div>
+          </div>
+
+          <div class="cf-right">
+            <div class="cf-doc">
+              <div class="cf-dochead">
+                <span>Architecture</span>
+                <span class="cf-stamp">{w.data.statusLabel}</span>
+                <span>fig. 1</span>
+              </div>
+              <div class="cf-fig">
+                {w.data.hero && <Image src={w.data.hero} alt={w.data.heroAlt ?? ''} width={1100} densities={[1, 1.5]} loading="eager" decoding="async" />}
+                <span class="cf-scan" aria-hidden="true"></span>
+              </div>
+              {w.data.heroCaption && <p class="cf-cap">{w.data.heroCaption}</p>}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="cf-progress" aria-hidden="true"><span data-bar></span></div>
+    <div class="cf-hint" aria-hidden="true">Scroll to turn the files</div>
+  </div>
+</section>
+
+<script>
+  const root = document.getElementById('work-files')!;
+  const track = root.querySelector<HTMLElement>('[data-track]')!;
+  const files = Array.from(root.querySelectorAll<HTMLElement>('.cf-file'));
+  const tabs = Array.from(root.querySelectorAll<HTMLElement>('.cf-tab'));
+  const bar = root.querySelector<HTMLElement>('[data-bar]')!;
+  const N = files.length;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const narrow = () => window.matchMedia('(max-width: 900px)').matches;
+
+  const clamp = (x: number, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+  const ease = (x: number) => 1 - Math.pow(1 - clamp(x), 3);
+
+  /* numbers count up once, the first time a file opens */
+  const counted = new Set<HTMLElement>();
+  function countUp(file: HTMLElement) {
+    if (counted.has(file)) return;
+    counted.add(file);
+    file.querySelectorAll<HTMLElement>('dd[data-value]').forEach((dd) => {
+      const raw = dd.dataset.value!;
+      const m = raw.match(/^([^\d]*)(\d[\d,]*)(\.\d+)?(.*)$/);
+      if (!m || still) { dd.textContent = raw; return; }
+      const pre = m[1], n = Number(m[2].replace(/,/g, '')), dec = m[3] ?? '', post = m[4];
+      const t0 = performance.now(), dur = 900;
+      const step = (now: number) => {
+        const k = ease((now - t0) / dur);
+        dd.textContent = pre + Math.round(n * k).toLocaleString('en-US') + (k >= 1 ? dec : '') + post;
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  function open(i: number) {
+    const f = files[i];
+    if (f.classList.contains('is-open')) return;
+    f.classList.add('is-open');
+    countUp(f);
+    const img = f.querySelector<HTMLImageElement>('.cf-fig img');
+    const draw = () => f.classList.add('is-drawn');
+    if (!img || (img.complete && img.naturalWidth > 0)) draw();
+    else { img.addEventListener('load', draw, { once: true }); img.addEventListener('error', draw, { once: true }); }
+  }
+
+  if (narrow() || still) {
+    /* stacked: reveal each file as it arrives */
+    root.classList.add('is-stacked');
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { open(files.indexOf(e.target as HTMLElement)); io.unobserve(e.target); } }), { threshold: 0.25 });
+    files.forEach((f) => io.observe(f));
+  } else {
+    /* pinned: scroll drives the slide */
+    let target = 0, x = 0, active = -1;
+    const read = () => {
+      const r = root.getBoundingClientRect();
+      const total = root.offsetHeight - window.innerHeight;
+      target = clamp(-r.top / total) * (N - 1);
+    };
+    const jump = (i: number) => {
+      const top = root.getBoundingClientRect().top + window.scrollY;
+      const total = root.offsetHeight - window.innerHeight;
+      window.scrollTo({ top: top + (i / (N - 1)) * total + 2, behavior: 'smooth' });
+    };
+    tabs.forEach((t) => t.addEventListener('click', () => jump(Number(t.dataset.tab))));
+    window.addEventListener('keydown', (e) => {
+      const r = root.getBoundingClientRect();
+      if (r.top > window.innerHeight || r.bottom < 0) return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); jump(Math.min(N - 1, Math.round(x) + 1)); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); jump(Math.max(0, Math.round(x) - 1)); }
+    });
+    const tick = () => {
+      x += (target - x) * 0.1;
+      if (Math.abs(target - x) < 0.0005) x = target;
+      track.style.transform = `translate3d(${-x * 100}vw, 0, 0)`;
+      bar.style.transform = `scaleX(${(x + 1) / N})`;
+      const near = Math.round(x);
+      if (near !== active) {
+        active = near;
+        tabs.forEach((t, i) => t.classList.toggle('is-active', i === near));
+      }
+      // open a file once it is at least a third of the way in, and never un-open it
+      files.forEach((f, i) => { if (Math.abs(x - i) < 0.67) open(i); });
+      files.forEach((f, i) => { f.style.setProperty('--d', String(clamp(1 - Math.abs(x - i)))); });
+      requestAnimationFrame(tick);
+    };
+    window.addEventListener('scroll', read, { passive: true });
+    window.addEventListener('resize', read);
+    read(); x = target;
+    tick();
+  }
+</script>
+
+<style is:global>
+  .cf { position: relative; height: calc(var(--cf-n, 6) * 100vh + 40vh); background: #0b1220; color: #e2e8f0; }
+  .cf-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+  .cf-top { position: relative; z-index: 3; display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; padding: 4.6rem clamp(1rem, 3vw, 3rem) 0; }
+  .cf-title .kicker { color: #2dd4bf; }
+  .cf-title h2 { color: #f8fafc; font-size: clamp(1.8rem, 3vw, 2.4rem); }
+  .cf-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: center; }
+  .cf-tab { font: inherit; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.8rem; border-radius: 10px 10px 0 0; border: 1px solid rgba(255, 255, 255, 0.1); border-bottom: 0; background: rgba(255, 255, 255, 0.04); color: #94a3b8; cursor: pointer; font-size: 0.78rem; transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+  .cf-tab:hover { color: #f1f5f9; background: rgba(255, 255, 255, 0.08); }
+  .cf-tab.is-active { color: #0b1220; background: var(--c); border-color: var(--c); font-weight: 700; }
+  .cf-tabn { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; }
+  .cf-tabt { white-space: nowrap; }
+  .cf-all { color: #cbd5e1; text-decoration: none; font-size: 0.9rem; white-space: nowrap; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 999px; padding: 0.5rem 0.9rem; }
+  .cf-all:hover { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+
+  .cf-track { position: relative; z-index: 2; flex: 1; display: flex; width: calc(var(--cf-n, 6) * 100vw); will-change: transform; }
+  .cf-file { --d: 0; width: 100vw; flex: none; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; padding: 1.5rem clamp(1rem, 3vw, 3rem) 3.5rem; }
+  .cf-left { opacity: calc(0.25 + 0.75 * var(--d)); transform: translateX(calc((1 - var(--d)) * -24px)); transition: opacity 0.2s linear; }
+  .cf-meta { display: flex; gap: 1rem; align-items: center; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: #64748b; margin-bottom: 1rem; }
+  .cf-case { color: var(--c); }
+  .cf-kicker { display: block; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: #94a3b8; margin-bottom: 0.6rem; }
+  .cf-h { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 2.9vw, 2.6rem); letter-spacing: -0.03em; line-height: 1.04; color: #f8fafc; margin: 0 0 1rem; }
+  .cf-p { color: #cbd5e1; line-height: 1.55; font-size: clamp(0.95rem, 1.1vw, 1.05rem); margin: 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .cf-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin: 1.4rem 0 0; padding-top: 1.1rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  .cf-stats div { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+  .cf-stats dd { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.3rem, 2vw, 1.8rem); letter-spacing: -0.03em; line-height: 1; color: var(--c); }
+  .cf-stats dt { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; line-height: 1.3; }
+  .cf-actions { display: flex; align-items: center; gap: 1.2rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .cf-open { background: var(--c); color: #0b1220; border: 0; }
+  .cf-open:hover { filter: brightness(1.12); }
+  .cf-repo { color: #94a3b8; text-decoration: none; font-size: 0.9rem; }
+  .cf-repo:hover { color: #fff; }
+
+  .cf-right { opacity: calc(0.35 + 0.65 * var(--d)); transform: scale(calc(0.94 + 0.06 * var(--d))); transition: opacity 0.2s linear; }
+  .cf-doc { border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; background: #0f172a; overflow: hidden; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8); }
+  .cf-dochead { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.6rem 0.9rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: #94a3b8; }
+  .cf-stamp { color: var(--c); border: 1px solid color-mix(in srgb, var(--c) 50%, transparent); border-radius: 999px; padding: 0.2rem 0.6rem; letter-spacing: 0.1em; }
+  .cf-fig { position: relative; background: #f8fafc; display: grid; place-items: center; height: min(52vh, 440px); padding: 0.6rem; }
+  .cf-fig img { display: block; width: 100%; height: 100%; object-fit: contain; clip-path: inset(0 0 100% 0); }
+  .cf-file.is-drawn .cf-fig img { animation: cf-draw 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+  .cf-scan { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: #2dd4bf; box-shadow: 0 0 18px 4px rgba(45, 212, 191, 0.6); opacity: 0; }
+  .cf-file.is-drawn .cf-scan { animation: cf-scan 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+  @keyframes cf-draw { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+  @keyframes cf-scan { 0% { top: 0; opacity: 1; } 95% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+  .cf-cap { margin: 0; padding: 0.7rem 0.9rem 0.8rem; font-size: 0.78rem; line-height: 1.45; color: #94a3b8; border-top: 1px solid rgba(255, 255, 255, 0.08); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .cf-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255, 255, 255, 0.08); z-index: 3; }
+  .cf-progress span { display: block; height: 100%; width: 100%; background: #2dd4bf; transform-origin: left center; transform: scaleX(0); }
+  .cf-hint { position: absolute; left: 50%; bottom: 1rem; transform: translateX(-50%); z-index: 3; font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.26em; text-transform: uppercase; color: #64748b; }
+
+  /* stacked, for narrow screens and reduced motion */
+  .cf.is-stacked { height: auto; }
+  .cf.is-stacked .cf-stage { position: static; height: auto; overflow: visible; }
+  .cf.is-stacked .cf-top { padding-top: 3.5rem; flex-direction: column; align-items: flex-start; }
+  .cf.is-stacked .cf-tabs, .cf.is-stacked .cf-progress, .cf.is-stacked .cf-hint { display: none; }
+  .cf.is-stacked .cf-track { width: auto; flex-direction: column; transform: none !important; }
+  .cf.is-stacked .cf-file { --d: 1; width: auto; grid-template-columns: 1fr; padding: 2.5rem 1rem; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+  .cf.is-stacked .cf-right { transform: none; }
+  .cf.is-stacked .cf-fig img { max-height: none; }
+  .cf.is-stacked .cf-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (prefers-reduced-motion: reduce) {
+    .cf-file .cf-fig img, .cf-file.is-drawn .cf-fig img { animation: none; clip-path: none; }
+    .cf-scan { display: none; }
+  }
+</style>
