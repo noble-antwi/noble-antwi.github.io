@@ -514,10 +514,14 @@ export function startJourney(root: HTMLElement) {
       const dx = 2.5 * span(t, 0.60, 0.615) * (1 - span(t, 0.775, 0.785))
                + 2.1 * span(t, STOPS[4] - 0.013, STOPS[4] - 0.006) * (1 - span(t, STOPS[4] + 0.006, STOPS[4] + 0.013));
       camPos.x += dx; camLook.x += dx;
-      camPos.sub(camLook).multiplyScalar(1.5).add(camLook);
+      // The token is centred and narrow, so the camera can come closer there than anywhere else.
+      const tok = span(t, 0.775, 0.79) * (1 - span(t, 0.885, 0.9));
+      camPos.sub(camLook).multiplyScalar(1.5 - 0.28 * tok).add(camLook);
       // Lift the subject into the top half: aim below it, by a share of the distance.
+      // The swarm sits low and its rising notes climb into the text, so lift it further.
+      const swarm = span(t, 0.60, 0.615) * (1 - span(t, 0.775, 0.785));
       const dist = camPos.distanceTo(camLook);
-      camLook.y -= dist * 0.2;
+      camLook.y -= dist * (0.2 + 0.12 * swarm - 0.025 * tok);
     } else if (camera.aspect < 1.6) {
       // Narrow landscape (small windows, tablets): step back so the right-hand subject stays in frame.
       camPos.sub(camLook).multiplyScalar(1.6 / camera.aspect).add(camLook);
@@ -677,6 +681,8 @@ export function startJourney(root: HTMLElement) {
     /* ===== the token (g) ===== */
     const TX = camera.aspect < 1 ? 0 : TOKEN[0];
     tokenLine.position.x = TX;
+    // A phone is too narrow for the full typed line; shrink it to fit.
+    tokenLine.scale.setScalar(camera.aspect < 1 ? 0.7 : 1);
     tokenTitle.position.x = TX;
     const tokIn = span(g, 0.775, 0.80);
     const tokChars = Math.floor(tokenStr.length * span(g, 0.778, 0.81));
