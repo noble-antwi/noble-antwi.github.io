@@ -381,6 +381,9 @@ export function startJourney(root: HTMLElement) {
 
   let frame = 0;
   function tick() {
+    // While the opening gate covers the page, draw nothing: it keeps the gate's
+    // animation smooth and saves battery. Rendering resumes the moment it leaves.
+    if (html.classList.contains('gate-open')) { requestAnimationFrame(tick); return; }
     frame++;
     const forced = (window as unknown as { __jt?: number }).__jt;
     if (forced !== undefined) t = target = forced; else t += (target - t) * 0.085;

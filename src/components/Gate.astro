@@ -1,0 +1,281 @@
+---
+/* The opening: the site evaluates the visitor the way a conditional access
+   policy would, from signals the browser already exposes (platform, clock,
+   screen, connection), then grants access and hands over to the journey.
+   Nothing is sent anywhere. Plays once per session; Esc or the button skips it. */
+---
+
+<div class="gate" id="gate" hidden aria-live="polite">
+  <div class="gate-grid" aria-hidden="true"></div>
+  <div class="gate-glow" aria-hidden="true"></div>
+
+  <div class="gate-inner">
+    <header class="gate-top">
+      <span class="gate-brand"><i class="gate-dot"></i>nobleantwi.com · access evaluation</span>
+      <button class="gate-skip" type="button" data-skip>Skip <kbd>Esc</kbd></button>
+    </header>
+
+    <div class="gate-cols">
+      <section class="gate-log" aria-label="Signals read from this browser">
+        <div class="gate-h">Signals, read from this browser</div>
+        <ol class="gate-lines" data-lines></ol>
+      </section>
+
+      <section class="gate-decision" aria-label="Decision">
+        <div class="gate-ring" aria-hidden="true">
+          <svg viewBox="0 0 200 200">
+            <circle class="r1" cx="100" cy="100" r="92" />
+            <circle class="r2" cx="100" cy="100" r="78" />
+            <circle class="r3" cx="100" cy="100" r="62" />
+            <path class="tick" d="M66 102 L90 126 L138 76" />
+          </svg>
+          <div class="gate-risk"><span data-risk-label>Evaluating</span><b data-risk>· · ·</b></div>
+        </div>
+
+        <ol class="gate-policies" data-policies>
+          <li data-p="1"><span class="pid">CA-01</span><span class="pname">Modern browser required</span><span class="pres"></span></li>
+          <li data-p="2"><span class="pid">CA-02</span><span class="pname">Encrypted session</span><span class="pres"></span></li>
+          <li data-p="3"><span class="pid">CA-03</span><span class="pname">Automation check</span><span class="pres"></span></li>
+          <li data-p="4"><span class="pid">CA-04</span><span class="pname">Scope for this role</span><span class="pres"></span></li>
+        </ol>
+
+        <div class="gate-verdict" data-verdict>
+          <span class="gate-vkick">Decision</span>
+          <span class="gate-vbig">Access granted</span>
+          <span class="gate-vsub" data-vsub>Visitor · read everything · nothing you saw here left your browser.</span>
+          <button class="btn gate-enter" type="button" data-skip>Enter <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+    </div>
+
+    <footer class="gate-foot">
+      <span>This is how a conditional access policy sees a sign-in. Every line above was read locally and discarded.</span>
+    </footer>
+  </div>
+</div>
+
+<script>
+  const gate = document.getElementById('gate')!;
+  const html = document.documentElement;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let seen = false;
+  try { seen = sessionStorage.getItem('gate') === '1'; } catch {}
+  const forced = new URLSearchParams(location.search).has('gate');
+
+  if (!seen || forced) {
+    run();
+  } else {
+    gate.remove();
+  }
+
+  function run() {
+    gate.hidden = false;
+    html.classList.add('gate-open');
+    try { sessionStorage.setItem('gate', '1'); } catch {}
+
+    const lines = gate.querySelector<HTMLOListElement>('[data-lines]')!;
+    const riskEl = gate.querySelector<HTMLElement>('[data-risk]')!;
+    const riskLabel = gate.querySelector<HTMLElement>('[data-risk-label]')!;
+    const verdict = gate.querySelector<HTMLElement>('[data-verdict]')!;
+    const sub = gate.querySelector<HTMLElement>('[data-vsub]')!;
+    const policies = Array.from(gate.querySelectorAll<HTMLElement>('[data-policies] li'));
+
+    /* ---- the signals ---- */
+    const nav = navigator as Navigator & { userAgentData?: { brands: { brand: string; version: string }[]; platform: string; mobile: boolean }; connection?: { effectiveType?: string }; deviceMemory?: number; getBattery?: () => Promise<{ level: number; charging: boolean }> };
+    const ua = navigator.userAgent;
+    const brand = (() => {
+      const b = nav.userAgentData?.brands?.find((x) => !/Not.A.Brand|Chromium/i.test(x.brand));
+      if (b) return `${b.brand} ${b.version}`;
+      const m = ua.match(/(Edg|Firefox|Chrome|Safari|OPR)\/(\d+)/);
+      if (!m) return 'a browser';
+      const names: Record<string, string> = { Edg: 'Edge', OPR: 'Opera' };
+      return `${names[m[1]] ?? m[1]} ${m[2]}`;
+    })();
+    const os = (() => {
+      const p = nav.userAgentData?.platform || '';
+      if (/win/i.test(p) || /Windows NT 10/.test(ua)) return 'Windows';
+      if (/mac/i.test(p) || /Macintosh/.test(ua)) return 'macOS';
+      if (/iPhone|iPad/.test(ua)) return 'iOS';
+      if (/Android/.test(ua)) return 'Android';
+      if (/Linux|CrOS/.test(ua) || /linux/i.test(p)) return /CrOS/.test(ua) ? 'ChromeOS' : 'Linux';
+      return p || 'an unknown platform';
+    })();
+    const now = new Date();
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'your time zone';
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const day = now.toLocaleDateString([], { weekday: 'long' });
+    const h = now.getHours();
+    const part = h < 5 ? 'late night' : h < 12 ? 'morning' : h < 17 ? 'afternoon' : h < 21 ? 'evening' : 'night';
+    const cores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} cores` : 'cores unknown';
+    const mem = nav.deviceMemory ? ` · ${nav.deviceMemory} GB+ memory` : '';
+    const scr = `${screen.width} × ${screen.height} at ${Math.round(window.devicePixelRatio * 100) / 100}×`;
+    const net = nav.connection?.effectiveType ? `${nav.connection.effectiveType} · ` : '';
+    const online = navigator.onLine ? 'online' : 'offline';
+    const touch = navigator.maxTouchPoints > 0 ? 'touch' : 'no touch';
+    const dark = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const lang = navigator.language;
+    let visits = 1;
+    try { visits = Number(localStorage.getItem('gate-visits') || 0) + 1; localStorage.setItem('gate-visits', String(visits)); } catch {}
+    const ordinal = (n: number) => n === 1 ? '1st' : n === 2 ? '2nd' : n === 3 ? '3rd' : `${n}th`;
+    let from = '';
+    try { const r = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : ''; if (r && !r.endsWith('nobleantwi.com')) from = r; } catch {}
+    const auto = navigator.webdriver === true;
+    const https = location.protocol === 'https:';
+
+    const signals: [string, string][] = [
+      ['device', `${os} · ${brand}`],
+      ['hardware', `${cores}${mem} · ${scr}`],
+      ['clock', `${time}, ${tz} · ${day} ${part}`],
+      ['network', `${net}${online}`],
+      ['locale', `${lang} · prefers ${dark} · ${touch}${still ? ' · reduced motion' : ''}`],
+      ['history', from ? `arrived from ${from} · your ${ordinal(visits)} visit` : `your ${ordinal(visits)} visit`],
+    ];
+
+    /* ---- the script ---- */
+    const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, still ? 0 : ms));
+    let done = false;
+    const finish = () => {
+      if (done) return; done = true;
+      gate.classList.add('is-leaving');
+      html.classList.remove('gate-open');
+      setTimeout(() => gate.remove(), still ? 0 : 700);
+    };
+    gate.querySelectorAll('[data-skip]').forEach((b) => b.addEventListener('click', finish));
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' || e.key === 'Enter') { finish(); window.removeEventListener('keydown', onKey); } };
+    window.addEventListener('keydown', onKey);
+
+    const addLine = async (k: string, v: string) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="k">${k}</span><span class="v"></span>`;
+      lines.appendChild(li);
+      const out = li.querySelector('.v')!;
+      if (still) { out.textContent = v; li.classList.add('ok'); return; }
+      const budget = 420, start = performance.now();
+      let i = 0;
+      while (i < v.length) {
+        i = Math.min(v.length, Math.max(i + 1, Math.ceil(((performance.now() - start) / budget) * v.length)));
+        out.textContent = v.slice(0, i);
+        await new Promise<void>((r) => requestAnimationFrame(() => r()));
+      }
+      li.classList.add('ok');
+    };
+
+    (async () => {
+      await sleep(350);
+      for (const [k, v] of signals) { await addLine(k, v); await sleep(120); }
+      // battery arrives asynchronously, and only in some browsers
+      try {
+        const b = await Promise.race([nav.getBattery?.(), sleep(400).then(() => undefined)]);
+        if (b) await addLine('power', `battery ${Math.round(b.level * 100)}%${b.charging ? ', charging' : ''}`);
+      } catch {}
+
+      riskLabel.textContent = 'Policies';
+      const results = [
+        'satisfied',
+        https ? 'satisfied' : 'plain http',
+        auto ? 'automation seen' : 'human, probably',
+        'visitor · read-only',
+      ];
+      for (let i = 0; i < policies.length; i++) {
+        await sleep(260);
+        policies[i].classList.add('is-on', results[i].includes('satisfied') || results[i].includes('human') || results[i].includes('visitor') ? 'pass' : 'warn');
+        policies[i].querySelector('.pres')!.textContent = results[i];
+      }
+
+      await sleep(300);
+      const risk = auto ? 'Medium' : 'Low';
+      riskLabel.textContent = 'Sign-in risk';
+      riskEl.textContent = risk;
+      riskEl.classList.add(risk === 'Low' ? 'low' : 'med');
+      gate.classList.add('is-decided');
+      await sleep(500);
+      if (auto) sub.textContent = 'Automation detected and allowed anyway. It is a portfolio: read everything.';
+      verdict.classList.add('is-on');
+      verdict.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'end' });
+      await sleep(still ? 1200 : 3400);
+      finish();
+    })();
+  }
+</script>
+
+<style is:global>
+  html.gate-open { overflow: hidden; }
+  .gate { position: fixed; inset: 0; z-index: 70; background: #060b16; color: #e2e8f0; font-family: var(--font-body); overflow: hidden;
+    transition: transform 0.7s cubic-bezier(0.7, 0, 0.2, 1), opacity 0.7s ease; }
+  .gate.is-leaving { transform: translateY(-100%); opacity: 0.6; pointer-events: none; }
+  .gate-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(45, 212, 191, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(45, 212, 191, 0.06) 1px, transparent 1px); background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 70% 40%, #000 20%, transparent 75%); }
+  .gate-glow { position: absolute; width: 60vmax; height: 60vmax; right: -20vmax; top: -20vmax; border-radius: 50%; background: radial-gradient(circle, rgba(45, 212, 191, 0.18), transparent 60%); filter: blur(10px); animation: gate-breathe 6s ease-in-out infinite; }
+  @keyframes gate-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+  .gate-inner { position: relative; height: 100%; max-width: var(--wide); margin: 0 auto; padding: 1.6rem clamp(1rem, 3vw, 2.5rem) 1.4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .gate-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .gate-brand { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase; color: #94a3b8; }
+  .gate-dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: #2dd4bf; box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.6); animation: gate-pulse 1.6s ease-out infinite; }
+  @keyframes gate-pulse { 0% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.6); } 100% { box-shadow: 0 0 0 12px rgba(45, 212, 191, 0); } }
+  .gate-skip { font: inherit; font-size: 0.8rem; color: #cbd5e1; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 999px; padding: 0.45rem 0.85rem; cursor: pointer; display: inline-flex; gap: 0.5rem; align-items: center; }
+  .gate-skip:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+  .gate-skip kbd { font-family: var(--font-mono); font-size: 0.66rem; padding: 0.1rem 0.35rem; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; color: #94a3b8; }
+
+  .gate-cols { flex: 1; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: center; min-height: 0; }
+  .gate-h { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: #2dd4bf; margin-bottom: 1rem; }
+  .gate-lines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; font-family: var(--font-mono); font-size: clamp(0.82rem, 1.1vw, 1rem); }
+  .gate-lines li { display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; align-items: baseline; padding-left: 1.1rem; position: relative; animation: gate-in 0.3s ease both; }
+  .gate-lines li::before { content: '›'; position: absolute; left: 0; color: #475569; }
+  .gate-lines li.ok::before { content: '✓'; color: #2dd4bf; }
+  .gate-lines .k { color: #64748b; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.72em; }
+  .gate-lines .v { color: #f1f5f9; }
+  .gate-lines .v::after { content: '▍'; color: #2dd4bf; animation: gate-blink 0.9s steps(2) infinite; }
+  .gate-lines li.ok .v::after, .gate-lines li:not(:last-child) .v::after { content: ''; }
+  @keyframes gate-blink { to { opacity: 0; } }
+  @keyframes gate-in { from { opacity: 0; transform: translateY(6px); } }
+
+  .gate-decision { display: flex; flex-direction: column; align-items: center; gap: 1.4rem; text-align: center; }
+  .gate-ring { position: relative; width: min(260px, 60vw); aspect-ratio: 1; display: grid; place-items: center; }
+  .gate-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .gate-ring circle { fill: none; stroke-width: 1.5; }
+  .gate-ring .r1 { stroke: rgba(45, 212, 191, 0.25); stroke-dasharray: 4 10; animation: gate-spin 18s linear infinite; transform-origin: 50% 50%; }
+  .gate-ring .r2 { stroke: rgba(45, 212, 191, 0.55); stroke-dasharray: 120 400; stroke-linecap: round; animation: gate-spin 3.2s linear infinite reverse; transform-origin: 50% 50%; }
+  .gate-ring .r3 { stroke: rgba(148, 163, 184, 0.25); }
+  .gate-ring .tick { fill: none; stroke: #2dd4bf; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 140; stroke-dashoffset: 140; opacity: 0; }
+  .gate.is-decided .r2 { animation: none; stroke-dasharray: 520 0; stroke: #2dd4bf; transition: stroke-dasharray 0.8s ease; }
+  .gate.is-decided .tick { opacity: 1; animation: gate-draw 0.6s ease 0.3s forwards; }
+  @keyframes gate-spin { to { transform: rotate(360deg); } }
+  @keyframes gate-draw { to { stroke-dashoffset: 0; } }
+  .gate-risk { position: relative; display: flex; flex-direction: column; gap: 0.2rem; transition: opacity 0.3s ease; }
+  .gate.is-decided .gate-risk { opacity: 0; }
+  .gate-risk span { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: #94a3b8; }
+  .gate-risk b { font-family: var(--font-display); font-weight: 800; font-size: 2rem; letter-spacing: -0.02em; color: #f8fafc; }
+  .gate-risk b.low { color: #2dd4bf; } .gate-risk b.med { color: #fbbf24; }
+
+  .gate-policies { list-style: none; margin: 0; padding: 0; width: 100%; max-width: 26rem; display: flex; flex-direction: column; gap: 0.45rem; text-align: left; }
+  .gate-policies li { display: grid; grid-template-columns: 3.4rem 1fr auto; gap: 0.75rem; align-items: center; padding: 0.55rem 0.8rem; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; background: rgba(255, 255, 255, 0.03); opacity: 0.35; transition: opacity 0.3s ease, border-color 0.3s ease, background 0.3s ease; font-size: 0.86rem; }
+  .gate-policies li.is-on { opacity: 1; }
+  .gate-policies li.pass { border-color: rgba(45, 212, 191, 0.4); background: rgba(45, 212, 191, 0.07); }
+  .gate-policies li.warn { border-color: rgba(251, 191, 36, 0.45); background: rgba(251, 191, 36, 0.07); }
+  .gate-policies .pid { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; color: #94a3b8; }
+  .gate-policies .pname { color: #e2e8f0; }
+  .gate-policies .pres { font-family: var(--font-mono); font-size: 0.7rem; color: #2dd4bf; white-space: nowrap; }
+  .gate-policies li.warn .pres { color: #fbbf24; }
+
+  .gate-verdict { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .gate-verdict.is-on { opacity: 1; transform: none; }
+  .gate-vkick { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: #94a3b8; }
+  .gate-vbig { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 4vw, 3rem); letter-spacing: -0.03em; color: #f8fafc; line-height: 1; }
+  .gate-vsub { font-size: 0.9rem; color: #94a3b8; max-width: 26rem; }
+  .gate-enter { margin-top: 0.8rem; background: #2dd4bf; color: #06201c; border: 0; }
+  .gate-enter:hover { background: #5eead4; }
+  .gate-foot { font-family: var(--font-mono); font-size: 0.68rem; color: #64748b; letter-spacing: 0.04em; }
+
+  @media (max-width: 860px) {
+    .gate-inner { gap: 1rem; overflow: auto; }
+    .gate-cols { grid-template-columns: 1fr; align-items: start; gap: 1.5rem; }
+    .gate-lines li { grid-template-columns: 5rem 1fr; gap: 0.6rem; }
+    .gate-ring { width: min(180px, 50vw); }
+    .gate-risk b { font-size: 1.5rem; }
+    .gate-foot { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gate, .gate-glow, .gate-dot, .gate-ring .r1, .gate-ring .r2, .gate-lines li { animation: none; transition: none; }
+  }
+</style>

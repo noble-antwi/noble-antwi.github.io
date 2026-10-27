@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Gate from '../components/Gate.astro';
 import Journey from '../components/Journey.astro';
 import SelectedWork from '../components/SelectedWork.astro';
 import WritingSection from '../components/WritingSection.astro';
@@ -10,6 +11,7 @@ const featuredCerts = CERTS.filter((c) => c.featured).concat(CERTS.filter((c) =>
 ---
 
 <Base>
+  <Gate />
   <Journey />
   <div class="container">
     <section class="brief" aria-label="In brief">
