@@ -1,20 +1,42 @@
 ---
-/* The homepage opening: one sign-in followed through identity, the network,
-   the cloud and detection, driven by scroll. The 3D world is in
-   src/scripts/journey.ts. With reduced motion or no WebGL the copy stacks
-   as plain sections instead. */
-import { SITE } from '../lib/site';
+/* One world, one scroll. The copy panels for every scene, the counters,
+   the progress rail and the contact reveal. The 3D world is in
+   src/scripts/journey.ts. Reduced motion or no WebGL stacks the copy. */
+import { getCollection } from 'astro:content';
+import { SITE, WORK_CATEGORIES } from '../lib/site';
+import { CERTS, RUNWAY } from '../data/certifications';
 
-const scenes = [
+const J = 0.42, JMAX = 0.92;
+const jt = (x: number) => +(x * J / JMAX).toFixed(4);
+const STOPS = [0.447, 0.475, 0.503, 0.531, 0.559, 0.587];
+
+type Stat = [string, string, number];
+const journeyRaw: { from: number; to: number; n: string; k: string; h: string; p: string; stats?: Stat[] }[] = [
   { from: 0.0, to: 0.11, n: SITE.tagline, k: SITE.location, h: 'I secure identities, and the cloud they live in.', p: 'Follow one sign-in through the lab I built to prove it: a Windows workstation, a domain, a firewall, two cloud identity providers, two clouds and a SIEM. Scroll.' },
   { from: 0.13, to: 0.26, n: '01', k: 'Directory', h: 'Checked at home first.', p: 'The request reaches DC01, the domain controller on VLAN 50. Active Directory checks the password and issues a Kerberos ticket. Nothing has left the segment yet.' },
   { from: 0.27, to: 0.37, n: '02', k: 'Network', h: 'Default deny.', p: 'To reach the cloud, DC01 must cross pfSense. Every interface denies by default; one written, justified rule lets this traffic out, and nothing comes back in uninvited.' },
   { from: 0.38, to: 0.47, n: '03', k: 'Identity', h: 'Verified, then verified again.', p: 'Entra ID and Okta check the device and the second factor. No single system says yes on its own, and the providers are reached from DC01, never the other way round.' },
-  { from: 0.48, to: 0.60, n: '04', k: 'Cloud', h: 'Least privilege, in the cloud too.', p: 'The same identity reaches AWS and Azure by federation, with no standing keys. Posture is scanned with Prowler and ScoutSuite, every finding mapped to CIS, NIST and PCI, and idle resources found before they cost money.' },
-  { from: 0.60, to: 0.725, n: '05', k: 'Detection', h: 'On the record.', p: 'Every step was logged. Agents on WKS01 and DC01 ship their events through the firewall to SIEM01, where Wazuh decodes each one, alerts on the few that matter, and keeps the rest.' },
-  { from: 0.735, to: 0.85, n: '06', k: 'Assessment', h: 'Scanned, fixed, proved.', p: 'A credentialed scan from SCAN01 found TLS 1.0 and 1.1 still offered on WKS01. A scoped, reversible Group Policy removed them, and a third scan proved them gone. The same discipline runs through two graduate assessments: a COBIT-framed post-breach audit with NIST 800-30 risk analysis and a CMMC gap analysis, and a full enterprise security assessment.' },
-  { from: 0.86, to: 0.925, n: '07', k: 'The estate', h: 'Built, documented, proven.', p: 'Six VLANs behind one default-deny firewall, a rebuilt forest federated to two cloud identity providers, two clouds under posture scanning, a SIEM with its own rules, and every decision written down.' },
+  { from: 0.48, to: 0.60, n: '04', k: 'Cloud', h: 'Least privilege, in the cloud too.', p: 'The same identity reaches AWS and Azure by federation, with no standing keys. Posture is scanned with Prowler and ScoutSuite, every finding mapped to CIS, NIST and PCI, and idle resources found before they cost money.', stats: [['2', 'clouds', 0.50], ['500+', 'posture checks', 0.51], ['0', 'standing keys', 0.52]] },
+  { from: 0.60, to: 0.725, n: '05', k: 'Detection', h: 'On the record.', p: 'Every step was logged. Agents on WKS01 and DC01 ship their events through the firewall to SIEM01, where Wazuh decodes each one, alerts on the few that matter, and keeps the rest.', stats: [['39,322', 'events decoded', 0.63], ['1,963', 'alerts, about 5%', 0.645], ['100%', 'kept in the archive', 0.66]] },
+  { from: 0.735, to: 0.85, n: '06', k: 'Assessment', h: 'Scanned, fixed, proved.', p: 'A credentialed scan from SCAN01 found TLS 1.0 and 1.1 still offered on WKS01. A scoped, reversible Group Policy removed them, and a third scan proved them gone.', stats: [['3', 'scans of one machine', 0.76], ['1', 'finding closed, with proof', 0.77]] },
+  { from: 0.86, to: 0.92, n: '07', k: 'The estate', h: 'Built, documented, proven.', p: 'Six VLANs behind one default-deny firewall, a rebuilt forest federated to two cloud identity providers, two clouds under posture scanning, a SIEM with its own rules, and every decision written down.', stats: [['6', 'VLANs', 0.87], ['3', 'identity providers', 0.88], ['2', 'clouds', 0.89], ['21', 'runbooks', 0.90]] },
 ];
+const journey = journeyRaw.map((s) => ({ ...s, from: jt(s.from), to: jt(s.to), stats: s.stats?.map(([val, l, a]) => [val, l, jt(a)] as Stat) }));
+
+const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+const PICKS = ['enterprise-iam-lab', 'enterprise-security-homelab', 'cloud-security-posture-dashboard', 'biirabank-web', 'collins-aerospace-it-audit', 'iam-job-scout'];
+const cases = PICKS.map((id) => all.find((w) => w.id === id)).filter((w): w is (typeof all)[number] => !!w);
+const pad = (n: number) => String(n).padStart(2, '0');
+
+const posts = await getCollection('posts');
+const rail = [
+  { from: 0, to: J, label: 'Sign-in' },
+  { from: J, to: 0.605, label: 'Case files' },
+  { from: 0.605, to: 0.775, label: 'Alerts' },
+  { from: 0.775, to: 0.885, label: 'Token' },
+  { from: 0.885, to: 1.01, label: 'Contact' },
+];
+const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS', 'Azure', 'Active Directory', 'Entra ID', 'Okta', 'Wazuh', 'pfSense', 'Greenbone', 'HashiCorp Vault', 'Chicago, IL'];
 ---
 
 <section class="journey" id="journey" aria-label="The sign-in journey">
@@ -22,53 +44,83 @@ const scenes = [
     <canvas class="j-canvas" aria-hidden="true"></canvas>
 
     <div class="j-copy">
-      {scenes.map((s, i) => (
+      {journey.map((s, i) => (
         <div class="j-panel" data-from={s.from} data-to={s.to}>
           <span class="j-kicker">{s.n} · {s.k}</span>
           {i === 0 ? <h1 class="j-h">{s.h}</h1> : <h2 class="j-h">{s.h}</h2>}
           <p class="j-p">{s.p}</p>
-          {s.n === '04' && (
-            <div class="j-stats">
-              <div><b data-count="2" data-from="0.50">0</b><span>clouds</span></div>
-              <div><b data-count="500" data-from="0.51" data-suffix="+">0</b><span>posture checks</span></div>
-              <div><b data-count="0" data-from="0.52">0</b><span>standing keys</span></div>
-            </div>
-          )}
-          {s.n === '05' && (
-            <div class="j-stats">
-              <div><b data-count="39322" data-from="0.63">0</b><span>events decoded</span></div>
-              <div><b data-count="1963" data-from="0.645">0</b><span>alerts, about 5%</span></div>
-              <div><b data-count="100" data-from="0.66" data-suffix="%">0</b><span>kept in the archive</span></div>
-            </div>
-          )}
-          {s.n === '06' && (
-            <div class="j-stats">
-              <div><b data-count="3" data-from="0.76">0</b><span>scans of one machine</span></div>
-              <div><b data-count="1" data-from="0.77">0</b><span>finding closed, with proof</span></div>
-              <div><b data-count="2" data-from="0.78">0</b><span>graduate assessments</span></div>
-            </div>
-          )}
-          {s.n === '07' && (
-            <div class="j-stats">
-              <div><b data-count="6" data-from="0.87">0</b><span>VLANs</span></div>
-              <div><b data-count="3" data-from="0.88">0</b><span>identity providers</span></div>
-              <div><b data-count="2" data-from="0.89">0</b><span>clouds</span></div>
-              <div><b data-count="21" data-from="0.90">0</b><span>runbooks</span></div>
-            </div>
-          )}
+          {s.stats && <div class="j-stats">{s.stats.map(([val, l, a]) => <div><b data-count={val} data-from={a}>0</b><span>{l}</span></div>)}</div>}
         </div>
       ))}
-      <div class="j-panel j-end" data-from="0.94" data-to="1.5">
-        <span class="j-kicker">The work behind it</span>
-        <h2 class="j-h">Every step above is real, and written up.</h2>
-        <div class="actions">
-          <a class="btn" href="/work/">See the work</a>
-          <a class="btn btn-ghost" href="/writing/">Read the notes</a>
+
+      {cases.map((w, i) => (
+        <div class="j-panel j-case" data-from={STOPS[i] - 0.013} data-to={STOPS[i] + 0.013} data-fade="0.006" style={`--c: var(--c-${w.data.category})`}>
+          <span class="j-kicker"><span class="j-casen">Case {pad(i + 1)} / {pad(cases.length)}</span> · {WORK_CATEGORIES[w.data.category]}</span>
+          <h2 class="j-h j-h-case">{w.data.title}</h2>
+          <p class="j-p">{w.data.summary}</p>
+          <div class="j-stats j-stats-4">{w.data.stats.slice(0, 4).map((s) => <div><b data-count={s.value} data-from={STOPS[i] - 0.009} data-dur="0.012">0</b><span>{s.label}</span></div>)}</div>
+          <div class="actions"><a class="btn j-btn-c" href={`/work/${w.id}/`}>Open the case file <span aria-hidden="true">→</span></a>{w.data.repo && <a class="btn btn-ghost" href={w.data.repo} target="_blank" rel="noopener">Repository ↗</a>}</div>
         </div>
+      ))}
+      <div class="j-panel j-case" data-from="0.596" data-to="0.606" data-fade="0.004">
+        <span class="j-kicker">Six of {all.length}</span>
+        <h2 class="j-h">The rest of the files.</h2>
+        <div class="actions"><a class="btn" href="/work/">All {all.length} projects <span aria-hidden="true">→</span></a></div>
+      </div>
+
+      <div class="j-panel" data-from="0.612" data-to="0.705" data-fade="0.012">
+        <span class="j-kicker">08 · Signal</span>
+        <h2 class="j-h">Every event, kept.</h2>
+        <p class="j-p">Each host ships what it sees to SIEM01: sign-ins, file writes, policy changes, scans. Wazuh decodes every one and sorts them by how loud they are. Most are noise. Some are not. All of them are on the record.</p>
+        <div class="j-stats"><div><b data-count="39,322" data-from="0.62" data-dur="0.06">0</b><span>events in one day</span></div><div><b data-count="4" data-from="0.63" data-dur="0.03">0</b><span>agents</span></div></div>
+      </div>
+      <div class="j-panel" data-from="0.705" data-to="0.742" data-fade="0.008">
+        <span class="j-kicker">09 · Tuning</span>
+        <h2 class="j-h">Silence the alert, never the evidence.</h2>
+        <p class="j-p">A scanner signing in two thousand times looks like credential abuse. The rule was right. So a narrow rule now keeps the scanner quiet from its own address and shouts if the same account signs in from anywhere else. The events stay in the archive.</p>
+        <div class="j-stats"><div><b data-count="2,051" data-from="0.71" data-dur="0.03">0</b><span>false alerts per scan, now 0</span></div></div>
+      </div>
+      <div class="j-panel" data-from="0.742" data-to="0.785" data-fade="0.008">
+        <span class="j-kicker">10 · Writing</span>
+        <h2 class="j-h">{posts.length} of them became notes.</h2>
+        <p class="j-p">The ones worth understanding got written up, mistakes included: the alert that cried wolf, the zone that did not exist, the scanner that is not a domain admin, the finding that was found, fixed and proved closed.</p>
+        <div class="j-stats"><div><b data-count={String(posts.length)} data-from="0.748" data-dur="0.02">0</b><span>notes</span></div><div><b data-count="4" data-from="0.752" data-dur="0.02">0</b><span>series</span></div></div>
+        <div class="actions"><a class="btn" href="/writing/">Read the notes <span aria-hidden="true">→</span></a></div>
+      </div>
+
+      <div class="j-panel" data-from="0.78" data-to="0.885" data-fade="0.012">
+        <span class="j-kicker">11 · Credentials</span>
+        <h2 class="j-h">Decode me.</h2>
+        <p class="j-p">If a directory issued a token for me, these would be the claims: {CERTS.length} credentials, weighted toward identity and cloud security, and {RUNWAY.length} more in progress. Signed, and not expired.</p>
+        <div class="j-stats"><div><b data-count={String(CERTS.length)} data-from="0.84" data-dur="0.03">0</b><span>earned</span></div><div><b data-count={String(RUNWAY.length)} data-from="0.85" data-dur="0.02">0</b><span>pending</span></div><div><b data-count="1" data-from="0.865" data-dur="0.01">0</b><span>signature, verified</span></div></div>
+        <div class="actions"><a class="btn btn-ghost" href="/credentials/">All credentials <span aria-hidden="true">→</span></a></div>
+      </div>
+
+      <div class="j-panel j-push" data-from="0.9" data-to="1.5" data-fade="0.012">
+        <span class="j-kicker">12 · Contact</span>
+        <h2 class="j-h">Someone is trying to reach Noble.</h2>
+        <p class="j-p">Number match: <b class="j-num">42</b>. Approve to open a session.</p>
+        <div class="actions j-ask"><button class="btn" type="button" data-approve>Approve <span aria-hidden="true">✓</span></button><button class="btn btn-ghost" type="button" data-deny>It's not me</button></div>
+        <div class="j-granted" aria-live="polite">
+          <span class="j-kicker">Session granted</span>
+          <ul class="j-links">
+            <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a><span>email, the fastest way</span></li>
+            <li><a href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener">LinkedIn ↗</a><span>where I post the lab notes</span></li>
+            <li><a href={`https://github.com/${SITE.github}`} target="_blank" rel="noopener">GitHub ↗</a><span>every repository, public</span></li>
+            <li><a href="/now/">Now page</a><span>what I am doing this month</span></li>
+          </ul>
+          <p class="j-brief">Working in IT security in Chicago, and building a regulated-bank identity and network lab on the side. M.S. Cybersecurity &amp; Digital Forensics, Illinois Institute of Technology.</p>
+        </div>
+        <div class="j-denied" aria-live="polite"><p>Request denied. Fair. The email still works if you change your mind: <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p></div>
       </div>
     </div>
 
-    <a class="j-skip" href="#after-journey">Skip the journey ↓</a>
+    <nav class="j-rail" aria-label="Progress">
+      {rail.map((r) => <span class="j-rdot" data-rail data-from={r.from} data-to={r.to}><i></i>{r.label}</span>)}
+    </nav>
+
+    <div class="j-marquee" aria-hidden="true"><div class="j-mtrack">{[...marquee, ...marquee].map((m) => <span>{m}</span>)}</div></div>
+    <a class="j-skip" href="#after-journey">Skip ↓</a>
     <div class="j-hint" aria-hidden="true">Scroll</div>
   </div>
 </section>
@@ -79,45 +131,85 @@ const scenes = [
   const root = document.getElementById('journey')!;
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const gl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
-  if (still || !gl) root.classList.add('is-static');
-  else startJourney(root);
+  if (still || !gl) {
+    root.classList.add('is-static');
+    root.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => { el.textContent = el.dataset.count!; });
+    root.querySelectorAll<HTMLElement>('[data-approve]').forEach((b) => b.addEventListener('click', () => root.classList.add('is-approved')));
+    root.querySelectorAll<HTMLElement>('[data-deny]').forEach((b) => b.addEventListener('click', () => root.classList.add('is-denied')));
+  } else startJourney(root);
 </script>
 
 <style is:global>
-  .journey { position: relative; height: 1100vh; margin-bottom: 2rem; }
+  .journey { position: relative; height: 3000vh; --progress: 0; }
   .j-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
   .j-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .j-copy { position: absolute; inset: 0; pointer-events: none; }
-  .j-panel {
-    position: absolute; left: max(1rem, calc((100vw - var(--wide)) / 2 + 1rem)); top: 50%; transform: translateY(-50%);
-    width: min(34rem, calc(100vw - 2rem)); opacity: 0; visibility: hidden; pointer-events: none;
-    will-change: opacity, transform;
-  }
-  .j-panel .actions, .j-panel a { pointer-events: auto; }
+  .j-copy { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+  .j-panel { position: absolute; left: max(1rem, calc((100vw - var(--wide)) / 2 + 1rem)); top: 50%; transform: translateY(-50%); width: min(34rem, calc(100vw - 2rem)); opacity: 0; visibility: hidden; pointer-events: none; will-change: opacity, transform; }
+  .j-panel .actions, .j-panel a, .j-panel button { pointer-events: auto; }
   .j-kicker { display: block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.9rem; }
+  .j-case .j-kicker, .j-case .j-stats b, .j-casen { color: var(--c, var(--accent)); }
+  .j-btn-c { background: var(--c, var(--accent)); color: #0b1220; border: 0; }
   .j-h { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 5.2vw, 4.2rem); line-height: 1.02; letter-spacing: -0.03em; color: var(--ink); margin: 0 0 1rem; }
-  .j-p { font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1.55; color: var(--ink-2); max-width: 30rem; margin: 0; }
-  .j-stats { display: flex; gap: 2rem; margin-top: 1.6rem; flex-wrap: wrap; }
+  .j-h-case { font-size: clamp(1.7rem, 3.6vw, 2.9rem); }
   .j-panel:has(.j-stats) .j-h { font-size: clamp(2rem, 4.4vw, 3.6rem); }
-  @media (max-height: 820px) { .j-panel:has(.j-stats) .j-p { font-size: 1rem; } .j-panel:has(.j-stats) .j-stats { margin-top: 1rem; } }
+  .j-panel.j-case:has(.j-stats) .j-h { font-size: clamp(1.7rem, 3.4vw, 2.8rem); }
+  .j-p { font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1.55; color: var(--ink-2); max-width: 30rem; margin: 0; }
+  .j-case .j-p { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; font-size: clamp(0.95rem, 1.15vw, 1.05rem); }
+  .j-stats { display: flex; gap: 2rem; margin-top: 1.6rem; flex-wrap: wrap; }
+  .j-stats-4 { gap: 1.4rem; }
   .j-stats b { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 3.6vw, 2.8rem); letter-spacing: -0.03em; color: var(--ink); line-height: 1; }
+  .j-stats-4 b { font-size: clamp(1.4rem, 2.6vw, 2rem); }
   .j-stats span { display: block; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-top: 0.4rem; }
-  .j-end .actions { margin-top: 1.4rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
-  .j-skip { position: absolute; right: 1.25rem; bottom: 1.25rem; font-size: 0.8rem; padding: 0.5rem 0.85rem; border-radius: 999px; border: 1px solid var(--line-2); background: color-mix(in srgb, var(--paper) 80%, transparent); color: var(--ink-2); text-decoration: none; backdrop-filter: blur(8px); }
+  .j-panel .actions { margin-top: 1.4rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  @media (max-height: 820px) { .j-panel:has(.j-stats) .j-p { font-size: 1rem; } .j-panel:has(.j-stats) .j-stats { margin-top: 1rem; } }
+
+  .j-num { font-family: var(--font-display); font-weight: 800; font-size: 1.6em; color: var(--accent); letter-spacing: -0.02em; }
+  .j-granted, .j-denied { display: none; margin-top: 1.2rem; }
+  .journey.is-approved .j-ask, .journey.is-denied .j-ask { display: none; }
+  .journey.is-approved .j-granted { display: block; animation: j-in 0.5s ease; }
+  .journey.is-denied .j-denied { display: block; animation: j-in 0.5s ease; }
+  @keyframes j-in { from { opacity: 0; transform: translateY(10px); } }
+  .j-links { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; gap: 0.6rem; }
+  .j-links li { display: flex; flex-direction: column; gap: 0.1rem; }
+  .j-links a { font-weight: 700; color: var(--ink); text-decoration: none; font-size: 1.05rem; }
+  .j-links a:hover { color: var(--accent); }
+  .j-links span { font-size: 0.82rem; color: var(--ink-3); }
+  .j-brief { margin-top: 1rem; font-size: 0.9rem; color: var(--ink-2); line-height: 1.5; }
+
+  .j-rail { position: absolute; right: 1.1rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 0.9rem; z-index: 3; pointer-events: none; }
+  .j-rdot { display: flex; align-items: center; justify-content: flex-end; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); opacity: 0.6; transition: opacity 0.3s ease, color 0.3s ease; }
+  .j-rdot i { order: 2; width: 0.5rem; height: 0.5rem; border-radius: 50%; border: 1.5px solid currentColor; }
+  .j-rdot.is-active { opacity: 1; color: var(--accent); }
+  .j-rdot.is-active i { background: currentColor; box-shadow: 0 0 0 4px var(--accent-soft); }
+
+  .j-marquee { position: absolute; left: 0; right: 0; bottom: 0; overflow: hidden; border-top: 1px solid var(--line); background: var(--paper); opacity: clamp(0, calc((var(--progress) - 0.9) * 10), 1); pointer-events: none; display: none; }
+  .journey.is-end .j-marquee { display: block; }
+  .j-mtrack { display: flex; gap: 2.5rem; width: max-content; padding: 0.6rem 0; animation: j-marquee 40s linear infinite; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2); }
+  .j-mtrack span::after { content: '·'; margin-left: 2.5rem; color: var(--accent); }
+  @keyframes j-marquee { to { transform: translateX(-50%); } }
+
+  .j-skip { position: absolute; right: 1.25rem; bottom: 1.25rem; font-size: 0.8rem; padding: 0.5rem 0.85rem; border-radius: 999px; border: 1px solid var(--line-2); background: var(--paper); color: var(--ink-2); text-decoration: none; opacity: clamp(0, calc(1 - (var(--progress) - 0.88) * 12), 1); }
   .j-skip:hover { color: var(--ink); border-color: var(--accent-line); }
-  .j-hint { position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-3); animation: j-bob 2.2s ease-in-out infinite; }
+  .j-hint { position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-3); animation: j-bob 2.2s ease-in-out infinite; opacity: clamp(0, calc(1 - var(--progress) * 30), 1); }
   @keyframes j-bob { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 6px); } }
 
-  /* No motion, or no WebGL: the copy stacks as plain sections. */
   .journey.is-static { height: auto; }
   .journey.is-static .j-stage { position: static; height: auto; overflow: visible; }
-  .journey.is-static .j-canvas, .journey.is-static .j-hint, .journey.is-static .j-skip { display: none; }
+  .journey.is-static .j-canvas, .journey.is-static .j-hint, .journey.is-static .j-skip, .journey.is-static .j-rail, .journey.is-static .j-marquee { display: none; }
   .journey.is-static .j-copy { position: static; pointer-events: auto; }
   .journey.is-static .j-panel { position: static; transform: none; opacity: 1 !important; visibility: visible !important; width: auto; max-width: var(--measure); margin: 0 auto; padding: 3rem 1rem; }
 
   @media (max-width: 720px) {
     .j-panel { top: auto; bottom: 4.5rem; transform: none; }
+    .j-copy::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 60%; background: linear-gradient(to top, color-mix(in srgb, var(--paper) 94%, transparent) 62%, transparent); pointer-events: none; }
+    .j-h, .j-h-case { font-size: clamp(1.6rem, 7vw, 2.2rem) !important; }
+    .j-stats-4 { gap: 0.9rem 1.2rem; }
+    .j-stats-4 div { min-width: 40%; }
     .j-p { font-size: 0.95rem; }
+    .j-case .j-p { -webkit-line-clamp: 3; }
     .j-stats { gap: 1.2rem; }
+    .j-rail { right: 0.6rem; gap: 0.6rem; }
+    .j-rdot { font-size: 0; gap: 0; }
+    .j-rdot i { width: 0.45rem; height: 0.45rem; }
   }
 </style>

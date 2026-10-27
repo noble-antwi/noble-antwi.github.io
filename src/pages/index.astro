@@ -2,62 +2,9 @@
 import Base from '../layouts/Base.astro';
 import Gate from '../components/Gate.astro';
 import Journey from '../components/Journey.astro';
-import CaseFiles from '../components/CaseFiles.astro';
-import AlertFeed from '../components/AlertFeed.astro';
-import { SITE } from '../lib/site';
-import { CERTS } from '../data/certifications';
-
-const featuredCerts = CERTS.filter((c) => c.featured).concat(CERTS.filter((c) => c.id === 'security-plus'));
 ---
 
 <Base>
   <Gate />
   <Journey />
-  <div class="container">
-    <section class="brief" aria-label="In brief">
-      <dl class="hero-aside brief-grid">
-        <div>
-          <dt>Currently</dt>
-          <dd>Working in IT security in Chicago, and building a regulated-bank identity and network lab on the side. <a href="/now/">Now page</a></dd>
-        </div>
-        <div>
-          <dt>Credentials</dt>
-          <dd>AWS Security Specialty · CCSP · SC-300 · Okta Certified Professional and Administrator · Security+ · <a href="/credentials/">all eighteen</a></dd>
-        </div>
-        <div>
-          <dt>Education</dt>
-          <dd>M.S. Cybersecurity &amp; Digital Forensics, Illinois Institute of Technology · B.Sc. Computer Science &amp; Engineering, University of Mines and Technology</dd>
-        </div>
-        <div>
-          <dt>Elsewhere</dt>
-          <dd><a href={`https://github.com/${SITE.github}`} target="_blank" rel="noopener">GitHub</a> · <a href={`https://linkedin.com/in/${SITE.linkedin}`} target="_blank" rel="noopener">LinkedIn</a> · <a href={`mailto:${SITE.email}`}>Email</a></dd>
-        </div>
-      </dl>
-    </section>
-  </div>
-
-  <CaseFiles />
-
-  <AlertFeed />
-
-  <div class="container">
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <span class="kicker">Credentials</span>
-          <h2 class="display h2">Eighteen, weighted toward identity and cloud security.</h2>
-        </div>
-        <a class="section-link" href="/credentials/">All credentials</a>
-      </div>
-      <div class="cred-strip">
-        {featuredCerts.map((c) => (
-          <a href="/credentials/">
-            {c.image ? <img src={c.image} alt="" loading="lazy" referrerpolicy="no-referrer" width="36" height="36" /> : <span class="mark" aria-hidden="true">{c.mark}</span>}
-            <span><b>{c.short}</b><small>{c.issuer}</small></span>
-          </a>
-        ))}
-      </div>
-    </section>
-  </div>
 </Base>
