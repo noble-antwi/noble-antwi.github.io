@@ -1,0 +1,246 @@
+---
+/* Moment three: the writing as a live alert feed. Every note is an event
+   with a rule, a level, an agent and a timestamp; the feed fires them in
+   as the section comes into view, newest last, and keeps a live clock.
+   Series are saved filters on the left. Every alert opens its note. */
+import { getCollection } from 'astro:content';
+import { postUrl, isoDate, byDateDesc, seriesFor, SERIES, categoryLabel } from '../lib/site';
+
+const posts = (await getCollection('posts')).sort(byDateDesc);
+const total = posts.length;
+
+/* rule groups: the first matching tag names the group and the agent */
+type Rule = { id: string; group: string; agent: string; level: number; colour: string; match: (tags: string[]) => boolean };
+const RULES: Rule[] = [
+  { id: '100020', group: 'detection', agent: 'SIEM01', level: 12, colour: 'detection', match: (t) => t.includes('wazuh') || t.includes('detection-engineering') || t.includes('sysmon') },
+  { id: '100030', group: 'vulnerability', agent: 'SCAN01', level: 10, colour: 'offence', match: (t) => t.includes('greenbone') || t.includes('vulnerability-management') },
+  { id: '100040', group: 'network', agent: 'FW01', level: 7, colour: 'detection', match: (t) => t.includes('pfsense') || t.includes('dns') || t.includes('vlan') || t.includes('proxmox') },
+  { id: '100050', group: 'identity', agent: 'DC01', level: 9, colour: 'identity', match: (t) => t.includes('okta') || t.includes('sc-300') || t.includes('entra-id') || t.includes('active-directory') },
+  { id: '100060', group: 'secrets', agent: 'VAULT01', level: 8, colour: 'assessment', match: (t) => t.includes('hashicorp-vault') },
+  { id: '100070', group: 'soc', agent: 'SOC', level: 11, colour: 'offence', match: (t) => t.includes('soc') || t.includes('mitre-attack') || t.includes('psaa') },
+  { id: '100080', group: 'cloud', agent: 'AZURE', level: 5, colour: 'cloud', match: (t) => t.includes('azure') || t.includes('az-900') || t.includes('aws') },
+];
+const ruleFor = (tags: string[]) => RULES.find((r) => r.match(tags)) ?? { id: '100000', group: 'notes', agent: 'DESK', level: 3, colour: 'detection', match: () => true };
+
+const events = posts.map((p, i) => {
+  const r = ruleFor(p.data.tags);
+  const s = seriesFor(p);
+  const d = new Date(p.data.date);
+  return {
+    n: total - i,
+    url: postUrl(p),
+    title: p.data.title,
+    desc: p.data.description,
+    iso: isoDate(p.data.date),
+    stamp: `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`,
+    rule: r.id, group: r.group, agent: r.agent, level: r.level, colour: r.colour,
+    series: s?.id ?? '', seriesTitle: s?.title ?? categoryLabel(p.data.category),
+    read: p.data.read_time ?? 0,
+  };
+});
+
+const SERIES_COLOUR: Record<string, string> = { homelab: 'detection', soc: 'offence', 'identity-certs': 'identity', 'az-900': 'cloud', vault: 'assessment' };
+const filters = SERIES.map((s) => ({ ...s, count: posts.filter(s.match).length })).filter((s) => s.count > 0);
+const byLevel = (l: number) => (l >= 12 ? 'critical' : l >= 9 ? 'high' : l >= 6 ? 'medium' : 'low');
+---
+
+<section class="af" id="writing-feed" aria-labelledby="af-h">
+  <div class="container">
+    <div class="af-head">
+      <div>
+        <span class="kicker">Writing</span>
+        <h2 class="display h2" id="af-h">Notes from the lab, as they fired.</h2>
+        <p class="af-lede">Every note is logged here as an event: what triggered it, which host it came from, and how loud it was. Written as I go, so the mistakes are still in them.</p>
+      </div>
+      <a class="btn btn-ghost" href="/writing/">All writing <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="af-console">
+      <aside class="af-side" aria-label="Filters">
+        <div class="af-sidehead">Saved filters</div>
+        <button type="button" class="af-filter is-active" data-filter="" style="--c: var(--accent)"><i aria-hidden="true"></i><span>All events</span><b>{total}</b></button>
+        {filters.map((f) => (
+          <button type="button" class="af-filter" data-filter={f.id} style={`--c: var(--c-${SERIES_COLOUR[f.id] ?? 'detection'})`}><i aria-hidden="true"></i><span>{f.title}</span><b>{f.count}</b></button>
+        ))}
+        <div class="af-sidehead af-sidehead2">Levels</div>
+        <ul class="af-levels">
+          <li><i class="l-critical"></i>12+ critical</li>
+          <li><i class="l-high"></i>9 to 11 high</li>
+          <li><i class="l-medium"></i>6 to 8 medium</li>
+          <li><i class="l-low"></i>under 6 low</li>
+        </ul>
+      </aside>
+
+      <div class="af-main">
+        <div class="af-boot" data-boot aria-hidden="true"><span class="af-bootline" data-bootline>connecting to SIEM01 · wazuh-alerts-*</span><span class="af-sweep"></span></div>
+        <div class="af-bar">
+          <span class="af-live"><i aria-hidden="true"></i><span data-livelabel>Connecting</span></span>
+          <span class="af-clock" data-clock>00:00:00</span>
+          <span class="af-count"><b data-shown>0</b> of {total} events</span>
+          <span class="af-index">wazuh-alerts-*</span>
+        </div>
+        <ol class="af-list" data-list>
+          {events.map((e) => (
+            <li class="af-ev" data-ev data-series={e.series} style={`--c: var(--c-${e.colour})`}>
+              <a class="af-row" href={e.url}>
+                <span class="af-lvl" data-lvl={byLevel(e.level)}><b>{e.level}</b><small>{byLevel(e.level)}</small></span>
+                <span class="af-body">
+                  <span class="af-line1"><span class="af-rule">rule.id {e.rule}</span><span class="af-agent">agent {e.agent}</span><span class="af-group">{e.group}</span><time class="af-time" datetime={e.iso}>{e.stamp}</time></span>
+                  <span class="af-title">{e.title}</span>
+                  <span class="af-desc">{e.desc}</span>
+                  <span class="af-line3"><span>{e.seriesTitle}</span>{e.read ? <span>{e.read} min read</span> : null}<span class="af-open">Open the note <span aria-hidden="true">→</span></span></span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+        <div class="af-foot"><span>Newest first. {total} events and counting.</span><a href="/writing/">Open the full archive ↗</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.getElementById('writing-feed')!;
+  const list = root.querySelector<HTMLElement>('[data-list]')!;
+  const items = Array.from(root.querySelectorAll<HTMLElement>('[data-ev]'));
+  const shown = root.querySelector<HTMLElement>('[data-shown]')!;
+  const clock = root.querySelector<HTMLElement>('[data-clock]')!;
+  const filters = Array.from(root.querySelectorAll<HTMLButtonElement>('.af-filter'));
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* clock */
+  const tickClock = () => { clock.textContent = new Date().toLocaleTimeString([], { hour12: false }); };
+  tickClock(); setInterval(tickClock, 1000);
+
+  /* the feed fires newest first, at the top, where the visitor is looking */
+  let fired = false;
+  const order = items.slice();
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, still ? 0 : ms));
+  const boot = root.querySelector<HTMLElement>('[data-boot]')!;
+  const bootline = root.querySelector<HTMLElement>('[data-bootline]')!;
+  const liveLabel = root.querySelector<HTMLElement>('[data-livelabel]')!;
+  const console_ = root.querySelector<HTMLElement>('.af-console')!;
+  const fire = async () => {
+    if (fired) return; fired = true;
+    // 1. boot: the sweep crosses the console while the status line types
+    root.classList.add('is-booting');
+    const msgs = ['connecting to SIEM01 · wazuh-alerts-*', 'index found · ' + items.length + ' events', 'streaming, newest first'];
+    for (const m of msgs) { bootline.textContent = m; await sleep(380); }
+    root.classList.remove('is-booting'); root.classList.add('is-live');
+    liveLabel.textContent = 'Live';
+    // 2. the events slam in, each with a severity pulse; the counter spins
+    let n = 0;
+    for (const li of order) {
+      li.classList.add('is-in');
+      n++; shown.textContent = String(n);
+      if (!still) {
+        const lvl = Number(li.querySelector('.af-lvl b')?.textContent || 0);
+        if (lvl >= 12) { console_.classList.remove('is-shake'); void console_.offsetWidth; console_.classList.add('is-shake'); }
+        await sleep(n < 3 ? 260 : n < 10 ? 130 : 80);
+      }
+    }
+    // 3. the newest flares, and stays in view
+    order[0].classList.add('af-new');
+    list.scrollTo({ top: 0, behavior: still ? 'auto' : 'smooth' });
+  };
+  if (still) fire();
+  else {
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { fire(); io.disconnect(); } }, { threshold: 0.05 });
+    io.observe(console_);
+  }
+
+  /* filters */
+  filters.forEach((btn) => btn.addEventListener('click', () => {
+    const key = btn.dataset.filter ?? '';
+    filters.forEach((b) => b.classList.toggle('is-active', b === btn));
+    let n = 0;
+    items.forEach((li) => { const on = !key || li.dataset.series === key; li.hidden = !on; if (on) n++; });
+    shown.textContent = String(n);
+    list.scrollTo({ top: 0, behavior: 'smooth' });
+  }));
+</script>
+
+<style is:global>
+  .af { padding: 4rem 0 3rem; }
+  .af-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+  .af-head h2 { max-width: 34rem; margin-top: 0.4rem; }
+  .af-lede { color: var(--ink-2); margin: 0.6rem 0 0; max-width: 36rem; }
+
+  .af-console { position: relative; display: grid; grid-template-columns: 15rem minmax(0, 1fr); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--paper); box-shadow: var(--shadow); }
+  .af-console.is-shake { animation: af-shake 0.35s ease; }
+  @keyframes af-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 50% { transform: translateX(3px); } 75% { transform: translateX(-2px); } }
+  .af-boot { position: absolute; inset: 0; z-index: 4; pointer-events: none; display: grid; place-items: center; background: color-mix(in srgb, var(--paper) 72%, transparent); backdrop-filter: blur(2px); opacity: 0; transition: opacity 0.4s ease; }
+  .af.is-booting .af-boot { opacity: 1; }
+  .af-bootline { font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); padding: 0.6rem 1rem; border: 1px solid var(--accent-line); border-radius: 999px; background: var(--paper); }
+  .af-bootline::after { content: '▍'; animation: af-blink 0.8s steps(2) infinite; }
+  .af-sweep { position: absolute; left: 0; right: 0; height: 3px; top: -3px; background: var(--accent); box-shadow: 0 0 24px 6px var(--accent-soft), 0 0 8px 2px var(--accent); }
+  .af.is-booting .af-sweep { animation: af-sweep 1.15s cubic-bezier(0.4, 0, 0.2, 1) 2 alternate; }
+  @keyframes af-sweep { from { top: -3px; } to { top: 100%; } }
+  .af-live.is-wait { color: var(--ink-3); }
+  .af-side { border-right: 1px solid var(--line); padding: 1rem 0.9rem; background: var(--paper-2); display: flex; flex-direction: column; gap: 0.3rem; }
+  .af-sidehead { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); padding: 0.3rem 0.5rem 0.5rem; }
+  .af-sidehead2 { margin-top: 1rem; }
+  .af-filter { font: inherit; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.55rem; width: 100%; text-align: left; padding: 0.5rem 0.6rem; border-radius: 9px; border: 1px solid transparent; background: transparent; color: var(--ink-2); cursor: pointer; font-size: 0.86rem; transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+  .af-filter i { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--c); }
+  .af-filter b { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; color: var(--ink-3); }
+  .af-filter:hover { background: var(--paper); color: var(--ink); }
+  .af-filter.is-active { background: var(--paper); color: var(--ink); border-color: color-mix(in srgb, var(--c) 45%, var(--line)); font-weight: 600; }
+  .af-levels { list-style: none; margin: 0; padding: 0 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-3); }
+  .af-levels li { display: flex; align-items: center; gap: 0.5rem; }
+  .af-levels i { width: 0.5rem; height: 0.5rem; border-radius: 2px; }
+  .l-critical { background: var(--c-offence); } .l-high { background: var(--c-assessment); } .l-medium { background: var(--c-cloud); } .l-low { background: var(--ink-3); }
+
+  .af-main { display: flex; flex-direction: column; min-width: 0; }
+  .af-bar { display: flex; align-items: center; gap: 1.2rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-3); background: var(--paper); }
+  .af-live { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--c-offence); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  .af-live i { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--c-offence); animation: af-blink 1.4s ease-in-out infinite; }
+  @keyframes af-blink { 50% { opacity: 0.25; } }
+  .af-clock { font-variant-numeric: tabular-nums; color: var(--ink); }
+  .af-count b { color: var(--ink); }
+  .af-index { margin-left: auto; color: var(--ink-3); }
+
+  .af-list { list-style: none; margin: 0; padding: 0; max-height: 34rem; overflow-y: auto; scroll-behavior: smooth; }
+  .af-ev { opacity: 0; transform: translateX(-28px); }
+  .af-ev.is-in { animation: af-slam 0.42s cubic-bezier(0.2, 0.9, 0.2, 1) forwards; }
+  @keyframes af-slam { 0% { opacity: 0; transform: translateX(-28px) scale(0.98); } 60% { opacity: 1; transform: translateX(4px) scale(1.005); } 100% { opacity: 1; transform: none; } }
+  .af-ev.is-in .af-lvl { animation: af-pulse 0.7s ease 0.1s; }
+  @keyframes af-pulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent); } 100% { box-shadow: 0 0 0 14px transparent; } }
+  .af-ev.af-new .af-row { animation: af-flare 1.6s ease; border-left-color: var(--c); }
+  @keyframes af-flare { 0% { background: color-mix(in srgb, var(--c) 30%, var(--paper)); } 100% { background: transparent; } }
+  .af-ev[hidden] { display: none; }
+  .af-row { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: 0.9rem; padding: 0.85rem 1rem; border-bottom: 1px solid var(--line); border-left: 3px solid transparent; color: inherit; text-decoration: none; transition: background 0.2s ease, border-color 0.2s ease; }
+  .af-row:hover { background: color-mix(in srgb, var(--c) 6%, var(--paper)); border-left-color: var(--c); }
+  .af-lvl { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem; border-radius: 8px; padding: 0.35rem 0.2rem; font-family: var(--font-mono); line-height: 1; align-self: start; }
+  .af-lvl b { font-size: 1.05rem; font-weight: 700; }
+  .af-lvl small { font-size: 0.52rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .af-lvl[data-lvl='critical'] { background: color-mix(in srgb, var(--c-offence) 14%, var(--paper)); color: var(--c-offence); }
+  .af-lvl[data-lvl='high'] { background: color-mix(in srgb, var(--c-assessment) 14%, var(--paper)); color: var(--c-assessment); }
+  .af-lvl[data-lvl='medium'] { background: color-mix(in srgb, var(--c-cloud) 14%, var(--paper)); color: var(--c-cloud); }
+  .af-lvl[data-lvl='low'] { background: var(--paper-2); color: var(--ink-3); }
+  .af-body { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+  .af-line1 { display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em; color: var(--ink-3); }
+  .af-rule { color: var(--c); }
+  .af-time { margin-left: auto; font-variant-numeric: tabular-nums; }
+  .af-title { font-weight: 700; font-size: 1.02rem; color: var(--ink); letter-spacing: -0.01em; line-height: 1.3; }
+  .af-desc { font-size: 0.86rem; color: var(--ink-2); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .af-line3 { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); margin-top: 0.1rem; }
+  .af-open { margin-left: auto; color: var(--c); text-transform: none; letter-spacing: 0; font-family: var(--font-body); font-weight: 600; font-size: 0.8rem; }
+  .af-foot { display: flex; justify-content: space-between; gap: 1rem; padding: 0.7rem 1rem; font-size: 0.78rem; color: var(--ink-3); border-top: 1px solid var(--line); }
+  .af-foot a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 860px) {
+    .af-console { grid-template-columns: 1fr; }
+    .af-side { border-right: 0; border-bottom: 1px solid var(--line); flex-direction: row; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+    .af-sidehead, .af-sidehead2, .af-levels { display: none; }
+    .af-filter { width: auto; grid-template-columns: auto auto auto; padding: 0.4rem 0.6rem; border-radius: 999px; font-size: 0.8rem; border-color: var(--line); background: var(--paper); }
+    .af-bar { gap: 0.8rem; font-size: 0.66rem; }
+    .af-index { display: none; }
+    .af-list { max-height: 30rem; }
+    .af-time { margin-left: 0; }
+    .af-open { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .af-ev, .af-ev.is-in { animation: none; opacity: 1; transform: none; } .af-ev.is-in .af-lvl, .af-live i, .af-sweep, .af-console.is-shake, .af-ev.af-new .af-row { animation: none !important; } .af-list { scroll-behavior: auto; } .af-boot { display: none; }
+  }
+</style>

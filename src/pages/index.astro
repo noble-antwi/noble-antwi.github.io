@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Gate from '../components/Gate.astro';
 import Journey from '../components/Journey.astro';
 import CaseFiles from '../components/CaseFiles.astro';
-import WritingSection from '../components/WritingSection.astro';
+import AlertFeed from '../components/AlertFeed.astro';
 import { SITE } from '../lib/site';
 import { CERTS } from '../data/certifications';
 
@@ -38,8 +38,9 @@ const featuredCerts = CERTS.filter((c) => c.featured).concat(CERTS.filter((c) =>
 
   <CaseFiles />
 
+  <AlertFeed />
+
   <div class="container">
-    <WritingSection />
 
     <section class="section">
       <div class="section-head">
