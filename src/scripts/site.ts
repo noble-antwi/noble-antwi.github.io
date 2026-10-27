@@ -66,7 +66,7 @@ function initFilters() {
 
 function initReveal() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
-  const els = document.querySelectorAll<HTMLElement>('.feature, .work-card, .sw-card, .cert-card, .series-card, .article-row, .course-row, .stat-strip, .cta-band, .contact-card');
+  const els = document.querySelectorAll<HTMLElement>('.feature, .work-card, .sw-card, .wr-feature, .wr-list li, .wr-s, .cert-card, .series-card, .article-row, .course-row, .stat-strip, .cta-band, .contact-card');
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
   }, { threshold: 0.06, rootMargin: '0px 0px -24px 0px' });
