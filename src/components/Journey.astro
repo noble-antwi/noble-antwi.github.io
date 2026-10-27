@@ -11,8 +11,9 @@ const scenes = [
   { from: 0.27, to: 0.37, n: '02', k: 'Network', h: 'Default deny.', p: 'To reach the cloud, DC01 must cross pfSense. Every interface denies by default; one written, justified rule lets this traffic out, and nothing comes back in uninvited.' },
   { from: 0.38, to: 0.47, n: '03', k: 'Identity', h: 'Verified, then verified again.', p: 'Entra ID and Okta check the device and the second factor. No single system says yes on its own, and the providers are reached from DC01, never the other way round.' },
   { from: 0.48, to: 0.60, n: '04', k: 'Cloud', h: 'Least privilege, in the cloud too.', p: 'The same identity reaches AWS and Azure by federation, with no standing keys. Posture is scanned with Prowler and ScoutSuite, every finding mapped to CIS, NIST and PCI, and idle resources found before they cost money.' },
-  { from: 0.62, to: 0.78, n: '05', k: 'Detection', h: 'On the record.', p: 'Every step was logged. Agents on WKS01 and DC01 ship their events through the firewall to SIEM01, where Wazuh decodes each one, alerts on the few that matter, and keeps the rest.' },
-  { from: 0.80, to: 0.91, n: '06', k: 'The estate', h: 'Built, documented, proven.', p: 'Six VLANs behind one default-deny firewall, a rebuilt forest federated to two cloud identity providers, two clouds under posture scanning, a SIEM with its own rules, and every decision written down.' },
+  { from: 0.60, to: 0.725, n: '05', k: 'Detection', h: 'On the record.', p: 'Every step was logged. Agents on WKS01 and DC01 ship their events through the firewall to SIEM01, where Wazuh decodes each one, alerts on the few that matter, and keeps the rest.' },
+  { from: 0.735, to: 0.85, n: '06', k: 'Assessment', h: 'Scanned, fixed, proved.', p: 'A credentialed scan from SCAN01 found TLS 1.0 and 1.1 still offered on WKS01. A scoped, reversible Group Policy removed them, and a third scan proved them gone. The same discipline runs through two graduate assessments: a COBIT-framed post-breach audit with NIST 800-30 risk analysis and a CMMC gap analysis, and a full enterprise security assessment.' },
+  { from: 0.86, to: 0.925, n: '07', k: 'The estate', h: 'Built, documented, proven.', p: 'Six VLANs behind one default-deny firewall, a rebuilt forest federated to two cloud identity providers, two clouds under posture scanning, a SIEM with its own rules, and every decision written down.' },
 ];
 ---
 
@@ -35,22 +36,29 @@ const scenes = [
           )}
           {s.n === '05' && (
             <div class="j-stats">
-              <div><b data-count="39322" data-from="0.68">0</b><span>events decoded</span></div>
-              <div><b data-count="1963" data-from="0.70">0</b><span>alerts, about 5%</span></div>
-              <div><b data-count="100" data-from="0.72" data-suffix="%">0</b><span>kept in the archive</span></div>
+              <div><b data-count="39322" data-from="0.63">0</b><span>events decoded</span></div>
+              <div><b data-count="1963" data-from="0.645">0</b><span>alerts, about 5%</span></div>
+              <div><b data-count="100" data-from="0.66" data-suffix="%">0</b><span>kept in the archive</span></div>
             </div>
           )}
           {s.n === '06' && (
             <div class="j-stats">
-              <div><b data-count="6" data-from="0.82">0</b><span>VLANs</span></div>
-              <div><b data-count="3" data-from="0.83">0</b><span>identity providers</span></div>
-              <div><b data-count="2" data-from="0.84">0</b><span>clouds</span></div>
-              <div><b data-count="21" data-from="0.85">0</b><span>runbooks</span></div>
+              <div><b data-count="3" data-from="0.76">0</b><span>scans of one machine</span></div>
+              <div><b data-count="1" data-from="0.77">0</b><span>finding closed, with proof</span></div>
+              <div><b data-count="2" data-from="0.78">0</b><span>graduate assessments</span></div>
+            </div>
+          )}
+          {s.n === '07' && (
+            <div class="j-stats">
+              <div><b data-count="6" data-from="0.87">0</b><span>VLANs</span></div>
+              <div><b data-count="3" data-from="0.88">0</b><span>identity providers</span></div>
+              <div><b data-count="2" data-from="0.89">0</b><span>clouds</span></div>
+              <div><b data-count="21" data-from="0.90">0</b><span>runbooks</span></div>
             </div>
           )}
         </div>
       ))}
-      <div class="j-panel j-end" data-from="0.93" data-to="1.5">
+      <div class="j-panel j-end" data-from="0.94" data-to="1.5">
         <span class="j-kicker">The work behind it</span>
         <h2 class="j-h">Every step above is real, and written up.</h2>
         <div class="actions">
@@ -76,7 +84,7 @@ const scenes = [
 </script>
 
 <style is:global>
-  .journey { position: relative; height: 1000vh; margin-bottom: 2rem; }
+  .journey { position: relative; height: 1100vh; margin-bottom: 2rem; }
   .j-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
   .j-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .j-copy { position: absolute; inset: 0; pointer-events: none; }
@@ -90,6 +98,8 @@ const scenes = [
   .j-h { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.2rem, 5.2vw, 4.2rem); line-height: 1.02; letter-spacing: -0.03em; color: var(--ink); margin: 0 0 1rem; }
   .j-p { font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1.55; color: var(--ink-2); max-width: 30rem; margin: 0; }
   .j-stats { display: flex; gap: 2rem; margin-top: 1.6rem; flex-wrap: wrap; }
+  .j-panel:has(.j-stats) .j-h { font-size: clamp(2rem, 4.4vw, 3.6rem); }
+  @media (max-height: 820px) { .j-panel:has(.j-stats) .j-p { font-size: 1rem; } .j-panel:has(.j-stats) .j-stats { margin-top: 1rem; } }
   .j-stats b { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 3.6vw, 2.8rem); letter-spacing: -0.03em; color: var(--ink); line-height: 1; }
   .j-stats span { display: block; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-top: 0.4rem; }
   .j-end .actions { margin-top: 1.4rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }

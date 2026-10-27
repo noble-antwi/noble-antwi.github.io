@@ -271,6 +271,37 @@ export function startJourney(root: HTMLElement) {
   const tileColor = new THREE.Color();
   const cA = new THREE.Color(0x14b8a6), cB = new THREE.Color(0x7c3aed), cDim = new THREE.Color(0x0f172a), cAlert = new THREE.Color(0xf59e0b);
 
+  /* ---------- assessment: a scan plane sweeps the estate, findings appear, one closes ---------- */
+  const sweepMat = new THREE.MeshBasicMaterial({ color: 0x14b8a6, transparent: true, opacity: 0, side: THREE.DoubleSide, toneMapped: false, depthWrite: false });
+  const sweep = new THREE.Mesh(new THREE.PlaneGeometry(8, 3.4), sweepMat);
+  sweep.rotation.y = Math.PI / 2;
+  sweep.position.set(-20, 1.8, 0);
+  const sweepGlowMat = new THREE.MeshBasicMaterial({ color: 0x14b8a6, transparent: true, opacity: 0, side: THREE.DoubleSide, toneMapped: false, depthWrite: false });
+  const sweepGlow = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 8), sweepGlowMat);
+  sweepGlow.rotation.x = -Math.PI / 2;
+  sweepGlow.position.set(-20, 0.13, 0);
+  scene.add(sweep); scene.add(sweepGlow);
+  const sweepLabel = label('SCAN01 · credentialed scan', 'Greenbone, signed in as svc-greenbone');
+  sweepLabel.position.set(-20, 4.0, 0); sweepLabel.scale.multiplyScalar(1.1);
+  scene.add(sweepLabel);
+  // findings: where the scans and baselines actually pointed
+  const FINDINGS: { x: number; z: number; y: number; name: string; closes: boolean }[] = [
+    { x: -16.2, z: 1.2, y: 1.3, name: 'ADM01 · CIS 26%', closes: false },
+    { x: 7.6, z: -1.1, y: 2.2, name: 'DC01 · CIS 26%', closes: false },
+    { x: WKS.x, z: WKS.z, y: 1.9, name: 'WKS01 · TLS 1.0 and 1.1 on RDP', closes: true },
+  ];
+  const findings = FINDINGS.map((f) => {
+    const m = new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0, toneMapped: false, depthWrite: false });
+    const d = new THREE.Mesh(new THREE.OctahedronGeometry(0.22), m);
+    d.position.set(f.x, f.y, f.z);
+    scene.add(d);
+    const tag = label(f.name, f.closes ? 'found · fixed by policy · proved gone' : 'baseline recorded before hardening');
+    tag.position.set(f.x, f.y + 0.75, f.z); tag.scale.multiplyScalar(0.7);
+    scene.add(tag);
+    return { ...f, mesh: d, mat: m, tag };
+  });
+  const foundColor = new THREE.Color(0xef4444), closedColor = new THREE.Color(0x22c55e);
+
   /* ---------- the request: a glowing orb with a trail ---------- */
   const orb = new THREE.Mesh(new THREE.SphereGeometry(0.11, 24, 24), new THREE.MeshBasicMaterial({ color: 0x2dd4bf, toneMapped: false, transparent: true }));
   const orbGlow = new THREE.Mesh(new THREE.SphereGeometry(0.26, 24, 24), new THREE.MeshBasicMaterial({ color: 0x2dd4bf, transparent: true, opacity: 0.25, toneMapped: false, depthWrite: false }));
@@ -304,11 +335,15 @@ export function startJourney(root: HTMLElement) {
     { t: 0.42, pos: [4.0, 13.5, -5.5], look: [0, 9, -15] },
     { t: 0.49, pos: [-3.5, 11.5, -9.5], look: [-9, 7.6, -17] },
     { t: 0.56, pos: [-7.0, 9.6, -12.0], look: [-10, 7.4, -17] },
-    { t: 0.61, pos: [-2, 5.0, 5.5], look: [-6, 1.2, -4] },
-    { t: 0.68, pos: [-13.6, 2.6, 5.0], look: [-9.3, 0.5, -0.7] },
-    { t: 0.75, pos: [-12.8, 1.1, 3.2], look: [-9.6, 0.25, -0.8] },
-    { t: 0.84, pos: [-1, 15, 23], look: [-5, 0, -6] },
-    { t: 0.93, pos: [0, 23, 31], look: [0, -6, -4] },
+    { t: 0.60, pos: [-2, 5.0, 5.5], look: [-6, 1.2, -4] },
+    { t: 0.66, pos: [-13.6, 2.6, 5.0], look: [-9.3, 0.9, -0.7] },
+    { t: 0.71, pos: [-12.8, 1.2, 3.2], look: [-9.6, 0.6, -0.8] },
+    { t: 0.745, pos: [-17, 9, 17], look: [-7, 0.5, -1] },
+    { t: 0.80, pos: [3, 9, 17], look: [5, 0.5, -1] },
+    { t: 0.825, pos: [12.8, 3.4, 6.8], look: [10.2, 1.3, 0.5] },
+    { t: 0.85, pos: [12.5, 3.2, 6.5], look: [10.2, 1.2, 0.5] },
+    { t: 0.885, pos: [-1, 15, 23], look: [-5, 0, -6] },
+    { t: 0.94, pos: [0, 23, 31], look: [0, -6, -4] },
     { t: 1.00, pos: [0, 27, 35], look: [0, -9, -3] },
   ];
   const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
@@ -345,7 +380,7 @@ export function startJourney(root: HTMLElement) {
     const tt = t;
 
     // background: white open, dark middle, white close
-    const d = span(tt, 0.09, 0.18) * (1 - span(tt, 0.88, 0.96));
+    const d = span(tt, 0.09, 0.18) * (1 - span(tt, 0.905, 0.97));
     bg.copy(WHITE).lerp(SLATE, d);
     (scene.background as THREE.Color).copy(bg);
     scene.fog!.color.copy(bg);
@@ -369,7 +404,7 @@ export function startJourney(root: HTMLElement) {
     else if (tt < 0.26) p = legA.getPoint(span(tt, 0.11, 0.24));
     else if (tt < 0.46) p = legB.getPoint(span(tt, 0.27, 0.45));
     else if (tt < 0.58) { p = legD.getPoint(span(tt, 0.47, 0.56)); orbOn = 1 - span(tt, 0.565, 0.59); }
-    else if (tt < 0.76) { p = legC.getPoint(span(tt, 0.61, 0.73)); orbOn = span(tt, 0.60, 0.62) * (1 - span(tt, 0.735, 0.76)); }
+    else if (tt < 0.73) { p = legC.getPoint(span(tt, 0.60, 0.70)); orbOn = span(tt, 0.595, 0.615) * (1 - span(tt, 0.705, 0.725)); }
     else { p = v(SIEM); orbOn = 0; }
     orb.position.copy(p);
     orb.visible = orbOn > 0.01;
@@ -387,14 +422,14 @@ export function startJourney(root: HTMLElement) {
     // the firewall: gates open as the request passes, denied knocks flicker on the wall
     const gDC = span(tt, 0.30, 0.34) * (1 - span(tt, 0.46, 0.50));
     gateDC.frame.material.opacity = gDC; gateDC.frame.visible = gDC > 0.01; setOpacity(gateDC.tag, gDC);
-    const gLog = span(tt, 0.63, 0.67) * (1 - span(tt, 0.82, 0.86));
+    const gLog = span(tt, 0.62, 0.65) * (1 - span(tt, 0.72, 0.75));
     gateLog.frame.material.opacity = gLog; gateLog.frame.visible = gLog > 0.01; setOpacity(gateLog.tag, gLog);
-    const fwOn = span(tt, 0.27, 0.32) * (1 - span(tt, 0.84, 0.9));
+    const fwOn = span(tt, 0.27, 0.32) * (1 - span(tt, 0.87, 0.92));
     denyMat.opacity = fwOn * (0.35 + 0.35 * Math.abs(Math.sin(frame * 0.07)));
-    setOpacity(fwLabel, span(tt, 0.78, 0.84) * (1 - span(tt, 0.95, 1.0)));
+    setOpacity(fwLabel, span(tt, 0.855, 0.90) * (1 - span(tt, 0.95, 1.0)));
 
     // the halo turns and brightens for the identity scene
-    const pull = span(tt, 0.78, 0.86) * (1 - span(tt, 0.95, 1.0));
+    const pull = span(tt, 0.855, 0.90) * (1 - span(tt, 0.95, 1.0));
     const hOn = span(tt, 0.37, 0.43) * (1 - span(tt, 0.56, 0.61)) + pull * 0.5;
     halo.rotation.y = frame * 0.0025;
     (halo.material as THREE.PointsMaterial).opacity = hOn;
@@ -410,9 +445,9 @@ export function startJourney(root: HTMLElement) {
     setOpacity(platLabel, span(tt, 0.49, 0.53) * (1 - span(tt, 0.6, 0.64)) + pull * 0.9);
 
     // SIEM field: a wave of events spreads from SIEM01; alerts are the amber few
-    const fieldOn = span(tt, 0.65, 0.73) * (1 - span(tt, 0.90, 0.96));
+    const fieldOn = span(tt, 0.63, 0.69) * (1 - span(tt, 0.90, 0.96));
     if (fieldOn > 0 || frame % 30 === 0) {
-      const r = 0.2 + 6 * span(tt, 0.67, 0.80);
+      const r = 0.2 + 6 * span(tt, 0.64, 0.74);
       for (let i = 0; i < N * N; i++) {
         const [x, z] = tileXZ[i];
         const dist = Math.hypot(x - SIEM[0], z - SIEM[2]);
@@ -430,7 +465,25 @@ export function startJourney(root: HTMLElement) {
     for (const s of hostLabels) setOpacity(s, pull);
     for (const s of zoneLabels) setOpacity(s, pull);
     setOpacity(hostLabels[6], Math.max(pull, span(tt, 0.15, 0.19) * (1 - span(tt, 0.24, 0.28))));
-    setOpacity(hostLabels[2], Math.max(pull, span(tt, 0.63, 0.67) * (1 - span(tt, 0.76, 0.80))));
+    setOpacity(hostLabels[2], Math.max(pull, span(tt, 0.62, 0.65) * (1 - span(tt, 0.71, 0.74))));
+
+    // assessment: the scan plane sweeps left to right; findings appear as it passes; WKS01's closes
+    const sOn = span(tt, 0.735, 0.755) * (1 - span(tt, 0.80, 0.82));
+    const sx = -20 + 40 * span(tt, 0.745, 0.805);
+    sweep.position.x = sx; sweepGlow.position.x = sx; sweepLabel.position.x = sx;
+    sweepMat.opacity = 0.16 * sOn;
+    sweepGlowMat.opacity = 0.35 * sOn;
+    setOpacity(sweepLabel, sOn);
+    for (const f of findings) {
+      const seen = sx > f.x ? span(tt, 0.745, 0.76) : 0;
+      const on = tt < 0.95 ? Math.min(1, seen + pull) : 0;
+      f.mat.opacity = on * (0.75 + 0.25 * Math.sin(frame * 0.12));
+      f.mesh.visible = on > 0.01;
+      f.mesh.rotation.y = frame * 0.03;
+      const closed = f.closes ? span(tt, 0.815, 0.835) : 0;
+      f.mat.color.copy(foundColor).lerp(closedColor, closed);
+      setOpacity(f.tag, on * (tt > 0.855 ? 0.9 : 1));
+    }
 
     // HTML copy panels and counters
     for (const el of panels) {
