@@ -37,6 +37,7 @@ const GATE_LOG: Vec = [-1.5, 1.3, FW_Z + 0.14];
 
 const WHITE = new THREE.Color(0xffffff);
 const SLATE = new THREE.Color(0x0b1220);
+const NIGHT = new THREE.Color(0x0f172a); // the site's dark-theme paper
 
 const clamp = (x: number, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const ease = (x: number) => { x = clamp(x); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
@@ -80,6 +81,12 @@ export function startJourney(root: HTMLElement) {
   const counters = Array.from(root.querySelectorAll<HTMLElement>('[data-count]'));
   const html = document.documentElement;
   const startTheme = html.dataset.theme;
+  // The visitor's own theme choice (the header toggle stores it). The journey's
+  // open and close follow it; only the middle forces dark.
+  const userTheme = () => { try { return localStorage.getItem('theme') ?? startTheme ?? 'light'; } catch { return startTheme ?? 'light'; } };
+  let theme = userTheme();
+  new MutationObserver(() => { if (!dark) theme = html.dataset.theme === 'dark' ? 'dark' : 'light'; })
+    .observe(html, { attributes: true, attributeFilter: ['data-theme'] });
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
@@ -381,11 +388,11 @@ export function startJourney(root: HTMLElement) {
 
     // background: white open, dark middle, white close
     const d = span(tt, 0.09, 0.18) * (1 - span(tt, 0.905, 0.97));
-    bg.copy(WHITE).lerp(SLATE, d);
+    bg.copy(theme === 'dark' ? NIGHT : WHITE).lerp(SLATE, d);
     (scene.background as THREE.Color).copy(bg);
     scene.fog!.color.copy(bg);
     const wantDark = d > 0.5;
-    if (wantDark !== dark) { dark = wantDark; html.dataset.theme = dark ? 'dark' : (startTheme ?? 'light'); }
+    if (wantDark !== dark) { dark = wantDark; html.dataset.theme = dark ? 'dark' : theme; }
     renderer.toneMappingExposure = 1.05 - 0.25 * d;
 
     const est = span(tt, 0.08, 0.17);
@@ -509,5 +516,5 @@ export function startJourney(root: HTMLElement) {
   window.addEventListener('scroll', readScroll, { passive: true });
   tick();
 
-  return () => { html.dataset.theme = startTheme ?? ''; renderer.dispose(); };
+  return () => { html.dataset.theme = theme; renderer.dispose(); };
 }
