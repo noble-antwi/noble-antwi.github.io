@@ -61,7 +61,7 @@ export function openBreach(overlay: HTMLElement) {
   const hud = { time: q('[data-b-time]'), inf: q('[data-b-inf]'), bar: q('[data-b-bar]'), score: q('[data-b-score]'), level: q('[data-b-level]'), dc: q('[data-b-dc]'), seal: q('[data-b-seal]'), count: q('[data-b-count]'), toast: q('[data-b-toast]') };
   const cards = { intro: q('[data-b-intro]'), end: q('[data-b-end]') };
 
-  const portrait = window.innerWidth < window.innerHeight;
+  const portrait = window.innerWidth / window.innerHeight < 0.8;
   const { pos: ZPOS, adj: ADJ } = layout(portrait ? 2 : 3);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -273,7 +273,8 @@ export function openBreach(overlay: HTMLElement) {
     const w = overlay.clientWidth, h = overlay.clientHeight;
     renderer.setSize(w, h, false); camera.aspect = w / h;
     const tall = portrait && w < h;
-    const far = tall ? Math.max(1.5, 1.05 / (w / h) * 0.82) : w / h < 1.4 ? 1.45 : 1.12;
+    /* step back as the screen narrows, so the whole estate always fits */
+    const far = tall ? Math.max(1.1, 0.92 / (w / h)) : Math.max(1.2, 1.8 / (w / h));
     camera.position.set(0, (tall ? 24 : 19) * far, (tall ? 9 : 15) * far); camera.lookAt(0, 0, tall ? 0.6 : -0.6);
     camera.fov = tall ? 52 : 42; camera.updateProjectionMatrix();
     const fog = scene.fog as THREE.Fog; fog.near = 26 * far; fog.far = 60 * far;
