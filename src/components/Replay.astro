@@ -163,10 +163,11 @@ const MARK = { pass: '✓', block: '✕', alert: '!', quiet: '·', info: '' } as
     tabs.forEach((t) => t.addEventListener('click', () => play(Number(t.dataset.rpTab))));
     box.querySelector('[data-rp-again]')?.addEventListener('click', () => play(cur));
 
-    /* start the first scenario when it scrolls into view, once */
+    /* start the first scenario once its top is well into the viewport; a
+       ratio threshold would never be met by a box taller than the screen */
     const io = new IntersectionObserver((es) => {
       if (es.some((e) => e.isIntersecting)) { io.disconnect(); play(0); }
-    }, { threshold: 0.45 });
+    }, { rootMargin: '0px 0px -35% 0px' });
     io.observe(box);
   });
 </script>
