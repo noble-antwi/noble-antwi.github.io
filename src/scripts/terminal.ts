@@ -140,8 +140,8 @@ export function initTerminal(panel: HTMLElement, hooks: TermHooks) {
       print('PowerShell 7 · every command here is simulated and runs in your browser.', 't-dim');
       print('Type <b>help</b>, or try <b>Start-Containment</b>. <b>Get-WhatYourBrowserKnows</b> might surprise you.');
     }
+    input.focus();
     if (cmd) run(cmd);
-    window.setTimeout(() => input.focus(), 30);
   }
   function close() { panel.hidden = true; document.documentElement.classList.remove('term-open'); }
   return { open, close, isOpen: () => !panel.hidden };
