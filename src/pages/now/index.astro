@@ -1,6 +1,25 @@
 ---
 import Base from '../../layouts/Base.astro';
 const updated = 'October 2026';
+
+/* The lab repositories, with the time of each one's last push. The build
+   takes a snapshot so the list works without JavaScript; the page then
+   asks GitHub again in the visitor's browser, so the times stay current
+   between deploys. */
+const LABS = [
+  { repo: 'enterprise-security-homelab', what: 'The bank network: pfSense, Wazuh, Greenbone, the domain', href: '/work/enterprise-security-homelab/' },
+  { repo: 'enterprise-iam-lab', what: 'Hybrid identity: AD, Okta, Entra', href: '/work/enterprise-iam-lab/' },
+  { repo: 'azure-labs', what: 'AZ-104 labs, built in Bicep', href: 'https://github.com/noble-antwi/azure-labs' },
+  { repo: 'biirabank-web', what: 'The bank’s public site on Cloudflare', href: '/work/biirabank-web/' },
+  { repo: 'cloud-resume-challenge', what: 'The Cloud Resume Challenge, stage by stage', href: '/work/cloud-resume-challenge/' },
+  { repo: 'noble-antwi.github.io', what: 'This site', href: 'https://github.com/noble-antwi/noble-antwi.github.io' },
+];
+let pushed: Record<string, string> = {};
+try {
+  const res = await fetch('https://api.github.com/users/noble-antwi/repos?sort=pushed&per_page=40', { signal: AbortSignal.timeout(6000) });
+  if (res.ok) pushed = Object.fromEntries(((await res.json()) as { name: string; pushed_at: string }[]).map((r) => [r.name, r.pushed_at]));
+} catch { /* offline build: the browser fills the times in */ }
+LABS.sort((a, b) => (pushed[b.repo] ?? '').localeCompare(pushed[a.repo] ?? ''));
 ---
 
 <Base title="Now" description="What Noble Antwi is building, studying and reading right now.">
@@ -11,6 +30,23 @@ const updated = 'October 2026';
       <p class="lead">A <a href="https://nownownow.com/about" target="_blank" rel="noopener">now page</a>: the short, current answer to "what are you working on?", kept honest by being dated.</p>
     </header>
 
+    <section class="labs-live" aria-labelledby="labs-live-h">
+      <div class="ll-head">
+        <h2 id="labs-live-h"><i class="ll-dot"></i>Lab activity, live from GitHub</h2>
+        <span class="ll-note" data-ll-note>as of the last build</span>
+      </div>
+      <ol class="ll-list">
+        {LABS.map((l) => (
+          <li data-repo={l.repo} data-pushed={pushed[l.repo] ?? ''}>
+            <span class="ll-state" aria-hidden="true"></span>
+            <a href={l.href}>{l.repo}</a>
+            <span class="ll-what">{l.what}</span>
+            <time class="ll-when" datetime={pushed[l.repo] ?? ''}>{pushed[l.repo] ? pushed[l.repo].slice(0, 10) : ''}</time>
+          </li>
+        ))}
+      </ol>
+    </section>
+
     <div class="now-grid">
       <div>
         <h3>Building</h3>
@@ -18,6 +54,7 @@ const updated = 'October 2026';
           <li>Keeping the remediation loop turning. The first finding from <a href="/work/enterprise-security-homelab/">SCAN01</a> is fixed and proved closed; the next pass starts with an unauthenticated scan of DC01. <a href="/lab-notes/2026/10/09/find-fix-prove.html">How the first one closed.</a></li>
           <li>Detection rules for an application's identity log, now live on SIEM01 with APP01 as the fifth agent. <a href="/lab-notes/2026/10/27/watching-the-front-door.html">What they watch, and what stays quiet.</a></li>
           <li>Hardening DC01 and ADM01 against their CIS baselines (both 26%) and recording the delta. <a href="/lab-notes/2026/09/08/standing-up-wazuh-twice.html">Why the baseline came first.</a></li>
+          <li>A certificate authority for the bank: CA01 is up as the forest's enterprise root CA, and the domain's own services get their certificates from it next.</li>
           <li>Rebuilding MON01 and ANS01 as Proxmox guests, and giving Vault its own guest on the DevOps VLAN.</li>
           <li>Writing the last three pfSense rulesets (BlueTeam, DevOps, Monitoring) to default-deny, each rule justified and mapped.</li>
           <li>Rebuilding the <a href="/work/enterprise-iam-lab/">identity lab</a>. The forest is done and running as corp.biirabank.com; the Okta org comes next, in Terraform so it can be replayed rather than reclicked.</li>
@@ -47,3 +84,73 @@ const updated = 'October 2026';
     </div>
   </div>
 </Base>
+
+<style>
+  .labs-live { margin: 0 0 3rem; border: 1px solid var(--line-2); border-radius: var(--radius); background: var(--paper-2); padding: 1rem 1.2rem 0.6rem; }
+  .ll-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .ll-head h2 { font: 500 0.72rem var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin: 0; display: flex; align-items: center; gap: 0.55rem; }
+  .ll-dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 var(--ok); animation: ll-ping 2s ease-out infinite; }
+  @keyframes ll-ping { 70% { box-shadow: 0 0 0 7px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  .ll-note { font: 0.72rem var(--font-mono); color: var(--ink-3); }
+  .ll-list { list-style: none; margin: 0.6rem 0 0; padding: 0; }
+  .ll-list li { display: grid; grid-template-columns: 0.6rem minmax(12rem, auto) 1fr auto; align-items: center; gap: 0.9rem; padding: 0.55rem 0; border-top: 1px solid var(--line); font-size: 0.92rem; }
+  .ll-list li:first-child { border-top: 0; }
+  .ll-list a { font-family: var(--font-mono); font-size: 0.86rem; }
+  .ll-what { color: var(--ink-3); }
+  .ll-when { font: 0.8rem var(--font-mono); color: var(--ink-2); white-space: nowrap; }
+  .ll-state { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--line-2); }
+  li[data-age='hot'] .ll-state { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+  li[data-age='warm'] .ll-state { background: var(--gold); }
+  li[data-age='hot'] .ll-when { color: var(--ok); }
+  @media (prefers-reduced-motion: reduce) { .ll-dot { animation: none; } }
+  @media (max-width: 720px) {
+    .ll-when :global(.ll-verb) { display: none; }
+    .ll-list li { grid-template-columns: 0.6rem 1fr auto; gap: 0.15rem 0.7rem; }
+    .ll-what { grid-column: 2 / -1; grid-row: 2; font-size: 0.84rem; }
+  }
+</style>
+
+<script>
+  const rows = [...document.querySelectorAll<HTMLElement>('.ll-list li')];
+  const note = document.querySelector<HTMLElement>('[data-ll-note]')!;
+  const KEY = 'labs-live';
+
+  function ago(iso: string) {
+    const s = (Date.now() - new Date(iso).getTime()) / 1000;
+    const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+    if (s < 3600) return rtf.format(-Math.max(1, Math.round(s / 60)), 'minute');
+    if (s < 86400) return rtf.format(-Math.round(s / 3600), 'hour');
+    if (s < 86400 * 45) return rtf.format(-Math.round(s / 86400), 'day');
+    return rtf.format(-Math.round(s / (86400 * 30)), 'month');
+  }
+  function paint(pushed: Record<string, string>) {
+    for (const li of rows) {
+      const iso = pushed[li.dataset.repo!] || li.dataset.pushed;
+      if (!iso) continue;
+      const days = (Date.now() - new Date(iso).getTime()) / 86400000;
+      li.dataset.age = days < 3 ? 'hot' : days < 21 ? 'warm' : 'cold';
+      const t = li.querySelector('time')!;
+      t.dateTime = iso; t.innerHTML = `<span class="ll-verb">pushed </span>${ago(iso)}`; t.title = new Date(iso).toLocaleString();
+    }
+    /* most recent first */
+    const list = rows[0]?.parentElement;
+    if (list) rows.slice().sort((a, b) => (b.querySelector('time')!.dateTime || '').localeCompare(a.querySelector('time')!.dateTime || '')).forEach((li) => list.append(li));
+  }
+
+  const stamp = (at: number) => { note.textContent = `live · checked ${new Date(at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`; };
+  paint({});
+  (async () => {
+    /* one request per visitor per ten minutes, well inside GitHub's anonymous limit */
+    try {
+      const hit = JSON.parse(sessionStorage.getItem(KEY) || 'null');
+      if (hit && Date.now() - hit.at < 600000) { paint(hit.pushed); stamp(hit.at); return; }
+    } catch { /* private mode */ }
+    try {
+      const res = await fetch('https://api.github.com/users/noble-antwi/repos?sort=pushed&per_page=40');
+      if (!res.ok) return;
+      const pushed = Object.fromEntries(((await res.json()) as { name: string; pushed_at: string }[]).map((r) => [r.name, r.pushed_at]));
+      paint(pushed); stamp(Date.now());
+      try { sessionStorage.setItem(KEY, JSON.stringify({ at: Date.now(), pushed })); } catch { /* private mode */ }
+    } catch { /* GitHub unreachable: the build's snapshot stays */ }
+  })();
+</script>

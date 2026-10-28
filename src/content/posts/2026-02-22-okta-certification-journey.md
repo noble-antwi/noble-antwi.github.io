@@ -4,6 +4,7 @@ date: 2026-02-22
 category: learning
 tags: [okta, iam, certification, career, identity-management]
 read_time: 5
+description: "Three Okta certifications in one promotion window: two passes, two fails, and the lesson the failures taught that no study guide could."
 ---
 
 Not every journey goes to plan. This one taught me something I could not have learned from a study guide.

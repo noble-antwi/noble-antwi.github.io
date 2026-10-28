@@ -4,6 +4,7 @@ date: 2026-04-06
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, practice-test]
 read_time: 6
+description: "A second AZ-900 practice test at 94.59%, after going back over governance tools, cost management and SLAs."
 ---
 
 After the first practice test came in at 83.78%, I went back and revisited the areas that needed work: Azure management and governance tools, cost management distinctions, and SLA specifics. Then I sat the second timed practice test. The improvement was beyond what I expected.

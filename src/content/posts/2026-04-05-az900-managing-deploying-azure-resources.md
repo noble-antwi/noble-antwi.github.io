@@ -4,6 +4,7 @@ date: 2026-04-05
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, iac, azure-arc]
 read_time: 15
+description: "The tools for managing and deploying Azure resources, Site-to-Site versus Point-to-Site VPN, and Azure Arc for hybrid and multi-cloud estates."
 ---
 
 Continuing from the previous post on governance and compliance, this entry covers the tools Azure provides for managing and deploying resources, the difference between Site-to-Site and Point-to-Site VPN connectivity, Azure Arc for hybrid and multi-cloud management, and Infrastructure as Code with ARM Templates.

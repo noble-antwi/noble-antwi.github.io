@@ -1,0 +1,172 @@
+---
+import { REPLAYS } from '../data/replays';
+
+interface Props { slug: string; topic: string }
+const { slug, topic } = Astro.props;
+const r = REPLAYS[slug];
+const MARK = { pass: '✓', block: '✕', alert: '!', quiet: '·', info: '' } as const;
+---
+
+{r && (
+  <section class="replay" data-replay data-topic={topic} aria-labelledby={`rp-${slug}`}>
+    <div class="rp-head">
+      <div>
+        <span class="kicker">Replay</span>
+        <h2 class="display h3" id={`rp-${slug}`}>{r.title}</h2>
+      </div>
+      <button class="rp-again" type="button" data-rp-again>↻ Replay</button>
+    </div>
+
+    {r.scenarios.length > 1 && (
+      <div class="rp-tabs" role="tablist" aria-label="Scenarios">
+        {r.scenarios.map((s, i) => (
+          <button type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-rp-tab={i}>{s.label}</button>
+        ))}
+      </div>
+    )}
+
+    {r.scenarios.map((s, i) => (
+      <div class="rp-scene" data-rp-scene={i} role={r.scenarios.length > 1 ? 'tabpanel' : undefined} hidden={i !== 0}>
+        <ol class="rp-track">
+          {s.hops.map((h) => (
+            <li class="rp-node" data-tone={h.tone ?? 'info'}>
+              <b>{h.node}{h.tone && h.tone !== 'info' && <i aria-hidden="true">{MARK[h.tone]}</i>}</b>
+              {h.zone && <small>{h.zone}</small>}
+            </li>
+          ))}
+        </ol>
+        <ol class="rp-log">
+          {s.hops.map((h, j) => (
+            <li data-tone={h.tone ?? 'info'}><span class="rp-t">{`t+${(j * 0.4).toFixed(1)}s`}</span><span class="rp-n">{h.node}</span>{h.log}</li>
+          ))}
+        </ol>
+        <p class="rp-out" data-tone={s.outcome.tone}>{s.outcome.text}</p>
+      </div>
+    ))}
+  </section>
+)}
+
+<style>
+  .replay { margin: 2.5rem 0; padding: 1.4rem 1.4rem 1.2rem; border: 1px solid var(--line-2); border-radius: var(--radius); background: var(--paper-2); }
+  .rp-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+  .rp-head h2 { margin: 0.2rem 0 0; }
+  .rp-again { font: 500 0.82rem var(--font-mono); color: var(--ink-2); background: var(--paper); border: 1px solid var(--line-2); border-radius: 999px; padding: 0.35rem 0.8rem; cursor: pointer; white-space: nowrap; }
+  .rp-again:hover { color: var(--accent-ink); border-color: var(--accent-line); }
+
+  .rp-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 1rem 0 0.2rem; }
+  .rp-tabs button { font: 500 0.82rem var(--font-body); color: var(--ink-2); background: transparent; border: 1px solid var(--line-2); border-radius: 999px; padding: 0.35rem 0.85rem; cursor: pointer; }
+  .rp-tabs button[aria-selected='true'] { color: var(--paper); background: var(--ink); border-color: var(--ink); }
+
+  .rp-track { list-style: none; margin: 1.2rem 0 1rem; padding: 0; display: flex; flex-wrap: wrap; align-items: stretch; gap: 0.5rem 0; }
+  .rp-node { position: relative; display: flex; flex-direction: column; justify-content: center; min-width: 6.5rem; padding: 0.55rem 0.8rem; margin-right: 1.9rem; border: 1px solid var(--line-2); border-radius: var(--radius-sm); background: var(--paper); transition: border-color .3s, box-shadow .3s, opacity .3s; }
+  .rp-node:last-child { margin-right: 0; }
+  .rp-node::after { content: ''; position: absolute; left: calc(100% + 0.35rem); top: 50%; width: 1.2rem; height: 2px; background: var(--line-2); }
+  .rp-node:last-child::after { display: none; }
+  .rp-node b { font: 600 0.9rem var(--font-mono); color: var(--ink); display: flex; align-items: center; gap: 0.35rem; }
+  .rp-node b i { font-style: normal; font-size: 0.75rem; width: 1.1rem; height: 1.1rem; display: grid; place-items: center; border-radius: 50%; color: var(--paper); background: var(--ink-3); }
+  .rp-node small { font: 0.72rem var(--font-mono); color: var(--ink-3); }
+
+  /* the packet: lit nodes and wires up to the current hop */
+  .rp-node::before { content: ''; position: absolute; left: calc(100% + 0.35rem); top: 50%; width: 1.2rem; height: 2px; background: var(--rp-c, var(--accent)); transform: scaleX(0); transform-origin: 0 50%; transition: transform .45s ease .1s; z-index: 1; }
+  .rp-node:last-child::before { display: none; }
+  .rp-node.is-past::before { transform: scaleX(1); }
+  .rp-node.is-lit { border-color: var(--rp-c, var(--accent)); }
+  .rp-node.is-now { box-shadow: 0 0 0 3px color-mix(in srgb, var(--rp-c, var(--accent)) 22%, transparent); }
+  .rp-node[data-tone='pass'] b i { background: var(--ok); }
+  .rp-node[data-tone='block'] b i, .rp-node[data-tone='alert'] b i { background: var(--c-offence); }
+  .rp-node[data-tone='quiet'] b i { background: var(--ink-3); }
+  .rp-node.is-lit[data-tone='block'], .rp-node.is-lit[data-tone='alert'] { --rp-c: var(--c-offence); }
+  .rp-node.is-lit[data-tone='pass'] { --rp-c: var(--ok); }
+  .rp-node.is-lit[data-tone='quiet'] { --rp-c: var(--ink-3); }
+  .rp-node.is-now[data-tone='alert'] { animation: rp-pulse 1s ease-in-out 2; }
+  @keyframes rp-pulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--c-offence) 18%, transparent); } }
+
+  .rp-log { list-style: none; margin: 0; padding: 0.8rem 0.9rem; border-radius: var(--radius-sm); background: var(--paper); border: 1px solid var(--line); font: 0.82rem/1.55 var(--font-mono); color: var(--ink-2); }
+  .rp-log li { display: grid; grid-template-columns: 4.2rem 7.5rem 1fr; gap: 0.6rem; padding: 0.2rem 0; transition: opacity .35s, transform .35s; }
+  .rp-t { color: var(--ink-3); }
+  .rp-n { color: var(--ink); font-weight: 600; }
+  .rp-log li[data-tone='block'], .rp-log li[data-tone='alert'] { color: var(--c-offence); }
+  .rp-log li[data-tone='pass'] { color: var(--ok); }
+  .rp-out { margin: 0.9rem 0 0; padding-left: 0.8rem; border-left: 3px solid var(--rp-c, var(--accent)); font-size: 0.95rem; color: var(--ink); transition: opacity .4s; }
+  .rp-out[data-tone='block'], .rp-out[data-tone='alert'] { --rp-c: var(--c-offence); }
+  .rp-out[data-tone='pass'] { --rp-c: var(--ok); }
+  .rp-out[data-tone='quiet'] { --rp-c: var(--ink-3); }
+
+  /* while a replay runs, anything not reached yet waits dimmed */
+  .replay.is-running .rp-node:not(.is-lit) { opacity: 0.45; }
+  .replay.is-running .rp-log li:not(.is-shown) { opacity: 0; transform: translateY(4px); }
+  .replay.is-running .rp-out:not(.is-shown) { opacity: 0; }
+
+  @media (max-width: 640px) {
+    .replay { padding: 1.1rem 1rem 1rem; margin: 2rem 0; }
+    .rp-head { flex-direction: column; gap: 0.6rem; }
+    .rp-node { min-width: 0; margin-right: 1.4rem; padding: 0.45rem 0.6rem; }
+    .rp-node::after, .rp-node::before { width: 0.8rem; left: calc(100% + 0.3rem); }
+    .rp-log li { grid-template-columns: 1fr; gap: 0; padding: 0.35rem 0; }
+    .rp-t { display: none; }
+  }
+</style>
+
+<script>
+  const STEP = 1100;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-replay]').forEach((box) => {
+    const scenes = [...box.querySelectorAll<HTMLElement>('[data-rp-scene]')];
+    const tabs = [...box.querySelectorAll<HTMLButtonElement>('[data-rp-tab]')];
+    let cur = 0;
+    let timer = 0;
+
+    function show(i: number) {
+      cur = i;
+      scenes.forEach((s, k) => (s.hidden = k !== i));
+      tabs.forEach((t, k) => t.setAttribute('aria-selected', String(k === i)));
+    }
+
+    function play(i: number) {
+      window.clearTimeout(timer);
+      show(i);
+      const s = scenes[i];
+      const nodes = [...s.querySelectorAll<HTMLElement>('.rp-node')];
+      const lines = [...s.querySelectorAll<HTMLElement>('.rp-log li')];
+      const out = s.querySelector<HTMLElement>('.rp-out')!;
+      const clear = () => {
+        nodes.forEach((n) => n.classList.remove('is-lit', 'is-now', 'is-past'));
+        lines.forEach((l) => l.classList.remove('is-shown'));
+        out.classList.remove('is-shown');
+      };
+      clear();
+      if (still) {
+        nodes.forEach((n, k) => n.classList.add('is-lit', ...(k < nodes.length - 1 ? ['is-past'] : [])));
+        box.classList.remove('is-running');
+        return;
+      }
+      box.classList.add('is-running');
+      let k = 0;
+      const tick = () => {
+        if (k > 0) { nodes[k - 1].classList.remove('is-now'); nodes[k - 1].classList.add('is-past'); }
+        if (k < nodes.length) {
+          nodes[k].classList.add('is-lit', 'is-now');
+          lines[k].classList.add('is-shown');
+          k++;
+          timer = window.setTimeout(tick, STEP);
+        } else {
+          out.classList.add('is-shown');
+          box.classList.remove('is-running');
+          nodes.forEach((n) => n.classList.add('is-lit'));
+          nodes[nodes.length - 1].classList.add('is-now');
+        }
+      };
+      tick();
+    }
+
+    tabs.forEach((t) => t.addEventListener('click', () => play(Number(t.dataset.rpTab))));
+    box.querySelector('[data-rp-again]')?.addEventListener('click', () => play(cur));
+
+    /* start the first scenario when it scrolls into view, once */
+    const io = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { io.disconnect(); play(0); }
+    }, { threshold: 0.45 });
+    io.observe(box);
+  });
+</script>

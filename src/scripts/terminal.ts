@@ -4,6 +4,7 @@
    code is split across numbers that appear on the site. */
 import { CERTS, RUNWAY } from '../data/certifications';
 import { SITE } from '../lib/site';
+import { rank, type IndexRow } from '../lib/rank';
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
 
@@ -26,6 +27,10 @@ export function initTerminal(panel: HTMLElement, hooks: TermHooks) {
   let got = new Set<string>();
   try { got = new Set(JSON.parse(sessionStorage.getItem(VAULT_KEY) || '[]')); } catch { /* private mode */ }
   const history: string[] = []; let hi = 0;
+  /* every page on the site, written into the page at build time */
+  let rows: IndexRow[] = [];
+  try { rows = JSON.parse(document.querySelector('[data-site-index]')?.textContent || '[]'); } catch { /* keep empty */ }
+  let picks: IndexRow[] = [];
 
   const print = (html: string, cls = '') => { const d = document.createElement('div'); d.className = 't-line ' + cls; d.innerHTML = html; out.appendChild(d); out.scrollTop = out.scrollHeight; return d; };
   const row = (a: string, b: string) => `<span class="t-k">${a}</span>${b}`;
@@ -102,9 +107,41 @@ export function initTerminal(panel: HTMLElement, hooks: TermHooks) {
     clear: { help: 'clear the screen', run: () => { out.innerHTML = ''; } },
     exit: { help: 'close the terminal', run: () => close() },
     sudo: { run: () => print('visitor is not in the sudoers file. This incident will be reported to SIEM01.', 't-bad') },
-    ls: { run: () => print('work/  writing/  credentials/  now/  contact/  <span class="t-dim">(try cd work)</span>') },
-    cd: { run: (a) => { const p = a.trim().replace(/^\/|\/$/g, ''); if (['work', 'writing', 'credentials', 'now', 'contact', 'about'].includes(p)) { print(`→ /${p}/`, 't-ok'); window.location.href = `/${p}/`; } else print(`cd: ${esc(a || '~')}: no such section`, 't-bad'); } },
+    ls: { help: 'list the site; ls work, ls writing', run: (a) => {
+      const what = a.trim().replace(/^\/|\/$/g, '').toLowerCase();
+      if (!what) { print(rows.filter((r) => r.k === 'section' && r.u !== '/').map((r) => `<a href="${r.u}">${r.u.slice(1)}</a>`).join('&nbsp;&nbsp;') + '<br><span class="t-dim">ls work · ls writing · open &lt;anything&gt;</span>'); return; }
+      const kind = /^work/.test(what) ? 'work' : /^(writing|notes?|lab-notes|posts?)/.test(what) ? 'note' : '';
+      if (!kind) { print(`ls: ${esc(a)}: no such section`, 't-bad'); return; }
+      list(rows.filter((r) => r.k === kind).slice(0, kind === 'note' ? 10 : 20));
+      if (kind === 'note') print('Ten newest. <b>open</b> a word from any title to find older ones.', 't-dim');
+    } },
+    cd: { help: 'go to a section: cd work, cd ~', run: (a) => {
+      const p = a.trim().replace(/^\/|\/$/g, '').toLowerCase();
+      if (!p || p === '~' || p === '..' || p === '/') { go('/'); return; }
+      const r = rows.find((x) => x.k === 'section' && x.u === `/${p}/`) || rows.find((x) => x.u.replace(/\/$/, '').endsWith(`/${p}`));
+      if (r) go(r.u); else print(`cd: ${esc(a)}: no such section. Try <b>open ${esc(a)}</b>.`, 't-bad');
+    } },
+    open: { help: 'find any page: open wazuh, open 2', run: (a) => {
+      const q = a.trim();
+      if (!q) { print('open what? Try <b>open vault</b> or <b>open homelab</b>.', 't-dim'); return; }
+      if (/^\d+$/.test(q) && picks[Number(q) - 1]) { go(picks[Number(q) - 1].u); return; }
+      const found = rank(rows, q, 6);
+      if (!found.length) { print(`Nothing on the site matches "${esc(q)}".`, 't-bad'); return; }
+      if (found.length === 1) { go(found[0].u); return; }
+      list(found);
+      print('<b>open 1</b> to go to the first, or click one.', 't-dim');
+    } },
+    pwd: { run: () => print(esc(location.pathname)) },
   };
+  const KIND = { section: 'dir ', work: 'case', note: 'note' };
+  function list(r: IndexRow[]) {
+    picks = r;
+    print(r.map((x, i) => `<span class="t-dim">${String(i + 1).padStart(2, ' ').replace(/ /g, '&nbsp;')} ${KIND[x.k].replace(/ /g, '&nbsp;')}</span> <a href="${x.u}">${esc(x.t)}</a>`).join('<br>'));
+  }
+  function go(u: string) {
+    print(`→ ${esc(u)}`, 't-ok');
+    window.location.href = u;
+  }
   const lookup = (name: string) => Object.keys(COMMANDS).find((k) => k.toLowerCase() === name.toLowerCase());
 
   function run(line: string) {
@@ -138,7 +175,7 @@ export function initTerminal(panel: HTMLElement, hooks: TermHooks) {
     if (!opened) {
       opened = true;
       print('PowerShell 7 · every command here is simulated and runs in your browser.', 't-dim');
-      print('Type <b>help</b>, or try <b>Start-Containment</b>. <b>Get-WhatYourBrowserKnows</b> might surprise you.');
+      print('Type <b>help</b>, or try <b>Start-Containment</b>. <b>open</b> finds any page; <b>Get-WhatYourBrowserKnows</b> might surprise you.');
     }
     input.focus();
     if (cmd) run(cmd);

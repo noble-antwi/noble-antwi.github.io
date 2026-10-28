@@ -4,6 +4,7 @@ date: 2026-04-05
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, practice-test]
 read_time: 8
+description: "The first full AZ-900 practice test: 83.78%, and the weak areas it showed before the real exam could."
 ---
 
 After working through all the core AZ-900 course material, from cloud concepts and Azure architecture all the way through to governance, monitoring, and infrastructure as code, it was time to put that knowledge to the test. I sat my first full practice test from **Tutorial Dojo**, and this post is an honest account of how it went, what the results revealed, and what I am taking away from it.

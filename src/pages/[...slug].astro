@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
 import { postPath, postUrl, formatDate, isoDate, categoryLabel, seriesFor, byDateDesc, SITE } from '../lib/site';
 
 export async function getStaticPaths() {
@@ -22,6 +23,22 @@ const d = post.data;
 const { Content, headings } = await render(post);
 const series = seriesFor(post);
 const seriesPosts = series ? (await getCollection('posts')).filter(series.match).sort((a, b) => a.data.date.getTime() - b.data.date.getTime()) : [];
+/* Read next: notes that share the most tags, leaving out this note's own
+   series (the series box already lists those), and the case study whose
+   tags overlap most, if any. */
+const allPosts = await getCollection('posts');
+const shared = (tags: string[]) => tags.filter((t) => d.tags.includes(t)).length;
+const readNext = allPosts
+  .filter((p) => p.id !== post.id && !(series && series.match(p)))
+  .map((p) => ({ p, n: shared(p.data.tags) }))
+  .filter((x) => x.n > 0)
+  .sort((a, b) => b.n - a.n || b.p.data.date.getTime() - a.p.data.date.getTime())
+  .slice(0, 3)
+  .map((x) => x.p);
+const caseStudy = (await getCollection('work'))
+  .map((w) => ({ w, n: shared(w.data.relatedTags) }))
+  .filter((x) => x.n > 0)
+  .sort((a, b) => b.n - a.n)[0]?.w;
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const shareUrl = new URL(postUrl(post), SITE.url).toString();
 const description = d.description ?? (post.body ?? '').replace(/<[^>]+>/g, '').replace(/[#*_`>\[\]]/g, '').replace(/\s+/g, ' ').trim().slice(0, 157) + '…';
@@ -55,6 +72,8 @@ const jsonLd = {
         {d.tags.length > 0 && <div class="tags">{d.tags.map((t) => <span>{t}</span>)}</div>}
       </header>
 
+      {d.description && <p class="tldr"><span aria-hidden="true">$ tldr</span>{d.description}</p>}
+
       {toc.length >= 4 && (
         <details class="toc">
           <summary>Contents</summary>
@@ -81,6 +100,14 @@ const jsonLd = {
               </li>
             ))}
           </ol>
+        </aside>
+      )}
+
+      {(readNext.length > 0 || caseStudy) && (
+        <aside class="read-next" aria-label="Read next">
+          <span class="kicker">Read next</span>
+          {readNext.length > 0 && <PostList posts={readNext} />}
+          {caseStudy && <a class="rn-case" href={`/work/${caseStudy.id}/`}><small>The case study behind it</small><span>{caseStudy.data.title} →</span></a>}
         </aside>
       )}
 
@@ -125,6 +152,11 @@ const jsonLd = {
 
   <script is:inline>
     (() => {
+      const bar = document.querySelector('.read-progress');
+      if (bar && !CSS.supports('animation-timeline: scroll()')) {
+        const set = () => { const h = document.documentElement; const max = h.scrollHeight - h.clientHeight; bar.style.transform = `scaleX(${max > 0 ? Math.min(1, h.scrollTop / max) : 0})`; };
+        addEventListener('scroll', set, { passive: true }); addEventListener('resize', set); set();
+      }
       const links = [...document.querySelectorAll('.rail-toc a')];
       if (links.length) {
         const map = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));

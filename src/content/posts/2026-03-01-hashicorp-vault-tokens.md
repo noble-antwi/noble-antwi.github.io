@@ -4,6 +4,7 @@ date: 2026-03-01
 category: lab-notes
 tags: [hashicorp-vault, secrets-management, cloud-security, authentication, devops]
 read_time: 9
+description: "Vault tokens hands on: creation, policy binding, TTLs and renewal, orphan tokens, and revocation down the token hierarchy."
 ---
 
 Part of my ongoing journey through Bryan Krausen's [HashiCorp Vault for Absolute Beginners](https://www.udemy.com/course/hashicorp-vault/) on Udemy. This session covered Vault Tokens — the core authentication mechanism that controls access to everything inside Vault.

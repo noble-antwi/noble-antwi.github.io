@@ -4,6 +4,7 @@ date: 2026-04-10
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, practice-test]
 read_time: 7
+description: "A new question bank and a drop to 81.82%: what a fresh AZ-900 practice set exposed that a repeated one had hidden."
 ---
 
 After scoring 94.59% on my second attempt at Set 1, I moved on to an entirely new question bank: **Tutorial Dojo Set 2**. Fresh questions, different scenarios, and a more honest test of where my knowledge actually stands. The result was 81.82%, a drop from the previous attempt, and that drop is worth understanding properly.

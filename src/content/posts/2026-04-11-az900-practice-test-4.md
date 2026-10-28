@@ -4,6 +4,7 @@ date: 2026-04-11
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, practice-test]
 read_time: 8
+description: "78.38% on the third question set, with one category below the passing line, and what changed in the plan because of it."
 ---
 
 I will be direct about this one: I am not satisfied with this result. Set 3 brought a score of 78.38%, and more importantly, one category came in below the exam passing threshold. That is not a reason to panic, but it is exactly the kind of signal that practice tests exist to surface before the real thing.

@@ -4,6 +4,7 @@ date: 2026-04-05
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, monitoring]
 read_time: 10
+description: "Azure Advisor, Service Health and Azure Monitor: what each one is for, and why their scopes are so easy to confuse."
 ---
 
 This post covers the monitoring tools available in Azure, which also happens to be the last section of the core course content I have been working through. After this it is on to practice tests, so this feels like a natural milestone.

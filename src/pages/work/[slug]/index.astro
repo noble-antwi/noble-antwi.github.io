@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Base from '../../../layouts/Base.astro';
 import PostList from '../../../components/PostList.astro';
 import ChapterIndex from '../../../components/ChapterIndex.astro';
+import Replay from '../../../components/Replay.astro';
 import { CHAPTERS } from '../../../data/chapters';
 import { byDateDesc, WORK_CATEGORIES } from '../../../lib/site';
 
@@ -71,6 +72,8 @@ const related = d.relatedTags.length
         {related.length > 0 && <a href="#writing">Writing</a>}
       </nav>
     )}
+
+    <Replay slug={work.id} topic={d.category} />
 
     <div class="prose" id="overview">
       <Content />

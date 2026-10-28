@@ -4,6 +4,7 @@ date: 2026-03-08
 category: lab-notes
 tags: [hashicorp-vault, secrets-management, cloud-security, auditing, compliance, devops]
 read_time: 6
+description: "How Vault audit devices record every request and response, how Vault treats them, and enabling and reading one in a lab."
 ---
 
 Part of my ongoing journey through Bryan Krausen's [HashiCorp Vault for Absolute Beginners](https://www.udemy.com/course/hashicorp-vault/) on Udemy. This session covered Vault Audit Devices — the mechanism Vault uses to log every interaction and give you full visibility into what is happening inside your Vault environment.

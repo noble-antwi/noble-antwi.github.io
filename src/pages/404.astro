@@ -5,9 +5,87 @@ import Base from '../layouts/Base.astro';
 <Base title="Not found" description="That page does not exist.">
   <div class="container">
     <header class="page-head">
-      <span class="kicker">404</span>
-      <h1 class="display h1">Nothing at this address.</h1>
-      <p class="lead">The page may have moved when the site was rebuilt. Try <a href="/work/">work</a>, <a href="/writing/">writing</a> or <a href="/credentials/">credentials</a>, or head <a href="/">home</a>.</p>
+      <span class="kicker">404 · rule 31101</span>
+      <h1 class="display h1">Nothing at this address. <em>The attempt was logged.</em></h1>
+      <p class="lead">Well, it would have been on SIEM01. This page runs in your browser and nothing was sent anywhere. The page may have moved when the site was rebuilt; the closest matches are below.</p>
     </header>
+
+    <div class="nf-grid">
+      <div class="nf-alert" aria-label="A simulated SIEM alert for this request">
+        <div class="nf-bar"><span><i></i>SIEM01 · wazuh-alerts</span><time data-nf-time>now</time></div>
+        <dl>
+          <dt>rule.id</dt><dd>31101 · level 5</dd>
+          <dt>description</dt><dd>Web server 400 error code</dd>
+          <dt>url</dt><dd class="nf-url" data-nf-url>/</dd>
+          <dt>agent</dt><dd>nobleantwi.com</dd>
+          <dt>srcip</dt><dd>your browser <span class="muted">(not recorded)</span></dd>
+          <dt>verdict</dt><dd>a wrong turn, not an attack</dd>
+        </dl>
+      </div>
+
+      <div class="nf-next">
+        <span class="kicker">Did you mean</span>
+        <ol class="nf-guess" data-nf-guess>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/writing/">Writing</a></li>
+          <li><a href="/credentials/">Credentials</a></li>
+        </ol>
+        <div class="nf-actions">
+          <button class="btn" type="button" data-play="term" data-nf-term>Search with the terminal</button>
+          <button class="btn btn-ghost" type="button" data-play="breach">Contain the breach instead</button>
+          <a class="btn btn-ghost" href="/">Home</a>
+        </div>
+      </div>
+    </div>
   </div>
 </Base>
+
+<style>
+  .nf-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2rem; align-items: start; margin: 1rem 0 4rem; }
+  .nf-alert { border: 1px solid var(--line-2); border-left: 4px solid var(--c-offence); border-radius: var(--radius); background: var(--paper-2); font: 0.86rem/1.6 var(--font-mono); overflow: hidden; }
+  .nf-bar { display: flex; justify-content: space-between; gap: 1rem; padding: 0.6rem 1rem; border-bottom: 1px solid var(--line-2); color: var(--ink-3); }
+  .nf-bar i { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.5rem; border-radius: 50%; background: var(--c-offence); animation: nf-blink 1.4s ease-in-out infinite; }
+  @keyframes nf-blink { 50% { opacity: 0.25; } }
+  @media (prefers-reduced-motion: reduce) { .nf-bar i { animation: none; } }
+  .nf-alert dl { display: grid; grid-template-columns: 7rem 1fr; gap: 0.3rem 1rem; margin: 0; padding: 0.9rem 1rem 1rem; }
+  .nf-alert dt { color: var(--ink-3); }
+  .nf-alert dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+  .nf-url { color: var(--c-offence) !important; }
+  .nf-guess { margin: 0.5rem 0 1.4rem; padding-left: 1.2rem; }
+  /* the guesses are written by the script below, so they need global rules */
+  .nf-guess :global(li) { margin: 0.35rem 0; }
+  .nf-guess :global(small) { display: block; color: var(--ink-3); font: 0.75rem var(--font-mono); }
+  .nf-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  @media (max-width: 760px) {
+    .nf-grid { grid-template-columns: 1fr; }
+    .nf-alert dl { grid-template-columns: 5.6rem 1fr; }
+  }
+</style>
+
+<script>
+  import { rank, type IndexRow } from '../lib/rank';
+
+  const path = decodeURIComponent(location.pathname);
+  document.querySelector('[data-nf-url]')!.textContent = path;
+  document.querySelector('[data-nf-time]')!.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  /* the words in the broken address, without the category, dates and file ending */
+  const q = path.replace(/\.html?$/, '').replace(/^\/(lab-notes|learning|project-update|cloud-security|til)\//, '/').replace(/\d{4}\/\d{2}\/\d{2}/g, ' ').replace(/[\/_-]+/g, ' ').trim();
+  let rows: IndexRow[] = [];
+  try { rows = JSON.parse(document.querySelector('[data-site-index]')?.textContent || '[]'); } catch { /* keep the defaults */ }
+  const found = rank(rows, q, 5);
+  const KIND = { section: 'section', work: 'case study', note: 'lab note' };
+  if (found.length) {
+    const ol = document.querySelector('[data-nf-guess]')!;
+    ol.innerHTML = '';
+    for (const r of found) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = r.u; a.textContent = r.t;
+      const s = document.createElement('small'); s.textContent = KIND[r.k];
+      li.append(a, s); ol.append(li);
+    }
+  }
+  const btn = document.querySelector<HTMLElement>('[data-nf-term]')!;
+  btn.dataset.playCmd = q ? `open ${q}` : 'ls';
+</script>

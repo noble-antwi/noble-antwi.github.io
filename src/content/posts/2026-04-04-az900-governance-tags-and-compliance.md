@@ -4,6 +4,7 @@ date: 2026-04-04
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, governance]
 read_time: 14
+description: "Organising Azure with resource tags, then the governance layer on top: Azure Policy, resource locks, RBAC and Microsoft Purview."
 ---
 
 It has been a while since my last update. Academic pressure kept me away from writing, but I am back to working through my AZ-900 preparation and picking up where I left off. This post covers resource organisation with tags, Azure governance tools, Azure Policy, Resource Locks, and Microsoft Purview.

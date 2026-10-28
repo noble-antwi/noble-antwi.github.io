@@ -1,10 +1,15 @@
 ---
 /* The play layer, on every page: a simulated terminal (header >_ button or
    the backtick key) and the containment game. Any element with
-   data-play="term" | "breach" | "vault" opens one of them. The game's
+   data-play="term" | "breach" | "vault" opens one of them, and
+   data-play-cmd runs a command as the terminal opens. The game's
    Three.js code loads only when someone starts it. */
-const CHIPS = ['Start-Containment', 'Unlock-BreakGlass', 'Get-WhatYourBrowserKnows', 'Get-Lab', 'Get-Alerts', 'Decode-Token', 'whoami', 'help'];
+import { siteIndex } from '../lib/site-index';
+const index = await siteIndex();
+const CHIPS = ['Start-Containment', 'Unlock-BreakGlass', 'Get-WhatYourBrowserKnows', 'Get-Lab', 'Get-Alerts', 'Decode-Token', 'ls work', 'whoami', 'help'];
 ---
+
+<script type="application/json" data-site-index set:html={JSON.stringify(index)} />
 
 <div class="term" data-term hidden role="dialog" aria-modal="true" aria-label="Simulated terminal">
   <div class="t-head">
@@ -75,6 +80,7 @@ const CHIPS = ['Start-Containment', 'Unlock-BreakGlass', 'Get-WhatYourBrowserKno
     const what = t.dataset.play;
     if (what === 'breach') startBreach();
     else if (what === 'vault') term.open('Unlock-BreakGlass');
+    else if (t.dataset.playCmd) term.open(t.dataset.playCmd);
     else term.isOpen() ? term.close() : term.open();
   });
   document.addEventListener('keydown', (e) => {

@@ -4,6 +4,7 @@ date: 2026-02-24
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft]
 read_time: 12
+description: "Starting Azure Fundamentals after time in AWS: cloud concepts, Azure architecture and the core services, kept as a study reference."
 ---
 
 After spending considerable time in AWS, I have decided to broaden my cloud knowledge by pursuing the **Microsoft Azure Fundamentals (AZ-900)** certification. This post documents what I have been learning and serves as both a study reference and a record of my journey into the Azure ecosystem.

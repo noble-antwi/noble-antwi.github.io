@@ -626,9 +626,9 @@ figcaption { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink
 .share-row { display: flex; flex-wrap: wrap; gap: 0.7rem; }
 .share-row .btn { font-size: 0.85rem; }
 
-/* A hairline that fills as the page is read. Progressive: browsers without
-   scroll-driven animations simply never see it. */
-.read-progress { position: fixed; inset: 0 0 auto 0; height: 2px; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); z-index: 60; }
+/* A hairline that fills as the page is read: scroll-driven where the
+   browser supports it, a small scroll listener on the post page elsewhere. */
+.read-progress { position: fixed; inset: 0 0 auto 0; height: 3px; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); z-index: 60; }
 @supports (animation-timeline: scroll()) {
   .read-progress { animation: read-grow linear; animation-timeline: scroll(root block); }
 }
@@ -671,6 +671,16 @@ figcaption { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink
 .toc ol ol { padding: 0.3rem 0 0 1.2rem; font-size: 0.86rem; }
 .toc a { color: var(--ink-2); text-decoration: none; }
 .toc a:hover { color: var(--accent-ink); }
+
+.tldr { max-width: var(--measure); margin: 0 0 2.2rem; padding: 0.9rem 1.1rem; border-left: 3px solid var(--cat, var(--accent)); background: var(--paper-2); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-size: 0.98rem; line-height: 1.6; color: var(--ink); }
+.tldr span { display: block; margin-bottom: 0.3rem; font: 500 0.72rem var(--font-mono); letter-spacing: 0.08em; color: var(--cat, var(--accent-ink)); }
+
+.read-next { max-width: var(--measure); margin: 3rem 0 0; }
+.read-next > .kicker { display: block; margin-bottom: 0.6rem; }
+.rn-case { display: flex; flex-direction: column; gap: 0.2rem; margin-top: 1.2rem; padding: 1rem 1.2rem; border: 1px solid var(--line-2); border-radius: var(--radius); text-decoration: none; color: var(--ink); background: var(--paper-2); transition: border-color .2s, transform .2s; }
+.rn-case small { font: 0.7rem var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.rn-case span { font-weight: 600; }
+.rn-case:hover { border-color: var(--accent-line); transform: translateY(-1px); }
 
 .series-nav { max-width: var(--measure); margin: 3rem 0 0; padding: 1.2rem 1.4rem; border: 1px solid var(--line-2); border-radius: var(--radius); background: var(--paper-2); }
 .series-nav .kicker { display: block; margin-bottom: 0.4rem; }

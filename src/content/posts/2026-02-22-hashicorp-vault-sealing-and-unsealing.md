@@ -4,6 +4,7 @@ date: 2026-02-22
 category: lab-notes
 tags: [hashicorp-vault, secrets-management, cloud-security, aws-kms, devops]
 read_time: 10
+description: "How Vault protects its data at rest: Shamir key shares, manual unsealing, and AWS KMS auto-unseal, all three worked through on a lab server."
 ---
 
 Part of my ongoing journey through Bryan Krausen's [HashiCorp Vault for Absolute Beginners](https://www.udemy.com/course/hashicorp-vault/) on Udemy. Today's session covered one of the most fundamental — and most misunderstood — concepts in Vault: how it protects data at rest and what the seal/unseal process actually means in practice.

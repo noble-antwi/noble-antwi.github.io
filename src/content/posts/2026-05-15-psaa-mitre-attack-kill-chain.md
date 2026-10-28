@@ -4,6 +4,7 @@ date: 2026-05-15
 category: learning
 tags: [mitre-attack, soc, incident-response, psaa, tcm-security, threat-analysis, kill-chain]
 read_time: 12
+description: "Mapping a simulated compromise to MITRE ATT&CK stage by stage, as part of TCM Security's Practical SOC Analyst training."
 ---
 
 Part of my Practical SOC Analyst (PSAA) training through TCM Security involves working through realistic incident response scenarios and mapping observed attacker behaviour to the MITRE ATT&CK framework. This exercise presented a simulated compromise at Permalink Software and asked me to reconstruct the full attack kill chain from the available evidence.

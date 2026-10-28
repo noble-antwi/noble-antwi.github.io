@@ -4,6 +4,7 @@ date: 2026-04-19
 category: learning
 tags: [sc-300, microsoft, azure, identity, iam, entra-id, certification, renewal]
 read_time: 8
+description: "Renewing SC-300, Microsoft Identity and Access Administrator, at 92%, and why a renewal proves something a first pass does not."
 ---
 
 On April 19, 2026, I renewed my SC-300 - Microsoft Certified: Identity and Access Administrator Associate - with a score of 92%. The passing threshold is 60%.

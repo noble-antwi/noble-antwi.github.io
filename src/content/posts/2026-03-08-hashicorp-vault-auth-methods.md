@@ -4,6 +4,7 @@ date: 2026-03-08
 category: lab-notes
 tags: [hashicorp-vault, secrets-management, cloud-security, authentication, approle, devops]
 read_time: 10
+description: "How people and machines prove who they are to Vault: auth methods, roles, and AppRole for applications."
 ---
 
 Part of my ongoing journey through Bryan Krausen's [HashiCorp Vault for Absolute Beginners](https://www.udemy.com/course/hashicorp-vault/) on Udemy. This session covered Vault Authentication Methods — how humans and machines prove their identity to Vault, and how roles control what they are allowed to do once authenticated.

@@ -4,6 +4,7 @@ date: 2026-04-19
 category: learning
 tags: [azure, az-900, microsoft, certification, cloud, study-notes]
 read_time: 12
+description: "Passing AZ-900 with 873 out of 1000: the whole route from the first notes through four practice tests to the exam."
 ---
 
 It is done. On April 19, 2026, I passed the Microsoft Azure AZ-900 Fundamentals exam with a score of **873 out of 1000**. The passing threshold is 700. This post is the full story of how I got there.
