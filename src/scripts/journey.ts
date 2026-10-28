@@ -459,6 +459,28 @@ export function startJourney(root: HTMLElement) {
   const phoneScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.43, 0.88), new THREE.MeshBasicMaterial({ map: phoneTex, toneMapped: false }));
   phoneScreen.position.z = 0.026; phone.add(phoneScreen);
   scene.add(phone);
+  /* ---------- play: an infection crossing the estate, a teaser for the game ---------- */
+  const glowC = document.createElement('canvas'); glowC.width = glowC.height = 128;
+  { const gg = glowC.getContext('2d')!; const rg = gg.createRadialGradient(64, 64, 0, 64, 64, 64); rg.addColorStop(0, 'rgba(255,255,255,1)'); rg.addColorStop(0.3, 'rgba(255,255,255,0.6)'); rg.addColorStop(1, 'rgba(255,255,255,0)'); gg.fillStyle = rg; gg.fillRect(0, 0, 128, 128); }
+  const glowTex = new THREE.CanvasTexture(glowC);
+  const hostAt = (n: string) => { const h = HOSTS.find((x) => x.name === n)!; return [h.x, h.h + 0.25, h.z] as Vec; };
+  /* the order the attacker moves in: a phished workstation, then sideways toward Tier 0 */
+  const PATH: { at: Vec; t: number }[] = [
+    { at: [WKS.x, 0.6, WKS.z], t: 0.897 },
+    { at: hostAt('APP01'), t: 0.904 },
+    { at: hostAt('KALI01'), t: 0.909 },
+    { at: hostAt('SCAN01'), t: 0.914 },
+    { at: hostAt('ADM01'), t: 0.919 },
+  ];
+  const infections = PATH.map((p) => {
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xff2d3f, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }));
+    sp.position.set(...p.at); scene.add(sp); return sp;
+  });
+  const dcRing = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.05, 48), new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0, side: THREE.DoubleSide, toneMapped: false, depthWrite: false }));
+  dcRing.rotation.x = -Math.PI / 2; dcRing.position.set(DC[0], 0.05, DC[2]); scene.add(dcRing);
+  const playTag = label('Contain it.', 'an attacker is moving sideways');
+  playTag.position.set(4, 4.2, -1); playTag.scale.multiplyScalar(1.6); scene.add(playTag);
+
   root.querySelectorAll<HTMLElement>('[data-approve]').forEach((b) => b.addEventListener('click', () => { drawPhone('ok'); root.classList.add('is-approved'); }));
   root.querySelectorAll<HTMLElement>('[data-deny]').forEach((b) => b.addEventListener('click', () => { drawPhone('no'); root.classList.add('is-denied'); }));
 
@@ -499,7 +521,9 @@ export function startJourney(root: HTMLElement) {
     { t: 0.79, pos: [0.6, 6.4, 8.8], look: [0, 6.0, 1] },
     { t: 0.83, pos: [0.2, 6.1, 10.2], look: [0, 5.9, 1] },
     { t: 0.87, pos: [-0.4, 6.0, 10.8], look: [0, 5.9, 1] },
-    { t: 0.90, pos: [12.4, 1.9, 3.9], look: [11.2, 0.95, 1.4] },
+    { t: 0.90, pos: [-1, 17, 21], look: [-0.5, 0, -1.5] },
+    { t: 0.932, pos: [-2.5, 15, 19], look: [-0.5, 0, -1.5] },
+    { t: 0.955, pos: [12.4, 1.9, 3.9], look: [11.2, 0.95, 1.4] },
     { t: 1.00, pos: [12.2, 1.75, 3.6], look: [11.2, 0.9, 1.4] },
   ];
   const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
@@ -706,7 +730,17 @@ export function startJourney(root: HTMLElement) {
     (seal.material as THREE.MeshBasicMaterial).opacity = sealOn; seal.scale.setScalar(1 + (1 - sealOn) * 1.5); seal.visible = sealOn > 0.01;
 
     /* ===== push approval (g) ===== */
-    const phoneUp = span(g, 0.89, 0.915);
+    const playOn = span(g, 0.893, 0.9) * (1 - span(g, 0.932, 0.942));
+    infections.forEach((sp, i) => {
+      const on = span(g, PATH[i].t, PATH[i].t + 0.004) * playOn;
+      (sp.material as THREE.SpriteMaterial).opacity = on * (0.75 + 0.25 * Math.sin(frame * 0.12 + i));
+      sp.scale.setScalar((1.6 + 0.35 * Math.sin(frame * 0.12 + i)) * on + 0.001);
+    });
+    (dcRing.material as THREE.MeshBasicMaterial).opacity = playOn * (0.45 + 0.35 * Math.sin(frame * 0.09));
+    dcRing.scale.setScalar(1 + 0.12 * Math.sin(frame * 0.09));
+    setOpacity(playTag, playOn * span(g, 0.9, 0.906));
+
+    const phoneUp = span(g, 0.94, 0.962);
     phone.position.y = -0.8 + phoneUp * 1.72; phone.rotation.y = -0.45 - (1 - phoneUp) * 0.5;
     phone.visible = phoneUp > 0.01;
 
@@ -730,7 +764,7 @@ export function startJourney(root: HTMLElement) {
     }
     rail.forEach((r) => { const a = +r.dataset.from!, b = +r.dataset.to!; r.classList.toggle('is-active', g >= a && g < b); });
     root.style.setProperty('--progress', String(g));
-    root.classList.toggle('is-end', g > 0.895);
+    root.classList.toggle('is-end', g > 0.945);
 
     renderer.render(scene, camera);
     requestAnimationFrame(tick);

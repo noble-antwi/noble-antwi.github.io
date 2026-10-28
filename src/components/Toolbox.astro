@@ -1,0 +1,166 @@
+---
+/* What's in the toolbox: six buckets of tools as balls with real physics.
+   Grab one and throw it, shake the buckets, or tidy up. A plain list sits
+   underneath for screen readers and for anyone who would rather read. */
+const BUCKETS = [
+  { name: 'Identity', color: '#7c3aed', tools: ['Entra ID', 'Okta', 'Active Directory', 'Conditional Access', 'SAML', 'OIDC', 'SCIM', 'Group Policy', 'Vault', 'Kerberos'] },
+  { name: 'Cloud', color: '#2563eb', tools: ['AWS IAM', 'Azure', 'Terraform', 'Cloudflare', 'Prowler', 'ScoutSuite', 'S3', 'Workers'] },
+  { name: 'Detection', color: '#0f766e', tools: ['Wazuh', 'Sysmon', 'Sigma', 'ATT&CK', 'Sentinel', 'Grafana', 'logtest'] },
+  { name: 'Network', color: '#0891b2', tools: ['pfSense', 'VLANs', 'Proxmox', 'Tailscale', 'WireGuard', 'DNS', 'TLS'] },
+  { name: 'Automation', color: '#b45309', tools: ['Python', 'PowerShell', 'Ansible', 'Actions', 'Bash', 'FastAPI'] },
+  { name: 'Assurance', color: '#b91c1c', tools: ['Greenbone', 'Kali', 'NIST 800-53', 'CIS', 'COBIT'] },
+];
+---
+
+<section class="toolbox" aria-labelledby="toolbox-h">
+  <span class="kicker">Toolbox</span>
+  <h2 id="toolbox-h" class="tb-h">What's in the <b>toolbox.</b></h2>
+  <p class="tb-lead">Six buckets, every tool I have used in anger. Grab one and throw it, or give the buckets a shake.</p>
+  <div class="tb-stage" data-toolbox data-buckets={JSON.stringify(BUCKETS)}>
+    <canvas aria-hidden="true"></canvas>
+  </div>
+  <div class="tb-actions"><button type="button" class="btn btn-ghost" data-tb-shake>Shake the buckets</button><button type="button" class="btn btn-ghost" data-tb-tidy>Tidy up</button></div>
+  <ul class="tb-list">
+    {BUCKETS.map((b) => <li><b style={`color:${b.color}`}>{b.name}</b> {b.tools.join(', ')}</li>)}
+  </ul>
+</section>
+
+<script>
+  interface Bucket { name: string; color: string; tools: string[] }
+  interface Ball { x: number; y: number; px: number; py: number; r: number; b: number; label: string }
+
+  document.querySelectorAll<HTMLElement>('[data-toolbox]').forEach((stage) => {
+    const buckets: Bucket[] = JSON.parse(stage.dataset.buckets!);
+    const canvas = stage.querySelector('canvas')!;
+    const g = canvas.getContext('2d')!;
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let W = 0, H = 0, dpr = 1, bw = 0, bh = 0, gap = 0, top = 0, R = 22;
+    let balls: Ball[] = [];
+    const font = getComputedStyle(document.body).fontFamily;
+
+    const bx = (i: number) => gap + i * (bw + gap);
+    function size() {
+      dpr = Math.min(devicePixelRatio, 2);
+      W = stage.clientWidth; H = W < 640 ? 520 : 330;
+      canvas.width = W * dpr; canvas.height = H * dpr; canvas.style.height = H + 'px';
+      const n = buckets.length, cols = W < 640 ? 3 : n;
+      gap = W < 640 ? 10 : 16;
+      bw = (W - gap * (cols + 1)) / cols;
+      bh = W < 640 ? 180 : 185;
+      top = W < 640 ? 24 : 40;
+      R = Math.max(13, Math.min(24, bw / 6.4));
+    }
+    /* bucket geometry: on a phone, two rows of three */
+    const box = (i: number) => {
+      const cols = W < 640 ? 3 : buckets.length;
+      const c = i % cols, row = Math.floor(i / cols);
+      const x = bx(c), y = top + row * (bh + 60);
+      return { x, y, w: bw, h: bh };
+    };
+    function fill() {
+      balls = [];
+      buckets.forEach((b, i) => {
+        const k = box(i);
+        const per = Math.max(1, Math.floor((k.w - 4) / (2 * R + 2)));
+        b.tools.forEach((t, j) => {
+          const x = k.x + R + 2 + (j % per) * (2 * R + 2) + Math.random() * 3, y = k.y + k.h - R - Math.floor(j / per) * 2 * R - 2;
+          balls.push({ x, y, px: x, py: y, r: R, b: i, label: t });
+        });
+      });
+    }
+
+    let drag: Ball | null = null, mx = 0, my = 0, pmx = 0, pmy = 0;
+    function step() {
+      const G = 0.45;
+      for (const p of balls) {
+        if (p === drag) { p.px = p.x; p.py = p.y; p.x += (mx - p.x) * 0.5; p.y += (my - p.y) * 0.5; continue; }
+        const vx = (p.x - p.px) * 0.99, vy = (p.y - p.py) * 0.99;
+        p.px = p.x; p.py = p.y; p.x += vx; p.y += vy + G;
+      }
+      for (let it = 0; it < 4; it++) {
+        for (let i = 0; i < balls.length; i++) for (let j = i + 1; j < balls.length; j++) {
+          const a = balls[i], b = balls[j];
+          const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy), m = a.r + b.r;
+          if (d > 0 && d < m) { const o = (m - d) / d / 2; a.x -= dx * o; a.y -= dy * o; b.x += dx * o; b.y += dy * o; }
+        }
+        for (const p of balls) {
+          for (let i = 0; i < buckets.length; i++) {
+            const k = box(i);
+            /* walls: left, right, floor of each bucket; open at the top */
+            if (p.y + p.r > k.y && p.y - p.r < k.y + k.h) {
+              if (Math.abs(p.x - k.x) < p.r) p.x = p.x < k.x ? k.x - p.r : k.x + p.r;
+              const rx = k.x + k.w;
+              if (Math.abs(p.x - rx) < p.r) p.x = p.x < rx ? rx - p.r : rx + p.r;
+            }
+            if (p.x > k.x && p.x < k.x + k.w && p.y + p.r > k.y + k.h && p.y < k.y + k.h + p.r) p.y = p.y < k.y + k.h ? k.y + k.h - p.r : k.y + k.h + p.r;
+          }
+          p.x = Math.max(p.r, Math.min(W - p.r, p.x));
+          if (p.y + p.r > H) p.y = H - p.r;
+          if (p.y - p.r < 0) p.y = p.r;
+        }
+      }
+    }
+    function draw() {
+      g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+      const ink = getComputedStyle(document.documentElement).getPropertyValue('--ink-3') || '#64748b';
+      buckets.forEach((b, i) => {
+        const k = box(i);
+        g.fillStyle = b.color + '14'; g.fillRect(k.x, k.y, k.w, k.h);
+        g.strokeStyle = b.color + 'aa'; g.lineWidth = 2;
+        g.beginPath(); g.moveTo(k.x, k.y); g.lineTo(k.x, k.y + k.h); g.lineTo(k.x + k.w, k.y + k.h); g.lineTo(k.x + k.w, k.y); g.stroke();
+        g.fillStyle = b.color; g.font = `700 13px ${font}`; g.textAlign = 'center'; g.fillText(b.name, k.x + k.w / 2, k.y + k.h + 18);
+        g.fillStyle = ink; g.font = `500 10px ${font}`; g.fillText(`${b.tools.length} inside`, k.x + k.w / 2, k.y + k.h + 32);
+      });
+      for (const p of balls) {
+        const c = buckets[p.b].color;
+        const gr = g.createRadialGradient(p.x - p.r * 0.35, p.y - p.r * 0.4, p.r * 0.1, p.x, p.y, p.r);
+        gr.addColorStop(0, '#ffffff55'); gr.addColorStop(0.35, c); gr.addColorStop(1, c);
+        g.fillStyle = gr; g.beginPath(); g.arc(p.x, p.y, p.r, 0, Math.PI * 2); g.fill();
+        g.fillStyle = '#fff'; g.font = `700 ${Math.max(8, p.r * 0.36)}px ${font}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+        const words = p.label.split(' ');
+        if (words.length > 1 && p.label.length > 8) { g.fillText(words[0], p.x, p.y - p.r * 0.2); g.fillText(words.slice(1).join(' '), p.x, p.y + p.r * 0.22); }
+        else g.fillText(p.label, p.x, p.y);
+        g.textBaseline = 'alphabetic';
+      }
+    }
+
+    let raf = 0, running = false, idle = 0;
+    function loop() { step(); draw(); idle++; raf = requestAnimationFrame(loop); if (!drag && idle > 600) stop(); }
+    function go() { idle = 0; if (!running) { running = true; raf = requestAnimationFrame(loop); } }
+    function stop() { running = false; cancelAnimationFrame(raf); }
+
+    const pt = (e: PointerEvent) => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    canvas.addEventListener('pointerdown', (e) => {
+      const [x, y] = pt(e); mx = pmx = x; my = pmy = y;
+      drag = balls.find((p) => Math.hypot(p.x - x, p.y - y) < p.r) || null;
+      if (drag) { canvas.setPointerCapture(e.pointerId); canvas.style.cursor = 'grabbing'; go(); }
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      const [x, y] = pt(e); pmx = mx; pmy = my; mx = x; my = y;
+      if (!drag) canvas.style.cursor = balls.some((p) => Math.hypot(p.x - x, p.y - y) < p.r) ? 'grab' : 'default';
+    });
+    const release = () => { if (drag) { drag.px = drag.x - (mx - pmx) * 1.2; drag.py = drag.y - (my - pmy) * 1.2; drag = null; canvas.style.cursor = 'default'; go(); } };
+    canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
+
+    const section = stage.closest('section')!;
+    section.querySelector('[data-tb-shake]')!.addEventListener('click', () => { for (const p of balls) { p.px = p.x + (Math.random() - 0.5) * 14; p.py = p.y + 10 + Math.random() * 12; } go(); });
+    section.querySelector('[data-tb-tidy]')!.addEventListener('click', () => { fill(); go(); });
+
+    size(); fill();
+    if (still) { for (let i = 0; i < 500; i++) step(); draw(); }
+    else new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) go(); }), { threshold: 0.25 }).observe(stage);
+    let rw = W; window.addEventListener('resize', () => { if (stage.clientWidth !== rw) { rw = stage.clientWidth; size(); fill(); go(); } });
+    draw();
+  });
+</script>
+
+<style>
+  .toolbox { margin: 4rem 0 3rem; }
+  .tb-h { font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 4.5vw, 3rem); letter-spacing: -0.03em; line-height: 1.05; margin: 0.4rem 0 0.6rem; }
+  .tb-h b { font-weight: 800; }
+  .tb-lead { color: var(--ink-2); max-width: 36rem; margin: 0 0 1.4rem; }
+  .tb-stage { position: relative; width: 100%; touch-action: pan-y; }
+  .tb-stage canvas { display: block; width: 100%; }
+  .tb-actions { display: flex; gap: 0.6rem; justify-content: center; margin-top: 1rem; }
+  .tb-list { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>

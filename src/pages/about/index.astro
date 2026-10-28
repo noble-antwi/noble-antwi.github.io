@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { SITE } from '../../lib/site';
 import PathDiagram from '../../components/PathDiagram.astro';
+import Toolbox from '../../components/Toolbox.astro';
 ---
 
 <Base title="About" description="Who Noble Antwi is: an identity and cloud security engineer who came to security through infrastructure, and who documents everything he builds.">
@@ -36,5 +37,7 @@ import PathDiagram from '../../components/PathDiagram.astro';
 
       <p>If any of this sounds like your work too, <a href="/contact/">write to me</a>. Email is {SITE.email}.</p>
     </div>
+
+    <Toolbox />
   </div>
 </Base>

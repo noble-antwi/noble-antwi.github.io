@@ -34,7 +34,8 @@ const rail = [
   { from: J, to: 0.605, label: 'Case files' },
   { from: 0.605, to: 0.775, label: 'Alerts' },
   { from: 0.775, to: 0.885, label: 'Token' },
-  { from: 0.885, to: 1.01, label: 'Contact' },
+  { from: 0.885, to: 0.94, label: 'Play' },
+  { from: 0.94, to: 1.01, label: 'Contact' },
 ];
 const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS', 'Azure', 'Active Directory', 'Entra ID', 'Okta', 'Wazuh', 'pfSense', 'Greenbone', 'HashiCorp Vault', 'Chicago, IL'];
 ---
@@ -96,8 +97,19 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
         <div class="actions"><a class="btn btn-ghost" href="/credentials/">All credentials <span aria-hidden="true">→</span></a></div>
       </div>
 
-      <div class="j-panel j-push" data-from="0.9" data-to="1.5" data-fade="0.012">
-        <span class="j-kicker">12 · Contact</span>
+      <div class="j-panel j-play" data-from="0.893" data-to="0.94" data-fade="0.008">
+        <span class="j-kicker">12 · Play</span>
+        <h2 class="j-h">Want to break something?</h2>
+        <p class="j-p">Three things to try before you go. They all run in your browser, and nothing you type is sent anywhere.</p>
+        <ul class="j-games">
+          <li><button type="button" data-play="breach"><b>Contain the breach</b><span>An attacker is moving through the bank. Isolate hosts before they reach the domain controller.</span><em>Play →</em></button></li>
+          <li><button type="button" data-play="vault"><b>Break-glass</b><span>The emergency account is sealed. Every part of its code is a number on this site.</span><em>Crack it →</em></button></li>
+          <li><button type="button" data-play="term"><b>Terminal</b><span>Ask the lab questions. Some commands do more than print. Press ` anywhere.</span><em>Open →</em></button></li>
+        </ul>
+      </div>
+
+      <div class="j-panel j-push" data-from="0.945" data-to="1.5" data-fade="0.01">
+        <span class="j-kicker">13 · Contact</span>
         <h2 class="j-h">Someone is trying to reach Noble.</h2>
         <p class="j-p">Number match: <b class="j-num">42</b>. Approve to open a session.</p>
         <div class="actions j-ask"><button class="btn" type="button" data-approve>Approve <span aria-hidden="true">✓</span></button><button class="btn btn-ghost" type="button" data-deny>It's not me</button></div>
@@ -177,6 +189,13 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
   .j-links a { font-weight: 700; color: var(--ink); text-decoration: none; font-size: 1.05rem; }
   .j-links a:hover { color: var(--accent); }
   .j-links span { font-size: 0.82rem; color: var(--ink-3); }
+  @media (min-width: 721px) { .j-play { top: max(4.5rem, calc(50% - 17rem)); } }
+  .j-games { list-style: none; margin: 1.4rem 0 0; padding: 0; display: grid; gap: 0.55rem; max-width: 32rem; }
+  .j-games button { width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 0.15rem 1rem; text-align: left; background: color-mix(in srgb, var(--paper) 70%, transparent); border: 1px solid var(--line-2); border-radius: 12px; padding: 0.8rem 1rem; color: var(--ink); cursor: pointer; font: inherit; transition: border-color 0.2s ease, transform 0.2s ease; }
+  .j-games button:hover { border-color: var(--accent); transform: translateX(4px); }
+  .j-games b { font-weight: 700; font-size: 1rem; }
+  .j-games span { grid-column: 1; font-size: 0.84rem; color: var(--ink-2); line-height: 1.4; }
+  .j-games em { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-style: normal; font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); white-space: nowrap; }
   .j-brief { margin-top: 1rem; font-size: 0.9rem; color: var(--ink-2); line-height: 1.5; }
 
   .j-rail { position: absolute; right: 1.1rem; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 0.9rem; z-index: 3; pointer-events: none; }
@@ -185,13 +204,13 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
   .j-rdot.is-active { opacity: 1; color: var(--accent); }
   .j-rdot.is-active i { background: currentColor; box-shadow: 0 0 0 4px var(--accent-soft); }
 
-  .j-marquee { position: absolute; left: 0; right: 0; bottom: 0; overflow: hidden; border-top: 1px solid var(--line); background: var(--paper); opacity: clamp(0, calc((var(--progress) - 0.9) * 10), 1); pointer-events: none; display: none; }
+  .j-marquee { position: absolute; left: 0; right: 0; bottom: 0; overflow: hidden; border-top: 1px solid var(--line); background: var(--paper); opacity: clamp(0, calc((var(--progress) - 0.945) * 14), 1); pointer-events: none; display: none; }
   .journey.is-end .j-marquee { display: block; }
   .j-mtrack { display: flex; gap: 2.5rem; width: max-content; padding: 0.6rem 0; animation: j-marquee 40s linear infinite; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2); }
   .j-mtrack span::after { content: '·'; margin-left: 2.5rem; color: var(--accent); }
   @keyframes j-marquee { to { transform: translateX(-50%); } }
 
-  .j-skip { position: absolute; right: 1.25rem; bottom: 1.25rem; font-size: 0.8rem; padding: 0.5rem 0.85rem; border-radius: 999px; border: 1px solid var(--line-2); background: var(--paper); color: var(--ink-2); text-decoration: none; opacity: clamp(0, calc(1 - (var(--progress) - 0.88) * 12), 1); }
+  .j-skip { position: absolute; right: 1.25rem; bottom: 1.25rem; font-size: 0.8rem; padding: 0.5rem 0.85rem; border-radius: 999px; border: 1px solid var(--line-2); background: var(--paper); color: var(--ink-2); text-decoration: none; opacity: clamp(0, calc(1 - (var(--progress) - 0.93) * 14), 1); }
   .j-skip:hover { color: var(--ink); border-color: var(--accent-line); }
   .j-hint { position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-3); animation: j-bob 2.2s ease-in-out infinite; opacity: clamp(0, calc(1 - var(--progress) * 30), 1); }
   @keyframes j-bob { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 6px); } }
@@ -210,6 +229,9 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
     .j-stats-4 div { min-width: 40%; }
     .j-p { font-size: 0.95rem; }
     .j-case .j-p { -webkit-line-clamp: 3; }
+    .j-games { gap: 0.4rem; margin-top: 0.9rem; }
+    .j-games button { padding: 0.55rem 0.8rem; }
+    .j-games span { display: none; }
     .j-stats { gap: 1.2rem; }
     .j-rail { right: 0.6rem; gap: 0.6rem; }
     .j-rdot { font-size: 0; gap: 0; }
