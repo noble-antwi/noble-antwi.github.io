@@ -101,6 +101,16 @@ const CH_18: Chapter = {
   status: 'current',
 };
 
+const CH_22: Chapter = {
+  num: '22',
+  title: 'CA01: a certificate authority, and LDAPS',
+  summary: 'An enterprise root CA and the trade-offs behind it, a domain controller enrolling without its private key ever leaving it, and LDAPS proven with and without the trusted root.',
+  repo: H,
+  path: 'docs/22-certificate-authority-ca01-and-ldaps.md',
+  pdf: true,
+  status: 'current',
+};
+
 export const CHAPTERS: Record<string, ChapterIndex> = {
   'enterprise-security-homelab': {
     intro: 'Every chapter written so far, in the order a reader would want them. Each one opens on GitHub, where the full runbook, its evidence and a PDF copy live.',
@@ -138,7 +148,7 @@ export const CHAPTERS: Record<string, ChapterIndex> = {
       },
       {
         title: 'Identity and the public edge',
-        items: [ADR_001, CH_17, CH_18],
+        items: [ADR_001, CH_17, CH_22, CH_18],
       },
       {
         title: 'Automation',
@@ -186,7 +196,7 @@ export const CHAPTERS: Record<string, ChapterIndex> = {
       {
         title: 'Version two: the rebuild',
         note: 'The forest moved to corp.biirabank.com in September 2026. These chapters record why and how.',
-        items: [ADR_001, CH_17, CH_18],
+        items: [ADR_001, CH_17, CH_22, CH_18],
       },
       {
         title: 'Phase 1 · Foundation',
