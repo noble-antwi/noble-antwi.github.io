@@ -1,0 +1,154 @@
+---
+/* azure-labs, lab 01: the same governance built twice, by hand in the
+   portal and as Bicep, then tested by requests that the rules let through
+   or refuse. One 13-second loop; every rule and result is from the lab. */
+import VizFrame from './VizFrame.astro';
+import { travel, pulse, hold, C } from './viz';
+
+const DUR = '13s';
+const code = [
+  { t: "targetScope = 'subscription'", c: C.text, s: 0.04 },
+  { t: "module gov 'modules/rg-governance.bicep' = {", c: C.text, s: 0.08 },
+  { t: '  scope: rg   // P1 to P3, the lock', c: C.dim, s: 0.12 },
+  { t: '}', c: C.text, s: 0.15 },
+  { t: '$ az deployment sub what-if', c: C.teal, s: 0.2 },
+  { t: '  8 to create · 0 to change', c: C.green, s: 0.25 },
+  { t: '$ az deployment sub create', c: C.teal, s: 0.29 },
+  { t: '  done in 10 seconds', c: C.green, s: 0.34 },
+];
+const rows = [
+  { k: 'Definition', v: 'Require a tag on resources' },
+  { k: 'Effect', v: 'Deny' },
+  { k: 'Tag name', v: 'owner' },
+];
+const chips = [
+  { id: 'p1', y: 150, t: 'P1 · Modify · inherit a tag', c: C.blue },
+  { id: 'p2', y: 192, t: 'P2 · Deny · needs costCenter', c: C.red },
+  { id: 'p3', y: 234, t: 'P3 · Deny · needs owner', c: C.red },
+  { id: 'p4', y: 276, t: 'P4 · Deny · East US only, subscription-wide', c: C.red },
+  { id: 'lock', y: 318, t: 'Lock · CanNotDelete', c: C.gold },
+];
+const reqs = [
+  { y: 154, t: 'new vnet · owner tag', s: 0.44, e: 0.52, back: false },
+  { y: 238, t: 'new vnet · no owner tag', s: 0.62, e: 0.74, back: true },
+  { y: 280, t: 'new vnet · West US', s: 0.72, e: 0.84, back: true },
+  { y: 322, t: 'delete a vnet', s: 0.82, e: 0.94, back: true },
+];
+const glows = [
+  { y: 150, s: 0.5, e: 0.58, c: C.blue },
+  { y: 192, s: 0.54, e: 0.62, c: C.green },
+  { y: 234, s: 0.57, e: 0.65, c: C.green },
+  { y: 234, s: 0.66, e: 0.76, c: C.red },
+  { y: 276, s: 0.76, e: 0.86, c: C.red },
+  { y: 318, s: 0.86, e: 0.96, c: C.gold },
+];
+const marks = [
+  { y: 172, t: '+ costCenter', c: C.blue, s: 0.52, e: 0.62 },
+  { y: 214, t: '✓', c: C.green, s: 0.56, e: 0.64 },
+  { y: 256, t: '✕ refused', c: C.red, s: 0.68, e: 0.8 },
+  { y: 298, t: '✕ refused', c: C.red, s: 0.78, e: 0.9 },
+  { y: 340, t: '✕ refused', c: C.red, s: 0.88, e: 0.97 },
+];
+const cursor = '200 143;200 143;200 171;200 171;200 199;200 199;346 198;346 198';
+const cursorT = '0;0.04;0.09;0.13;0.18;0.22;0.28;1';
+---
+
+<VizFrame stillAt={11.8} label="Lab 01 · built twice, then tested" caption="The same rules built by hand in the portal, then rebuilt as Bicep: what-if showed eight creates and the deployment took ten seconds. Then the tests. P1 adds the missing costCenter tag before the Deny rules check, so a request with an owner tag is created; a missing owner tag, a West US request and a delete under the lock are all refused.">
+  <svg viewBox="0 40 1000 420" role="img" aria-labelledby="bt-t bt-d">
+    <title id="bt-t">Lab 01 built in the portal and as Bicep, then tested against four policies and a lock</title>
+    <desc id="bt-d">Left, a portal window assigning a Deny policy that requires an owner tag, and a code window deploying the same rules as Bicep: what-if reports eight creates, and the deployment finishes in ten seconds. Centre, the resource group with P1 Modify inherit costCenter, P2 Deny needs costCenter, P3 Deny needs owner, P4 Deny East US only at subscription scope, and a CanNotDelete lock. Right, four requests: a network with an owner tag is created with costCenter added by P1; one without an owner tag is refused by P3; one in West US is refused by P4; a delete is refused by the lock.</desc>
+
+    <!-- portal -->
+    <text x="30" y="58" class="vm" font-size="11" letter-spacing="1.4" fill={C.blue}>BY HAND · PORTAL</text>
+    <rect x="30" y="70" width="370" height="150" rx="10" fill={C.panel} stroke={C.edge} />
+    <path d="M30 80 a10 10 0 0 1 10 -10 h350 a10 10 0 0 1 10 10 v14 h-370 z" fill="#0f2547" />
+    {[0, 1, 2].map((i) => <circle cx={46 + i * 13} cy="82" r="3.6" fill={[C.red, C.gold, C.green][i]} opacity="0.8" />)}
+    <text x="100" y="86" class="vm dim" font-size="10">portal.azure.com · Policy · Assign</text>
+    <text x="46" y="116" font-size="13" font-weight="700">Assign policy · P3</text>
+    {rows.map((r, i) => (
+      <g>
+        <rect x="46" y={132 + i * 28} width="250" height="22" rx="5" fill="#0b1220" stroke={C.edge} />
+        <text x="56" y={147 + i * 28} class="vm dim" font-size="10">{r.k}</text>
+        <text x="132" y={147 + i * 28} font-size="11.5">{r.v}</text>
+        {(() => { const p = pulse([0.02, 0.09, 0.17][i], [0.08, 0.15, 0.23][i]); return (
+          <rect class="fx" x="46" y={132 + i * 28} width="250" height="22" rx="5" fill="none" stroke={C.blue} stroke-width="1.6" opacity="0">
+            <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={p.values} keyTimes={p.keyTimes} />
+          </rect>); })()}
+      </g>
+    ))}
+    <rect x="310" y="186" width="76" height="24" rx="6" fill={C.blue} />
+    <text x="348" y="202" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0b1220">Create</text>
+    <text x="30" y="240" class="vm dim" font-size="10.5">64 screenshots · each decision kept, every break recorded</text>
+    <g class="mv" style={`color:${C.text}`}>
+      <animateTransform attributeName="transform" type="translate" dur={DUR} repeatCount="indefinite" values={cursor} keyTimes={cursorT} />
+      <path d="M0 0 L0 15 L4 11 L7 18 L9.5 17 L6.5 10 L12 10 Z" fill="#fff" stroke="#0b1220" stroke-width="1" />
+    </g>
+
+    <!-- code -->
+    <text x="30" y="266" class="vm" font-size="11" letter-spacing="1.4" fill={C.teal}>AS CODE · BICEP</text>
+    <rect x="30" y="276" width="370" height="170" rx="10" fill="#070d1a" stroke={C.edge} />
+    {code.map((l, i) => { const h = hold(l.s, 0.95); return (
+      <text x="46" y={302 + i * 18} class="vm" font-size="11" fill={l.c}>
+        {l.t}
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={h.values} keyTimes={h.keyTimes} />
+      </text>
+    ); })}
+
+    <!-- both builds land in one place -->
+    <path d="M400 150 C 432 150 430 205 460 205" fill="none" stroke={C.faint} stroke-width="1.5" />
+    <path d="M400 360 C 432 360 430 290 460 290" fill="none" stroke={C.faint} stroke-width="1.5" />
+    <path id="bt-a1" d="M400 150 C 432 150 430 205 460 205" fill="none" />
+    <path id="bt-a2" d="M400 360 C 432 360 430 290 460 290" fill="none" />
+    {[{ p: 'bt-a1', s: 0.28, e: 0.34, c: C.blue }, { p: 'bt-a2', s: 0.35, e: 0.41, c: C.teal }].map((d) => { const t = travel(d.s, d.e); return (
+      <circle class="mv" r="5" fill={d.c} style={`color:${d.c}`} opacity="0">
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" calcMode="discrete" values={t.shown.values} keyTimes={t.shown.keyTimes} />
+        <animateMotion dur={DUR} repeatCount="indefinite" calcMode="linear" keyPoints={t.keyPoints} keyTimes={t.keyTimes}><mpath href={`#${d.p}`} /></animateMotion>
+      </circle>); })}
+
+    <!-- resource group -->
+    <rect x="460" y="90" width="300" height="340" rx="14" fill="#0d1830" stroke={C.blue} stroke-opacity="0.55" />
+    <text x="476" y="117" class="vm" font-size="13" font-weight="700">rg-lab-governance-tagging</text>
+    <text x="476" y="136" class="vm dim" font-size="10">costCenter=it-lab · owner=noble · lab tags</text>
+    {chips.map((c) => (
+      <g>
+        <rect x="476" y={c.y} width="268" height="34" rx="8" fill={C.panel} stroke={c.c} stroke-opacity="0.55" />
+        <rect x="476" y={c.y} width="4" height="34" rx="2" fill={c.c} />
+        <text x="490" y={c.y + 21} font-size="12">{c.t}</text>
+        {c.note && <text x="736" y={c.y + 21} text-anchor="end" class="vm dim" font-size="9.5">{c.note}</text>}
+      </g>
+    ))}
+    {glows.map((g) => { const p = pulse(g.s, g.e); return (
+      <rect class="fx" x="473" y={g.y - 3} width="274" height="40" rx="10" fill="none" stroke={g.c} stroke-width="2" opacity="0" style={`filter:drop-shadow(0 0 7px ${g.c})`}>
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={p.values} keyTimes={p.keyTimes} />
+      </rect>); })}
+    {marks.map((m) => { const h = hold(m.s, m.e); return (
+      <text class="fx vm" x="740" y={m.y} text-anchor="end" font-size="10.5" font-weight="700" fill={m.c} opacity="0">{m.t}
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={h.values} keyTimes={h.keyTimes} />
+      </text>); })}
+    {(() => { const h = hold(0.6, 0.96); return (
+      <g opacity="0" class="fx">
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={h.values} keyTimes={h.keyTimes} />
+        <rect x="476" y="368" width="268" height="44" rx="8" fill="#0f2a1c" stroke={C.green} stroke-opacity="0.7" />
+        <text x="490" y="387" font-size="11.5" font-weight="700" fill={C.green}>✓ created: vnet-p3-ok</text>
+        <text x="490" y="403" class="vm dim" font-size="10">costCenter added by P1 before P2 checked</text>
+      </g>); })()}
+
+    <!-- requests -->
+    <text x="788" y="117" class="vm dim" font-size="11" letter-spacing="1.4">REQUESTS</text>
+    {reqs.map((r) => {
+      const X = 230;
+      const m = +((r.s + r.e) / 2).toFixed(3);
+      const values = r.back ? `${X} 0;${X} 0;0 0;${X} 0;${X} 0` : `${X} 0;${X} 0;0 0;0 0`;
+      const keyTimes = r.back ? `0;${r.s};${m};${r.e};1` : `0;${r.s};${r.e};1`;
+      const shown = r.back ? { values: '0;1;0', keyTimes: `0;${r.s};${r.e}` } : { values: '0;1;0', keyTimes: `0;${r.s};0.62` };
+      return (
+        <g class="mv" opacity="0" style={`color:${r.back ? C.red : C.green}`}>
+          <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" calcMode="discrete" values={shown.values} keyTimes={shown.keyTimes} />
+          <animateTransform attributeName="transform" type="translate" dur={DUR} repeatCount="indefinite" values={values} keyTimes={keyTimes} />
+          <rect x="770" y={r.y} width="196" height="26" rx="13" fill="#0b1220" stroke="currentColor" stroke-width="1.4" />
+          <text x="786" y={r.y + 17} class="vm" font-size="10.5">{r.t}</text>
+        </g>
+      );
+    })}
+  </svg>
+</VizFrame>

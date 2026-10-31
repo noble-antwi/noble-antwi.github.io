@@ -1,0 +1,153 @@
+---
+/* Ask my SIEM, one question end to end: what sits outside the lab, what
+   runs on the laptop, and what the agent's own identities may reach inside.
+   One 11-second loop; every moving part is a fact from the project's README. */
+import VizFrame from './VizFrame.astro';
+import { travel, pulse, hold, C } from './viz';
+
+const DUR = '11s';
+const P = {
+  ask: 'M135 172 L135 222',
+  call: 'M230 248 C 268 248 282 144 320 144',
+  search: 'M450 178 L450 265 L580 265 C 622 265 616 150 660 150',
+  archive: 'M580 262 C 626 262 640 192 676 192',
+  lookup: 'M580 305 C 616 305 624 300 660 300',
+  back: 'M660 172 C 612 172 626 372 586 372 L294 372 C 262 372 252 300 230 290',
+  secret: 'M360 372 L298 372',
+  answer: 'M135 296 L135 360',
+};
+const dots = [
+  { p: 'ask', s: 0.01, e: 0.08, c: C.text },
+  { p: 'call', s: 0.1, e: 0.19, c: C.violet },
+  { p: 'search', s: 0.21, e: 0.34, c: C.teal },
+  { p: 'archive', s: 0.3, e: 0.4, c: C.red, back: true },
+  { p: 'lookup', s: 0.37, e: 0.49, c: C.gold, back: true },
+  { p: 'back', s: 0.5, e: 0.66, c: C.teal },
+  { p: 'back', s: 0.53, e: 0.69, c: C.teal },
+  { p: 'back', s: 0.56, e: 0.72, c: C.teal },
+  { p: 'secret', s: 0.58, e: 0.64, c: C.red },
+  { p: 'answer', s: 0.75, e: 0.82, c: C.violet },
+];
+const glows = [
+  { x: 40, y: 112, w: 190, h: 60, s: 0.0, e: 0.1, c: C.text },
+  { x: 40, y: 222, w: 190, h: 74, s: 0.07, e: 0.2, c: C.violet },
+  { x: 320, y: 112, w: 260, h: 66, s: 0.16, e: 0.3, c: C.violet },
+  { x: 660, y: 104, w: 300, h: 120, s: 0.3, e: 0.46, c: C.teal },
+  { x: 660, y: 262, w: 300, h: 96, s: 0.4, e: 0.52, c: C.gold },
+  { x: 246, y: 354, w: 50, h: 36, s: 0.56, e: 0.7, c: C.gold },
+  { x: 40, y: 222, w: 190, h: 74, s: 0.66, e: 0.78, c: C.violet },
+  { x: 40, y: 360, w: 190, h: 88, s: 0.8, e: 0.97, c: C.green },
+];
+const zone = (x: number, y: number, w: number, h: number, c: string) => ({ x, y, width: w, height: h, rx: 14, fill: 'none', stroke: c, 'stroke-dasharray': '4 6', 'stroke-opacity': 0.55 });
+const card = { fill: C.panel, stroke: C.edge, rx: 10 };
+---
+
+<VizFrame stillAt={9.9} label="Ask my SIEM · one question, end to end" caption="The model never connects to the lab. It asks for a tool; code on the laptop runs a fixed query as the agent's own read-only identities, the archive answers 403, and everything that goes back to the model passes the redaction filter first.">
+  <svg viewBox="0 34 1000 446" role="img" aria-labelledby="ab-t ab-d">
+    <title id="ab-t">How one question to the AI agent becomes an answer</title>
+    <desc id="ab-d">Three zones. Outside the lab, the model provider: a question, Claude, and the answer. On the laptop, the agent's loop, a fixed query template and three read-only tools. Inside the lab, SIEM01 reached over an SSH tunnel as svc-ask-siem with read on alerts only and 403 on the archives, DC01 reached over LDAPS with its certificate checked by name, and CA01, which signed that certificate. Results return through a redaction filter before they leave.</desc>
+    <defs>
+      {Object.entries(P).map(([k, d]) => <path id={`ab-${k}`} d={d} />)}
+      <linearGradient id="ab-tube" x1="0" x2="1"><stop offset="0" stop-color={C.teal} stop-opacity="0.05" /><stop offset="1" stop-color={C.teal} stop-opacity="0.35" /></linearGradient>
+    </defs>
+
+    <!-- zones -->
+    <rect {...zone(20, 70, 230, 394, C.violet)} />
+    <text x="36" y="96" class="vm" font-size="11" letter-spacing="1.4" fill={C.violet}>OUTSIDE · MODEL PROVIDER</text>
+    <rect {...zone(300, 70, 300, 394, C.dim)} />
+    <text x="316" y="96" class="vm" font-size="11" letter-spacing="1.4" fill={C.dim}>THE LAPTOP · AGENT CODE</text>
+    <rect {...zone(640, 70, 340, 394, C.teal)} />
+    <text x="656" y="96" class="vm" font-size="11" letter-spacing="1.4" fill={C.teal}>INSIDE · BIIRA BANK LAB</text>
+
+    <!-- the line nothing crosses unfiltered -->
+    <line x1="271" y1="60" x2="271" y2="470" stroke={C.gold} stroke-dasharray="2 5" stroke-opacity="0.7" />
+    <text x="271" y="52" text-anchor="middle" class="vm" font-size="10.5" letter-spacing="1.2" fill={C.gold}>WHAT LEAVES</text>
+
+    <!-- faint wires -->
+    {Object.entries(P).filter(([k]) => k !== 'secret').map(([k]) => <use href={`#ab-${k}`} fill="none" stroke={C.faint} stroke-width="1.5" />)}
+    <path d="M600 150 L660 150" stroke="url(#ab-tube)" stroke-width="14" stroke-linecap="round" />
+    <text x="630" y="137" text-anchor="middle" class="vm dim" font-size="9.5">SSH</text>
+
+    <!-- outside -->
+    <rect x="40" y="112" width="190" height="60" {...card} />
+    <text x="56" y="135" class="vm dim" font-size="10.5">YOU ASK</text>
+    <text x="56" y="157" font-size="13.5">Anything unusual on WKS01?</text>
+    <rect x="40" y="222" width="190" height="74" {...card} stroke={C.violet} stroke-opacity="0.6" />
+    <text x="56" y="252" font-size="19" font-weight="700">Claude</text>
+    <text x="56" y="276" class="dim" font-size="12">asks for tools, never runs them</text>
+    <rect x="40" y="360" width="190" height="88" {...card} />
+    <text x="56" y="384" class="vm dim" font-size="10.5">THE ANSWER</text>
+    <text x="56" y="406" font-size="12.5">cites the rule and time</text>
+    <text x="56" y="424" font-size="12.5">behind every claim, ends</text>
+    <text x="56" y="442" font-size="12.5">with what a human checks</text>
+
+    <!-- laptop -->
+    <rect x="320" y="112" width="260" height="66" {...card} />
+    <text x="336" y="139" font-size="16" font-weight="700" class="vm">agent.py</text>
+    <text x="336" y="162" class="dim" font-size="12">the loop · capped at 8 rounds</text>
+    <rect x="320" y="196" width="260" height="34" rx="8" fill="none" stroke={C.violet} stroke-opacity="0.45" />
+    <text x="336" y="218" font-size="12">fixed query · Claude only fills blanks</text>
+    <text x="566" y="244" text-anchor="end" class="vm dim" font-size="9.5">all read-only</text>
+    {['search_wazuh_alerts', 'lookup_host', 'lookup_account'].map((t, i) => (
+      <g>
+        <rect x="320" y={250 + i * 40} width="260" height="30" rx="7" fill={C.panel} stroke={C.edge} />
+        <text x="336" y={270 + i * 40} class="vm" font-size="12">{t}</text>
+      </g>
+    ))}
+    <rect x="320" y="396" width="260" height="52" rx="8" fill="none" stroke={C.edge} />
+    <text x="336" y="417" font-size="12">inputs checked in code</text>
+    <text x="336" y="436" class="vm dim" font-size="10">1 to 168 h · no * · IPs must parse</text>
+
+    <!-- the filter on the way out -->
+    <rect x="246" y="354" width="50" height="36" rx="8" fill="#1f1a0b" stroke={C.gold} />
+    <text x="271" y="376" text-anchor="middle" class="vm" font-size="10" fill={C.gold}>redact</text>
+    <text x="271" y="406" text-anchor="middle" class="vm dim" font-size="9.5">18 tests</text>
+
+    <!-- lab -->
+    <rect x="660" y="104" width="300" height="120" {...card} stroke={C.teal} stroke-opacity="0.55" />
+    <text x="676" y="130" font-size="15" font-weight="700">SIEM01 · Wazuh indexer</text>
+    <text x="676" y="150" class="vm dim" font-size="10.5">listens on 127.0.0.1:9200 only</text>
+    <text x="676" y="168" class="vm" font-size="10.5" fill={C.teal}>svc-ask-siem → read wazuh-alerts-*</text>
+    <rect x="676" y="178" width="268" height="30" rx="7" fill="#2a1215" stroke={C.red} stroke-opacity="0.7" />
+    <text x="690" y="198" class="vm" font-size="10.5" fill={C.red}>wazuh-archives-* · 403</text>
+
+    <rect x="660" y="262" width="300" height="96" {...card} stroke={C.gold} stroke-opacity="0.5" />
+    <text x="676" y="288" font-size="15" font-weight="700">DC01 · Active Directory</text>
+    <text x="676" y="309" class="vm dim" font-size="10.5">LDAPS 636 · cert checked by name</text>
+    <text x="676" y="328" class="vm" font-size="10.5" fill={C.gold}>svc-ask-siem · Domain Users only</text>
+    <text x="676" y="346" class="vm dim" font-size="10.5">allow-listed attributes only</text>
+
+    <rect x="660" y="378" width="300" height="70" rx="10" fill="none" stroke={C.edge} />
+    <text x="676" y="403" font-size="13" font-weight="600">CA01 · Biira Bank Root CA</text>
+    <text x="676" y="424" class="vm dim" font-size="10.5">signed DC01's certificate; the agent</text>
+    <text x="676" y="440" class="vm dim" font-size="10.5">checks the chain up to this root</text>
+    <path d="M810 378 L810 358" stroke={C.edge} stroke-dasharray="3 4" />
+
+    <!-- glows -->
+    {glows.map((g) => { const a = pulse(g.s, g.e); return (
+      <rect class="fx" x={g.x - 3} y={g.y - 3} width={g.w + 6} height={g.h + 6} rx="12" fill="none" stroke={g.c} stroke-width="2" opacity="0" style={`filter:drop-shadow(0 0 8px ${g.c})`}>
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={a.values} keyTimes={a.keyTimes} />
+      </rect>
+    ); })}
+
+    <!-- flashes -->
+    {(() => { const a = pulse(0.36, 0.5); return (
+      <g class="fx" opacity="0"><animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={a.values} keyTimes={a.keyTimes} />
+        <rect x="612" y="206" width="56" height="22" rx="11" fill={C.red} /><text x="640" y="221" text-anchor="middle" class="vm" font-size="11" font-weight="700" fill="#0b1220">403</text></g>
+    ); })()}
+    {(() => { const a = hold(0.62, 0.76); return (
+      <g class="fx" opacity="0"><animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={a.values} keyTimes={a.keyTimes} />
+        <text x="298" y="342" class="vm" font-size="10.5" fill={C.red}>✕ secret stripped</text></g>
+    ); })()}
+
+    <!-- moving parts -->
+    {dots.map((d) => { const t = travel(d.s, d.e, d.back); return (
+      <circle class="mv" r="5.5" fill={d.c} style={`color:${d.c}`} opacity="0">
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" calcMode="discrete" values={t.shown.values} keyTimes={t.shown.keyTimes} />
+        <animateMotion dur={DUR} repeatCount="indefinite" calcMode="linear" keyPoints={t.keyPoints} keyTimes={t.keyTimes}>
+          <mpath href={`#ab-${d.p}`} />
+        </animateMotion>
+      </circle>
+    ); })}
+  </svg>
+</VizFrame>

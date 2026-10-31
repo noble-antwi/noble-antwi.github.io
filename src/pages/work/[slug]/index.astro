@@ -5,6 +5,7 @@ import Base from '../../../layouts/Base.astro';
 import PostList from '../../../components/PostList.astro';
 import ChapterIndex from '../../../components/ChapterIndex.astro';
 import Replay from '../../../components/Replay.astro';
+import Visual from '../../../components/visuals/Visual.astro';
 import { CHAPTERS } from '../../../data/chapters';
 import { byDateDesc, WORK_CATEGORIES } from '../../../lib/site';
 
@@ -57,6 +58,8 @@ const related = d.relatedTags.length
       </figure>
     )}
 
+    <Visual slug={work.id} at="top" />
+
     {d.stats.length > 0 && (
       <div class="work-stats" data-topic={d.category}>
         {d.stats.map((s) => <div><strong>{s.value}</strong><span>{s.label}</span></div>)}
@@ -74,6 +77,7 @@ const related = d.relatedTags.length
     )}
 
     <Replay slug={work.id} topic={d.category} />
+    <Visual slug={work.id} at="after-replay" />
 
     <div class="prose" id="overview">
       <Content />

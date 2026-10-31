@@ -19,12 +19,12 @@ const journeyRaw: { from: number; to: number; n: string; k: string; h: string; p
   { from: 0.48, to: 0.60, n: '04', k: 'Cloud', h: 'Least privilege, in the cloud too.', p: 'The same identity reaches AWS and Azure by federation, with no standing keys. Posture is scanned with Prowler and ScoutSuite, every finding mapped to CIS, NIST and PCI, and idle resources found before they cost money.', stats: [['2', 'clouds', 0.50], ['500+', 'posture checks', 0.51], ['0', 'standing keys', 0.52]] },
   { from: 0.60, to: 0.725, n: '05', k: 'Detection', h: 'On the record.', p: 'Every step was logged. Agents on WKS01 and DC01 ship their events through the firewall to SIEM01, where Wazuh decodes each one, alerts on the few that matter, and keeps the rest.', stats: [['39,322', 'events decoded', 0.63], ['1,963', 'alerts, about 5%', 0.645], ['100%', 'kept in the archive', 0.66]] },
   { from: 0.735, to: 0.85, n: '06', k: 'Assessment', h: 'Scanned, fixed, proved.', p: 'A credentialed scan from SCAN01 found TLS 1.0 and 1.1 still offered on WKS01. A scoped, reversible Group Policy removed them, and a third scan proved them gone.', stats: [['3', 'scans of one machine', 0.76], ['1', 'finding closed, with proof', 0.77]] },
-  { from: 0.86, to: 0.92, n: '07', k: 'The estate', h: 'Built, documented, proven.', p: 'Six VLANs behind one default-deny firewall, a rebuilt forest federated to two cloud identity providers, two clouds under posture scanning, a SIEM with its own rules, and every decision written down.', stats: [['6', 'VLANs', 0.87], ['3', 'identity providers', 0.88], ['2', 'clouds', 0.89], ['21', 'runbooks', 0.90]] },
+  { from: 0.86, to: 0.92, n: '07', k: 'The estate', h: 'Built, documented, proven.', p: 'Six VLANs behind one default-deny firewall, a rebuilt forest federated to two cloud identity providers, two clouds under posture scanning, a SIEM with its own rules, and every decision written down.', stats: [['6', 'VLANs', 0.87], ['3', 'identity providers', 0.88], ['2', 'clouds', 0.89], ['22', 'runbooks', 0.90]] },
 ];
 const journey = journeyRaw.map((s) => ({ ...s, from: jt(s.from), to: jt(s.to), stats: s.stats?.map(([val, l, a]) => [val, l, jt(a)] as Stat) }));
 
 const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
-const PICKS = ['enterprise-iam-lab', 'enterprise-security-homelab', 'cloud-security-posture-dashboard', 'biirabank-web', 'collins-aerospace-it-audit', 'iam-job-scout'];
+const PICKS = ['enterprise-iam-lab', 'enterprise-security-homelab', 'cloud-security-posture-dashboard', 'biirabank-web', 'collins-aerospace-it-audit', 'ai-agent-identity-lab'];
 const cases = PICKS.map((id) => all.find((w) => w.id === id)).filter((w): w is (typeof all)[number] => !!w);
 const pad = (n: number) => String(n).padStart(2, '0');
 

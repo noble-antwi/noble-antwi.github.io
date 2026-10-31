@@ -1,0 +1,116 @@
+---
+/* Chapter 22 of the homelab: how DC01 got a certificate from CA01 without
+   its private key ever moving, and why a client that holds the root can
+   tell DC01 from an impostor while one that does not cannot. One 12-second
+   loop; every value is from the chapter's evidence. */
+import VizFrame from './VizFrame.astro';
+import { travel, pulse, hold, C } from './viz';
+
+const DUR = '12s';
+const P = {
+  csr: 'M640 150 C 560 150 450 150 360 150',
+  cert: 'M360 196 C 450 196 560 196 640 196',
+  ok: 'M330 340 C 470 340 520 300 640 300',
+  bad: 'M330 400 C 470 400 520 330 640 322',
+};
+const card = { fill: C.panel, stroke: C.edge, rx: 12 };
+const glows = [
+  { x: 640, y: 70, w: 300, h: 160, s: 0.0, e: 0.12, c: C.violet },
+  { x: 60, y: 70, w: 300, h: 160, s: 0.14, e: 0.3, c: C.gold },
+  { x: 640, y: 70, w: 300, h: 160, s: 0.3, e: 0.42, c: C.green },
+];
+---
+
+<VizFrame stillAt={10.6} label="CA01 and DC01 · a chain of trust" caption="DC01 made its own key pair and sent CA01 only its name and public key; CA01 signed and sent back a certificate for DC01.corp.biirabank.com. A laptop that holds the checked root sees Verification: OK and the right name. Without the root it stops at error 20: the connection is encrypted, but it cannot say to whom. Encryption without verification protects against eavesdroppers, not impostors.">
+  <svg viewBox="0 34 1000 412" role="img" aria-labelledby="ct-t ct-d">
+    <title id="ct-t">How DC01 got its certificate from CA01, and how a client checks it</title>
+    <desc id="ct-d">CA01, the Biira Bank Root CA, RSA 4096, valid ten years. DC01 generates its own key pair and sends a request holding its name and public key; the private key never leaves DC01. CA01 signs and returns a certificate for DC01.corp.biirabank.com with server authentication, valid one year. Below, an admin laptop outside the domain connects to DC01 on port 636 twice: with the root certificate, checked by its SHA-256 fingerprint, the result is Verification OK and the verified name DC01.corp.biirabank.com; without it, error 20, unable to get local issuer certificate.</desc>
+    <defs>{Object.entries(P).map(([k, d]) => <path id={`ct-${k}`} d={d} />)}</defs>
+
+    <text x="60" y="52" class="vm" font-size="11" letter-spacing="1.4" fill={C.gold}>VLAN 50 · TIER 0</text>
+
+    <!-- CA01 -->
+    <rect x="60" y="70" width="300" height="160" {...card} stroke={C.gold} stroke-opacity="0.6" />
+    <g transform="translate(78 92)">
+      <circle cx="16" cy="16" r="16" fill="none" stroke={C.gold} stroke-width="2" />
+      <path d="M8 16 l5 5 l11 -11" fill="none" stroke={C.gold} stroke-width="2.4" stroke-linecap="round" />
+    </g>
+    <text x="124" y="104" font-size="16" font-weight="700">CA01</text>
+    <text x="124" y="122" class="dim" font-size="12">Biira Bank Root CA</text>
+    <text x="78" y="158" class="vm" font-size="10.5" fill={C.gold}>enterprise root · RSA 4096 · SHA-256</text>
+    <text x="78" y="176" class="vm dim" font-size="10.5">valid 10 years · signs itself</text>
+    <text x="78" y="200" class="vm dim" font-size="10.5">templates decide who may enrol:</text>
+    <text x="78" y="216" class="vm dim" font-size="10.5">Domain Controllers → Enroll</text>
+
+    <!-- DC01 -->
+    <rect x="640" y="70" width="300" height="160" {...card} stroke={C.violet} stroke-opacity="0.6" />
+    <text x="658" y="100" font-size="16" font-weight="700">DC01</text>
+    <text x="658" y="118" class="vm dim" font-size="10.5">DC01.corp.biirabank.com</text>
+    <g transform="translate(658 134)">
+      <rect x="0" y="8" width="18" height="14" rx="3" fill="none" stroke={C.violet} stroke-width="1.8" />
+      <path d="M4 8 v-3 a5 5 0 0 1 10 0 v3" fill="none" stroke={C.violet} stroke-width="1.8" />
+    </g>
+    <text x="684" y="152" font-size="12">private key, made here</text>
+    <text x="684" y="168" class="vm" font-size="10.5" fill={C.violet}>never leaves DC01</text>
+    {(() => { const h = hold(0.34, 0.97); return (
+      <g opacity="0">
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={h.values} keyTimes={h.keyTimes} />
+        <rect x="658" y="182" width="266" height="36" rx="8" fill="#0f2a1c" stroke={C.green} stroke-opacity="0.7" />
+        <text x="670" y="197" class="vm" font-size="10" fill={C.green}>CN=DC01.corp.biirabank.com</text>
+        <text x="670" y="211" class="vm dim" font-size="9.5">issuer Biira Bank Root CA · 1 year</text>
+      </g>); })()}
+
+    <!-- the exchange -->
+    <use href="#ct-csr" fill="none" stroke={C.faint} stroke-width="1.5" stroke-dasharray="3 5" />
+    <use href="#ct-cert" fill="none" stroke={C.faint} stroke-width="1.5" stroke-dasharray="3 5" />
+    <text x="500" y="140" text-anchor="middle" class="vm dim" font-size="10.5">request: name + public key</text>
+    <text x="500" y="218" text-anchor="middle" class="vm dim" font-size="10.5">certificate, signed by CA01</text>
+    <text x="500" y="176" text-anchor="middle" class="vm" font-size="10" fill={C.dim} letter-spacing="1">certutil -pulse · auto-enrolment</text>
+
+    <!-- laptop and the two checks -->
+    <text x="60" y="292" class="vm" font-size="11" letter-spacing="1.4" fill={C.teal}>OUTSIDE THE DOMAIN</text>
+    <rect x="60" y="306" width="270" height="120" {...card} />
+    <text x="78" y="334" font-size="15" font-weight="700">Admin laptop</text>
+    <text x="78" y="353" class="vm dim" font-size="10.5">never joined the domain</text>
+    <text x="78" y="378" class="vm" font-size="10.5" fill={C.teal}>root SHA-256 86b71d70…6fcadf</text>
+    <text x="78" y="396" class="vm dim" font-size="10.5">checked before it was trusted</text>
+    <text x="78" y="414" class="vm dim" font-size="10.5">openssl s_client · port 636</text>
+
+    <use href="#ct-ok" fill="none" stroke={C.faint} stroke-width="1.5" />
+    <use href="#ct-bad" fill="none" stroke={C.faint} stroke-width="1.5" />
+    <rect x="640" y="270" width="300" height="160" {...card} />
+    <text x="658" y="296" font-size="13" font-weight="600">DC01 · LDAPS 636</text>
+    <text x="658" y="314" class="vm dim" font-size="10">TLS 1.3 · TLS_AES_256_GCM_SHA384 · X25519</text>
+
+    {(() => { const h = hold(0.5, 0.97); return (
+      <g opacity="0">
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={h.values} keyTimes={h.keyTimes} />
+        <rect x="658" y="328" width="266" height="40" rx="8" fill="#0f2a1c" stroke={C.green} stroke-opacity="0.7" />
+        <text x="670" y="344" class="vm" font-size="10.5" font-weight="700" fill={C.green}>with the root · Verification: OK</text>
+        <text x="670" y="360" class="vm dim" font-size="9.5">verified peername DC01.corp.biirabank.com</text>
+      </g>); })()}
+    {(() => { const h = hold(0.72, 0.97); return (
+      <g opacity="0">
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={h.values} keyTimes={h.keyTimes} />
+        <rect x="658" y="376" width="266" height="40" rx="8" fill="#2a1215" stroke={C.red} stroke-opacity="0.7" />
+        <text x="670" y="392" class="vm" font-size="10.5" font-weight="700" fill={C.red}>without it · error 20</text>
+        <text x="670" y="408" class="vm dim" font-size="9.5">unable to get local issuer certificate</text>
+      </g>); })()}
+
+    <!-- glows -->
+    {glows.map((g) => { const p = pulse(g.s, g.e); return (
+      <rect class="fx" x={g.x - 3} y={g.y - 3} width={g.w + 6} height={g.h + 6} rx="14" fill="none" stroke={g.c} stroke-width="2" opacity="0" style={`filter:drop-shadow(0 0 8px ${g.c})`}>
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" values={p.values} keyTimes={p.keyTimes} />
+      </rect>); })}
+
+    <!-- moving parts: the request, the certificate, the two connections -->
+    {[{ p: 'csr', s: 0.04, e: 0.16, c: C.violet, kind: 'doc' }, { p: 'cert', s: 0.2, e: 0.33, c: C.gold, kind: 'seal' }, { p: 'ok', s: 0.4, e: 0.5, c: C.green, kind: 'dot' }, { p: 'bad', s: 0.62, e: 0.72, c: C.red, kind: 'dot' }].map((d) => { const t = travel(d.s, d.e); return (
+      <g class="mv" style={`color:${d.c}`} opacity="0">
+        <animate attributeName="opacity" dur={DUR} repeatCount="indefinite" calcMode="discrete" values={t.shown.values} keyTimes={t.shown.keyTimes} />
+        <animateMotion dur={DUR} repeatCount="indefinite" calcMode="linear" keyPoints={t.keyPoints} keyTimes={t.keyTimes}><mpath href={`#ct-${d.p}`} /></animateMotion>
+        {d.kind === 'doc' && <g><rect x="-11" y="-14" width="22" height="28" rx="3" fill="#1b1533" stroke={d.c} stroke-width="1.6" /><path d="M-6 -6 h12 M-6 0 h12 M-6 6 h8" stroke={d.c} stroke-width="1.4" /></g>}
+        {d.kind === 'seal' && <g><rect x="-12" y="-15" width="24" height="30" rx="3" fill="#2a210a" stroke={d.c} stroke-width="1.6" /><circle cx="0" cy="4" r="6" fill={d.c} /><path d="M-6 -8 h12" stroke={d.c} stroke-width="1.4" /></g>}
+        {d.kind === 'dot' && <circle r="5.5" fill={d.c} />}
+      </g>); })}
+  </svg>
+</VizFrame>

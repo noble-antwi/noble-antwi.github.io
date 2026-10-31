@@ -1,7 +1,7 @@
 ---
 title: "Enterprise Security Homelab"
 kicker: "Infrastructure · Detection · Biira Bank"
-summary: "A six-VLAN, default-deny network for a fictional regional bank: pfSense, managed switching, a Proxmox hypervisor on a trunk port, a Windows Server 2025 domain controller, a Wazuh SIEM with five agents and its own detection rules, including thirty for an internal application's identity log, a Greenbone scanner whose identity is administrator on member machines and nothing on the domain, a first finding found, fixed and proved closed, and every firewall rule justified and mapped to a NIST control."
+summary: "A six-VLAN, default-deny network for a fictional regional bank: pfSense, managed switching, a Proxmox hypervisor on a trunk port, a Windows Server 2025 domain controller answering LDAPS with a certificate from the lab's own root CA, a Wazuh SIEM with five agents and its own detection rules, including thirty for an internal application's identity log, a Greenbone scanner whose identity is administrator on member machines and nothing on the domain, a first finding found, fixed and proved closed, and every firewall rule justified and mapped to a NIST control."
 category: detection
 status: active
 statusLabel: "In active build"
@@ -11,18 +11,36 @@ period: "2025 to present"
 role: "Design, build, operate, document"
 repo: https://github.com/noble-antwi/enterprise-security-homelab
 docs: https://github.com/noble-antwi/enterprise-security-homelab/tree/main/docs
-docsLabel: "21 runbooks (md + PDF)"
-stack: ["pfSense", "802.1Q VLANs", "Proxmox VE", "Windows Server 2025", "Wazuh 4.14", "Sysmon", "Greenbone CE", "Group Policy", "Kali Linux", "Ansible", "Tailscale", "CIS Benchmarks"]
+docsLabel: "22 runbooks"
+stack: ["pfSense", "802.1Q VLANs", "Proxmox VE", "Windows Server 2025", "Wazuh 4.14", "Sysmon", "Greenbone CE", "Group Policy", "AD CS", "LDAPS", "Kali Linux", "Ansible", "Tailscale", "CIS Benchmarks"]
 relatedTags: ["homelab", "proxmox", "pfsense", "vlan", "networking", "wazuh", "siem", "greenbone", "group-policy", "detection-engineering", "vulnerability-management"]
 hero: ../../assets/work/enterprise-security-homelab/network-architecture.png
 heroAlt: "Network architecture diagram: internet, pfSense, two switches and six VLAN security zones with firewall status, the hosts in each zone and their Wazuh agents"
-heroCaption: "Current-state architecture on corp.biirabank.com. Switch 1 trunks to pfSense and to Switch 2, which carries every tagged VLAN to the Proxmox host; each zone shows its firewall status, its hosts and which of them report to the SIEM."
+heroCaption: "Current-state architecture on corp.biirabank.com, as of 30 October 2026, with the Tier 0 identity systems grouped on VLAN 50. Switch 1 trunks to pfSense and to Switch 2, which carries every tagged VLAN to the Proxmox host; each zone shows its firewall status, its hosts and which of them report to the SIEM."
 stats:
   - { value: "6", label: "VLAN security zones" }
   - { value: "3 / 6", label: "Rulesets hardened" }
   - { value: "5", label: "Wazuh agents reporting" }
   - { value: "4", label: "CIS baselines recorded" }
 gallery:
+  - src: ../../assets/work/enterprise-security-homelab/pki-07-root-ca-alive-and-details.png
+    alt: "The Biira Bank Root CA running on CA01, with its certificate details"
+    caption: "CA01 alive: an enterprise root CA, RSA 4096 and SHA-256, valid for ten years. A CA is a Tier 0 asset, so it lives beside the domain controller it serves."
+  - src: ../../assets/work/enterprise-security-homelab/pki-10-dc01-enrolled.png
+    alt: "DC01 holding one certificate for DC01.corp.biirabank.com issued by Biira Bank Root CA, with client and server authentication"
+    caption: "DC01 enrolled itself: gpupdate and certutil -pulse, and its own store holds a certificate for DC01.corp.biirabank.com. The private key was made on DC01 and has never left it."
+  - src: ../../assets/work/enterprise-security-homelab/pki-12-ldp-ldaps-rootdse.png
+    alt: "ldp.exe connected to ldaps://DC01.corp.biirabank.com on port 636, returning the directory root entry"
+    caption: "LDAPS answering on 636, by name. Before the CA, the same connection was reset at the handshake."
+  - src: ../../assets/work/enterprise-security-homelab/pki-14-root-certificate-sha256.png
+    alt: "certutil computing the SHA-256 fingerprint of the exported root certificate"
+    caption: "The root certificate fingerprinted before it went anywhere. Trusting a root is the most powerful trust decision a machine makes, so it is never made on an unchecked file."
+  - src: ../../assets/work/enterprise-security-homelab/pki-15-openssl-verified-with-root.png
+    alt: "openssl s_client from a laptop outside the domain: TLS 1.3, peer DC01.corp.biirabank.com, Verification OK"
+    caption: "From a laptop that never joined the domain, holding the checked root: TLS 1.3, Verification: OK, verified peer name DC01.corp.biirabank.com."
+  - src: ../../assets/work/enterprise-security-homelab/pki-16-openssl-without-root.png
+    alt: "The same openssl command without the root certificate failing with error 20, unable to get local issuer certificate"
+    caption: "The same command without the root: error 20. The connection is encrypted, but nothing proves who is at the other end, so a real client stops here."
   - src: ../../assets/work/enterprise-security-homelab/packet-path.svg
     alt: "Flow diagram: a packet from the Kali guest passes the VLAN-aware bridge and the trunk to pfSense, where the RedTeam ruleset permits only DNS, NTP and internet"
     caption: "The path of one packet from the attack segment: tagged at the guest, carried on the trunk, decided by the RedTeam ruleset. Everything not listed is blocked and logged."
@@ -166,6 +184,7 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 - **A forest rebuilt from an export**, `corp.biirabank.com` replacing the retired `ad.biira.online`, by demoting and repromoting the same hardware rather than renaming it. A password typed back under a different keyboard layout locked the controller out after the promotion reboot, and the recovery is recorded as an incident rather than quietly fixed.
 - **A public tier**, `biirabank.com`, served as Cloudflare Worker static assets and graded F to A+ by an independent header checker. Testing found the site still answering on its default `workers.dev` hostname, where none of the zone-level controls applied.
 - **Four CIS baselines recorded before any hardening**, one per host and operating system. They are the "before" half of a before-and-after, and the runbook explains why the four scores must not be read as a ranking.
+- **CA01, the bank's own certificate authority**, an enterprise root CA on the Tier 0 VLAN beside the domain controller. `DC01` enrolled itself through a certificate template, generating its key pair locally so the private key never left it, and now answers LDAPS on 636. Proven from inside the domain with `ldp.exe` and from a laptop that never joined it: with the root, checked against its published SHA-256 fingerprint, `Verification: OK`; without it, error 20. The first consumer is an [AI agent with its own identity](/work/ai-agent-identity-lab/). Written up in chapter 22.
 - **DC01**, a Windows Server 2025 domain controller with AD-integrated forward and reverse DNS zones and a clean `dcdiag`. It was the first agent.
 - **Nightly Proxmox backups** to a separate physical disk with a tested restore (NIST CP-9), and SHA256 verification of every installation image before use (SI-7).
 - **Remote access** over Tailscale with WireGuard, with its ability to bypass per-interface rules recorded as a known, risk-accepted hardening item rather than ignored.
@@ -188,6 +207,7 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 
 ## What is next
 
+- Bring CA01 into the SIEM with a Wazuh agent and Sysmon, so every certificate issued and every change to the CA is recorded centrally. Give each LDAPS consumer outside VLAN 50 TCP 636 to the domain controller only, recorded in the rule register as it arrives.
 - Harden DC01 and ADM01 against their CIS baselines (both 26%), re-run the assessment and record the delta.
 - Keep the remediation loop turning. TLS on WKS01 was the first finding closed; the next pass extends the same pattern to servers and the domain controller once they are assessed, starting with an unauthenticated scan of DC01, because there is no least-privilege way to credential-scan a domain controller.
 - Track findings from open to closed in DefectDojo, now that the condition set for adopting it, three reports and one closed finding, has been met.

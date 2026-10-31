@@ -8,6 +8,7 @@ const updated = 'October 2026';
    between deploys. */
 const LABS = [
   { repo: 'enterprise-security-homelab', what: 'The bank network: pfSense, Wazuh, Greenbone, the domain', href: '/work/enterprise-security-homelab/' },
+  { repo: 'ai-agent-identity-lab', what: 'AI agents with their own identities', href: '/work/ai-agent-identity-lab/' },
   { repo: 'enterprise-iam-lab', what: 'Hybrid identity: AD, Okta, Entra', href: '/work/enterprise-iam-lab/' },
   { repo: 'azure-labs', what: 'AZ-104 labs, built in Bicep', href: 'https://github.com/noble-antwi/azure-labs' },
   { repo: 'biirabank-web', what: 'The bank’s public site on Cloudflare', href: '/work/biirabank-web/' },
@@ -54,7 +55,9 @@ LABS.sort((a, b) => (pushed[b.repo] ?? '').localeCompare(pushed[a.repo] ?? ''));
           <li>Keeping the remediation loop turning. The first finding from <a href="/work/enterprise-security-homelab/">SCAN01</a> is fixed and proved closed; the next pass starts with an unauthenticated scan of DC01. <a href="/lab-notes/2026/10/09/find-fix-prove.html">How the first one closed.</a></li>
           <li>Detection rules for an application's identity log, now live on SIEM01 with APP01 as the fifth agent. <a href="/lab-notes/2026/10/27/watching-the-front-door.html">What they watch, and what stays quiet.</a></li>
           <li>Hardening DC01 and ADM01 against their CIS baselines (both 26%) and recording the delta. <a href="/lab-notes/2026/09/08/standing-up-wazuh-twice.html">Why the baseline came first.</a></li>
-          <li>A certificate authority for the bank: CA01 is up as the forest's enterprise root CA, and the domain's own services get their certificates from it next.</li>
+          <li>A certificate authority for the bank: CA01 is up as the forest's enterprise root CA, and DC01 now answers LDAPS with a certificate from it. <a href="/work/enterprise-security-homelab/">The chain of trust, animated.</a></li>
+          <li>An AI agent with its own identity: project 1 of the <a href="/work/ai-agent-identity-lab/">AI agent identity lab</a> is done. <a href="/lab-notes/2026/10/30/the-ai-agent-that-could-read-too-much.html">What it could read, and what it is allowed to.</a></li>
+          <li>Azure, built twice: <a href="/work/azure-labs/">lab 01</a> tested four policy rules to failure and rebuilt them as Bicep; lab 02, storage tiers, is running.</li>
           <li>Rebuilding MON01 and ANS01 as Proxmox guests, and giving Vault its own guest on the DevOps VLAN.</li>
           <li>Writing the last three pfSense rulesets (BlueTeam, DevOps, Monitoring) to default-deny, each rule justified and mapped.</li>
           <li>Rebuilding the <a href="/work/enterprise-iam-lab/">identity lab</a>. The forest is done and running as corp.biirabank.com; the Okta org comes next, in Terraform so it can be replayed rather than reclicked.</li>

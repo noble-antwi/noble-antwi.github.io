@@ -1,0 +1,20 @@
+---
+/* Picks a case study's animated visual, if it has one, for a place on the
+   page: 'top' sits where a hero image would, 'after-replay' follows the
+   replay. */
+import AgentBoundary from './AgentBoundary.astro';
+import BuiltTwice from './BuiltTwice.astro';
+import ChainOfTrust from './ChainOfTrust.astro';
+
+interface Props { slug: string; at: 'top' | 'after-replay' }
+const { slug, at } = Astro.props;
+const VISUALS: Record<string, { C: typeof AgentBoundary; at: Props['at'] }> = {
+  'ai-agent-identity-lab': { C: AgentBoundary, at: 'top' },
+  'azure-labs': { C: BuiltTwice, at: 'top' },
+  'enterprise-security-homelab': { C: ChainOfTrust, at: 'after-replay' },
+};
+const v = VISUALS[slug];
+const Show = v && v.at === at ? v.C : null;
+---
+
+{Show && <Show />}

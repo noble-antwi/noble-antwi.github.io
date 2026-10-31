@@ -1,0 +1,75 @@
+---
+/* The dark instrument panel every case-study visual sits in. The SVG
+   animates with SMIL; the script below pauses it while it is off screen,
+   and for visitors who ask for less motion it hides what travels and holds
+   the picture still at stillAt seconds, a moment where everything is lit.
+   On a phone the panel keeps its width and scrolls sideways. */
+interface Props { label: string; caption: string; stillAt: number; width?: number }
+const { label, caption, stillAt, width = 1000 } = Astro.props;
+---
+
+<figure class="viz" data-viz data-still-at={stillAt}>
+  <div class="viz-bar">
+    <span><i></i>{label}</span>
+    <button type="button" class="viz-ctl" data-viz-toggle aria-label="Pause the animation">Pause</button>
+  </div>
+  <div class="viz-scroll" tabindex="0" aria-label={`${label}, scrolls sideways on small screens`}>
+    <div class="viz-stage" style={`min-width:${Math.round(width * 0.74)}px`}>
+      <slot />
+    </div>
+  </div>
+  <p class="viz-hint" aria-hidden="true">Swipe sideways to see it all →</p>
+  <figcaption>{caption}</figcaption>
+</figure>
+
+<style>
+  .viz { margin: 2.2rem 0 2.6rem; border-radius: var(--radius); overflow: hidden; background: #0b1220; border: 1px solid #1e293b; box-shadow: 0 30px 60px -40px rgba(2, 6, 23, 0.7); }
+  .viz-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.6rem 1rem; border-bottom: 1px solid #1e293b; font: 500 0.7rem var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: #94a3b8; }
+  .viz-bar i { display: inline-block; width: 0.5rem; height: 0.5rem; margin-right: 0.55rem; border-radius: 50%; background: #2dd4bf; box-shadow: 0 0 10px #2dd4bf; vertical-align: 0.05em; }
+  .viz-ctl { font: 500 0.68rem var(--font-mono); letter-spacing: 0.08em; color: #cbd5e1; background: transparent; border: 1px solid #334155; border-radius: 999px; padding: 0.2rem 0.65rem; cursor: pointer; }
+  .viz-ctl:hover { border-color: #2dd4bf; color: #2dd4bf; }
+  .viz-scroll { overflow-x: auto; scrollbar-width: thin; }
+  .viz-stage :global(svg) { display: block; width: 100%; height: auto; }
+  /* default text colours only where the SVG gives none: CSS would beat a fill attribute */
+  .viz-stage :global(text) { font-family: var(--font-body); }
+  .viz-stage :global(text:not([fill])) { fill: #e2e8f0; }
+  .viz-stage :global(text.dim:not([fill])) { fill: #94a3b8; }
+  .viz-stage :global(.vm) { font-family: var(--font-mono); }
+  .viz-stage :global(.mv) { filter: drop-shadow(0 0 6px currentColor); }
+  .viz figcaption { margin: 0; padding: 0.75rem 1rem 0.9rem; border-top: 1px solid #1e293b; font-size: 0.86rem; line-height: 1.55; color: #cbd5e1; }
+  .viz-hint { display: none; }
+  @media (min-width: 761px) { .viz-scroll { overflow: visible; } .viz-stage { min-width: 0 !important; } }
+  @media (max-width: 760px) {
+    .viz-hint { display: block; margin: 0; padding: 0.45rem 1rem; font: 0.7rem var(--font-mono); color: #2dd4bf; border-top: 1px solid #1e293b; }
+    .viz figcaption { font-size: 0.78rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .viz-stage :global(.mv) { display: none; }
+    .viz-ctl { display: none; }
+  }
+</style>
+
+<script>
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-viz]').forEach((fig) => {
+    const svg = fig.querySelector<SVGSVGElement>('svg');
+    const btn = fig.querySelector<HTMLButtonElement>('[data-viz-toggle]');
+    if (!svg) return;
+    /* runs only while on screen and not paused by the visitor */
+    let held = false;
+    let visible = false;
+    let seen = false;
+    const sync = () => {
+      if (visible && !held) svg.unpauseAnimations(); else svg.pauseAnimations();
+      if (btn) { btn.textContent = held ? 'Play' : 'Pause'; btn.setAttribute('aria-label', held ? 'Play the animation' : 'Pause the animation'); }
+    };
+    if (still) { svg.pauseAnimations(); svg.setCurrentTime(Number(fig.dataset.stillAt) || 0); return; }
+    svg.pauseAnimations();
+    btn?.addEventListener('click', () => { held = !held; sync(); });
+    new IntersectionObserver((es) => {
+      visible = es.some((e) => e.isIntersecting);
+      if (visible && !seen) { seen = true; svg.setCurrentTime(0); }
+      sync();
+    }, { threshold: 0.2 }).observe(fig);
+  });
+</script>
