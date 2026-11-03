@@ -114,7 +114,7 @@ const CH_22: Chapter = {
 const CH_23: Chapter = {
   num: '23',
   title: 'IDP01: Keycloak, federated to Active Directory',
-  summary: 'A hardened identity provider: an HTTPS certificate whose key never left the machine, Keycloak and PostgreSQL in Docker Compose, an MFA-protected admin, and read-only LDAPS federation proven by an employee signing in.',
+  summary: 'A hardened identity provider: an HTTPS certificate whose key never left the machine, Keycloak and PostgreSQL in Docker Compose, an MFA-protected admin, read-only LDAPS federation proven by an employee signing in, and an AI agent with its own five-minute-token identity and a proven off switch.',
   repo: H,
   path: 'docs/23-identity-provider-idp01-keycloak.md',
   pdf: true,
@@ -132,7 +132,7 @@ export const CHAPTERS: Record<string, ChapterIndex> = {
           { num: '01', title: 'Network infrastructure and pfSense', summary: 'The six-VLAN design, the managed switch port map, DHCP per segment, outbound NAT and the first firewall aliases.', repo: H, path: 'docs/01-network-infrastructure.md', pdf: true, status: 'current' },
           { num: '10', title: 'Proxmox hypervisor on a trunk port', summary: 'Moving the hypervisor from an access port to a trunk without losing access, and one VLAN-aware bridge that places every guest by tag.', repo: H, path: 'docs/10-proxmox-hypervisor.md', pdf: true, status: 'current' },
           { num: '14', title: 'Storage, backup, capacity and naming', summary: 'The storage layout, nightly backups with a tested restore, a container-versus-VM capacity plan, and the role-based naming scheme.', repo: H, path: 'docs/14-proxmox-storage-backup-capacity.md', pdf: true, status: 'current' },
-          { num: '05', title: 'Remote access with Tailscale', summary: 'Reaching every segment without port forwarding behind an ISP-controlled router, and why this replaced the original OpenVPN plan.', repo: H, path: 'docs/05-remote-access.md', pdf: true, status: 'current' },
+          { num: '05', title: 'Remote access with Tailscale', summary: 'Reaching every segment without port forwarding behind a router the lab does not control, two copies of Tailscale fighting over one identity, and making every remote session arrive with the real device address, proven in Wazuh.', repo: H, path: 'docs/05-remote-access.md', pdf: true, status: 'current' },
           { num: 'SSH', title: 'SSH configuration and keys', summary: 'Key management and a client configuration that gives every host a friendly name.', repo: H, path: 'docs/ssh-configuration.md', pdf: true, status: 'current' },
         ],
       },
