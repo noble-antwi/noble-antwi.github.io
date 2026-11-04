@@ -1,0 +1,543 @@
+---
+/* Case file: the 29 October 2026 Binance theft, read from Binance's initial
+   incident report. A sticky attack chain on the left lights up link by link
+   as the seven stages scroll past; then the night's clock, why the off
+   switch failed, the numbers and an ATT&CK table. Colours come from the
+   site's tokens, so it follows the light and dark themes. */
+import IncidentReplay from './IncidentReplay.astro';
+
+interface Props { date: string; readTime?: number; author: string }
+const { date, readTime, author } = Astro.props;
+---
+
+<div class="cf">
+<header class="cf-hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="kicker">Case file · 29 October 2026 · attributed to North Korea by the FBI</p>
+      <h1>Five months of preparation. Four minutes to empty the wallets.</h1>
+      <p class="lede">A poisoned download, a fake job interview, an internal AI tool with too much reach, and one forgotten token on a laptop. Each link in the chain had a control that could have broken it.</p>
+      <p class="byline"><span>{date}</span>{readTime && <span>{readTime} min read</span>}<span>{author}</span></p>
+      <p class="hero-note">A plain-words reading of Binance's initial incident report (published 3 November 2026), by a security engineer who builds the same controls in a lab. Not affiliated with Binance. All figures are Binance's.</p>
+    </div>
+    <div class="stats" aria-label="Headline figures">
+      <div class="stat red"><b>$6.34B</b><span>in digital assets impacted</span></div>
+      <div class="stat teal"><b>$2.85B</b><span>frozen or intercepted so far</span></div>
+      <div class="stat"><b>4 min</b><span>for 233 million XRP to leave five wallets</span></div>
+      <div class="stat"><b>5 mo</b><span>from first foothold to the theft</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="cf-sec" id="replay">
+  <div class="wrap">
+    <div class="cf-head">
+      <p class="kicker">Watch it happen</p>
+      <h2>The whole theft, in under a minute</h2>
+      <p>Five months on one map. Press a scene to jump to it, or drag the bar. The chain below then takes each link slowly.</p>
+    </div>
+    <div class="replay-box"><IncidentReplay /></div>
+  </div>
+</section>
+
+<section class="cf-sec" id="chain">
+  <div class="wrap">
+    <div class="cf-head">
+      <p class="kicker">The attack chain</p>
+      <h2>Seven links. Break any one, and the money stays.</h2>
+      <p>Scroll through the chain. Each stage shows what happened in plain words, the control that could have stopped it, and where the same control lives in my own lab.</p>
+    </div>
+
+    <div class="rail" aria-hidden="true">
+      <div class="rail-dots" id="railDots"></div>
+      <div class="rail-text"><b id="railNow">1 · June</b><span id="railLabel">A poisoned download</span></div>
+    </div>
+
+    <div class="chain-grid">
+      <aside class="chain-sticky" aria-hidden="true">
+        <svg class="chain-svg" id="chainSvg" viewBox="0 0 300 720">
+          <path class="track" id="trackPath" d="M46 28 C 10 140, 90 230, 46 340 S 0 560, 46 692"/>
+          <path class="lit" id="litPath" d="M46 28 C 10 140, 90 230, 46 340 S 0 560, 46 692"/>
+          <g id="nodes"></g>
+        </svg>
+        <p class="chain-caption">Red fills in as you read. Every node is a point where one control could have ended the attack.</p>
+      </aside>
+
+      <div class="stages" id="stages">
+
+        <article class="stage" data-short="June" data-label="A poisoned download">
+          <div class="stage-top"><span class="stage-when">1 · June 2026</span><span class="stage-who">Engineer A, Wallet DevOps</span></div>
+          <h3>A poisoned download, caught, but not forgotten</h3>
+          <p class="story">Engineer A searched the web for a popular AI coding tool and installed a tampered copy of Homebrew, the installer Mac developers use for almost everything. Binance's security team spotted the anomaly, replaced the laptop and rotated every related credential.</p>
+          <p class="story">The attackers still won something. They now knew who Engineer A was, what the wallet infrastructure team did, and who worked alongside them.</p>
+          <div class="cells">
+            <div class="cell control"><small>The control</small>Install developer tools only from verified sources, and check the signing key against the vendor's own published fingerprint, never against a number someone pastes to you. Treat a caught intrusion as reconnaissance that succeeded: the whole team is now a target.</div>
+            <div class="cell lab"><small>In my lab</small>Every package source on VAULT01 is pinned to a verified signing key. Checking HashiCorp's fingerprint against their security page the day I built it caught a key rotation: the value I had been given was two months stale.</div>
+          </div>
+        </article>
+
+        <article class="stage" data-short="Sep" data-label="The fake interview">
+          <div class="stage-top"><span class="stage-when">2 · September 2026</span><span class="stage-who">Engineer B, Software</span></div>
+          <h3>The job interview that was never a job</h3>
+          <p class="story">Engineer B was approached on a real job-hunting platform by a "Project Director". There was a live video interview with an "HR representative" who shared a personal social media account to build trust, then a second interview with a "CEO" of a company that did not exist.</p>
+          <p class="story">Near the end, Engineer B was asked to download a take-home "assignment" onto his work computer. The assignment carried the malware.</p>
+          <div class="cells">
+            <div class="cell control"><small>The control</small>Job-hunting and personal downloads stay off work devices, as policy, not advice. Any code from outside runs in a throwaway virtual machine first. Staff who touch money systems get specific briefings on the fake-recruiter playbook, which the FBI has warned about for years.</div>
+            <div class="cell lab"><small>In my lab</small>Untrusted code lands in a disposable VM or container on the hypervisor, never on the admin laptop. The lab's own rule: the laptop holds keys, so it never runs strangers' code.</div>
+          </div>
+        </article>
+
+        <article class="stage" data-short="Sep" data-label="A developer tool, replaced">
+          <div class="stage-top"><span class="stage-when">3 · September 2026</span><span class="stage-who">Engineer B's laptop</span></div>
+          <h3>A trusted tool, quietly replaced</h3>
+          <p class="story">The malware swapped a real developer tool on the laptop for a look-alike that answered to the attackers. It was new code, so the endpoint protection did not recognise it, and it cleaned up its own traces afterwards.</p>
+          <p class="story">From that moment the attackers had a quiet, durable foothold inside Binance's engineering network.</p>
+          <div class="cells">
+            <div class="cell control"><small>The control</small>Watch the tool paths themselves. File integrity monitoring raises an alert when a binary a developer relies on changes outside a package update. Pair it with detection that looks at behaviour, such as a developer tool opening a connection to an unknown server, rather than only known-bad signatures.</div>
+            <div class="cell lab"><small>In my lab</small>Wazuh's file integrity monitoring runs on every enrolled host. The snippet below points it at developer tool paths, so a changed binary under <span class="id">/usr/local/bin</span> or <span class="id">/opt</span> is an alert, not a mystery.</div>
+          </div>
+          <div class="detect" aria-label="Detection ideas for this stage">
+            <div class="detect-head"><b>Detection: what to watch for</b><span>ATT&amp;CK T1574 Hijack execution flow · T1070 Indicator removal</span></div>
+            <dl class="detect-rows">
+              <div class="detect-row"><dt>Tool binary changed</dt><dd>A file inside a package manager's install tree changes when no package manager is running. Homebrew's <code>/opt/homebrew/Cellar</code>, pyenv's <code>libexec</code>, <code>/usr/local/bin</code>. Legitimate changes come from <code>brew</code>, <code>apt</code> or <code>pip</code>; anything else is suspect.</dd></div>
+              <div class="detect-row"><dt>Delete, then replace</dt><dd>The same path is deleted and recreated within seconds with a different size or hash. Real upgrades write a new versioned folder; a swap in place is the tell the report describes.</dd></div>
+              <div class="detect-row"><dt>New or changed symlink</dt><dd>A link in a tool's <code>bin</code> directory is added or repointed outside an install. Links are how a fake tool gets called instead of the real one.</dd></div>
+              <div class="detect-row"><dt>Setup step spawns a shell</dt><dd>A project's install or setup step (<code>npm install</code>, <code>pip install</code>, <code>make</code>, a setup script) starts an interactive shell or a long-lived background process. Installs fetch and build; they should not leave a shell running.</dd></div>
+              <div class="detect-row"><dt>Developer tool phones home</dt><dd>A tool that normally works offline, such as a version manager, opens a connection to a host that is not a known package registry. Endpoint network telemetry catches this when signatures do not.</dd></div>
+              <div class="detect-row"><dt>Files no longer match</dt><dd>Scheduled checks against the package manager's own records: <code>dpkg --verify</code> on Debian and Ubuntu, <code>rpm -Va</code> on Red Hat. Any tool file that differs from what was installed gets a ticket.</dd></div>
+            </dl>
+<pre><span class="c">&lt;!-- Wazuh agent: watch developer tool paths in real time --&gt;</span>
+&lt;syscheck&gt;
+  &lt;directories realtime="yes" check_all="yes"&gt;/opt/homebrew/Cellar,/opt/homebrew/bin&lt;/directories&gt;
+  &lt;directories realtime="yes" check_all="yes"&gt;/usr/local/bin,/usr/local/lib&lt;/directories&gt;
+&lt;/syscheck&gt;</pre>
+          </div>
+        </article>
+
+        <article class="stage" data-short="20 Oct" data-label="The AI tool as a bridge">
+          <div class="stage-top"><span class="stage-when">4 · 20 October 2026</span><span class="stage-who">Engineers A and C</span></div>
+          <h3>An internal AI tool became the bridge</h3>
+          <p class="story">From Engineer B's compromised laptop, the attackers used one of Binance's own internal AI tools to reach the computers of Engineer A (Wallet DevOps) and Engineer C (Wallet Software). The company's assistant became the road between machines.</p>
+          <p class="story">On Engineer A's computer they found the prize: a token that allowed containers to be deployed, sitting on disk.</p>
+          <div class="cells">
+            <div class="cell control"><small>The control</small>An AI tool is an identity, and it needs the same governance as a person: its own account, the narrowest permissions that do its job, no reach across devices it has no business touching, every action logged, and one switch that turns it off.</div>
+            <div class="cell lab"><small>In my lab</small>My AI agent has its own Keycloak identity: a confidential client that gets five-minute tokens and nothing else. Disabling it in one place cut off every token request within a minute, and Keycloak's event log recorded <span class="id">client_disabled</span>. <a href="https://github.com/noble-antwi/enterprise-security-homelab/blob/main/docs/23-identity-provider-idp01-keycloak.md">Chapter 23, section 11</a>.</div>
+          </div>
+        </article>
+
+        <article class="stage" data-short="Token" data-label="A key left on a laptop">
+          <div class="stage-top"><span class="stage-when">5 · 20 to 29 October</span><span class="stage-who">Engineer A's deployment token</span></div>
+          <h3>One long-lived key, in the wrong place</h3>
+          <p class="story">The deployment token did not expire, and it worked for whoever held it. Nine days later the attackers logged on to Engineer C's computer and used Engineer A's token from there. Nothing stopped a key being used from a different person's machine.</p>
+          <div class="cells">
+            <div class="cell control"><small>The control</small>No long-lived credentials on laptops. Deployment credentials come from a secrets manager, live for minutes, and are bound to the identity and device that asked for them. A key used from an unexpected device is itself an alert, which is only possible when logs show the real device.</div>
+            <div class="cell lab"><small>In my lab</small>VAULT01 exists to retire exactly this: static secrets replaced by short-lived ones issued per request and audited. And since the Tailscale fix, every lab log shows the real connecting device, so "right key, wrong machine" is something Wazuh can see. <a href="https://github.com/noble-antwi/enterprise-security-homelab/blob/main/docs/05-remote-access.md">Chapter 5</a>.</div>
+          </div>
+        </article>
+
+        <article class="stage" data-short="20:05" data-label="Four minutes">
+          <div class="stage-top"><span class="stage-when">6 · 29 October, 17:15 to 20:09 UTC</span><span class="stage-who">The wallet signing service</span></div>
+          <h3>Four minutes</h3>
+          <p class="story">Between 17:15 and 19:56 the attackers deployed a container with the stolen token and ran a script that reached the wallet signing service, the system that approves outgoing payments. At 20:05 they began signing transfers outside the normal withdrawal process.</p>
+          <p class="story">By 20:09, 233.46 million XRP had left five hot wallets. Solana, Optimism and then 18,270 Bitcoin followed. Binance's alert for large transfers fired after the first wave was already gone.</p>
+          <div class="cells">
+            <div class="cell control"><small>The control</small>Signing policy that no single token can bypass: limits per transaction and per hour, a second approver above a threshold, and the bulk of funds in cold storage that no online service can sign for. Alerts must fire on the first unusual signature, not on the total.</div>
+            <div class="cell lab"><small>In my lab</small>The same principle at smaller scale: the agent's identity can prove who it is, but what it may do is a separate, narrow policy. Detection rules in Wazuh are written for the first odd event, then tested by running the attack against them.</div>
+          </div>
+        </article>
+
+        <article class="stage" data-short="23:56" data-label="The off switch that was not one">
+          <div class="stage-top"><span class="stage-when">7 · 29 October, 20:09 to 00:10 UTC</span><span class="stage-who">Containment</span></div>
+          <h3>They switched off withdrawals. The theft continued.</h3>
+          <p class="story">Binance suspended withdrawals, worked with partners to freeze tokens, and froze $2.85 billion. But the attackers had used an Ethereum feature called EIP-7702 to give their own smart contract standing rights over a Binance wallet. That permission lived on the blockchain, not in Binance's systems, so Binance's off switch did not reach it.</p>
+          <p class="story">The wallet used multi-party computation, so there was no single key to cancel the permission with. A special procedure had to be built on the night. The last unauthorised transfer finalised at 23:56. The permission was cleared at 00:10.</p>
+          <div class="cells">
+            <div class="cell control"><small>The control</small>Design the revocation before the incident, and rehearse it. Know exactly what your "stop" button does not stop: standing permissions, tokens already issued, sessions already open. Time to revoke is a metric to measure in a drill, not to discover at 11 pm.</div>
+            <div class="cell lab"><small>In my lab</small>The Keycloak off-switch test taught the same lesson in miniature: disabling the agent blocks every new token at once, but a token already issued stays valid until it expires. That is why its lifetime is five minutes, and why the first question for any system is "how do I revoke, and how long does it take?"</div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cf-sec" id="clock">
+  <div class="wrap">
+    <div class="cf-head">
+      <p class="kicker">The night of 29 October</p>
+      <h2>Seven hours, in Binance's own times</h2>
+      <p>The attackers were inside the signing path for almost three hours before the first transfer. Containment took four more. All times are UTC.</p>
+    </div>
+    <div class="clock" id="clockBox">
+      <div class="clock-bar"><i id="clockFill"></i></div>
+      <div class="clock-ticks"><span style="left:0">17:00</span><span style="left:28.6%">19:00</span><span style="left:57.1%">21:00</span><span style="left:85.7%">23:00</span><span style="left:100%">00:10</span></div>
+      <div class="events">
+        <div class="ev"><time>17:15</time><p>Attackers log on to Engineer C's computer with Engineer A's stolen token, deploy a container and run their script. <b>The signing service is now reachable.</b></p></div>
+        <div class="ev"><time class="red">20:05</time><p><b>Five hot wallets start sending XRP</b> to an attacker address. <span class="amt">233.46M XRP in four minutes</span></p></div>
+        <div class="ev"><time class="red">20:09</time><p>Solana and Optimism wallets drained. <span class="amt">≈970,500 SOL · 44.2M OP</span></p></div>
+        <div class="ev"><time>after</time><p>An internal alert fires for large-volume transfers. The investigation begins. <b>Then a Bitcoin wallet is emptied.</b> <span class="amt">18,270 BTC</span></p></div>
+        <div class="ev"><time class="red">evening</time><p>Using the signing service, the attackers submit 50 transactions that give their own smart contract standing rights over a Binance Ethereum wallet (EIP-7702). <b>This permission lives on-chain.</b></p></div>
+        <div class="ev"><time class="teal">evening</time><p>Binance suspends withdrawals, shuts hot wallet services, and coordinates token freezes with partners. <b>$2.85B frozen.</b> The on-chain permission is untouched by any of it.</p></div>
+        <div class="ev"><time class="red">23:56</time><p>The final unauthorised transfer finalises. <span class="amt">2,961.9 ETH</span></p></div>
+        <div class="ev"><time class="teal">00:10</time><p>30 October. Binance clears the delegation from the wallet with a new authorisation to the zero address. <b>Contained.</b></p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cf-sec" id="switch">
+  <div class="wrap">
+    <div class="cf-head">
+      <p class="kicker">Why the off switch failed</p>
+      <h2>A permission that lives outside your building</h2>
+      <p>Suspending withdrawals closes Binance's own gate. The attackers had built a second road that never passed through it.</p>
+    </div>
+    <div class="switch-grid">
+      <svg class="switch-svg" viewBox="0 0 560 300" role="img" aria-label="Binance's withdrawal gate closed, while an on-chain delegation lets funds move around it">
+        <rect class="box" x="20" y="90" width="150" height="110" rx="10"/>
+        <text class="t" x="95" y="130" text-anchor="middle">BINANCE HOT WALLET</text>
+        <text class="t2" x="95" y="150" text-anchor="middle">funds held online</text>
+        <text class="t2" x="95" y="168" text-anchor="middle">to pay withdrawals</text>
+
+        <rect class="gate" x="250" y="60" width="90" height="60" rx="8"/>
+        <text class="t" x="295" y="85" text-anchor="middle">WITHDRAWALS</text>
+        <text class="t" x="295" y="102" text-anchor="middle">SUSPENDED</text>
+        <path class="road" d="M170 118 H250"/>
+        <line class="x" x1="282" y1="78" x2="308" y2="104"/>
+        <line class="x" x1="308" y1="78" x2="282" y2="104"/>
+        <path class="road" d="M340 90 H400" stroke-dasharray="2 5"/>
+        <text class="t2" x="370" y="80" text-anchor="middle">blocked</text>
+
+        <rect class="chainbox" x="230" y="170" width="130" height="80" rx="8"/>
+        <text class="t" x="295" y="198" text-anchor="middle">EIP-7702</text>
+        <text class="t2" x="295" y="216" text-anchor="middle">standing permission</text>
+        <text class="t2" x="295" y="232" text-anchor="middle">written on-chain</text>
+        <path class="road open" d="M170 170 C 200 170, 200 210, 230 210"/>
+        <path class="road open" d="M360 210 C 390 210, 390 190, 410 190"/>
+
+        <rect class="box" x="410" y="150" width="130" height="80" rx="10"/>
+        <text class="t" x="475" y="183" text-anchor="middle">ATTACKER</text>
+        <text class="t" x="475" y="200" text-anchor="middle">CONTRACT</text>
+        <text class="t2" x="475" y="218" text-anchor="middle">moves funds itself</text>
+        <text class="t2" x="280" y="282" text-anchor="middle">Closing the gate does nothing to a permission the gate never sees.</text>
+      </svg>
+      <div>
+        <h3>Three things made containment slow</h3>
+        <ul class="switch-list">
+          <li><b>The permission was on the blockchain,</b> independent of Binance's withdrawal systems. Switching those systems off changed nothing on-chain.</li>
+          <li><b>There was no single key.</b> The wallet used multi-party computation, which is good against theft of one key, but it meant revoking the permission needed a procedure that had to be written during the incident.</li>
+          <li><b>Fifty transactions had been used to set it up,</b> so undoing it took more transactions, each needing the same care.</li>
+        </ul>
+        <p class="story after-list">The lesson travels well beyond crypto. Every identity system has permissions that outlive the moment you press stop: refresh tokens, API keys, sessions, standing delegations. The time to find out how long they live is in a drill.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cf-sec" id="numbers">
+  <div class="wrap">
+    <div class="cf-head">
+      <p class="kicker">By the numbers</p>
+      <h2>What Binance has disclosed</h2>
+    </div>
+    <div class="num-grid">
+      <div class="num red"><b>$6.34B</b><span>Digital assets impacted</span></div>
+      <div class="num teal"><b>$2.85B</b><span>Frozen or intercepted, subject to reconciliation</span></div>
+      <div class="num"><b>98%</b><span>Of impacted token assets replenished by 31 October</span></div>
+      <div class="num"><b>57</b><span>Suspected North Korea-linked attempts stopped by Binance in 2026 before this one</span></div>
+      <div class="num"><b>233.46M</b><span>XRP sent in four minutes</span></div>
+      <div class="num"><b>18,270</b><span>BTC from one hot wallet</span></div>
+      <div class="num"><b>50</b><span>Transactions used to set up the on-chain permission</span></div>
+      <div class="num"><b>3h 56m</b><span>From first transfer (20:05) to the permission cleared (00:10)</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cf-sec" id="lessons">
+  <div class="wrap">
+    <div class="cf-head">
+      <p class="kicker violet">For defenders</p>
+      <h2>The same chain, in the language detection teams use</h2>
+      <p>Each stage mapped to MITRE ATT&amp;CK, the shared vocabulary for attacker behaviour, with the control and where it exists in my lab.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Stage</th><th>ATT&amp;CK technique</th><th>Control</th><th>In my lab</th></tr></thead>
+        <tbody>
+          <tr><td class="first">Tampered installer</td><td><span class="id">T1195.002</span> Supply chain compromise: software</td><td>Verified sources and signing keys; a caught intrusion treated as reconnaissance</td><td>Package sources pinned to verified fingerprints</td></tr>
+          <tr><td class="first">Fake interview, "assignment" on a work laptop</td><td><span class="id">T1566</span> Phishing · <span class="id">T1204.002</span> User execution: malicious file</td><td>Personal activity off work devices; outside code in a disposable VM; targeted awareness for money-system staff</td><td>Throwaway VMs on the hypervisor; the admin laptop never runs untrusted code</td></tr>
+          <tr><td class="first">Developer tool replaced</td><td><span class="id">T1574</span> Hijack execution flow · <span class="id">T1070</span> Indicator removal</td><td>File integrity monitoring on tool paths; behaviour-based endpoint detection</td><td>Wazuh file integrity monitoring, pointed at tool paths</td></tr>
+          <tr><td class="first">Internal AI tool used to reach other machines</td><td><span class="id">T1021</span> Remote services · <span class="id">T1078</span> Valid accounts</td><td>AI tools as governed identities: least privilege, no cross-device reach, full audit, one off switch</td><td>Agent client in Keycloak with five-minute tokens and a proven off switch (chapter 23)</td></tr>
+          <tr><td class="first">Deployment token found on a laptop</td><td><span class="id">T1552.001</span> Credentials in files</td><td>Short-lived credentials from a secrets manager, bound to identity and device</td><td>VAULT01, built to retire static secrets; real device addresses in every log (chapter 5)</td></tr>
+          <tr><td class="first">Token used from another engineer's machine</td><td><span class="id">T1078</span> Valid accounts · <span class="id">T1610</span> Deploy container</td><td>Alert on a key used from an unexpected device; deployments only through an approved pipeline</td><td>Tailscale attribution fix: Wazuh now sees which device each logon came from</td></tr>
+          <tr><td class="first">Signing outside the normal process</td><td><span class="id">T1657</span> Financial theft</td><td>Signing policy with limits and second approvers; cold storage; alert on the first unusual signature</td><td>Identity proves who; a separate narrow policy decides what; detections tested against the attack</td></tr>
+          <tr><td class="first">On-chain permission survived the shutdown</td><td><span class="id">T1098</span> Account manipulation (standing delegation)</td><td>Revocation designed and rehearsed in advance; know what "stop" does not stop</td><td>Issued tokens live until expiry, so lifetimes are minutes and revocation is the first question asked</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="one-line">Every link in this chain was an identity problem before it was a crypto problem: who is this person, is this tool allowed here, whose key is this, and can I switch it off. That is the work.</p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><b>Sources.</b> Binance, "29 October Binance Security Incident: Initial Findings and Response Update", 3 November 2026. Attribution to the Democratic People's Republic of Korea is the FBI's, as cited in that report. Figures are Binance's and are subject to its ongoing investigation and independent review.</p>
+    <p><b>Author.</b> Noble Antwi. This is independent analysis of a public report; it is not affiliated with or endorsed by Binance. The lab references point to the public <a href="https://github.com/noble-antwi/enterprise-security-homelab">enterprise-security-homelab</a> repository.</p>
+    <p>ATT&amp;CK is a registered trademark of The MITRE Corporation; technique mappings here are the author's.</p>
+  </div>
+</footer>
+</div>
+
+<style is:global>
+  /* Every rule is under .cf: the stage nodes and rail dots are built by the
+     script, so scoped styles would not reach them. */
+  .cf {
+    --red: var(--c-offence);
+    --red-soft: color-mix(in srgb, var(--c-offence) 9%, transparent);
+    --red-line: color-mix(in srgb, var(--c-offence) 40%, transparent);
+    --teal: var(--accent);
+    --teal-soft: var(--accent-soft);
+    --violet: var(--c-identity);
+    --violet-soft: color-mix(in srgb, var(--c-identity) 11%, transparent);
+    --amber: var(--gold-ink);
+    --sticky-top: 3.9rem;
+    color: var(--ink);
+    font-size: 1.0625rem; line-height: 1.65;
+  }
+  .cf .wrap { max-width: var(--wide); margin: 0 auto; padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+  .cf a { color: var(--teal); text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+  .cf h1, .cf h2, .cf h3 { font-family: var(--font-display); letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+  .cf h1 { font-size: clamp(2.1rem, 5.2vw, 4.1rem); font-weight: 800; line-height: 1.04; }
+  .cf h2 { font-size: clamp(1.55rem, 3vw, 2.3rem); font-weight: 800; line-height: 1.12; }
+  .cf h3 { font-size: 1.2rem; font-weight: 700; line-height: 1.3; }
+  .cf p { margin: 0; }
+  .cf .kicker { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--red); }
+  .cf .kicker.violet { color: var(--violet); }
+
+  .cf-hero { padding-block: clamp(2.5rem, 7vw, 5.5rem) clamp(2rem, 5vw, 4rem); }
+  .cf .hero-grid { display: grid; gap: 2.5rem; grid-template-columns: 1fr; align-items: end; }
+  @media (min-width: 900px) { .cf .hero-grid { grid-template-columns: 1.35fr 1fr; } }
+  .cf .cf-hero h1 { margin-top: 0.9rem; }
+  .cf .lede { margin-top: 1.25rem; font-size: 1.2rem; color: var(--ink-2); max-width: 36rem; }
+  .cf .byline { margin-top: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-3); }
+  .cf .hero-note { margin-top: 1rem; font-size: 0.92rem; color: var(--ink-3); max-width: 36rem; }
+  .cf .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .cf .stat { background: var(--paper); padding: 1.1rem 1.2rem; min-width: 0; }
+  .cf .stat b { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3.4vw, 2.5rem); letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .cf .stat span { display: block; margin-top: 0.4rem; font-size: 0.82rem; color: var(--ink-3); }
+  .cf .stat.red b { color: var(--red); }
+  .cf .stat.teal b { color: var(--teal); }
+
+  .cf .cf-sec { padding-block: clamp(2.5rem, 6vw, 5rem); border-top: 1px solid var(--line); }
+  .cf .cf-head h2 { margin-top: 0.5rem; }
+  .cf .replay-box { margin-top: 1.75rem; }
+  .cf .cf-head p:not(.kicker) { margin-top: 0.75rem; color: var(--ink-2); max-width: var(--measure); }
+  .cf .chain-grid { margin-top: 2rem; display: grid; grid-template-columns: 1fr; gap: 2rem; }
+  @media (min-width: 900px) { .cf .chain-grid { grid-template-columns: 300px minmax(0, 1fr); gap: 3.5rem; align-items: start; } }
+  .cf .chain-sticky { position: sticky; top: calc(var(--sticky-top) + 1.25rem); display: none; }
+  @media (min-width: 900px) { .cf .chain-sticky { display: block; } }
+  .cf .chain-svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .cf .chain-svg .track { fill: none; stroke: var(--line-2); stroke-width: 2.5; }
+  .cf .chain-svg .lit { fill: none; stroke: var(--red); stroke-width: 2.5; stroke-linecap: round; transition: stroke-dashoffset 0.9s cubic-bezier(.4,0,.2,1); }
+  .cf .chain-svg .node { fill: var(--paper); stroke: var(--line-2); stroke-width: 2.5; transition: stroke 0.4s, fill 0.4s; }
+  .cf .chain-svg .node.on { stroke: var(--red); }
+  .cf .chain-svg .node.now { fill: var(--red); stroke: var(--red); }
+  .cf .chain-svg .halo { fill: none; stroke: var(--red); stroke-width: 2; opacity: 0; }
+  .cf .chain-svg .halo.now { animation: cf-halo 1.6s ease-out infinite; }
+  @keyframes cf-halo { 0% { r: 9; opacity: 0.7; } 100% { r: 26; opacity: 0; } }
+  .cf .chain-svg .lbl { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; fill: var(--ink-3); transition: fill 0.4s; }
+  .cf .chain-svg .lbl.on { fill: var(--ink); }
+  .cf .chain-svg .lbl.now { fill: var(--red); }
+  .cf .chain-svg .sub { font-family: var(--font-body); font-size: 11.5px; fill: var(--ink-3); }
+  .cf .chain-caption { margin-top: 1rem; font-size: 0.85rem; color: var(--ink-3); }
+
+  .cf .rail { position: sticky; top: var(--sticky-top); z-index: 5; background: var(--paper); padding-block: 0.7rem 0.6rem; border-bottom: 1px solid var(--line); margin-top: 1.5rem; }
+  @media (min-width: 900px) { .cf .rail { display: none; } }
+  .cf .rail-dots { display: flex; align-items: center; }
+  .cf .rail-dots i { flex: 1 1 0; height: 2px; background: var(--line-2); transition: background 0.4s; }
+  .cf .rail-dots i.on { background: var(--red); }
+  .cf .rail-dots b { width: 12px; height: 12px; border-radius: 50%; border: 2.5px solid var(--line-2); background: var(--paper); flex: none; transition: border-color 0.4s, background 0.4s; }
+  .cf .rail-dots b.on { border-color: var(--red); }
+  .cf .rail-dots b.now { background: var(--red); border-color: var(--red); }
+  .cf .rail-text { margin-top: 0.45rem; display: flex; justify-content: space-between; gap: 1rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-3); letter-spacing: 0.05em; }
+  .cf .rail-text b { color: var(--red); font-weight: 600; white-space: nowrap; }
+
+  .cf .stages { display: grid; gap: 1.5rem; }
+  .cf .stage { position: relative; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); padding: 1.5rem; min-width: 0; transition: border-color 0.5s, box-shadow 0.5s; scroll-margin-top: 6rem; }
+  .cf .stage.now { border-color: var(--red-line); box-shadow: var(--shadow); }
+  @media (min-width: 900px) { .cf .stage { min-height: 50vh; } }
+  .cf .stage-top { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: baseline; }
+  .cf .stage-when { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.07em; color: var(--red); text-transform: uppercase; }
+  .cf .stage-who { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-3); }
+  .cf .stage h3 { margin-top: 0.6rem; font-size: 1.45rem; letter-spacing: -0.02em; }
+  .cf .story { margin-top: 0.9rem; color: var(--ink-2); max-width: var(--measure); }
+  .cf .story + .story { margin-top: 0.6rem; }
+  .cf .story.after-list { margin-top: 1.25rem; }
+  .cf .cells { margin-top: 1.25rem; display: grid; gap: 0.75rem; grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .cf .cells { grid-template-columns: 1fr 1fr; } }
+  .cf .cell { border-radius: var(--radius-sm); padding: 0.85rem 1rem; min-width: 0; font-size: 0.95rem; line-height: 1.5; color: var(--ink); }
+  .cf .cell small { display: block; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; margin-bottom: 0.35rem; }
+  .cf .cell.control { background: var(--teal-soft); }
+  .cf .cell.control small { color: var(--teal); }
+  .cf .cell.lab { background: var(--violet-soft); }
+  .cf .cell.lab small { color: var(--violet); }
+  .cf .cell a { color: inherit; text-decoration-color: var(--violet); }
+
+  .cf .detect { margin-top: 1rem; border: 1px solid var(--line-2); border-radius: var(--radius-sm); overflow: hidden; }
+  .cf .detect-head { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; align-items: baseline; justify-content: space-between; padding: 0.75rem 1rem; background: var(--paper-2); border-bottom: 1px solid var(--line); }
+  .cf .detect-head b { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--teal); }
+  .cf .detect-head span { font-size: 0.82rem; color: var(--ink-3); }
+  .cf .detect-rows { display: grid; margin: 0; }
+  .cf .detect-row { display: grid; grid-template-columns: 1fr; gap: 0.2rem 1rem; padding: 0.75rem 1rem; border-bottom: 1px solid var(--line); font-size: 0.92rem; line-height: 1.5; min-width: 0; }
+  @media (min-width: 720px) { .cf .detect-row { grid-template-columns: 11rem minmax(0, 1fr); } }
+  .cf .detect-row:last-child { border-bottom: 0; }
+  .cf .detect-row dt { font-weight: 600; color: var(--ink); }
+  .cf .detect-row dd { margin: 0; color: var(--ink-2); min-width: 0; }
+  .cf .detect-row code, .cf .detect pre { font-family: var(--font-mono); font-size: 0.8rem; }
+  .cf .detect-row code { background: var(--paper-3); padding: 0.05em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+  .cf .detect pre { margin: 0; padding: 0.85rem 1rem; background: var(--paper-2); border-top: 1px solid var(--line); overflow-x: auto; color: var(--ink); line-height: 1.55; }
+  .cf .detect pre .c { color: var(--ink-3); }
+
+  .cf .clock { margin-top: 2rem; }
+  .cf .clock-bar { position: relative; height: 10px; border-radius: 999px; background: var(--paper-3); overflow: hidden; }
+  .cf .clock-bar i { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(90deg, var(--amber), var(--red)); border-radius: 999px; transition: width 1.6s cubic-bezier(.4,0,.2,1); }
+  .cf .clock-bar i.go { width: 100%; }
+  .cf .clock-ticks { position: relative; height: 1.4rem; margin-top: 0.4rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-3); }
+  .cf .clock-ticks span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+  .cf .clock-ticks span:first-child { transform: none; }
+  .cf .clock-ticks span:last-child { transform: translateX(-100%); }
+  .cf .events { margin-top: 1.5rem; border-top: 1px solid var(--line); }
+  .cf .ev { display: grid; grid-template-columns: 5.4rem minmax(0, 1fr); gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .cf .ev time { font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .cf .ev time.red { color: var(--red); }
+  .cf .ev time.teal { color: var(--teal); }
+  .cf .ev p { color: var(--ink-2); font-size: 0.98rem; }
+  .cf .ev p b { color: var(--ink); font-weight: 600; }
+  .cf .ev .amt { font-family: var(--font-mono); font-size: 0.85rem; color: var(--red); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .cf .switch-grid { margin-top: 2rem; display: grid; gap: 2rem; grid-template-columns: 1fr; align-items: center; }
+  @media (min-width: 900px) { .cf .switch-grid { grid-template-columns: 1fr 1fr; gap: 3rem; } }
+  .cf .switch-svg { width: 100%; max-width: 100%; height: auto; display: block; }
+  .cf .switch-svg .t { font-family: var(--font-mono); font-size: 11px; font-weight: 600; fill: var(--ink-2); }
+  .cf .switch-svg .t2 { font-family: var(--font-body); font-size: 12px; fill: var(--ink-3); }
+  .cf .switch-svg .box { fill: var(--paper-2); stroke: var(--line-2); stroke-width: 1.5; }
+  .cf .switch-svg .gate { fill: var(--teal-soft); stroke: var(--teal); stroke-width: 2; }
+  .cf .switch-svg .chainbox { fill: var(--red-soft); stroke: var(--red); stroke-width: 1.5; }
+  .cf .switch-svg .road { fill: none; stroke: var(--line-2); stroke-width: 2.5; }
+  .cf .switch-svg .road.open { stroke: var(--red); stroke-dasharray: 7 6; animation: cf-flow 1.1s linear infinite; }
+  .cf .switch-svg .x { stroke: var(--teal); stroke-width: 3; stroke-linecap: round; }
+  @keyframes cf-flow { to { stroke-dashoffset: -26; } }
+  .cf .switch-list { display: grid; gap: 0.9rem; margin: 1.25rem 0 0; padding: 0; }
+  .cf .switch-list li { list-style: none; padding-left: 1.4rem; position: relative; color: var(--ink-2); }
+  .cf .switch-list li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--red); }
+  .cf .switch-list li b { color: var(--ink); font-weight: 600; }
+
+  .cf .num-grid { margin-top: 2rem; display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 720px) { .cf .num-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .cf .num { background: var(--paper); padding: 1.1rem 1.1rem 1.2rem; min-width: 0; }
+  .cf .num b { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.3rem, 2.6vw, 1.9rem); letter-spacing: -0.03em; line-height: 1.05; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .cf .num span { display: block; margin-top: 0.4rem; font-size: 0.8rem; color: var(--ink-3); line-height: 1.4; }
+  .cf .num.red b { color: var(--red); }
+  .cf .num.teal b { color: var(--teal); }
+
+  .cf .tbl-wrap { margin-top: 1.75rem; overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  .cf table { border-collapse: collapse; width: 100%; min-width: 700px; font-size: 0.93rem; margin: 0; }
+  .cf th, .cf td { text-align: left; padding: 0.75rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .cf th { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; background: var(--paper-2); }
+  .cf tr:last-child td { border-bottom: 0; }
+  .cf .id { font-family: var(--font-mono); font-size: 0.8rem; color: var(--violet); font-weight: 600; white-space: nowrap; }
+  .cf td { color: var(--ink-2); }
+  .cf td.first { color: var(--ink); font-weight: 500; }
+  .cf .one-line { margin-top: 1.75rem; padding: 1.25rem 1.4rem; border-left: 3px solid var(--red); background: var(--red-soft); border-radius: 0 var(--radius) var(--radius) 0; font-size: 1.15rem; color: var(--ink); max-width: var(--measure); }
+
+  .cf .foot { padding-block: 2.5rem 1rem; border-top: 1px solid var(--line); font-size: 0.88rem; color: var(--ink-3); }
+  .cf .foot p + p { margin-top: 0.6rem; }
+  .cf .foot b { color: var(--ink-2); font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cf .chain-svg .lit, .cf .stage, .cf .clock-bar i, .cf .rail-dots i, .cf .rail-dots b { transition: none; }
+    .cf .chain-svg .halo.now, .cf .switch-svg .road.open { animation: none; }
+  }
+</style>
+
+<script is:inline>
+(function () {
+  var stages = Array.prototype.slice.call(document.querySelectorAll('.cf .stage'));
+  var n = stages.length;
+  var track = document.getElementById('trackPath');
+  var lit = document.getElementById('litPath');
+  var nodesG = document.getElementById('nodes');
+  var railDots = document.getElementById('railDots');
+  var railNow = document.getElementById('railNow');
+  var railLabel = document.getElementById('railLabel');
+  var NS = 'http://www.w3.org/2000/svg';
+  var total = track.getTotalLength();
+  var nodes = [], labels = [], halos = [];
+
+  lit.style.strokeDasharray = total;
+  lit.style.strokeDashoffset = total;
+
+  function el(tag, attrs) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  stages.forEach(function (s, i) {
+    var p = track.getPointAtLength(total * i / (n - 1));
+    var halo = el('circle', { 'class': 'halo', cx: p.x, cy: p.y, r: 9 });
+    var node = el('circle', { 'class': 'node', cx: p.x, cy: p.y, r: 8 });
+    var lbl = el('text', { 'class': 'lbl', x: p.x + 24, y: p.y - 2 });
+    lbl.textContent = (i + 1) + ' · ' + s.dataset.short.toUpperCase();
+    var sub = el('text', { 'class': 'sub', x: p.x + 24, y: p.y + 14 });
+    sub.textContent = s.dataset.label;
+    nodesG.appendChild(halo); nodesG.appendChild(node); nodesG.appendChild(lbl); nodesG.appendChild(sub);
+    nodes.push(node); labels.push(lbl); halos.push(halo);
+
+    if (i > 0) { var bar = document.createElement('i'); railDots.appendChild(bar); }
+    var dot = document.createElement('b'); railDots.appendChild(dot);
+  });
+
+  var railBars = railDots.querySelectorAll('i');
+  var railBalls = railDots.querySelectorAll('b');
+  var current = -1;
+
+  function setStage(i) {
+    if (i === current) return;
+    current = i;
+    lit.style.strokeDashoffset = total * (1 - i / (n - 1));
+    stages.forEach(function (s, k) { s.classList.toggle('now', k === i); });
+    nodes.forEach(function (nd, k) { nd.classList.toggle('on', k <= i); nd.classList.toggle('now', k === i); });
+    labels.forEach(function (l, k) { l.classList.toggle('on', k <= i); l.classList.toggle('now', k === i); });
+    halos.forEach(function (h, k) { h.classList.toggle('now', k === i); });
+    railBars.forEach(function (b, k) { b.classList.toggle('on', k < i); });
+    railBalls.forEach(function (b, k) { b.classList.toggle('on', k <= i); b.classList.toggle('now', k === i); });
+    railNow.textContent = (i + 1) + ' · ' + stages[i].dataset.short;
+    railLabel.textContent = stages[i].dataset.label;
+  }
+
+  setStage(0);
+
+  if ('IntersectionObserver' in window) {
+    var ratios = stages.map(function () { return 0; });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { ratios[stages.indexOf(e.target)] = e.intersectionRatio; });
+      var best = 0;
+      for (var k = 1; k < n; k++) if (ratios[k] > ratios[best] + 0.05) best = k;
+      setStage(best);
+    }, { rootMargin: '-35% 0px -35% 0px', threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] });
+    stages.forEach(function (s) { io.observe(s); });
+
+    var clock = document.getElementById('clockBox');
+    var fill = document.getElementById('clockFill');
+    var co = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { fill.classList.add('go'); co.disconnect(); }
+    }, { threshold: 0.2 });
+    co.observe(clock);
+  } else {
+    setStage(n - 1);
+    document.getElementById('clockFill').classList.add('go');
+  }
+})();
+</script>

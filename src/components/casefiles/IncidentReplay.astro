@@ -1,0 +1,515 @@
+---
+/* The whole Binance theft as one 54-second replay: nine scenes on one
+   illustrated map (outside, Binance engineering, wallet systems, the
+   blockchain), a short note per scene, a scrubber and scene chips. One
+   render(t) draws any moment, so the same code drives playback, seeking,
+   the reduced-motion still and the video export (window.__incidentReplay).
+   Every value is from Binance's initial report; the drawings are original. */
+import { C } from '../visuals/viz';
+
+const D = 54;
+const SCENES = [
+  { at: 0, chip: 'Intro', when: '29 Oct 2026', note: '$6.34 billion left Binance\'s hot wallets in one evening. The attack behind it began five months earlier.' },
+  { at: 4, chip: 'June', when: 'June 2026', note: 'An engineer searches for an AI coding tool and installs a tampered Homebrew. Binance catches it and replaces the laptop. The attackers keep what they learned: who the wallet team is.' },
+  { at: 10, chip: 'Sep', when: 'September', note: 'A "Project Director" on a real job platform. Two video interviews. Then a take-home assignment, downloaded onto a work laptop.' },
+  { at: 15.5, chip: 'Foothold', when: 'September', note: 'The assignment swaps a real developer tool for a look-alike. New code, so endpoint protection has nothing to match. A quiet foothold inside engineering.' },
+  { at: 21, chip: '20 Oct', when: '20 October', note: 'From that laptop, an internal AI tool reaches two wallet engineers\' machines. On one of them: a deployment token, sitting on disk.' },
+  { at: 27.5, chip: '17:15', when: '29 Oct · 17:15 UTC', note: 'The token never expired. Used from a different engineer\'s machine, it deploys a container that can reach the wallet signing service.' },
+  { at: 33, chip: '20:05', when: '29 Oct · 20:05 UTC', note: 'Transfers signed outside the normal withdrawal process. 233 million XRP in four minutes, then SOL, OP and 18,270 BTC. The large-transfer alert fires after the first wave.' },
+  { at: 40, chip: 'Contained', when: '29 Oct · 20:09 to 00:10', note: 'Withdrawals suspended, $2.85B frozen. But an EIP-7702 permission written on-chain never passes Binance\'s gate. Last transfer 23:56. Cleared 00:10.' },
+  { at: 47.5, chip: 'Lesson', when: 'Seven links', note: 'Each link was an identity problem first: who is this person, is this tool allowed here, whose key is this, and can I switch it off.' },
+];
+
+/* where everything sits */
+const L = {
+  atk: [120, 150], hb: [120, 285], rec: [120, 400],
+  a: [330, 140], c: [505, 140], b: [330, 385], ai: [465, 280],
+  k: [700, 140], s: [700, 290], w: [885, 290], g: [885, 140],
+  addr: [515, 513], con: [840, 513],
+} as const;
+const P: Record<string, string> = {
+  hb: 'M120 285 C 220 285 230 140 330 140',
+  recon: 'M330 140 C 250 92 200 150 120 150',
+  rec: 'M120 400 C 220 400 230 385 330 385',
+  beacon: 'M330 385 C 240 290 200 165 120 150',
+  bai: 'M330 385 C 390 385 400 280 465 280',
+  aia: 'M465 280 C 430 225 360 200 330 140',
+  aic: 'M465 280 C 490 225 505 200 505 140',
+  tok: 'M330 140 C 380 88 455 88 505 140',
+  c2k: 'M505 140 L 700 140',
+  k2s: 'M700 140 L 700 290',
+  s2w: 'M700 290 L 885 290',
+  norm: 'M885 290 L 885 140 L 978 140',
+  w2a: 'M885 290 C 830 420 640 470 515 513',
+  w2c: 'M885 290 C 885 420 840 440 840 513',
+  c2a: 'M840 513 L 515 513',
+};
+
+/* moving dots: [path, start, end, colour, radius] */
+type Dot = [string, number, number, string, number];
+const dots: Dot[] = [];
+for (let s = 0.2; s < 40; s += 1.25) dots.push(['norm', s, s + 1.4, C.green, 3.5]);
+dots.push(['hb', 5.0, 6.6, C.red, 6], ['recon', 8.2, 9.8, C.red, 4], ['rec', 11.0, 12.8, C.red, 6]);
+for (let s = 17; s < 20.5; s += 1.1) dots.push(['beacon', s, s + 1.3, C.red, 3.5]);
+dots.push(['bai', 21.6, 22.8, C.red, 5], ['aia', 22.8, 24.0, C.red, 5], ['aic', 22.8, 24.0, C.red, 5]);
+dots.push(['tok', 28.0, 29.5, C.gold, 6], ['c2k', 29.5, 30.8, C.gold, 6], ['k2s', 31.0, 32.3, C.red, 5]);
+for (let s = 33.4; s < 36; s += 0.45) dots.push(['s2w', s, s + 0.7, C.red, 4]);
+const COIN = [C.blue, C.blue, C.blue, C.violet, C.red, C.gold, C.gold];
+let ci = 0;
+for (let s = 34.4; s < 39.4; s += 0.17) dots.push(['w2a', s, s + 1.1, COIN[Math.min(COIN.length - 1, Math.floor(ci++ / 4.2))], 4.2]);
+for (let s = 41.2; s < 43.4; s += 0.3) dots.push(['w2c', s, s + 0.9, C.red, 3.5]);
+for (let s = 43.6; s < 45.8; s += 0.32) dots.push(['c2a', s, s + 1.0, C.violet, 4]);
+
+const COINS = [
+  { t: 'XRP', c: C.blue, on: 34.4 },
+  { t: 'SOL', c: C.violet, on: 36.6 },
+  { t: 'OP', c: C.red, on: 37.2 },
+  { t: 'BTC', c: C.gold, on: 37.8 },
+  { t: 'ETH', c: '#cbd5e1', on: 43.6 },
+];
+/* the seven links, numbered in the closing scene */
+const LINKS = [
+  [160, 255, 47.8], [160, 372, 48.2], [372, 352, 48.6], [510, 248, 49.0], [290, 108, 49.4], [742, 258, 49.8], [872, 488, 50.2],
+];
+/* a red glow behind whatever the attackers hold: [x, y, on] */
+const TAKEN: [number, number, number][] = [
+  [L.b[0], L.b[1], 16.0], [L.ai[0], L.ai[1], 22.6], [L.a[0], L.a[1], 24.2], [L.c[0], L.c[1], 24.2],
+  [L.k[0], L.k[1], 30.8], [L.s[0], L.s[1], 32.3], [L.w[0], L.w[1], 34.0],
+];
+/* laptop screens that turn red: [x, y, on] */
+const SCREENS: [number, number, number][] = [[L.b[0], L.b[1], 16.0], [L.a[0], L.a[1], 24.2], [L.c[0], L.c[1], 24.2]];
+const LAPTOPS = [
+  { at: L.a, t: 'Laptop A', s: 'Wallet DevOps' },
+  { at: L.c, t: 'Laptop C', s: 'Wallet Software' },
+  { at: L.b, t: 'Laptop B', s: 'Software engineer' },
+];
+/* blocks along the chain, kept clear of the two on-chain actors */
+const BLOCKS = [190, 226, 262, 298, 334, 370, 406, 442, 640, 676, 712, 748, 930, 966];
+const tr = (p: readonly number[]) => `translate(${p[0]} ${p[1]})`;
+---
+
+<figure class="rp" data-replay data-d={D}>
+  <div class="rp-bar">
+    <span><i></i>Incident replay · the whole theft in 54 seconds</span>
+    <span class="rp-time" data-rp-clock>0:00 / 0:54</span>
+  </div>
+  <div class="rp-scroll">
+    <div class="rp-stage">
+      <svg viewBox="0 0 1000 560" role="img" aria-labelledby="rp-t rp-d">
+        <title id="rp-t">Replay of the 29 October 2026 Binance theft</title>
+        <desc id="rp-d">An illustrated map in four zones: outside, Binance engineering, wallet systems and the public blockchain. In June a tampered Homebrew reaches Laptop A and is caught. In September a fake recruiter on a video call delivers an assignment to Laptop B, which swaps a developer tool and gives the attackers a foothold. On 20 October an internal AI tool carries them to Laptops A and C, where a deployment token sits on disk. On 29 October the token, used from Laptop C, deploys a container that reaches the wallet signing service; from 20:05 transfers drain XRP, SOL, OP and BTC from the hot wallet vault. Withdrawals are suspended and $2.85 billion frozen, but an EIP-7702 permission on-chain keeps moving ETH until 23:56; it is cleared at 00:10.</desc>
+        <defs>
+          {Object.entries(P).map(([k, d]) => <path id={`rp-${k}`} d={d} />)}
+          <pattern id="rp-grid" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#1e293b" /></pattern>
+          <radialGradient id="rp-vig" cx="50%" cy="45%" r="75%"><stop offset="0.6" stop-color="#0b1220" stop-opacity="0" /><stop offset="1" stop-color="#020617" stop-opacity="0.6" /></radialGradient>
+          <radialGradient id="rp-red"><stop offset="0" stop-color={C.red} stop-opacity="0.42" /><stop offset="1" stop-color={C.red} stop-opacity="0" /></radialGradient>
+          <radialGradient id="rp-teal"><stop offset="0" stop-color={C.teal} stop-opacity="0.35" /><stop offset="1" stop-color={C.teal} stop-opacity="0" /></radialGradient>
+          <linearGradient id="rp-scr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0e3b45" /><stop offset="1" stop-color="#0b1a33" /></linearGradient>
+          <linearGradient id="rp-scr-red" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a0f17" /><stop offset="1" stop-color="#1c0a10" /></linearGradient>
+          <linearGradient id="rp-metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#475569" /><stop offset="1" stop-color="#1e293b" /></linearGradient>
+          <linearGradient id="rp-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fcd34d" /><stop offset="1" stop-color="#b45309" /></linearGradient>
+          <linearGradient id="rp-chip" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2e1065" /><stop offset="1" stop-color="#1e1b4b" /></linearGradient>
+          <linearGradient id="rp-star" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b5fd" /><stop offset="1" stop-color="#60a5fa" /></linearGradient>
+
+          <!-- a laptop, centred on its screen -->
+          <g id="rp-laptop">
+            <rect x="-42" y="-40" width="84" height="54" rx="6" fill="#0f172a" stroke="#64748b" stroke-width="1.5" />
+            <rect x="-37" y="-35" width="74" height="44" rx="2.5" fill="url(#rp-scr)" />
+            <rect x="-32" y="-29" width="30" height="3" rx="1.5" fill={C.teal} opacity="0.8" />
+            <rect x="-32" y="-22" width="46" height="3" rx="1.5" fill="#94a3b8" opacity="0.45" />
+            <rect x="-26" y="-15" width="36" height="3" rx="1.5" fill={C.violet} opacity="0.6" />
+            <rect x="-26" y="-8" width="22" height="3" rx="1.5" fill="#94a3b8" opacity="0.45" />
+            <rect x="-32" y="-1" width="40" height="3" rx="1.5" fill={C.teal} opacity="0.5" />
+            <path d="M-52 16 L52 16 L46 25 Q45 27 42 27 L-42 27 Q-45 27 -46 25 Z" fill="url(#rp-metal)" stroke="#64748b" stroke-width="1" />
+            <rect x="-9" y="17.5" width="18" height="3" rx="1.5" fill="#0f172a" opacity="0.6" />
+          </g>
+          <!-- the same screen, taken over -->
+          <g id="rp-pwned">
+            <rect x="-37" y="-35" width="74" height="44" rx="2.5" fill="url(#rp-scr-red)" />
+            <text x="-31" y="-20" class="vm" font-size="8.5" fill={C.red}>$ _</text>
+            <rect x="-31" y="-12" width="40" height="2.5" rx="1.2" fill={C.red} opacity="0.6" />
+            <rect x="-31" y="-6" width="28" height="2.5" rx="1.2" fill={C.red} opacity="0.4" />
+            <path d="M20 -26 L31 -6 L9 -6 Z" fill="none" stroke={C.red} stroke-width="1.8" stroke-linejoin="round" />
+            <path d="M20 -20 v6 M20 -11 v0.5" stroke={C.red} stroke-width="1.8" stroke-linecap="round" />
+          </g>
+        </defs>
+
+        <!-- ground -->
+        <rect width="1000" height="560" fill="#0b1220" />
+        <rect width="1000" height="560" fill="url(#rp-grid)" />
+        <rect width="1000" height="560" fill="url(#rp-vig)" />
+
+        <!-- header: when, and what has left -->
+        <text x="24" y="40" font-size="22" font-weight="800" data-rp-when>29 Oct 2026</text>
+        <text x="976" y="36" text-anchor="end" font-size="26" font-weight="800" fill={C.red} class="vm" data-rp-amt>$0.00B</text>
+        <text x="976" y="52" text-anchor="end" class="vm dim" font-size="10" letter-spacing="1">LEFT BINANCE'S HOT WALLETS</text>
+        <g data-on="41.5">
+          <text x="770" y="36" text-anchor="end" font-size="20" font-weight="800" fill={C.teal} class="vm">$2.85B</text>
+          <text x="770" y="52" text-anchor="end" class="vm dim" font-size="10" letter-spacing="1">FROZEN</text>
+        </g>
+
+        <!-- zones -->
+        <rect x="18" y="74" width="206" height="392" rx="16" fill="rgba(248,113,113,0.045)" stroke={C.red} stroke-opacity="0.32" stroke-dasharray="4 5" />
+        <text x="34" y="96" class="vm" font-size="10.5" letter-spacing="1.4" fill={C.red}>OUTSIDE</text>
+        <rect x="240" y="74" width="352" height="392" rx="16" fill="rgba(148,163,184,0.035)" stroke={C.edge} />
+        <text x="256" y="96" class="vm dim" font-size="10.5" letter-spacing="1.4">BINANCE ENGINEERING</text>
+        <rect x="606" y="74" width="376" height="392" rx="16" fill="rgba(251,191,36,0.035)" stroke={C.gold} stroke-opacity="0.28" />
+        <text x="622" y="96" class="vm" font-size="10.5" letter-spacing="1.4" fill={C.gold}>WALLET SYSTEMS</text>
+        <rect x="18" y="480" width="964" height="66" rx="16" fill="rgba(167,139,250,0.05)" stroke={C.violet} stroke-opacity="0.32" />
+        <text x="34" y="503" class="vm" font-size="10.5" letter-spacing="1.4" fill={C.violet}>BLOCKCHAIN</text>
+        <text x="34" y="518" class="vm dim" font-size="9">public, outside</text>
+        <text x="34" y="530" class="vm dim" font-size="9">Binance's systems</text>
+        <!-- chained blocks -->
+        <line x1="190" y1="513" x2="984" y2="513" stroke={C.violet} stroke-opacity="0.18" stroke-width="1.5" />
+        {BLOCKS.map((x) => (
+          <g transform={`translate(${x} 513)`} opacity="0.55">
+            <path d="M0 -9 L9 -4.5 L9 5.5 L0 10 L-9 5.5 L-9 -4.5 Z" fill="#1a1530" stroke={C.violet} stroke-opacity="0.6" />
+            <path d="M-9 -4.5 L0 0 L9 -4.5 M0 0 V10" fill="none" stroke={C.violet} stroke-opacity="0.45" />
+          </g>
+        ))}
+
+        <!-- quiet tracks under everything -->
+        {Object.keys(P).filter((k) => k !== 'norm').map((k) => <use href={`#rp-${k}`} fill="none" stroke={C.faint} stroke-width="1.2" stroke-dasharray="3 6" data-on={k === 'w2c' || k === 'c2a' ? 41 : k === 'w2a' ? 34 : 0} />)}
+        <use href="#rp-norm" fill="none" stroke={C.green} stroke-opacity="0.35" stroke-width="1.5" />
+
+        <!-- red glow behind every machine the attackers hold -->
+        {TAKEN.map(([x, y, on]) => <ellipse data-on={on} cx={x} cy={y - 8} rx="78" ry="58" fill="url(#rp-red)" />)}
+        <ellipse data-on="7.3" data-off="15" cx={L.a[0]} cy={L.a[1] - 8} rx="78" ry="58" fill="url(#rp-teal)" />
+
+        <!-- attackers: a hooded figure at a glowing screen -->
+        <g transform={tr(L.atk)}>
+          <circle r="62" fill="url(#rp-red)" />
+          <path d="M-30 30 C -30 -6 -22 -30 0 -34 C 22 -30 30 -6 30 30 Z" fill="#1c0a10" stroke={C.red} stroke-width="1.8" />
+          <path d="M-15 8 C -15 -14 -8 -22 0 -22 C 8 -22 15 -14 15 8 C 8 12 -8 12 -15 8 Z" fill="#05070d" />
+          <circle cx="-6" cy="-6" r="2.4" fill={C.red} /><circle cx="6" cy="-6" r="2.4" fill={C.red} />
+          <rect x="-26" y="20" width="52" height="16" rx="3" fill="#2a0d12" stroke={C.red} stroke-opacity="0.8" />
+          <text x="0" y="31.5" text-anchor="middle" class="vm" font-size="8" fill={C.red}>{'>_'} 0x</text>
+        </g>
+        <text x={L.atk[0]} y="208" text-anchor="middle" font-size="13" font-weight="700">Attackers</text>
+        <text x={L.atk[0]} y="223" text-anchor="middle" class="vm" font-size="9.5" fill={C.red}>attributed by the FBI: DPRK</text>
+        <text data-on="8.6" data-off="15.5" x={L.atk[0]} y="241" text-anchor="middle" class="vm" font-size="9.5" fill={C.gold}>they learn the wallet team</text>
+
+        <!-- tampered installer: a package with a bug on it -->
+        <g transform={tr(L.hb)}>
+          <path d="M0 -30 L30 -16 L0 -2 L-30 -16 Z" fill="#5b3a1a" stroke="#d97706" stroke-width="1.4" />
+          <path d="M-30 -16 L0 -2 L0 30 L-30 16 Z" fill="#3b2410" stroke="#d97706" stroke-width="1.4" />
+          <path d="M30 -16 L0 -2 L0 30 L30 16 Z" fill="#4a2e14" stroke="#d97706" stroke-width="1.4" />
+          <path d="M-15 -23 L15 -9" stroke="#fbbf24" stroke-opacity="0.6" stroke-width="3" />
+          <g transform="translate(16 10)">
+            <ellipse rx="7" ry="9" fill={C.red} />
+            <path d="M-7 -3 h-5 M-7 3 h-5 M7 -3 h5 M7 3 h5 M-3 -9 l-3 -4 M3 -9 l3 -4" stroke={C.red} stroke-width="1.6" stroke-linecap="round" />
+            <path d="M0 -8 V8" stroke="#1c0a10" stroke-width="1.2" />
+          </g>
+          <path d="M-44 -30 v14 M-49 -21 l5 5 l5 -5" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+        <text x={L.hb[0]} y="331" text-anchor="middle" font-size="12.5" font-weight="700">Tampered Homebrew</text>
+        <text x={L.hb[0]} y="345" text-anchor="middle" class="dim" font-size="10">found by a web search</text>
+
+        <!-- the fake recruiter, on a video call -->
+        <g transform={tr(L.rec)}>
+          <rect x="-44" y="-32" width="88" height="58" rx="7" fill="#0f172a" stroke="#64748b" stroke-width="1.5" />
+          <rect x="-44" y="-32" width="88" height="11" rx="7" fill="#1e293b" />
+          <circle cx="-36" cy="-26.5" r="2" fill={C.red} /><circle cx="-30" cy="-26.5" r="2" fill={C.gold} /><circle cx="-24" cy="-26.5" r="2" fill={C.green} />
+          <rect x="-39" y="-18" width="78" height="40" rx="3" fill="#13243f" />
+          <circle cx="0" cy="-5" r="8" fill="#94a3b8" />
+          <path d="M-16 22 C -16 6 16 6 16 22 Z" fill="#94a3b8" />
+          <path d="M-4 6 L0 14 L4 6" fill="#475569" />
+          <circle cx="31" cy="-12" r="3" fill={C.red} />
+          <text x="25" y="-9" text-anchor="end" class="vm" font-size="6.5" fill={C.red}>REC</text>
+          <g transform="translate(34 18)">
+            <rect x="-11" y="-8" width="22" height="16" rx="3" fill="#1e293b" stroke={C.gold} stroke-width="1.2" />
+            <path d="M-4 -8 v-3 h8 v3" fill="none" stroke={C.gold} stroke-width="1.2" />
+          </g>
+        </g>
+        <text x={L.rec[0]} y="446" text-anchor="middle" font-size="12.5" font-weight="700">"Project Director"</text>
+        <text x={L.rec[0]} y="460" text-anchor="middle" class="dim" font-size="10">real job platform, fake company</text>
+
+        <!-- three laptops -->
+        {LAPTOPS.map((l) => (
+          <g>
+            <use href="#rp-laptop" transform={tr(l.at)} />
+            <text x={l.at[0]} y={l.at[1] + 46} text-anchor="middle" font-size="12.5" font-weight="700">{l.t}</text>
+            <text x={l.at[0]} y={l.at[1] + 60} text-anchor="middle" class="dim" font-size="10">{l.s}</text>
+          </g>
+        ))}
+        <!-- June: Laptop A hit for a moment, then caught -->
+        <use data-on="6.3" data-off="7.4" href="#rp-pwned" transform={tr(L.a)} />
+        <g data-on="7.4" data-off="15" transform={tr(L.a)}>
+          <rect x="-37" y="-35" width="74" height="44" rx="2.5" fill="#0d3b36" />
+          <path d="M-10 -14 l7 7 l14 -14" fill="none" stroke={C.teal} stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+        {SCREENS.map(([x, y, on]) => <use data-on={on} href="#rp-pwned" transform={`translate(${x} ${y})`} />)}
+
+        <!-- the internal AI tool: a chip with a spark -->
+        <g transform={tr(L.ai)}>
+          {[-16, -6, 4, 14].map((o) => (
+            <g stroke="#a78bfa" stroke-width="2" stroke-linecap="round" opacity="0.8">
+              <path d={`M${o + 1} -30 v-6`} /><path d={`M${o + 1} 32 v6`} /><path d={`M-30 ${o + 1} h-6`} /><path d={`M32 ${o + 1} h6`} />
+            </g>
+          ))}
+          <rect x="-30" y="-30" width="62" height="62" rx="10" fill="url(#rp-chip)" stroke={C.violet} stroke-width="1.8" />
+          <rect x="-22" y="-22" width="46" height="46" rx="6" fill="none" stroke={C.violet} stroke-opacity="0.35" />
+          <path d="M1 -17 C 3 -4 5 -2 18 1 C 5 4 3 6 1 19 C -1 6 -3 4 -16 1 C -3 -2 -1 -4 1 -17 Z" fill="url(#rp-star)" />
+        </g>
+        <text x={L.ai[0]} y={L.ai[1] + 58} text-anchor="middle" font-size="12.5" font-weight="700">Internal AI tool</text>
+        <text x={L.ai[0]} y={L.ai[1] + 72} text-anchor="middle" class="dim" font-size="10">reaches across machines</text>
+
+        <!-- container platform: stacked containers -->
+        <g transform={tr(L.k)}>
+          {[[-30, 0, '#1d4ed8'], [2, 0, '#0e7490'], [-14, -24, '#4338ca']].map(([x, y, c]) => (
+            <g transform={`translate(${x} ${y})`}>
+              <rect x="0" y="-8" width="30" height="22" rx="2.5" fill={c as string} fill-opacity="0.55" stroke="#93c5fd" stroke-opacity="0.7" />
+              <path d="M7 -5 v16 M13 -5 v16 M19 -5 v16 M25 -5 v16" stroke="#bfdbfe" stroke-opacity="0.45" />
+            </g>
+          ))}
+          <path d="M-36 16 h74" stroke="#64748b" stroke-width="2" stroke-linecap="round" />
+        </g>
+        <text x={L.k[0]} y={L.k[1] + 40} text-anchor="middle" font-size="12.5" font-weight="700">Container platform</text>
+        <text x={L.k[0]} y={L.k[1] + 54} text-anchor="middle" class="dim" font-size="10">deploys with a token</text>
+
+        <!-- signing service: a server and a seal -->
+        <g transform={tr(L.s)}>
+          {[-26, -8, 10].map((y) => (
+            <g>
+              <rect x="-36" y={y} width="56" height="15" rx="3" fill="url(#rp-metal)" stroke="#64748b" />
+              <circle cx="-29" cy={y + 7.5} r="2" fill={C.green} />
+              <rect x="-22" y={y + 6} width="26" height="3" rx="1.5" fill="#0f172a" />
+            </g>
+          ))}
+          <circle cx="26" cy="12" r="15" fill="url(#rp-gold)" stroke="#fde68a" stroke-width="1" />
+          <path d="M19 12 l5 5 l9 -10" fill="none" stroke="#3b2410" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M18 25 l-4 10 l7 -3 l3 6 l2 -10 M34 25 l4 10 l-7 -3 l-3 6" fill={C.gold} opacity="0.85" />
+        </g>
+        <text x={L.s[0]} y={L.s[1] + 52} text-anchor="middle" font-size="12.5" font-weight="700">Wallet signing service</text>
+        <text x={L.s[0]} y={L.s[1] + 66} text-anchor="middle" class="dim" font-size="10">approves payments</text>
+
+        <!-- hot wallets: a vault -->
+        <g transform={tr(L.w)}>
+          <rect x="-38" y="-36" width="76" height="66" rx="9" fill="url(#rp-metal)" stroke={C.gold} stroke-opacity="0.8" stroke-width="1.6" />
+          <rect x="-31" y="-29" width="62" height="52" rx="6" fill="#111a2e" stroke="#64748b" />
+          <circle cx="-2" cy="-3" r="15" fill="none" stroke={C.gold} stroke-width="2" />
+          <circle cx="-2" cy="-3" r="4" fill={C.gold} />
+          <path d="M-2 -18 v6 M-2 6 v6 M-17 -3 h6 M7 -3 h6" stroke={C.gold} stroke-width="2" stroke-linecap="round" />
+          <rect x="22" y="-10" width="4" height="16" rx="2" fill="#94a3b8" />
+          <path d="M-30 30 v5 M30 30 v5" stroke="#64748b" stroke-width="3" stroke-linecap="round" />
+        </g>
+        <text x={L.w[0]} y="346" text-anchor="middle" font-size="12.5" font-weight="700">Hot wallets</text>
+        {COINS.map((c, i) => (
+          <g>
+            <rect x={817 + i * 28.5} y="354" width="25" height="18" rx="9" fill="none" stroke={C.faint} />
+            <text x={829.5 + i * 28.5} y="366.5" text-anchor="middle" class="vm dim" font-size="8.5">{c.t}</text>
+            <g data-on={c.on}>
+              <rect x={817 + i * 28.5} y="354" width="25" height="18" rx="9" fill={c.c} fill-opacity="0.25" stroke={c.c} />
+              <text x={829.5 + i * 28.5} y="366.5" text-anchor="middle" class="vm" font-size="8.5" fill={c.c}>{c.t}</text>
+            </g>
+          </g>
+        ))}
+        <text x={L.w[0]} y="390" text-anchor="middle" class="vm" font-size="9.5" fill={C.red} data-on="35.6" data-off="47.5">233.46M XRP in 4 min</text>
+
+        <!-- withdrawals: a barrier, up then down -->
+        <g transform={tr(L.g)}>
+          <rect x="-40" y="-6" width="9" height="34" rx="2" fill="url(#rp-metal)" stroke="#64748b" />
+          <rect x="31" y="10" width="9" height="18" rx="2" fill="url(#rp-metal)" stroke="#64748b" />
+          <path d="M-36 28 h72" stroke="#475569" stroke-width="2" />
+          <g data-off="40.8">
+            <g transform="rotate(-80 -35.5 -2)"><rect x="-35.5" y="-6" width="58" height="8" rx="4" fill="#e2e8f0" /><path d="M-20 -6 h10 l-8 8 h-10 Z M4 -6 h10 l-8 8 h-10 Z" fill={C.green} /></g>
+            <circle cx="-24" cy="-12" r="4" fill={C.green} />
+          </g>
+          <g data-on="40.8">
+            <rect x="-35.5" y="-6" width="76" height="8" rx="4" fill="#e2e8f0" />
+            <path d="M-20 -6 h10 l-8 8 h-10 Z M4 -6 h10 l-8 8 h-10 Z M28 -6 h10 l-8 8 h-10 Z" fill={C.red} />
+            <circle cx="-35.5" cy="-16" r="4" fill={C.red} />
+          </g>
+        </g>
+        <text x={L.g[0]} y="188" text-anchor="middle" font-size="12.5" font-weight="700">Withdrawals</text>
+        <text data-off="40.8" x={L.g[0]} y="202" text-anchor="middle" class="vm" font-size="10" fill={C.green}>OPEN</text>
+        <text data-on="40.8" x={L.g[0]} y="202" text-anchor="middle" class="vm" font-size="10" fill={C.teal}>SUSPENDED</text>
+
+        <!-- on-chain: where the funds land, and the standing permission -->
+        <g transform={tr(L.addr)}>
+          <circle r="26" fill="url(#rp-red)" />
+          <rect x="-15" y="-11" width="30" height="22" rx="4" fill="#2a0d12" stroke={C.red} stroke-width="1.6" />
+          <rect x="4" y="-4" width="13" height="8" rx="2" fill="#1c0a10" stroke={C.red} stroke-width="1.2" />
+          <circle cx="9" cy="0" r="1.6" fill={C.red} />
+        </g>
+        <text x={L.addr[0] + 24} y="510" font-size="11.5" font-weight="700">Attacker addresses</text>
+        <text x={L.addr[0] + 24} y="523" class="vm" font-size="9" fill={C.red}>where the funds land</text>
+        <g data-on="41">
+          <g transform={tr(L.con)}>
+            <circle r="26" fill="url(#rp-red)" opacity="0.6" />
+            <path d="M-12 -14 h20 l5 5 v23 h-25 Z" fill="#1a1530" stroke={C.violet} stroke-width="1.6" />
+            <text x="-1" y="5" text-anchor="middle" class="vm" font-size="9" fill={C.violet}>{'{ }'}</text>
+            <path d="M14 -4 a5 5 0 1 1 0 8 M18 -4 a5 5 0 1 0 0 8" fill="none" stroke={C.red} stroke-width="1.6" />
+          </g>
+          <text x={L.con[0] + 24} y="510" font-size="11.5" font-weight="700">Attacker contract</text>
+          <text x={L.con[0] + 24} y="523" class="vm" font-size="9" fill={C.violet}>EIP-7702 permission</text>
+        </g>
+        <g data-on="46.6">
+          <path d="M826 499 l28 28 M854 499 l-28 28" stroke={C.teal} stroke-width="3.2" stroke-linecap="round" />
+          <text x="700" y="500" text-anchor="middle" class="vm" font-size="9.5" fill={C.teal}>cleared 00:10</text>
+        </g>
+        <text x="760" y="474" text-anchor="middle" class="vm" font-size="9.5" fill={C.violet} data-on="41.4" data-off="44">50 transactions</text>
+
+        <!-- scene notes beside the action -->
+        <text x={L.a[0]} y="222" text-anchor="middle" class="vm" font-size="9.5" fill={C.teal} data-on="7.4" data-off="15">caught · laptop replaced</text>
+        <text x={L.b[0]} y="461" text-anchor="middle" class="vm" font-size="9.5" fill={C.red} data-on="12.6" data-off="16">assignment.zip opened</text>
+        <text x={L.b[0]} y="461" text-anchor="middle" class="vm" font-size="9.5" fill={C.red} data-on="16.2" data-off="21">tool swapped · EDR: no match</text>
+        <g data-on="24.6">
+          <g transform="translate(366 92)"><circle cx="6" cy="6" r="5.5" fill="none" stroke={C.gold} stroke-width="2.2" /><path d="M10 10 l10 10 M16 16 l3 -3 M19 19 l2.5 -2.5" stroke={C.gold} stroke-width="2.2" stroke-linecap="round" /></g>
+          <text x={L.a[0]} y="222" text-anchor="middle" class="vm" font-size="9.5" fill={C.gold}>deploy token on disk</text>
+        </g>
+        <text x={L.c[0]} y="222" text-anchor="middle" class="vm" font-size="9.5" fill={C.gold} data-on="29.4" data-off="40">A's token, used from C</text>
+        <text x={L.s[0]} y="374" text-anchor="middle" class="vm" font-size="9.5" fill={C.red} data-on="32.4" data-off="47.5">signing outside the process</text>
+        <text x={L.s[0]} y="390" text-anchor="middle" class="vm" font-size="9.5" fill={C.gold} data-on="38.2" data-off="47.5">alert fires · first wave gone</text>
+
+        <!-- moving dots -->
+        {dots.map(([p, s, e, c, r]) => <circle class="mv" data-path={`rp-${p}`} data-s={s} data-e={e} r={r} fill={c} color={c} stroke="#0b1220" stroke-width="1" opacity="0" />)}
+
+        <!-- the seven links -->
+        {LINKS.map(([x, y, on], i) => (
+          <g data-on={on}>
+            <circle cx={x} cy={y} r="12" fill={C.red} stroke="#0b1220" stroke-width="2" />
+            <text x={x} y={y + 4} text-anchor="middle" font-size="12" font-weight="800" fill="#0b1220">{i + 1}</text>
+          </g>
+        ))}
+
+      </svg>
+    </div>
+  </div>
+  <p class="rp-hint" aria-hidden="true">Swipe the map sideways to see it all →</p>
+  <figcaption class="rp-cap" data-rp-cap><b>29 Oct 2026</b> <span>{SCENES[0].note}</span></figcaption>
+  <div class="rp-ctl" data-rp-ctl>
+    <button type="button" class="rp-play" data-rp-play aria-label="Play the replay">Play</button>
+    <input type="range" min="0" max={D} step="0.01" value="0" aria-label="Replay position" data-rp-seek />
+  </div>
+  <ol class="rp-chips" data-rp-chips>
+    {SCENES.map((s, i) => <li><button type="button" data-at={s.at} aria-label={`Jump to ${s.chip}`}><span>{i}</span>{s.chip}</button></li>)}
+  </ol>
+  <script type="application/json" data-rp-scenes set:html={JSON.stringify(SCENES)} />
+</figure>
+
+<style>
+  .rp { margin: 0; border-radius: var(--radius); overflow: hidden; background: #0b1220; border: 1px solid #1e293b; box-shadow: 0 30px 60px -40px rgba(2, 6, 23, 0.7); color: #e2e8f0; }
+  .rp-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.6rem 1rem; border-bottom: 1px solid #1e293b; font: 500 0.7rem var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: #94a3b8; }
+  .rp-bar i { display: inline-block; width: 0.5rem; height: 0.5rem; margin-right: 0.55rem; border-radius: 50%; background: #f87171; box-shadow: 0 0 10px #f87171; vertical-align: 0.05em; }
+  .rp-time { font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+  .rp-scroll { overflow-x: auto; scrollbar-width: thin; }
+  .rp-stage { min-width: 700px; }
+  @media (min-width: 761px) { .rp-stage { min-width: 0; } }
+  .rp-hint { display: none; margin: 0; padding: 0.45rem 1.1rem; font: 0.7rem var(--font-mono); color: #f87171; border-top: 1px solid #1e293b; }
+  @media (max-width: 760px) { .rp-hint { display: block; } }
+  .rp-stage :global(svg) { display: block; width: 100%; height: auto; }
+  .rp-stage :global(text) { font-family: var(--font-body); }
+  .rp-stage :global(text:not([fill])) { fill: #e2e8f0; }
+  .rp-stage :global(text.dim:not([fill])) { fill: #94a3b8; }
+  .rp-stage :global(.vm) { font-family: var(--font-mono); }
+  .rp-stage :global(.mv) { filter: drop-shadow(0 0 5px currentColor); }
+  .rp-cap { margin: 0; padding: 0.9rem 1.1rem; border-top: 1px solid #1e293b; font-family: var(--font-body); font-size: 1rem; line-height: 1.55; color: #cbd5e1; min-height: 4.6em; }
+  .rp-cap b { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #f87171; margin-right: 0.4rem; }
+  .rp-ctl { display: flex; align-items: center; gap: 0.9rem; padding: 0.2rem 1.1rem 0.7rem; }
+  .rp-play { font: 600 0.72rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: #0b1220; background: #f87171; border: 0; border-radius: 999px; padding: 0.4rem 0.95rem; cursor: pointer; min-width: 5.2rem; }
+  .rp-play:focus-visible, .rp-chips button:focus-visible, .rp-ctl input:focus-visible { outline: 2px solid #2dd4bf; outline-offset: 2px; }
+  .rp-ctl input { flex: 1; accent-color: #f87171; min-width: 0; }
+  .rp-chips { list-style: none; margin: 0; padding: 0 1.1rem 1rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .rp-chips button { font: 500 0.7rem var(--font-mono); letter-spacing: 0.04em; color: #94a3b8; background: transparent; border: 1px solid #334155; border-radius: 999px; padding: 0.25rem 0.65rem; cursor: pointer; }
+  .rp-chips button span { color: #64748b; margin-right: 0.35rem; }
+  .rp-chips button:hover { border-color: #f87171; color: #f1f5f9; }
+  .rp-chips button[aria-current='step'] { border-color: #f87171; color: #f1f5f9; background: rgba(248, 113, 113, 0.14); }
+</style>
+
+<script>
+  /* render(t) draws any moment of the replay; playback, seeking and the
+     video export all go through it. */
+  const fig = document.querySelector<HTMLElement>('[data-replay]');
+  if (fig) {
+    const D = Number(fig.dataset.d);
+    const scenes: { at: number; when: string; note: string }[] = JSON.parse(fig.querySelector('[data-rp-scenes]')!.textContent || '[]');
+    const fades = [...fig.querySelectorAll<SVGElement>('[data-on], [data-off]')].map((el) => ({
+      el, on: Number(el.dataset.on ?? -1), off: Number(el.dataset.off ?? D + 1),
+    }));
+    const movers = [...fig.querySelectorAll<SVGCircleElement>('[data-path]')].map((el) => {
+      const path = fig.querySelector<SVGPathElement>(`#${el.dataset.path}`)!;
+      return { el, path, len: path.getTotalLength(), s: Number(el.dataset.s), e: Number(el.dataset.e) };
+    });
+    const whenEl = fig.querySelector('[data-rp-when]')!;
+    const amtEl = fig.querySelector('[data-rp-amt]')!;
+    const cap = fig.querySelector('[data-rp-cap]')!;
+    const clock = fig.querySelector('[data-rp-clock]')!;
+    const seek = fig.querySelector<HTMLInputElement>('[data-rp-seek]')!;
+    const play = fig.querySelector<HTMLButtonElement>('[data-rp-play]')!;
+    const chips = [...fig.querySelectorAll<HTMLButtonElement>('[data-rp-chips] button')];
+
+    const clamp = (x: number) => Math.max(0, Math.min(1, x));
+    const ease = (x: number) => x * x * (3 - 2 * x);
+    const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    const hhmm = (m: number) => `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(Math.floor(m % 60)).padStart(2, '0')}`;
+    let shown = -1;
+
+    function render(t: number) {
+      for (const f of fades) {
+        const o = clamp((t - f.on) / 0.35) * clamp((f.off - t) / 0.35);
+        f.el.style.opacity = String(o);
+      }
+      for (const m of movers) {
+        if (t < m.s || t > m.e) { m.el.setAttribute('opacity', '0'); continue; }
+        const p = ease((t - m.s) / (m.e - m.s));
+        const pt = m.path.getPointAtLength(m.len * p);
+        m.el.setAttribute('cx', String(pt.x));
+        m.el.setAttribute('cy', String(pt.y));
+        m.el.setAttribute('opacity', String(Math.min(1, (t - m.s) * 6, (m.e - t) * 6)));
+      }
+      /* the money: XRP first, then the rest, to Binance's $6.34B */
+      const amt = 6.34 * ease(clamp((t - 34.4) / 5.2));
+      amtEl.textContent = `$${amt.toFixed(2)}B`;
+      let i = 0;
+      while (i + 1 < scenes.length && t >= scenes[i + 1].at) i++;
+      let when = scenes[i].when;
+      if (i === 5 && t > 32) when = '29 Oct · 19:56 UTC';
+      if (i === 6) when = `29 Oct · ${hhmm(20 * 60 + 5 + 4 * clamp((t - 34.4) / 3))} UTC`;
+      if (i === 7) when = t < 45.4 ? '29 Oct · 20:09 UTC' : t < 46.5 ? '29 Oct · 23:56 UTC' : '30 Oct · 00:10 UTC';
+      whenEl.textContent = when;
+      if (i !== shown) {
+        shown = i;
+        cap.innerHTML = '';
+        const b = document.createElement('b'); b.textContent = scenes[i].when;
+        const s = document.createElement('span'); s.textContent = scenes[i].note;
+        cap.append(b, ' ', s);
+        chips.forEach((c, k) => { if (k === i) c.setAttribute('aria-current', 'step'); else c.removeAttribute('aria-current'); });
+      }
+      clock.textContent = `${mmss(t)} / ${mmss(D)}`;
+      seek.value = String(t);
+    }
+
+    let t = 0;
+    let playing = false;
+    let last = 0;
+    let seen = false;
+    const label = () => { play.textContent = playing ? 'Pause' : t >= D ? 'Replay' : 'Play'; play.setAttribute('aria-label', `${play.textContent} the replay`); };
+    const tick = (now: number) => {
+      if (!playing) return;
+      t = Math.min(D, t + (now - last) / 1000);
+      last = now;
+      render(t);
+      if (t >= D) { playing = false; label(); return; }
+      requestAnimationFrame(tick);
+    };
+    const start = () => { if (t >= D) t = 0; playing = true; last = performance.now(); label(); requestAnimationFrame(tick); };
+    const stop = () => { playing = false; label(); };
+
+    play.addEventListener('click', () => (playing ? stop() : start()));
+    seek.addEventListener('input', () => { stop(); t = Number(seek.value); render(t); });
+    chips.forEach((c) => c.addEventListener('click', () => { t = Number(c.dataset.at) + 0.01; render(t); if (!playing) start(); }));
+
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { t = 51; render(t); label(); }
+    else {
+      render(0);
+      new IntersectionObserver((es) => {
+        const vis = es.some((e) => e.isIntersecting);
+        if (vis && !seen) { seen = true; start(); }
+        else if (!vis && playing) stop();
+      }, { threshold: 0.45 }).observe(fig);
+    }
+    (window as unknown as { __incidentReplay: unknown }).__incidentReplay = { D, render: (x: number) => { stop(); t = x; render(x); } };
+  }
+</script>

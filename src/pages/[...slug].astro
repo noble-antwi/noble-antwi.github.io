@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
+import BinanceHeist from '../components/casefiles/BinanceHeist.astro';
 import { postPath, postUrl, formatDate, isoDate, categoryLabel, seriesFor, byDateDesc, SITE } from '../lib/site';
 
 export async function getStaticPaths() {
@@ -39,7 +40,10 @@ const caseStudy = (await getCollection('work'))
   .map((w) => ({ w, n: shared(w.data.relatedTags) }))
   .filter((x) => x.n > 0)
   .sort((a, b) => b.n - a.n)[0]?.w;
-const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+/* A case file draws its own full-width page; the prose header and body step aside. */
+const CASEFILES = { 'binance-2026-10-29': BinanceHeist } as const;
+const CaseFile = d.casefile ? CASEFILES[d.casefile as keyof typeof CASEFILES] : undefined;
+const toc = CaseFile ? [] : headings.filter((h) => h.depth === 2 || h.depth === 3);
 const shareUrl = new URL(postUrl(post), SITE.url).toString();
 const description = d.description ?? (post.body ?? '').replace(/<[^>]+>/g, '').replace(/[#*_`>\[\]]/g, '').replace(/\s+/g, ' ').trim().slice(0, 157) + '…';
 
@@ -58,9 +62,11 @@ const jsonLd = {
 
 <Base title={d.title} description={description} type="article" published={d.date} tags={d.tags} jsonLd={jsonLd}>
   <div class="read-progress" aria-hidden="true"></div>
+  {CaseFile && <CaseFile date={formatDate(d.date)} readTime={d.read_time} author={SITE.author} />}
   <div class="container">
     <div class="article-layout">
     <article>
+      {!CaseFile && (<Fragment>
       <header class="post-hero" data-topic={d.category}>
         <span class="kicker">{categoryLabel(d.category)}{series ? ` · ${series.title}` : ''}</span>
         <h1>{d.title}</h1>
@@ -88,6 +94,7 @@ const jsonLd = {
       <div class="prose">
         <Content />
       </div>
+      </Fragment>)}
 
       {series && seriesPosts.length > 1 && (
         <aside class="series-nav" aria-label="Series">

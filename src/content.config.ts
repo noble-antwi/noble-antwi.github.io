@@ -10,6 +10,8 @@ const posts = defineCollection({
     tags: z.array(z.string()).default([]),
     description: z.string().optional(),
     read_time: z.number().optional(),
+    /** Renders a full-width case file component instead of the prose body. */
+    casefile: z.string().optional(),
   }),
 });
 

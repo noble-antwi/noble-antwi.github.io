@@ -41,6 +41,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   'project-update': 'Project update',
   'cloud-security': 'Cloud security',
   til: 'Today I learned',
+  'case-files': 'Case files',
 };
 
 export function categoryLabel(cat: string): string {
