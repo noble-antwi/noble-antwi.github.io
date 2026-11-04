@@ -45,7 +45,7 @@ const { date, readTime, author } = Astro.props;
     <div class="cf-head">
       <p class="kicker">The attack chain</p>
       <h2>Seven links. Break any one, and the money stays.</h2>
-      <p>Scroll through the chain. Each stage shows what happened in plain words, the control that could have stopped it, and where the same control lives in my own lab.</p>
+      <p>Scroll through the chain. Each stage shows what happened in plain words, the control that could have stopped it, and the same control in my own lab: <b class="st built">Built</b> where it already runs, <b class="st building">Building</b> where it is under way, <b class="st next">Next</b> where this case file put it on the list.</p>
     </div>
 
     <div class="rail" aria-hidden="true">
@@ -72,7 +72,7 @@ const { date, readTime, author } = Astro.props;
           <p class="story">The attackers still won something. They now knew who Engineer A was, what the wallet infrastructure team did, and who worked alongside them.</p>
           <div class="cells">
             <div class="cell control"><small>The control</small>Install developer tools only from verified sources, and check the signing key against the vendor's own published fingerprint, never against a number someone pastes to you. Treat a caught intrusion as reconnaissance that succeeded: the whole team is now a target.</div>
-            <div class="cell lab"><small>In my lab</small>Every package source on VAULT01 is pinned to a verified signing key. Checking HashiCorp's fingerprint against their security page the day I built it caught a key rotation: the value I had been given was two months stale.</div>
+            <div class="cell lab"><small>In my lab <em class="st building">Building</em></small>VAULT01, the lab's secrets server, installs HashiCorp's packages only from a source pinned to their signing key, and that key is checked against the fingerprint HashiCorp publishes, not one copied from a guide.</div>
           </div>
         </article>
 
@@ -83,7 +83,7 @@ const { date, readTime, author } = Astro.props;
           <p class="story">Near the end, Engineer B was asked to download a take-home "assignment" onto his work computer. The assignment carried the malware.</p>
           <div class="cells">
             <div class="cell control"><small>The control</small>Job-hunting and personal downloads stay off work devices, as policy, not advice. Any code from outside runs in a throwaway virtual machine first. Staff who touch money systems get specific briefings on the fake-recruiter playbook, which the FBI has warned about for years.</div>
-            <div class="cell lab"><small>In my lab</small>Untrusted code lands in a disposable VM or container on the hypervisor, never on the admin laptop. The lab's own rule: the laptop holds keys, so it never runs strangers' code.</div>
+            <div class="cell lab"><small>In my lab <em class="st next">Next</em></small>A throwaway analysis VM on the hypervisor, reset from a clean snapshot after every use, so outside code never runs on the admin laptop. The rule behind it: the laptop holds keys, so it never runs strangers' code.</div>
           </div>
         </article>
 
@@ -94,7 +94,7 @@ const { date, readTime, author } = Astro.props;
           <p class="story">From that moment the attackers had a quiet, durable foothold inside Binance's engineering network.</p>
           <div class="cells">
             <div class="cell control"><small>The control</small>Watch the tool paths themselves. File integrity monitoring raises an alert when a binary a developer relies on changes outside a package update. Pair it with detection that looks at behaviour, such as a developer tool opening a connection to an unknown server, rather than only known-bad signatures.</div>
-            <div class="cell lab"><small>In my lab</small>Wazuh's file integrity monitoring runs on every enrolled host. The snippet below points it at developer tool paths, so a changed binary under <span class="id">/usr/local/bin</span> or <span class="id">/opt</span> is an alert, not a mystery.</div>
+            <div class="cell lab"><small>In my lab <em class="st next">Next</em></small>Wazuh already watches every enrolled host. The snippet below points its file integrity monitoring at developer tool paths, so a changed binary under <span class="id">/usr/local/bin</span> or <span class="id">/opt</span> becomes an alert, then I attack it to prove the rule fires.</div>
           </div>
           <div class="detect" aria-label="Detection ideas for this stage">
             <div class="detect-head"><b>Detection: what to watch for</b><span>ATT&amp;CK T1574 Hijack execution flow · T1070 Indicator removal</span></div>
@@ -121,7 +121,7 @@ const { date, readTime, author } = Astro.props;
           <p class="story">On Engineer A's computer they found the prize: a token that allowed containers to be deployed, sitting on disk.</p>
           <div class="cells">
             <div class="cell control"><small>The control</small>An AI tool is an identity, and it needs the same governance as a person: its own account, the narrowest permissions that do its job, no reach across devices it has no business touching, every action logged, and one switch that turns it off.</div>
-            <div class="cell lab"><small>In my lab</small>My AI agent has its own Keycloak identity: a confidential client that gets five-minute tokens and nothing else. Disabling it in one place cut off every token request within a minute, and Keycloak's event log recorded <span class="id">client_disabled</span>. <a href="https://github.com/noble-antwi/enterprise-security-homelab/blob/main/docs/23-identity-provider-idp01-keycloak.md">Chapter 23, section 11</a>.</div>
+            <div class="cell lab"><small>In my lab <em class="st built">Built</em></small>My AI agent has its own Keycloak identity: a confidential client that gets five-minute tokens and nothing else. Disabling it in one place cut off every token request within a minute, and Keycloak's event log recorded <span class="id">client_disabled</span>. <a href="https://github.com/noble-antwi/enterprise-security-homelab/blob/main/docs/23-identity-provider-idp01-keycloak.md">Chapter 23, section 11</a>.</div>
           </div>
         </article>
 
@@ -131,7 +131,7 @@ const { date, readTime, author } = Astro.props;
           <p class="story">The deployment token did not expire, and it worked for whoever held it. Nine days later the attackers logged on to Engineer C's computer and used Engineer A's token from there. Nothing stopped a key being used from a different person's machine.</p>
           <div class="cells">
             <div class="cell control"><small>The control</small>No long-lived credentials on laptops. Deployment credentials come from a secrets manager, live for minutes, and are bound to the identity and device that asked for them. A key used from an unexpected device is itself an alert, which is only possible when logs show the real device.</div>
-            <div class="cell lab"><small>In my lab</small>VAULT01 exists to retire exactly this: static secrets replaced by short-lived ones issued per request and audited. And since the Tailscale fix, every lab log shows the real connecting device, so "right key, wrong machine" is something Wazuh can see. <a href="https://github.com/noble-antwi/enterprise-security-homelab/blob/main/docs/05-remote-access.md">Chapter 5</a>.</div>
+            <div class="cell lab"><small>In my lab <em class="st building">Building</em></small>VAULT01 exists to retire exactly this: static secrets replaced by short-lived ones issued per request and audited. Already built: since the Tailscale fix, every lab log shows the real connecting device, so "right key, wrong machine" is something Wazuh can see. <a href="https://github.com/noble-antwi/enterprise-security-homelab/blob/main/docs/05-remote-access.md">Chapter 5</a>.</div>
           </div>
         </article>
 
@@ -142,7 +142,7 @@ const { date, readTime, author } = Astro.props;
           <p class="story">By 20:09, 233.46 million XRP had left five hot wallets. Solana, Optimism and then 18,270 Bitcoin followed. Binance's alert for large transfers fired after the first wave was already gone.</p>
           <div class="cells">
             <div class="cell control"><small>The control</small>Signing policy that no single token can bypass: limits per transaction and per hour, a second approver above a threshold, and the bulk of funds in cold storage that no online service can sign for. Alerts must fire on the first unusual signature, not on the total.</div>
-            <div class="cell lab"><small>In my lab</small>The same principle at smaller scale: the agent's identity can prove who it is, but what it may do is a separate, narrow policy. Detection rules in Wazuh are written for the first odd event, then tested by running the attack against them.</div>
+            <div class="cell lab"><small>In my lab <em class="st built">Built</em></small>The same principle at smaller scale: the agent's identity can prove who it is, but what it may do is a separate, narrow policy. Detection rules in Wazuh are written for the first odd event, then tested by running the attack against them.</div>
           </div>
         </article>
 
@@ -153,7 +153,7 @@ const { date, readTime, author } = Astro.props;
           <p class="story">The wallet used multi-party computation, so there was no single key to cancel the permission with. A special procedure had to be built on the night. The last unauthorised transfer finalised at 23:56. The permission was cleared at 00:10.</p>
           <div class="cells">
             <div class="cell control"><small>The control</small>Design the revocation before the incident, and rehearse it. Know exactly what your "stop" button does not stop: standing permissions, tokens already issued, sessions already open. Time to revoke is a metric to measure in a drill, not to discover at 11 pm.</div>
-            <div class="cell lab"><small>In my lab</small>The Keycloak off-switch test taught the same lesson in miniature: disabling the agent blocks every new token at once, but a token already issued stays valid until it expires. That is why its lifetime is five minutes, and why the first question for any system is "how do I revoke, and how long does it take?"</div>
+            <div class="cell lab"><small>In my lab <em class="st built">Built</em></small>The Keycloak off-switch test taught the same lesson in miniature: disabling the agent blocks every new token at once, but a token already issued stays valid until it expires. That is why its lifetime is five minutes, and why the first question for any system is "how do I revoke, and how long does it take?"</div>
           </div>
         </article>
 
@@ -259,20 +259,20 @@ const { date, readTime, author } = Astro.props;
     <div class="cf-head">
       <p class="kicker violet">For defenders</p>
       <h2>The same chain, in the language detection teams use</h2>
-      <p>Each stage mapped to MITRE ATT&amp;CK, the shared vocabulary for attacker behaviour, with the control and where it exists in my lab.</p>
+      <p>Each stage mapped to MITRE ATT&amp;CK, the shared vocabulary for attacker behaviour, with the control and where my lab stands on it.</p>
     </div>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Stage</th><th>ATT&amp;CK technique</th><th>Control</th><th>In my lab</th></tr></thead>
         <tbody>
-          <tr><td class="first">Tampered installer</td><td><span class="id">T1195.002</span> Supply chain compromise: software</td><td>Verified sources and signing keys; a caught intrusion treated as reconnaissance</td><td>Package sources pinned to verified fingerprints</td></tr>
-          <tr><td class="first">Fake interview, "assignment" on a work laptop</td><td><span class="id">T1566</span> Phishing · <span class="id">T1204.002</span> User execution: malicious file</td><td>Personal activity off work devices; outside code in a disposable VM; targeted awareness for money-system staff</td><td>Throwaway VMs on the hypervisor; the admin laptop never runs untrusted code</td></tr>
-          <tr><td class="first">Developer tool replaced</td><td><span class="id">T1574</span> Hijack execution flow · <span class="id">T1070</span> Indicator removal</td><td>File integrity monitoring on tool paths; behaviour-based endpoint detection</td><td>Wazuh file integrity monitoring, pointed at tool paths</td></tr>
-          <tr><td class="first">Internal AI tool used to reach other machines</td><td><span class="id">T1021</span> Remote services · <span class="id">T1078</span> Valid accounts</td><td>AI tools as governed identities: least privilege, no cross-device reach, full audit, one off switch</td><td>Agent client in Keycloak with five-minute tokens and a proven off switch (chapter 23)</td></tr>
-          <tr><td class="first">Deployment token found on a laptop</td><td><span class="id">T1552.001</span> Credentials in files</td><td>Short-lived credentials from a secrets manager, bound to identity and device</td><td>VAULT01, built to retire static secrets; real device addresses in every log (chapter 5)</td></tr>
-          <tr><td class="first">Token used from another engineer's machine</td><td><span class="id">T1078</span> Valid accounts · <span class="id">T1610</span> Deploy container</td><td>Alert on a key used from an unexpected device; deployments only through an approved pipeline</td><td>Tailscale attribution fix: Wazuh now sees which device each logon came from</td></tr>
-          <tr><td class="first">Signing outside the normal process</td><td><span class="id">T1657</span> Financial theft</td><td>Signing policy with limits and second approvers; cold storage; alert on the first unusual signature</td><td>Identity proves who; a separate narrow policy decides what; detections tested against the attack</td></tr>
-          <tr><td class="first">On-chain permission survived the shutdown</td><td><span class="id">T1098</span> Account manipulation (standing delegation)</td><td>Revocation designed and rehearsed in advance; know what "stop" does not stop</td><td>Issued tokens live until expiry, so lifetimes are minutes and revocation is the first question asked</td></tr>
+          <tr><td class="first">Tampered installer</td><td><span class="id">T1195.002</span> Supply chain compromise: software</td><td>Verified sources and signing keys; a caught intrusion treated as reconnaissance</td><td><em class="st building">Building</em> VAULT01 package source pinned to a checked signing key</td></tr>
+          <tr><td class="first">Fake interview, "assignment" on a work laptop</td><td><span class="id">T1566</span> Phishing · <span class="id">T1204.002</span> User execution: malicious file</td><td>Personal activity off work devices; outside code in a disposable VM; targeted awareness for money-system staff</td><td><em class="st next">Next</em> A throwaway analysis VM; the admin laptop never runs outside code</td></tr>
+          <tr><td class="first">Developer tool replaced</td><td><span class="id">T1574</span> Hijack execution flow · <span class="id">T1070</span> Indicator removal</td><td>File integrity monitoring on tool paths; behaviour-based endpoint detection</td><td><em class="st next">Next</em> Wazuh file integrity monitoring on tool paths, tested by attack</td></tr>
+          <tr><td class="first">Internal AI tool used to reach other machines</td><td><span class="id">T1021</span> Remote services · <span class="id">T1078</span> Valid accounts</td><td>AI tools as governed identities: least privilege, no cross-device reach, full audit, one off switch</td><td><em class="st built">Built</em> Agent client in Keycloak with five-minute tokens and a proven off switch (chapter 23)</td></tr>
+          <tr><td class="first">Deployment token found on a laptop</td><td><span class="id">T1552.001</span> Credentials in files</td><td>Short-lived credentials from a secrets manager, bound to identity and device</td><td><em class="st building">Building</em> VAULT01 to retire static secrets; real device addresses in every log already (chapter 5)</td></tr>
+          <tr><td class="first">Token used from another engineer's machine</td><td><span class="id">T1078</span> Valid accounts · <span class="id">T1610</span> Deploy container</td><td>Alert on a key used from an unexpected device; deployments only through an approved pipeline</td><td><em class="st built">Built</em> Tailscale attribution fix: Wazuh sees which device each logon came from</td></tr>
+          <tr><td class="first">Signing outside the normal process</td><td><span class="id">T1657</span> Financial theft</td><td>Signing policy with limits and second approvers; cold storage; alert on the first unusual signature</td><td><em class="st built">Built</em> Identity proves who; a separate narrow policy decides what; detections tested against the attack</td></tr>
+          <tr><td class="first">On-chain permission survived the shutdown</td><td><span class="id">T1098</span> Account manipulation (standing delegation)</td><td>Revocation designed and rehearsed in advance; know what "stop" does not stop</td><td><em class="st built">Built</em> Issued tokens live until expiry, so lifetimes are minutes and revocation is the first question asked</td></tr>
         </tbody>
       </table>
     </div>
@@ -383,6 +383,11 @@ const { date, readTime, author } = Astro.props;
   .cf .cell.lab { background: var(--violet-soft); }
   .cf .cell.lab small { color: var(--violet); }
   .cf .cell a { color: inherit; text-decoration-color: var(--violet); }
+  .cf .st { display: inline-block; margin-left: 0.35rem; padding: 0.05rem 0.45rem; border-radius: 999px; font-family: var(--font-mono); font-style: normal; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: 0.1em; }
+  .cf td .st, .cf .cf-head .st { margin: 0 0.35rem 0 0; }
+  .cf .st.built { background: var(--teal-soft); color: var(--teal); }
+  .cf .st.building { background: color-mix(in srgb, var(--amber) 14%, transparent); color: var(--amber); }
+  .cf .st.next { background: var(--violet-soft); color: var(--violet); }
 
   .cf .detect { margin-top: 1rem; border: 1px solid var(--line-2); border-radius: var(--radius-sm); overflow: hidden; }
   .cf .detect-head { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; align-items: baseline; justify-content: space-between; padding: 0.75rem 1rem; background: var(--paper-2); border-bottom: 1px solid var(--line); }
