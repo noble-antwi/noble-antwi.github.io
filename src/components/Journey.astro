@@ -11,7 +11,7 @@ const jt = (x: number) => +(x * J / JMAX).toFixed(4);
 const STOPS = [0.447, 0.475, 0.503, 0.531, 0.559, 0.587];
 
 type Stat = [string, string, number];
-const journeyRaw: { from: number; to: number; n: string; k: string; h: string; p: string; stats?: Stat[] }[] = [
+const journeyRaw: { from: number; to: number; n: string; k: string; h: string; p: string; stats?: Stat[]; cta?: [string, string] }[] = [
   { from: 0.0, to: 0.11, n: SITE.tagline, k: SITE.location, h: 'I secure identities, and the cloud they live in.', p: 'Follow one sign-in through the lab I built to prove it: a Windows workstation, a domain, a firewall, two cloud identity providers, two clouds and a SIEM. Scroll.' },
   { from: 0.13, to: 0.26, n: '01', k: 'Directory', h: 'Checked at home first.', p: 'The request reaches DC01, the domain controller on VLAN 50. Active Directory checks the password and issues a Kerberos ticket. Nothing has left the segment yet.' },
   { from: 0.27, to: 0.37, n: '02', k: 'Network', h: 'Default deny.', p: 'To reach the cloud, DC01 must cross pfSense. Every interface denies by default; one written, justified rule lets this traffic out, and nothing comes back in uninvited.' },
@@ -19,7 +19,7 @@ const journeyRaw: { from: number; to: number; n: string; k: string; h: string; p
   { from: 0.48, to: 0.60, n: '04', k: 'Cloud', h: 'Least privilege, in the cloud too.', p: 'The same identity reaches AWS and Azure by federation, with no standing keys. Posture is scanned with Prowler and ScoutSuite, every finding mapped to CIS, NIST and PCI, and idle resources found before they cost money.', stats: [['2', 'clouds', 0.50], ['500+', 'posture checks', 0.51], ['0', 'standing keys', 0.52]] },
   { from: 0.60, to: 0.725, n: '05', k: 'Detection', h: 'On the record.', p: 'Every step was logged. Agents on WKS01 and DC01 ship their events through the firewall to SIEM01, where Wazuh decodes each one, alerts on the few that matter, and keeps the rest.', stats: [['39,322', 'events decoded', 0.63], ['1,963', 'alerts, about 5%', 0.645], ['100%', 'kept in the archive', 0.66]] },
   { from: 0.735, to: 0.85, n: '06', k: 'Assessment', h: 'Scanned, fixed, proved.', p: 'A credentialed scan from SCAN01 found TLS 1.0 and 1.1 still offered on WKS01. A scoped, reversible Group Policy removed them, and a third scan proved them gone.', stats: [['3', 'scans of one machine', 0.76], ['1', 'finding closed, with proof', 0.77]] },
-  { from: 0.86, to: 0.92, n: '07', k: 'The estate', h: 'Built, documented, proven.', p: 'Six VLANs behind one default-deny firewall, a rebuilt forest federated to two cloud identity providers, two clouds under posture scanning, a SIEM with its own rules, and every decision written down.', stats: [['6', 'VLANs', 0.87], ['3', 'identity providers', 0.88], ['2', 'clouds', 0.89], ['22', 'runbooks', 0.90]] },
+  { from: 0.86, to: 0.92, n: '07', k: 'The estate', h: 'Built, documented, proven.', p: 'Six VLANs behind one default-deny firewall, a rebuilt forest federated to two cloud identity providers, two clouds under posture scanning, a SIEM with its own rules, and every decision written down.', stats: [['6', 'VLANs', 0.87], ['3', 'identity providers', 0.88], ['2', 'clouds', 0.89], ['22', 'runbooks', 0.90]], cta: ['/architecture/', 'Walk through the lab in 3D'] },
 ];
 const journey = journeyRaw.map((s) => ({ ...s, from: jt(s.from), to: jt(s.to), stats: s.stats?.map(([val, l, a]) => [val, l, jt(a)] as Stat) }));
 
@@ -54,6 +54,7 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
           {i === 0 ? <h1 class="j-h">{s.h}</h1> : <h2 class="j-h">{s.h}</h2>}
           <p class="j-p">{s.p}</p>
           {s.stats && <div class="j-stats">{s.stats.map(([val, l, a]) => <div><b data-count={val} data-from={a}>0</b><span>{l}</span></div>)}</div>}
+          {s.cta && <div class="actions"><a class="btn" href={s.cta[0]}>{s.cta[1]} <span aria-hidden="true">→</span></a></div>}
         </div>
       ))}
 

@@ -44,6 +44,7 @@ const related = d.relatedTags.length
         <div class="span"><dt>Links</dt><dd>
           {d.repo && <a href={d.repo} target="_blank" rel="noopener">Repository ↗</a>}
           {d.docs && <> · <a href={d.docs} target="_blank" rel="noopener">{d.docsLabel ?? 'Documentation'} ↗</a></>}
+          {work.id === 'enterprise-security-homelab' && <> · <a href="/architecture/">The lab in 3D →</a></>}
         </dd></div>
         <div class="span"><dt>Stack</dt><dd><div class="tags">{d.stack.map((t) => <span>{t}</span>)}</div></dd></div>
       </dl>
@@ -56,6 +57,15 @@ const related = d.relatedTags.length
         </a>
         {d.heroCaption && <figcaption>{d.heroCaption} Click to open full size.</figcaption>}
       </figure>
+    )}
+
+    {work.id === 'enterprise-security-homelab' && (
+      <a class="lab3d" href="/architecture/">
+        <span class="lab3d-k">Living architecture</span>
+        <span class="lab3d-h">Walk through the whole lab in 3D</span>
+        <span class="lab3d-p">Six VLANs, the firewall, Tier 0 identity and secrets, every host reporting to the SIEM. Click any building for its details.</span>
+        <span class="lab3d-go" aria-hidden="true">→</span>
+      </a>
     )}
 
     <Visual slug={work.id} at="top" />

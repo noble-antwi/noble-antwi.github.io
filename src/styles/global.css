@@ -874,3 +874,14 @@ img.avatar { object-fit: cover; border: 1px solid var(--line-2); background: var
 .brief-grid { border-left: 0 !important; padding-left: 0 !important; grid-template-columns: repeat(4, 1fr) !important; gap: 2rem !important; border-top: 1px solid var(--line); padding-top: 1.5rem !important; }
 @media (max-width: 900px) { .brief-grid { grid-template-columns: 1fr 1fr !important; } }
 @media (max-width: 560px) { .brief-grid { grid-template-columns: 1fr !important; } }
+
+/* The door from the homelab case file to /architecture/: a night card,
+   the same ground as the 3D lab it opens */
+.lab3d { position: relative; display: grid; gap: 0.35rem; margin: 0 0 2.5rem; padding: 1.4rem 4rem 1.5rem 1.5rem; border-radius: var(--radius); text-decoration: none;
+  background: radial-gradient(120% 140% at 85% 20%, rgba(45, 212, 191, 0.16), rgba(6, 11, 22, 0) 55%), #060b16; border: 1px solid rgba(45, 212, 191, 0.35); color: #f1f5f9; overflow: hidden; }
+.lab3d-k { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #2dd4bf; }
+.lab3d-h { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.3rem, 2.4vw, 1.8rem); letter-spacing: -0.02em; line-height: 1.15; }
+.lab3d-p { font-size: 0.95rem; color: #cbd5e1; max-width: 40rem; }
+.lab3d-go { position: absolute; right: 1.4rem; top: 50%; transform: translateY(-50%); font-size: 1.6rem; color: #2dd4bf; transition: transform 0.2s ease; }
+.lab3d:hover .lab3d-go { transform: translate(4px, -50%); }
+.lab3d:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

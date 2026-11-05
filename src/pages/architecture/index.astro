@@ -1,0 +1,191 @@
+---
+/* The living architecture: the Biira Bank lab as one scroll-driven 3D world.
+   Copy, rail and table render here at build time from src/data/estate.ts,
+   so the page reads without JavaScript; src/scripts/estate.ts builds the
+   world on top. Reduced motion or no WebGL keeps the stacked copy. */
+import Base from '../../layouts/Base.astro';
+import { ESTATE, SCENES } from '../../data/estate';
+
+const zoneOf = (id: number) => ESTATE.zones.find((z) => z.id === id)!;
+const built = ESTATE.hosts.filter((h) => h.state === 'built').length;
+const agents = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').length;
+---
+
+<Base title="Architecture" description="Walk through the Biira Bank security lab in 3D: six VLANs, a default-deny firewall, Tier 0 identity and secrets, every host reporting to a SIEM, and an AI agent with its own identity.">
+  <section class="es" id="estate" aria-label="A scroll-through tour of the Biira Bank lab">
+    <div class="es-stage">
+      <canvas class="es-canvas" aria-label="3D model of the Biira Bank lab. Select a building for its details."></canvas>
+      <div class="es-vignette" aria-hidden="true"></div>
+      <div class="es-topbar"><span><b>Biira Bank</b> · living architecture</span><span class="es-updated">Updated {ESTATE.updated}</span></div>
+      <div class="es-panels">
+        {SCENES.map((s, i) => (
+          <article class:list={['es-panel', { 'es-hero': i === 0, 'is-on': i === 0, 'es-bottom': s.side === 'bottom' }]} data-i={i}>
+            <p class="es-kicker">{s.kicker}</p>
+            {i === 0 ? <h1>{s.title}</h1> : <h2>{s.title}</h2>}
+            <p class="es-text">{s.text}</p>
+            {s.chips && <div class="es-chips">{s.chips.map(([t, c]) => <span class="es-chip" style={`color:${c}`}><i></i><span>{t}</span></span>)}</div>}
+            {s.stats && <div class="es-stats"><div><b>{built}</b><span>hosts built</span></div><div><b>{agents}</b><span>Wazuh agents</span></div><div><b>{ESTATE.zones.length}</b><span>VLANs</span></div></div>}
+            {s.tip && <p class="es-tip">{s.tip}</p>}
+            {s.explore && <button class="es-btn" type="button" data-explore>Explore it yourself <span aria-hidden="true">→</span></button>}
+          </article>
+        ))}
+      </div>
+      <nav class="es-rail" aria-label="Scenes">
+        {SCENES.map((s, i) => <button type="button" data-i={i} class:list={[{ 'is-on': i === 0 }]}>{s.rail}<i></i></button>)}
+      </nav>
+      <div class="es-hint">Scroll · click any building</div>
+      <aside class="es-card" hidden aria-live="polite"></aside>
+      <div class="es-explore" hidden><span>Drag to turn · scroll or pinch to zoom · click a building</span><button class="es-btn" type="button" data-tour>Back to the tour</button></div>
+      <div class="es-progress" aria-hidden="true"><i></i></div>
+    </div>
+  </section>
+
+  <div class="container es-data">
+    <span class="kicker">The same data, as a table</span>
+    <h2 class="display h2">Every host in the estate</h2>
+    <p class="lead">The 3D lab above is drawn from this list. When a host is built, renamed or retired, one line changes and the whole architecture redraws itself.</p>
+    <div class="es-tbl">
+      <table>
+        <thead><tr><th>Host</th><th>Network</th><th>Address</th><th>Role</th><th>Monitoring</th><th>State</th></tr></thead>
+        <tbody>
+          {ESTATE.hosts.map((h) => {
+            const z = zoneOf(h.zone);
+            return (
+              <tr>
+                <td class="es-name">{h.name}</td>
+                <td><span class="es-vlan"><i style={`background:${z.css}`}></i>VLAN {z.id} · {z.name}</span></td>
+                <td class="es-mono">{h.ip}{h.vm ? ` · VM ${h.vm}` : ''}</td>
+                <td>{h.role}{h.tier0 && <span class="es-state es-st-built">Tier 0</span>}</td>
+                <td>{h.agent === 'manager' ? 'Wazuh manager' : h.agent ? `Agent ${h.agent}` : 'None yet'}</td>
+                <td><span class:list={['es-state', h.state === 'built' ? 'es-st-built' : 'es-st-planned']}>{h.state}</span></td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+    <p class="es-foot"><b>{built} hosts built, {ESTATE.hosts.length - built} planned, {agents} Wazuh agents.</b> Addresses are private lab addresses. Every host is documented in the <a href="/work/enterprise-security-homelab/">enterprise security homelab</a> case file and its <a href="https://github.com/noble-antwi/enterprise-security-homelab" target="_blank" rel="noopener">repository ↗</a>.</p>
+  </div>
+</Base>
+
+<script>
+  import { startEstate } from '../../scripts/estate';
+  const root = document.getElementById('estate')!;
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const gl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
+  if (still || !gl) root.classList.add('es-static');
+  else startEstate(root);
+</script>
+
+<style is:global>
+  /* the stage is always night, whatever the site theme */
+  .es { --es-night: #060b16; --es-ink: #f1f5f9; --es-ink-2: #cbd5e1; --es-ink-3: #94a3b8; --es-glass: rgba(6, 11, 22, 0.64); --es-line: rgba(148, 163, 184, 0.22); --es-accent: #2dd4bf;
+    position: relative; height: 1000vh; background: var(--es-night); }
+  .es-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: var(--es-night); }
+  .es-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .es-vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 60% 45%, rgba(6,11,22,0) 55%, rgba(6,11,22,0.75) 100%); }
+
+  .es-panels { position: absolute; inset: 0; pointer-events: none; transition: opacity 0.4s; }
+  .es-panel { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; max-width: 30rem; padding: 1.25rem 1.35rem 1.35rem;
+    background: var(--es-glass); border: 1px solid var(--es-line); border-radius: 14px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    color: var(--es-ink); opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity 0.45s ease, transform 0.6s cubic-bezier(.2,.7,.2,1); }
+  .es-panel.is-on { opacity: 1; transform: none; pointer-events: auto; }
+  @media (min-width: 900px) {
+    .es-panel { left: max(3rem, calc((100vw - var(--wide)) / 2 + 1rem)); right: auto; bottom: auto; top: 52%; transform: translateY(-46%); width: 28rem; }
+    .es-panel.is-on { transform: translateY(-50%); }
+    .es-panel.es-hero { width: 34rem; max-width: 34rem; }
+    .es-panel.es-bottom { top: auto; bottom: 2.5rem; left: 50%; width: 40rem; max-width: 40rem; transform: translate(-50%, 14px); }
+    .es-panel.es-bottom.is-on { transform: translate(-50%, 0); }
+  }
+  .es-kicker { margin: 0; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--es-accent); }
+  .es-panel h1, .es-panel h2 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.025em; text-wrap: balance; color: var(--es-ink); margin: 0.55rem 0 0; }
+  .es-panel h1 { font-size: clamp(1.9rem, 4.4vw, 3.3rem); line-height: 1.04; }
+  .es-panel h2 { font-size: clamp(1.4rem, 2.6vw, 2rem); line-height: 1.1; }
+  .es-text { margin: 0.75rem 0 0; color: var(--es-ink-2); font-size: 0.98rem; line-height: 1.6; }
+  .es-tip { margin: 0.9rem 0 0; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; color: var(--es-ink-3); }
+  .es-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.9rem; }
+  .es-chip { font-family: var(--font-mono); font-size: 0.7rem; padding: 0.2em 0.6em; border-radius: 999px; border: 1px solid var(--es-line); white-space: nowrap; }
+  .es-chip i { display: inline-block; width: 0.5em; height: 0.5em; border-radius: 50%; margin-right: 0.4em; vertical-align: 0.05em; background: currentColor; }
+  .es-chip span { color: var(--es-ink-2); }
+  .es-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin-top: 1.1rem; }
+  .es-stats b { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 3vw, 2.3rem); letter-spacing: -0.03em; line-height: 1; color: var(--es-ink); font-variant-numeric: tabular-nums; }
+  .es-stats span { display: block; margin-top: 0.3rem; font-size: 0.76rem; color: var(--es-ink-3); }
+  .es-btn { appearance: none; margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.5rem; font: 600 0.9rem/1 var(--font-body); color: #062a26; background: var(--es-accent); border: 0; border-radius: 999px; padding: 0.75rem 1.15rem; cursor: pointer; }
+  .es-btn:hover { filter: brightness(1.08); }
+  .es-btn:focus-visible, .es-x:focus-visible, .es-rail button:focus-visible { outline: 2px solid var(--es-accent); outline-offset: 3px; }
+  .es-hint { position: absolute; left: 50%; bottom: 1rem; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--es-ink-3); transition: opacity 0.4s; pointer-events: none; white-space: nowrap; }
+  @media (max-width: 899px) { .es-hint { display: none; } }
+
+  .es-rail { position: absolute; right: 1.2rem; top: 52%; transform: translateY(-50%); display: none; flex-direction: column; gap: 0.55rem; z-index: 2; transition: opacity 0.4s; }
+  @media (min-width: 900px) { .es-rail { display: flex; } }
+  .es-rail button { all: unset; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; justify-content: flex-end; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--es-ink-3); opacity: 0.55; transition: opacity 0.3s, color 0.3s; }
+  .es-rail button i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; transition: background 0.3s, transform 0.3s; }
+  .es-rail button.is-on { color: var(--es-accent); opacity: 1; }
+  .es-rail button.is-on i { background: currentColor; transform: scale(1.25); }
+  .es-rail button:hover { opacity: 1; }
+
+  .es-topbar { position: absolute; top: 5rem; left: 1rem; right: 1rem; display: flex; justify-content: space-between; gap: 1rem; pointer-events: none; z-index: 2; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--es-ink-3); }
+  @media (min-width: 900px) { .es-topbar { left: max(3rem, calc((100vw - var(--wide)) / 2 + 1rem)); right: 3rem; } }
+  .es-topbar b { color: var(--es-ink); font-weight: 600; }
+  @media (max-width: 640px) { .es-updated { display: none; } }
+  .es-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(148,163,184,0.15); z-index: 2; }
+  .es-progress i { display: block; height: 100%; width: 0; background: var(--es-accent); }
+
+  .es-card { position: absolute; z-index: 4; left: 1rem; right: 1rem; bottom: 1rem; max-height: 62%; overflow: auto; padding: 1.1rem 1.2rem 1.2rem;
+    background: rgba(6, 11, 22, 0.88); border: 1px solid var(--es-line); border-top: 3px solid var(--zc, #2dd4bf); border-radius: 14px;
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); color: var(--es-ink); box-shadow: 0 20px 50px -20px rgba(0,0,0,0.8); animation: es-card-in 0.35s cubic-bezier(.2,.7,.2,1); }
+  .es-card[hidden] { display: none; }
+  @keyframes es-card-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @media (min-width: 900px) { .es-card { left: auto; bottom: auto; top: 7rem; right: 9.5rem; width: 22rem; max-height: calc(100% - 9rem); } }
+  .es-ck { margin: 0; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--zc, #2dd4bf); }
+  .es-card h3 { margin: 0.35rem 0 0; font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; color: var(--es-ink); }
+  .es-note { margin: 0.55rem 0 0; font-size: 0.94rem; line-height: 1.55; color: var(--es-ink-2); }
+  .es-card dl { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.35rem 0.75rem; margin: 0.9rem 0 0; font-size: 0.86rem; }
+  .es-card dt { color: var(--es-ink-3); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; padding-top: 0.15em; }
+  .es-card dd { margin: 0; color: var(--es-ink); min-width: 0; overflow-wrap: anywhere; }
+  .es-links { margin-top: 0.9rem; display: grid; gap: 0.4rem; }
+  .es-links b { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--es-ink-3); font-weight: 600; }
+  .es-link { font-size: 0.86rem; color: var(--es-ink-2); }
+  .es-link i { display: inline-block; width: 0.55em; height: 0.55em; border-radius: 50%; margin-right: 0.45em; vertical-align: 0.05em; }
+  .es-link em { font-style: normal; color: #fbbf24; font-family: var(--font-mono); font-size: 0.72rem; margin-left: 0.3em; }
+  .es-pill { display: inline-block; font-family: var(--font-mono); font-size: 0.68rem; padding: 0.1em 0.5em; border-radius: 999px; margin-left: 0.4em; vertical-align: 0.15em; letter-spacing: 0; }
+  .es-pill.es-built { color: #4ade80; background: rgba(74, 222, 128, 0.14); }
+  .es-pill.es-planned { color: #fbbf24; background: rgba(251, 191, 36, 0.15); }
+  .es-pill.es-t0 { color: #2dd4bf; background: rgba(45, 212, 191, 0.14); }
+  .es-x { position: absolute; top: 0.6rem; right: 0.6rem; width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--es-line); background: transparent; color: var(--es-ink-2); font-size: 1.1rem; line-height: 1; cursor: pointer; }
+
+  .es-explore { position: absolute; z-index: 3; left: 50%; transform: translateX(-50%); bottom: 1.4rem; display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; justify-content: center; padding: 0.6rem 0.7rem 0.6rem 1.1rem; background: var(--es-glass); border: 1px solid var(--es-line); border-radius: 999px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); max-width: calc(100% - 2rem); }
+  .es-explore[hidden] { display: none; }
+  .es-explore span { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em; color: var(--es-ink-2); }
+  .es-explore .es-btn { margin-top: 0; padding: 0.55rem 0.95rem; font-size: 0.82rem; }
+  .es-exploring .es-panels, .es-exploring .es-rail, .es-exploring .es-hint { opacity: 0; pointer-events: none; }
+  .es-exploring .es-panel.is-on { pointer-events: none; }
+
+  /* no WebGL or reduced motion: the copy, stacked */
+  .es.es-static { height: auto; }
+  .es-static .es-stage { position: relative; height: auto; overflow: visible; padding-block: 6rem 2rem; }
+  .es-static .es-canvas, .es-static .es-vignette, .es-static .es-rail, .es-static .es-hint, .es-static .es-progress { display: none; }
+  .es-static .es-topbar { position: relative; top: auto; left: auto; right: auto; max-width: 42rem; margin: 0 auto 1rem; padding-inline: 1rem; }
+  .es-static .es-panels { position: relative; display: grid; gap: 1rem; padding: 1rem; }
+  .es-static .es-panel { position: relative; inset: auto; transform: none; opacity: 1; width: auto; max-width: 42rem; margin: 0 auto; pointer-events: auto; }
+  .es-static .es-tip, .es-static .es-btn { display: none; }
+
+  /* the table, in the site's own theme */
+  .es-data { padding-block: 4.5rem 5rem; }
+  .es-data .lead { max-width: 42rem; }
+  .es-tbl { margin-top: 1.75rem; overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  .es-tbl table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 0.92rem; margin: 0; }
+  .es-tbl th, .es-tbl td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .es-tbl th { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; background: var(--paper-2); }
+  .es-tbl tr:last-child td { border-bottom: 0; }
+  .es-tbl td { color: var(--ink-2); }
+  .es-name { font-weight: 600; color: var(--ink) !important; white-space: nowrap; }
+  .es-mono { font-family: var(--font-mono); font-size: 0.82rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .es-vlan { display: inline-flex; align-items: center; gap: 0.45em; white-space: nowrap; }
+  .es-vlan i { width: 0.65em; height: 0.65em; border-radius: 3px; }
+  .es-state { font-family: var(--font-mono); font-size: 0.72rem; padding: 0.15em 0.55em; border-radius: 999px; white-space: nowrap; margin-left: 0.3em; }
+  .es-st-built { color: var(--ok); background: var(--ok-soft); }
+  .es-st-planned { color: var(--warn); background: var(--warn-soft); }
+  .es-foot { margin-top: 1.5rem; font-size: 0.88rem; color: var(--ink-3); max-width: 46rem; }
+  .es-foot b { color: var(--ink-2); font-weight: 600; }
+</style>

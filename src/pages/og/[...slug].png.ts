@@ -35,6 +35,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     { slug: 'about', kicker: 'About', title: 'I came to security through the plumbing, and stayed for the identity.' },
     { slug: 'uses', kicker: 'Uses', title: 'What the labs, the projects and this site are made of.' },
     { slug: 'now', kicker: 'Now', title: 'What I am doing this month.' },
+    { slug: 'architecture', kicker: 'Architecture', title: 'The whole lab, in three dimensions.' },
     { slug: 'contact', kicker: 'Contact', title: "Let's talk." },
     { slug: '404', kicker: '404', title: 'Nothing at this address.' },
   ];
