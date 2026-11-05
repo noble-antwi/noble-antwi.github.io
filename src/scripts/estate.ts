@@ -312,7 +312,18 @@ export function startEstate(root: HTMLElement) {
     clampT.copy(controls.target); clampT.x = clamp(clampT.x, bounds.min.x, bounds.max.x); clampT.z = clamp(clampT.z, bounds.min.z, bounds.max.z);
     if (!clampT.equals(controls.target)) { shift.subVectors(clampT, controls.target); controls.target.add(shift); camera.position.add(shift); }
   });
-  controls.addEventListener('start', () => { controls.autoRotate = false; });
+  // Move | Turn switch: decides what a plain drag (or one finger) does; right-drag does the other.
+  function setMode(m) {
+    const pan = m === 'pan';
+    controls.mouseButtons = { LEFT: pan ? T.MOUSE.PAN : T.MOUSE.ROTATE, MIDDLE: T.MOUSE.DOLLY, RIGHT: pan ? T.MOUSE.ROTATE : T.MOUSE.PAN };
+    controls.touches = { ONE: pan ? T.TOUCH.PAN : T.TOUCH.ROTATE, TWO: T.TOUCH.DOLLY_ROTATE };
+    root.querySelectorAll('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+  }
+  root.querySelectorAll('[data-mode]').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  // the slow spin stops when someone takes hold, and comes back after 10 quiet seconds
+  let lastTouch = performance.now();
+  controls.addEventListener('start', () => { controls.autoRotate = false; lastTouch = performance.now(); });
+  controls.addEventListener('end', () => { lastTouch = performance.now(); });
   const dock = root.querySelector('.es-dock');
   const home = { pos: new T.Vector3(), look: new T.Vector3() };
   function enterExplore(spin = true) {
@@ -337,7 +348,7 @@ export function startEstate(root: HTMLElement) {
   /* camera flights: search, deep links and Reset view */
   let flight = null;
   function flyTo(pos, look, dur = 1.1) {
-    controls.autoRotate = false;
+    controls.autoRotate = false; lastTouch = performance.now();
     flight = { p0: camera.position.clone(), l0: controls.target.clone(), p1: pos.clone(), l1: look.clone(), u: 0, dur };
   }
   function flyToHost(name) {
@@ -495,7 +506,10 @@ export function startEstate(root: HTMLElement) {
       controls.target.lerpVectors(flight.l0, flight.l1, e);
       camera.lookAt(controls.target);
       if (flight.u >= 1) { flight = null; controls.update(); }
-    } else if (exploring) controls.update();
+    } else if (exploring) {
+      if (!controls.autoRotate && !selected && now - lastTouch > 10000) controls.autoRotate = true;
+      controls.update();
+    }
     else {
       const c0 = camFor(i0), c1 = camFor(i1);
       tgtPos.lerpVectors(c0.pos, c1.pos, k); tgtLook.lerpVectors(c0.look, c1.look, k);
