@@ -20,7 +20,6 @@ export default defineConfig({
   },
   // Old Jekyll URLs. Static output turns these into small meta-refresh pages.
   redirects: {
-    '/projects': '/work/',
     '/blog': '/writing/',
     '/certifications': '/credentials/',
     '/cloud-certifications': '/credentials/',

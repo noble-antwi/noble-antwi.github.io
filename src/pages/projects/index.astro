@@ -1,0 +1,129 @@
+---
+/* Every public repository, grouped into the project it belongs to. The
+   grouping and blurbs are in src/data/projects.ts; language, last push and
+   stars come from GitHub at build time. A repository that is not public
+   when the site builds is left out, so making one private hides it here. */
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { PROJECTS } from '../../data/projects';
+
+type Meta = { name: string; language: string | null; pushed_at: string; stargazers_count: number; html_url: string; private: boolean };
+let meta: Record<string, Meta> | null = null;
+try {
+  const res = await fetch('https://api.github.com/users/noble-antwi/repos?per_page=100&type=owner', { signal: AbortSignal.timeout(8000) });
+  if (res.ok) meta = Object.fromEntries(((await res.json()) as Meta[]).filter((r) => !r.private).map((r) => [r.name, r]));
+} catch { /* offline build: the curated list stands on its own */ }
+
+const work = await getCollection('work');
+const caseStudy = (name: string) => work.find((w) => w.data.repo?.replace(/\/$/, '').endsWith(`/${name}`))?.id;
+
+const LANG: Record<string, string> = {
+  Python: '#3572a5', JavaScript: '#f1e05a', TypeScript: '#3178c6', HTML: '#e34c26', CSS: '#663399',
+  PowerShell: '#5391fe', 'Jupyter Notebook': '#da5b0b', Astro: '#ff5a03', Shell: '#89e051', Bicep: '#519aba',
+};
+const month = (iso?: string) => (iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' }) : '');
+
+const groups = PROJECTS.map((g) => ({
+  ...g,
+  repos: g.repos
+    .filter((r) => !meta || meta[r.name])
+    .map((r) => ({ ...r, m: meta?.[r.name], study: caseStudy(r.name) })),
+})).filter((g) => g.repos.length > 0);
+
+const total = groups.reduce((n, g) => n + g.repos.length, 0);
+const langs = [...new Set(groups.flatMap((g) => g.repos.map((r) => r.m?.language).filter(Boolean)))] as string[];
+const studies = groups.reduce((n, g) => n + g.repos.filter((r) => r.study).length, 0);
+---
+
+<Base title="Projects" description="Every public repository, grouped into the project it belongs to: the Biira Bank enterprise lab, cloud security on AWS, Azure, identity and access, assessments, forensics and automation.">
+  <div class="container">
+    <header class="page-head">
+      <span class="kicker">Projects</span>
+      <h1 class="display h1">Every repository, grouped by what it builds.</h1>
+      <p class="lead">Work tells the story of a few projects. This is the whole shelf: each public repository, in the project it belongs to, with the language it is written in and when it last moved.</p>
+    </header>
+
+    <dl class="pj-stats">
+      <div><dt>Repositories</dt><dd>{total}</dd></div>
+      <div><dt>Projects</dt><dd>{groups.length}</dd></div>
+      <div><dt>With a case study</dt><dd>{studies}</dd></div>
+      <div><dt>Languages</dt><dd>{langs.length || '·'}</dd></div>
+    </dl>
+
+    <nav class="pj-jump" aria-label="Jump to a project">
+      {groups.map((g) => <a href={`#${g.id}`} style={`--g:${g.colour}`}><i></i>{g.title} <span>{g.repos.length}</span></a>)}
+    </nav>
+
+    {groups.map((g) => (
+      <section class="pj-group" id={g.id} style={`--g:${g.colour}`} aria-labelledby={`${g.id}-h`}>
+        <header class="pj-head">
+          <span class="pj-count">{String(g.repos.length).padStart(2, '0')} {g.repos.length === 1 ? 'repository' : 'repositories'}</span>
+          <h2 id={`${g.id}-h`} class="display">{g.title}</h2>
+          <p>{g.blurb}</p>
+        </header>
+        <ul class="pj-grid">
+          {g.repos.map((r) => (
+            <li class="pj-card" data-earlier={r.earlier ? '' : undefined}>
+              <div class="pj-top">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.71 1.71.75.75 0 0 1-1.06 1.06A2.5 2.5 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.71A2.5 2.5 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.25.25 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z" /></svg>
+                <h3>{r.name}</h3>
+                {r.earlier && <span class="pj-tag">Earlier</span>}
+              </div>
+              <p>{r.blurb}</p>
+              <div class="pj-meta">
+                {r.m?.language && <span class="pj-lang"><i style={`background:${LANG[r.m.language] ?? '#94a3b8'}`}></i>{r.m.language}</span>}
+                {r.m?.pushed_at && <span>updated {month(r.m.pushed_at)}</span>}
+                {r.m && r.m.stargazers_count > 0 && <span>★ {r.m.stargazers_count}</span>}
+              </div>
+              <div class="pj-links">
+                <a href={r.m?.html_url ?? `https://github.com/noble-antwi/${r.name}`} target="_blank" rel="noopener">Code <span aria-hidden="true">↗</span></a>
+                {r.study && <a class="pj-study" href={`/work/${r.study}/`}>Case study <span aria-hidden="true">→</span></a>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .pj-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin: 0 0 1.75rem; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .pj-stats div { background: var(--paper); padding: 1rem 1.2rem; min-width: 0; }
+  .pj-stats dt { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+  .pj-stats dd { margin: 0.35rem 0 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 3.4vw, 2.3rem); letter-spacing: -0.03em; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+  @media (max-width: 640px) { .pj-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .pj-jump { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1rem; }
+  .pj-jump a { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.35rem 0.8rem; border: 1px solid var(--line-2); border-radius: 999px; font-size: 0.86rem; color: var(--ink-2); text-decoration: none; background: var(--paper); }
+  .pj-jump a:hover { border-color: var(--g); color: var(--ink); }
+  .pj-jump i { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--g); }
+  .pj-jump span { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-3); }
+
+  .pj-group { display: grid; grid-template-columns: 1fr; gap: 1.5rem; padding: 3rem 0; border-top: 1px solid var(--line); scroll-margin-top: 5rem; }
+  @media (min-width: 960px) { .pj-group { grid-template-columns: 17rem minmax(0, 1fr); gap: 3rem; } .pj-head { position: sticky; top: 5.5rem; align-self: start; } }
+  .pj-count { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--g); }
+  .pj-head h2 { margin: 0.5rem 0 0; font-size: clamp(1.4rem, 2.6vw, 1.85rem); letter-spacing: -0.02em; line-height: 1.15; }
+  .pj-head p { margin: 0.75rem 0 0; color: var(--ink-2); font-size: 0.95rem; line-height: 1.6; }
+  .pj-head::before { content: ''; display: block; width: 2.5rem; height: 3px; border-radius: 3px; background: var(--g); margin-bottom: 1rem; }
+
+  .pj-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+  .pj-card { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 1.15rem 1.2rem 1rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+  .pj-card::before { content: ''; position: absolute; inset: -1px -1px auto -1px; height: 3px; border-radius: var(--radius) var(--radius) 0 0; background: var(--g); opacity: 0.85; }
+  .pj-card:hover { border-color: var(--line-2); box-shadow: var(--shadow); transform: translateY(-2px); }
+  .pj-card[data-earlier] { background: var(--paper-2); }
+  .pj-card[data-earlier]::before { opacity: 0.35; }
+  .pj-top { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+  .pj-top svg { width: 1rem; height: 1rem; flex: none; fill: var(--ink-3); }
+  .pj-top h3 { margin: 0; font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+  .pj-tag { margin-left: auto; flex: none; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); border: 1px solid var(--line-2); border-radius: 999px; padding: 0.05rem 0.45rem; }
+  .pj-card p { margin: 0.6rem 0 0; font-size: 0.92rem; line-height: 1.55; color: var(--ink-2); flex: 1; }
+  .pj-meta { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; margin-top: 0.9rem; font-size: 0.78rem; color: var(--ink-3); }
+  .pj-lang { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .pj-lang i { width: 0.6rem; height: 0.6rem; border-radius: 50%; }
+  .pj-links { display: flex; gap: 1rem; margin-top: 0.8rem; padding-top: 0.75rem; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.78rem; }
+  .pj-links a { color: var(--ink-2); text-decoration: none; }
+  .pj-links a:hover { color: var(--accent); }
+  .pj-links .pj-study { color: var(--accent); margin-left: auto; }
+  @media (prefers-reduced-motion: reduce) { .pj-card { transition: none; } .pj-card:hover { transform: none; } }
+</style>

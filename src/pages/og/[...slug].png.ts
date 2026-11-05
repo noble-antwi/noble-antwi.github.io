@@ -29,6 +29,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     { slug: 'work', kicker: 'Work', title: 'Projects, each with a repository and a write-up.' },
     { slug: 'writing', kicker: 'Writing', title: 'Lab notes, study logs, and the occasional long read.' },
     { slug: 'case-files', kicker: 'Case files', title: 'Real incidents, link by link.' },
+    { slug: 'projects', kicker: 'Projects', title: 'Every repository, grouped by what it builds.' },
     { slug: 'credentials', kicker: 'Credentials', title: 'Eighteen credentials, weighted toward identity and cloud security.' },
     { slug: 'credentials/training', kicker: 'Training', title: 'The study behind the credentials.' },
     { slug: 'about', kicker: 'About', title: 'I came to security through the plumbing, and stayed for the identity.' },
