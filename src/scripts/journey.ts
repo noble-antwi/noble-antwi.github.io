@@ -25,6 +25,9 @@ const HOSTS: { name: string; zone: number; x: number; z: number; h: number; role
   { name: 'KALI01', zone: 30, x: -3, z: 0.6, h: 0.8, role: 'attack host' },
   { name: 'APP01', zone: 40, x: 3, z: 0.4, h: 0.9, role: 'apps' },
   { name: 'DC01', zone: 50, x: 7.6, z: -1.1, h: 1.4, role: 'domain controller' },
+  { name: 'CA01', zone: 50, x: 9.2, z: -1.4, h: 0.9, role: 'certificate authority' },
+  { name: 'IDP01', zone: 50, x: 10.7, z: -1.1, h: 1.0, role: 'Keycloak' },
+  { name: 'VAULT01', zone: 50, x: 8.1, z: 1.0, h: 0.9, role: 'Vault' },
   { name: 'MON01', zone: 60, x: 15, z: 0.4, h: 0.8, role: 'Grafana' },
 ];
 const WKS = { x: 10.6, z: 1.3 };
