@@ -6,7 +6,7 @@
    scene hands the camera to the visitor. Same look as the homepage world. */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { ESTATE, SCENES } from '../data/estate';
+import { ESTATE, SCENES, ERAS } from '../data/estate';
 
 export function startEstate(root: HTMLElement) {
   const T = THREE;
@@ -106,7 +106,7 @@ export function startEstate(root: HTMLElement) {
     const lab = sprite(h.name, planned ? 'planned · ' + h.role : h.role, planned ? '#fbbf24' : null, 0.8);
     lab.position.set(0, h.h + 0.72, 0); g.add(lab);
     scene.add(g);
-    hostObjs[h.name] = { h, z, g, mat, edges, cap, ring, lab, top: () => new T.Vector3(h.at[0], 0.11 + h.h + 0.05, h.at[1]), delay: 0.5 + i * 0.05 };
+    hostObjs[h.name] = { h, z, g, mat, edges, cap, ring, lab, vis: 1, top: () => new T.Vector3(h.at[0], 0.11 + h.h + 0.05, h.at[1]), delay: 0.5 + i * 0.05 };
   });
 
   /* Tier 0 boundary on VLAN 50 */
@@ -160,6 +160,7 @@ export function startEstate(root: HTMLElement) {
 
   /* hypervisor arcs */
   const pve = hostObjs.PVE01.top();
+  const vmHosts = ESTATE.hosts.filter((h) => h.vm).map((h) => h.name);
   const vmArcs = ESTATE.hosts.filter((h) => h.vm).map((h) => {
     const t = hostObjs[h.name].top();
     const curve = new T.QuadraticBezierCurve3(pve, new T.Vector3((pve.x + t.x) / 2, 4.2 + Math.abs(t.x - pve.x) * 0.12, (pve.z + t.z) / 2 - 1.2), t);
@@ -194,6 +195,7 @@ export function startEstate(root: HTMLElement) {
 
   /* log particles: every agent host to SIEM01 */
   const siem = hostObjs.SIEM01.top();
+  const logHosts = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').map((h) => h.name);
   const logCurves = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').map((h) => {
     const a = hostObjs[h.name].top(); const d = a.distanceTo(siem);
     return new T.QuadraticBezierCurve3(a, new T.Vector3((a.x + siem.x) / 2, 2 + d * 0.18, (a.z + siem.z) / 2 + 1.5), siem);
@@ -240,12 +242,31 @@ export function startEstate(root: HTMLElement) {
       '<p class="es-ck">VLAN ' + z.id + ' · ' + esc(z.name) + '</p>' +
       '<h3>' + esc(h.name) + '<span class="es-pill es-' + h.state + '">' + h.state + '</span>' + (h.tier0 ? '<span class="es-pill es-t0">Tier 0</span>' : '') + '</h3>' +
       '<p class="es-note">' + esc(h.note) + '</p>' +
-      '<dl><dt>Role</dt><dd>' + esc(h.role) + '</dd><dt>Address</dt><dd>' + esc(h.ip) + (h.vm ? ' · VM ' + h.vm : ' · physical') + '</dd><dt>Monitoring</dt><dd>' + mon + '</dd></dl>' +
-      (rel.length ? '<div class="es-links"><b>Connections</b>' + rel.join('') + '</div>' : '');
+      '<dl><dt>Role</dt><dd>' + esc(h.role) + '</dd><dt>Address</dt><dd>' + esc(h.ip) + (h.vm ? ' · VM ' + h.vm : ' · physical') + '</dd><dt>Monitoring</dt><dd>' + mon + '</dd>' +
+      '<dt>' + (h.state === 'planned' ? 'Arrives' : 'Current build') + '</dt><dd>' + esc(eraOf(h.since).label) + '</dd></dl>' +
+      (rel.length ? '<div class="es-links"><b>Connections</b>' + rel.join('') + '</div>' : '') +
+      '<button class="es-copy" type="button">Copy link to ' + esc(h.name) + '</button>';
     cardEl.hidden = false;
     cardEl.querySelector('.es-x').addEventListener('click', closeCard);
+    const cp = cardEl.querySelector('.es-copy');
+    cp.addEventListener('click', () => copyLink('#' + name.toLowerCase(), cp));
+    setHash('#' + name.toLowerCase());
   }
-  function closeCard() { selected = null; cardEl.hidden = true; }
+  function closeCard() { if (selected) setHash(sceneHash()); selected = null; cardEl.hidden = true; }
+
+  /* ---------- shareable links: #tier0, #vault01, #explore ---------- */
+  const eraOf = (id) => ERAS.find((e) => e.id === id) || ERAS[ERAS.length - 1];
+  function setHash(h) {
+    const url = location.pathname + location.search + (h || '');
+    if (url !== location.pathname + location.search + location.hash) history.replaceState(history.state, '', url);
+  }
+  function sceneHash() { return exploring ? '#explore' : (active > 0 ? '#' + SCENES[active].id : ''); }
+  function copyLink(h, btn) {
+    const url = location.origin + location.pathname + h;
+    const done = () => { const was = btn.textContent; btn.textContent = 'Link copied'; setTimeout(() => { btn.textContent = was; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, () => prompt('Copy this link', url));
+    else prompt('Copy this link', url);
+  }
   addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCard(); });
 
   const ray = new T.Raycaster(), ndc = new T.Vector2();
@@ -253,7 +274,7 @@ export function startEstate(root: HTMLElement) {
     const r = canvas.getBoundingClientRect();
     ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
     ray.setFromCamera(ndc, camera);
-    const hit = ray.intersectObjects(pickables, false)[0];
+    const hit = ray.intersectObjects(pickables, false).find((x) => hostObjs[x.object.userData.host].vis > 0.5);
     return hit ? hit.object.userData.host : null;
   }
   let down = null, hovered = null, exploring = false;
@@ -285,25 +306,98 @@ export function startEstate(root: HTMLElement) {
   canvas.addEventListener('contextmenu', (e) => { if (exploring) e.preventDefault(); });
   // Keep the slide on the estate: the look-at point may not leave the hosts' footprint.
   const bounds = new T.Box3(), shift = new T.Vector3(), clampT = new T.Vector3();
-  pickables.forEach((m) => bounds.expandByObject(m));
+  ESTATE.hosts.forEach((h) => bounds.expandByPoint(new T.Vector3(h.at[0], 0, h.at[1])));
   bounds.expandByScalar(4);
   controls.addEventListener('change', () => {
     clampT.copy(controls.target); clampT.x = clamp(clampT.x, bounds.min.x, bounds.max.x); clampT.z = clamp(clampT.z, bounds.min.z, bounds.max.z);
     if (!clampT.equals(controls.target)) { shift.subVectors(clampT, controls.target); controls.target.add(shift); camera.position.add(shift); }
   });
   controls.addEventListener('start', () => { controls.autoRotate = false; });
-  function enterExplore() {
+  const dock = root.querySelector('.es-dock');
+  const home = { pos: new T.Vector3(), look: new T.Vector3() };
+  function enterExplore(spin = true) {
+    if (exploring) return;
     exploring = true; root.classList.add('es-exploring'); exploreBar.hidden = false;
-    controls.target.copy(camLook); controls.enabled = true; controls.autoRotate = true; controls.update();
+    if (dock) { dock.hidden = false; dock.open = innerWidth >= 900; }
+    controls.target.copy(camLook); controls.enabled = true; controls.autoRotate = spin; controls.update();
+    home.pos.copy(camera.position); home.look.copy(controls.target);
     canvas.style.touchAction = 'none';
+    setHash(selected ? '#' + selected.toLowerCase() : '#explore');
   }
   function exitExplore() {
-    exploring = false; root.classList.remove('es-exploring'); exploreBar.hidden = true;
+    exploring = false; root.classList.remove('es-exploring'); exploreBar.hidden = true; flight = null;
+    if (dock) dock.hidden = true;
     controls.enabled = false; controls.autoRotate = false; canvas.style.touchAction = '';
     camPos.copy(camera.position); camLook.copy(controls.target);
+    closeCard(); setHash(sceneHash());
   }
-  root.querySelectorAll('[data-explore]').forEach((b) => b.addEventListener('click', enterExplore));
+  root.querySelectorAll('[data-explore]').forEach((b) => b.addEventListener('click', () => enterExplore()));
   root.querySelector('[data-tour]').addEventListener('click', exitExplore);
+
+  /* camera flights: search, deep links and Reset view */
+  let flight = null;
+  function flyTo(pos, look, dur = 1.1) {
+    controls.autoRotate = false;
+    flight = { p0: camera.position.clone(), l0: controls.target.clone(), p1: pos.clone(), l1: look.clone(), u: 0, dur };
+  }
+  function flyToHost(name) {
+    const o = hostObjs[name]; if (!o) return false;
+    enterExplore(false);
+    if (o.vis < 0.5 || eraIndex[o.h.since] > era) setEra(ERAS.length - 1);
+    const look = new T.Vector3(o.h.at[0], 0.11 + o.h.h * 0.5, o.h.at[1]);
+    const dir = camera.position.clone().sub(controls.target); dir.y = 0;
+    if (dir.lengthSq() < 0.01) dir.set(0, 0, 1);
+    const k = portrait() ? 1.75 : 1;
+    dir.normalize().multiplyScalar(9 * k).add(new T.Vector3(0, 6.2 * k, 0));
+    flyTo(look.clone().add(dir), look);
+    openCard(name);
+    return true;
+  }
+  root.querySelector('[data-reset]')?.addEventListener('click', () => { closeCard(); flyTo(home.pos, home.look); setHash('#explore'); });
+
+  /* layers */
+  const layer = {};
+  root.querySelectorAll('[data-layer]').forEach((b) => {
+    layer[b.dataset.layer] = b.getAttribute('aria-pressed') === 'true';
+    b.addEventListener('click', () => {
+      layer[b.dataset.layer] = !layer[b.dataset.layer];
+      b.setAttribute('aria-pressed', String(layer[b.dataset.layer]));
+    });
+  });
+
+  /* timeline */
+  const eraIndex = {}; ERAS.forEach((e, i) => { eraIndex[e.id] = i; });
+  let era = ERAS.length - 1;
+  const timeEl = root.querySelector('[data-time]'), eraEl = root.querySelector('[data-era]');
+  function setEra(i) {
+    era = i;
+    if (timeEl) { timeEl.value = String(i); timeEl.setAttribute('aria-valuetext', ERAS[i].label); }
+    if (eraEl) eraEl.innerHTML = '<b>' + esc(ERAS[i].label + ' · ' + ERAS[i].title) + '</b>' + esc(ERAS[i].text);
+    if (selected && eraIndex[hostObjs[selected].h.since] > i) closeCard();
+  }
+  timeEl?.addEventListener('input', () => setEra(+timeEl.value));
+  setEra(era);
+
+  /* find a host */
+  const findForm = root.querySelector('[data-find]'), findIn = findForm?.querySelector('input');
+  const NAMES = ESTATE.hosts.map((h) => h.name);
+  function matchHost(q) {
+    q = q.trim().toLowerCase(); if (!q) return null;
+    return NAMES.find((n) => n.toLowerCase() === q)
+      || NAMES.find((n) => n.toLowerCase().startsWith(q))
+      || (ESTATE.hosts.find((h) => h.role.toLowerCase().includes(q)) || {}).name || null;
+  }
+  findForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = matchHost(findIn.value);
+    findForm.classList.toggle('is-miss', !name);
+    if (name) { findIn.value = name; findIn.blur(); flyToHost(name); }
+  });
+  findIn?.addEventListener('input', () => {
+    findForm.classList.remove('is-miss');
+    // picking an option from the list submits straight away
+    if (NAMES.includes(findIn.value)) findForm.requestSubmit ? findForm.requestSubmit() : findForm.dispatchEvent(new Event('submit', { cancelable: true }));
+  });
 
   /* ---------- scroll and camera ---------- */
   const N = SCENES.length;
@@ -333,15 +427,41 @@ export function startEstate(root: HTMLElement) {
   const first = camFor(0);
   const camPos = first.pos.clone(), camLook = first.look.clone();
 
+  /* open on a shared link: #tier0 (a scene), #vault01 (a host), #explore */
+  let hashReady = false;
+  function jumpToScene(i) {
+    const top = scroller.getBoundingClientRect().top + scrollY;
+    scrollTo({ top: top + (scroller.offsetHeight - innerHeight) * (i / (N - 1)), behavior: 'instant' });
+    readScroll(); prog = target;
+    const c = camFor(i); camPos.copy(c.pos); camLook.copy(c.look); camera.position.copy(camPos); camera.lookAt(camLook);
+  }
+  function applyHash() {
+    const h = decodeURIComponent(location.hash.slice(1)).toLowerCase();
+    if (!h) return;
+    const si = SCENES.findIndex((s) => s.id === h);
+    if (si >= 0) { if (exploring) exitExplore(); jumpToScene(si); return; }
+    if (h === 'explore') { if (!exploring) { jumpToScene(N - 1); enterExplore(); } return; }
+    const name = NAMES.find((n) => n.toLowerCase() === h);
+    if (name) { if (!exploring) jumpToScene(N - 1); flyToHost(name); }
+  }
+  addEventListener('hashchange', applyHash);  requestAnimationFrame(() => { applyHash(); hashReady = true; });
+
   /* ---------- keep the subject clear of the text ---------- */
   // The story card covers part of the stage, so shift the projection until the
   // scene's subject sits in the open space beside it (desktop) or above it (phone).
   let offX = 0, offY = 0;
   function freeShift() {
-    if (exploring) return [0, 0];
+    const c = canvas.getBoundingClientRect(), W = c.width, H = c.height;
+    if (exploring) {
+      // In Explore the host card is the thing in the way: frame the estate beside or above it.
+      if (cardEl.hidden) return [0, 0];
+      const r = cardEl.getBoundingClientRect();
+      if (W < 900) return [0, Math.min(0, (96 + (r.top - c.top)) / 2 - H / 2)];
+      const d = dock && !dock.hidden && dock.open ? dock.getBoundingClientRect().right - c.left : 0;
+      return [Math.min(0, (d + (r.left - c.left)) / 2 - W / 2), 0];
+    }
     const p = panels[active]; if (!p) return [0, 0];
-    const c = canvas.getBoundingClientRect(), r = p.getBoundingClientRect();
-    const W = c.width, H = c.height;
+    const r = p.getBoundingClientRect();
     if (W < 900 || p.classList.contains('es-bottom')) {
       const top = 96; // site header and topbar
       return [0, Math.min(0, (top + (r.top - c.top)) / 2 - H / 2)];
@@ -368,7 +488,14 @@ export function startEstate(root: HTMLElement) {
     const i0 = Math.floor(clamp(f, 0, N - 1)), i1 = Math.min(N - 1, i0 + 1);
     const k = ease(f - i0);
 
-    if (exploring) controls.update();
+    if (exploring && flight) {
+      flight.u = Math.min(1, flight.u + dt / flight.dur);
+      const e = ease(flight.u);
+      camera.position.lerpVectors(flight.p0, flight.p1, e);
+      controls.target.lerpVectors(flight.l0, flight.l1, e);
+      camera.lookAt(controls.target);
+      if (flight.u >= 1) { flight = null; controls.update(); }
+    } else if (exploring) controls.update();
     else {
       const c0 = camFor(i0), c1 = camFor(i1);
       tgtPos.lerpVectors(c0.pos, c1.pos, k); tgtLook.lerpVectors(c0.look, c1.look, k);
@@ -389,6 +516,7 @@ export function startEstate(root: HTMLElement) {
       active = cur;
       panels.forEach((p, i) => p.classList.toggle('is-on', i === cur));
       railBtns.forEach((b, i) => b.classList.toggle('is-on', i === cur));
+      if (!exploring && !selected && hashReady) setHash(sceneHash());
     }
     bar.style.width = (prog * 100).toFixed(2) + '%';
     hint.style.opacity = prog < 0.02 ? '1' : '0';
@@ -396,6 +524,13 @@ export function startEstate(root: HTMLElement) {
     const w = (id) => exploring ? 0 : clamp(1 - Math.abs(f - SCENES.findIndex((s) => s.id === id)));
     const wRemote = w('remote'), wFw = w('fw'), wHyper = w('hyper'), wT0 = w('tier0'), wDet = w('detect'), wAgent = w('agent'), wRed = w('red'), wNext = w('next');
     const wAll = exploring ? 1 : 0;
+    const L = (id) => (exploring && layer[id] ? 1 : 0);
+    const vRate = Math.min(1, dt * 5);
+    Object.values(hostObjs).forEach((o) => {
+      const want = !exploring || eraIndex[o.h.since] <= era ? 1 : 0;
+      o.vis += (want - o.vis) * vRate; if (Math.abs(want - o.vis) < 0.002) o.vis = want;
+    });
+    const visOf = (n) => hostObjs[n].vis;
 
     zoneObjs.forEach((o) => {
       const b = ease((born - o.delay * 0.5) / 0.5);
@@ -413,19 +548,21 @@ export function startEstate(root: HTMLElement) {
       const isSel = selected === name, isHov = hovered === name;
       if (isSel || isHov) focus = 1;
       const b = ease((born - o.delay * 0.6) / 0.4);
-      o.g.scale.set(1, Math.max(0.001, b), 1);
+      o.g.scale.set(1, Math.max(0.001, b * o.vis), 1);
+      o.g.visible = o.vis > 0.01;
       const planned = o.h.state === 'planned';
       o.mat.emissiveIntensity = (planned ? 0.03 : 0.07) + focus * (planned ? 0.22 : 0.26) + (isSel ? 0.25 : 0) + (planned ? 0.12 * Math.max(wNext, wAll) * (0.5 + 0.5 * Math.sin(t * 3)) : 0);
       o.edges.material.opacity = 0.35 + 0.6 * focus;
       o.cap.material.opacity = (planned ? 0.2 : 0.3) + focus * 0.6;
       o.ring.material.opacity = isSel ? 0.55 + 0.35 * Math.sin(t * 4) : 0;
       o.ring.scale.setScalar(isSel ? 1 + 0.06 * Math.sin(t * 4) : 1);
-      o.lab.material.opacity = Math.max(0.85 * heroW, focus) * b;
+      o.lab.material.opacity = Math.max(0.85 * heroW, focus) * b * o.vis;
     });
 
-    devices.forEach((d, i) => { d.m.opacity = wRemote; d.lab.material.opacity = wRemote; d.g.rotation.y = Math.sin(t * 0.5 + i) * 0.15; });
-    tunnels.forEach((tn, i) => { tn.geo.setDrawRange(0, Math.floor(tn.n * clamp(wRemote * 1.6 - i * 0.15))); tn.line.material.opacity = 0.85 * clamp(wRemote * 2); });
-    gateRing.material.opacity = wRemote * (0.6 + 0.4 * Math.sin(t * 4)); gateLab.material.opacity = wRemote;
+    const wRem = Math.max(wRemote, L('remote'));
+    devices.forEach((d, i) => { d.m.opacity = wRem; d.lab.material.opacity = wRem; d.g.rotation.y = Math.sin(t * 0.5 + i) * 0.15; });
+    tunnels.forEach((tn, i) => { tn.geo.setDrawRange(0, Math.floor(tn.n * clamp(wRem * 1.6 - i * 0.15) * visOf(['IDP01', 'DC01'][i]))); tn.line.material.opacity = 0.85 * clamp(wRem * 2); });
+    gateRing.material.opacity = wRem * (0.6 + 0.4 * Math.sin(t * 4)); gateLab.material.opacity = wRem;
     gateRing.scale.setScalar(1 + 0.08 * Math.sin(t * 4));
 
     wallMat.opacity = 0.05 + 0.2 * Math.max(wFw, wRemote);
@@ -434,25 +571,29 @@ export function startEstate(root: HTMLElement) {
     trunkMat.opacity = 0.9 * wFw; trunkLab.material.opacity = wFw;
     sparks.forEach((s) => { s.m.material.opacity = wFw * Math.max(0, Math.sin(t * s.speed * 3 + s.phase)) * 0.9; });
 
-    vmArcs.forEach((a, i) => { a.geo.setDrawRange(0, Math.floor(a.n * clamp(wHyper * 1.8 - i * 0.08))); a.mat.opacity = 0.75 * clamp(wHyper * 2); });
+    const wHyp = Math.max(wHyper, L('hyper'));
+    vmArcs.forEach((a, i) => { const v = visOf(vmHosts[i]); a.geo.setDrawRange(0, Math.floor(a.n * clamp(wHyp * 1.8 - i * 0.08) * v)); a.mat.opacity = 0.75 * clamp(wHyp * 2) * v; });
 
-    t0line.material.opacity = 0.25 + 0.75 * Math.max(wT0, wAll * 0.6); t0lab.material.opacity = Math.max(wT0, wAll * 0.8);
-    links.forEach((L) => {
-      const sel = selected && (L.l.from === selected || L.l.to === selected) ? 1 : 0;
-      const wl = Math.max(L.l.scene === 'tier0' ? wT0 : wAgent, wAll * 0.85, sel);
-      L.geo.setDrawRange(0, Math.floor(L.n * clamp(wl * 1.7)));
-      L.lab.material.opacity = clamp(wl * 1.6 - 0.4);
-      L.pulse.position.copy(L.curve.getPoint((t * 0.45 + L.phase) % 1));
-      L.pulse.material.opacity = clamp(wl * 1.5 - 0.3) * (L.l.planned ? 0.45 : 1);
+    const t0v = Math.max(visOf('CA01'), visOf('IDP01'));
+    t0line.material.opacity = (0.25 + 0.75 * Math.max(wT0, wAll * 0.6)) * (exploring ? t0v : 1); t0lab.material.opacity = Math.max(wT0, wAll * 0.8) * (exploring ? t0v : 1);
+    links.forEach((Lk) => {
+      const sel = selected && (Lk.l.from === selected || Lk.l.to === selected) ? 1 : 0;
+      const on = Lk.l.kind === 'cert' ? L('cert') : L('signin');
+      const v = Math.min(visOf(Lk.l.from), visOf(Lk.l.to));
+      const wl = Math.max(Lk.l.scene === 'tier0' ? wT0 : wAgent, on * 0.85, sel) * v;
+      Lk.geo.setDrawRange(0, Math.floor(Lk.n * clamp(wl * 1.7)));
+      Lk.lab.material.opacity = clamp(wl * 1.6 - 0.4);
+      Lk.pulse.position.copy(Lk.curve.getPoint((t * 0.45 + Lk.phase) % 1));
+      Lk.pulse.material.opacity = clamp(wl * 1.5 - 0.3) * (Lk.l.planned ? 0.45 : 1);
     });
 
-    const wLogs = Math.max(wDet, wAll * 0.6);
+    const wLogs = Math.max(wDet, L('logs') * 0.6);
     beacon.material.opacity = wLogs * (0.35 + 0.25 * Math.sin(t * 2.4));
     logs.forEach((p) => {
       const u = (p.t0 + t * p.speed * 0.9) % 1;
       const c = (p.c + Math.floor(p.t0 + t * p.speed * 0.9)) % logCurves.length;
       p.m.position.copy(logCurves[c].getPoint(u));
-      p.m.material.opacity = wLogs * Math.sin(u * PI);
+      p.m.material.opacity = wLogs * Math.sin(u * PI) * Math.min(visOf(logHosts[c]), visOf('SIEM01'));
     });
     sweep.position.set(-9 + 4.6 * Math.sin(t * 0.9), 0.2, 0); sweep.material.opacity = wDet * 0.55;
 

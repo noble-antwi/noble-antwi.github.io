@@ -4,7 +4,16 @@
    so the page reads without JavaScript; src/scripts/estate.ts builds the
    world on top. Reduced motion or no WebGL keeps the stacked copy. */
 import Base from '../../layouts/Base.astro';
-import { ESTATE, SCENES } from '../../data/estate';
+import { ESTATE, SCENES, ERAS } from '../../data/estate';
+
+// Explore-mode layers: [id, label, colour, on by default]
+const LAYERS: [string, string, string, boolean][] = [
+  ['signin', 'Sign-ins', '#60a5fa', true],
+  ['cert', 'Certificates', '#2dd4bf', true],
+  ['logs', 'Logs to SIEM01', '#5eead4', true],
+  ['remote', 'Remote access', '#22c55e', false],
+  ['hyper', 'Hypervisor', '#a78bfa', false],
+];
 
 const zoneOf = (id: number) => ESTATE.zones.find((z) => z.id === id)!;
 const built = ESTATE.hosts.filter((h) => h.state === 'built').length;
@@ -16,7 +25,13 @@ const agents = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').leng
     <div class="es-stage">
       <canvas class="es-canvas" aria-label="3D model of the Biira Bank lab. Select a building for its details."></canvas>
       <div class="es-vignette" aria-hidden="true"></div>
-      <div class="es-topbar"><span><b>Biira Bank</b> · living architecture</span><span class="es-tr"><span class="es-updated">Updated {ESTATE.updated}</span><button class="es-quietbtn" type="button" aria-pressed="false" data-quiet>Hide text</button></span></div>
+      <div class="es-topbar"><span class="es-brand"><b>Biira Bank</b> · living architecture</span><span class="es-tr"><span class="es-updated">Updated {ESTATE.updated}</span>
+        <form class="es-find" role="search" data-find>
+          <label class="es-sr" for="es-find-in">Find a host</label>
+          <input id="es-find-in" type="search" list="es-hostlist" placeholder="Find a host" autocomplete="off" spellcheck="false" />
+          <datalist id="es-hostlist">{ESTATE.hosts.map((h) => <option value={h.name}>{h.role}</option>)}</datalist>
+        </form>
+        <button class="es-quietbtn" type="button" aria-pressed="false" data-quiet>Hide text</button></span></div>
       <div class="es-panels">
         {SCENES.map((s, i) => (
           <article class:list={['es-panel', { 'es-hero': i === 0, 'is-on': i === 0, 'es-bottom': s.side === 'bottom' }]} data-i={i}>
@@ -35,7 +50,20 @@ const agents = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').leng
       </nav>
       <div class="es-hint">Scroll · click any building</div>
       <aside class="es-card" hidden aria-live="polite"></aside>
-      <div class="es-explore" hidden><span>Drag to move · right-drag or Shift to turn · scroll or pinch to zoom · click a building</span><button class="es-btn" type="button" data-tour>Back to the tour</button></div>
+      <details class="es-dock" hidden>
+        <summary>Layers and timeline</summary>
+        <div class="es-dock-body">
+          <p class="es-dock-h">Show</p>
+          <div class="es-layers">
+            {LAYERS.map(([id, label, color, on]) => <button type="button" data-layer={id} aria-pressed={on ? 'true' : 'false'}><i style={`background:${color}`}></i>{label}</button>)}
+          </div>
+          <p class="es-dock-h">Timeline</p>
+          <input class="es-time" type="range" min="0" max={ERAS.length - 1} step="1" value={ERAS.length - 1} aria-label="Timeline: show the estate as it stood" aria-valuetext={ERAS[ERAS.length - 1].label} data-time />
+          <div class="es-ticks" aria-hidden="true">{ERAS.map((e) => <span>{e.tick}</span>)}</div>
+          <p class="es-era" aria-live="polite" data-era><b>{ERAS[ERAS.length - 1].title}</b> {ERAS[ERAS.length - 1].text}</p>
+        </div>
+      </details>
+      <div class="es-explore" hidden><span class="es-hint-l">Drag to move · right-drag or Shift to turn · scroll to zoom · click a building</span><span class="es-hint-s">Drag to move · two fingers to turn · tap a building</span><span class="es-xbtns"><button class="es-btn es-ghost" type="button" data-reset>Reset view</button><button class="es-btn" type="button" data-tour>Back to the tour</button></span></div>
       <div class="es-progress" aria-hidden="true"><i></i></div>
     </div>
   </section>
@@ -46,7 +74,7 @@ const agents = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').leng
     <p class="lead">The 3D lab above is drawn from this list. When a host is built, renamed or retired, one line changes and the whole architecture redraws itself.</p>
     <div class="es-tbl">
       <table>
-        <thead><tr><th>Host</th><th>Network</th><th>Address</th><th>Role</th><th>Monitoring</th><th>State</th></tr></thead>
+        <thead><tr><th>Host</th><th>Network</th><th>Address</th><th>Role</th><th>Monitoring</th><th>Current build</th><th>State</th></tr></thead>
         <tbody>
           {ESTATE.hosts.map((h) => {
             const z = zoneOf(h.zone);
@@ -57,6 +85,7 @@ const agents = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').leng
                 <td class="es-mono">{h.ip}{h.vm ? ` · VM ${h.vm}` : ''}</td>
                 <td>{h.role}{h.tier0 && <span class="es-state es-st-built">Tier 0</span>}</td>
                 <td>{h.agent === 'manager' ? 'Wazuh manager' : h.agent ? `Agent ${h.agent}` : 'None yet'}</td>
+                <td class="es-mono">{ERAS.find((e) => e.id === h.since)?.label}</td>
                 <td><span class:list={['es-state', h.state === 'built' ? 'es-st-built' : 'es-st-planned']}>{h.state}</span></td>
               </tr>
             );
@@ -135,6 +164,47 @@ const agents = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').leng
   .es-quietbtn:focus-visible { outline: 2px solid var(--es-accent); outline-offset: 3px; }
   .es-exploring .es-quietbtn, .es-static .es-quietbtn { display: none; }
 
+  /* find a host */
+  .es-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .es-find { pointer-events: auto; margin: 0; }
+  .es-find input { width: 10.5rem; font: 500 0.78rem/1 var(--font-mono); letter-spacing: 0.04em; text-transform: none; color: var(--es-ink); background: var(--es-glass); border: 1px solid var(--es-line); border-radius: 999px; padding: 0.45rem 0.85rem; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  .es-find input::placeholder { color: var(--es-ink-3); }
+  .es-find input:focus-visible { outline: 2px solid var(--es-accent); outline-offset: 2px; }
+  .es-find.is-miss input { border-color: #f87171; }
+  .es-static .es-find { display: none; }
+  @media (max-width: 640px) { .es-brand { display: none; } .es-topbar { justify-content: flex-end; } .es-find input { width: 9.75rem; } }
+
+  /* explore: layers and timeline */
+  .es-dock { position: absolute; z-index: 3; left: max(1rem, calc((100vw - var(--wide)) / 2 + 1rem)); top: 8rem; width: 19rem; color: var(--es-ink); background: var(--es-glass); border: 1px solid var(--es-line); border-radius: 14px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  .es-dock[hidden] { display: none; }
+  .es-dock summary { cursor: pointer; list-style: none; padding: 0.75rem 1rem; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--es-accent); display: flex; justify-content: space-between; }
+  .es-dock summary::-webkit-details-marker { display: none; }
+  .es-dock summary::after { content: '+'; color: var(--es-ink-3); }
+  .es-dock[open] summary::after { content: '−'; }
+  .es-dock summary:focus-visible { outline: 2px solid var(--es-accent); outline-offset: 2px; border-radius: 14px; }
+  .es-dock-body { padding: 0 1rem 1rem; }
+  .es-dock-h { margin: 0.35rem 0 0.5rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--es-ink-3); }
+  .es-layers { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; }
+  .es-layers button { appearance: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; font: 500 0.74rem/1 var(--font-body); color: var(--es-ink-3); background: transparent; border: 1px solid var(--es-line); border-radius: 999px; padding: 0.4rem 0.65rem; }
+  .es-layers button i { width: 0.55rem; height: 0.55rem; border-radius: 50%; opacity: 0.35; }
+  .es-layers button[aria-pressed="true"] { color: var(--es-ink); border-color: rgba(203, 213, 225, 0.45); background: rgba(148, 163, 184, 0.12); }
+  .es-layers button[aria-pressed="true"] i { opacity: 1; }
+  .es-layers button:focus-visible { outline: 2px solid var(--es-accent); outline-offset: 2px; }
+  .es-time { width: 100%; margin: 0; accent-color: var(--es-accent); cursor: pointer; }
+  .es-ticks { display: flex; justify-content: space-between; margin-top: 0.3rem; font-family: var(--font-mono); font-size: 0.6rem; color: var(--es-ink-3); }
+  .es-era { margin: 0.75rem 0 0; font-size: 0.82rem; line-height: 1.5; color: var(--es-ink-2); }
+  .es-era b { display: block; color: var(--es-ink); font-family: var(--font-display); font-size: 0.98rem; }
+  .es-xbtns { display: inline-flex; gap: 0.5rem; }
+  .es-btn.es-ghost { background: transparent; color: var(--es-ink); border: 1px solid var(--es-line); }
+  .es-hint-s { display: none; }
+  @media (max-width: 899px) {
+    .es-dock { top: auto; left: 1rem; right: 1rem; width: auto; bottom: 6.9rem; max-height: 52%; overflow: auto; }
+    .es-hint-l { display: none; } .es-hint-s { display: block; text-align: center; font-size: 0.66rem; }
+    .es-explore { left: 1rem; right: 1rem; bottom: 1rem; transform: none; max-width: none; flex-direction: column; gap: 0.5rem; padding: 0.6rem 0.7rem; border-radius: 14px; }
+    .es-xbtns { width: 100%; }
+    .es-xbtns .es-btn { flex: 1; justify-content: center; white-space: nowrap; }
+  }
+
   /* text hidden: each card shrinks to its kicker and title */
   .es-quiet .es-text, .es-quiet .es-chips, .es-quiet .es-stats, .es-quiet .es-tip { display: none; }
   .es-quiet .es-panel { padding: 0.8rem 1rem 0.9rem; width: auto; max-width: 24rem; }
@@ -155,7 +225,7 @@ const agents = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').leng
   .es-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(148,163,184,0.15); z-index: 2; }
   .es-progress i { display: block; height: 100%; width: 0; background: var(--es-accent); }
 
-  .es-card { position: absolute; z-index: 4; left: 1rem; right: 1rem; bottom: 1rem; max-height: 62%; overflow: auto; padding: 1.1rem 1.2rem 1.2rem;
+  .es-card { position: absolute; z-index: 4; left: 1rem; right: 1rem; bottom: 1rem; max-height: 50%; overflow: auto; padding: 1.1rem 1.2rem 1.2rem;
     background: rgba(6, 11, 22, 0.88); border: 1px solid var(--es-line); border-top: 3px solid var(--zc, #2dd4bf); border-radius: 14px;
     -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); color: var(--es-ink); box-shadow: 0 20px 50px -20px rgba(0,0,0,0.8); animation: es-card-in 0.35s cubic-bezier(.2,.7,.2,1); }
   .es-card[hidden] { display: none; }
@@ -176,6 +246,9 @@ const agents = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').leng
   .es-pill.es-built { color: #4ade80; background: rgba(74, 222, 128, 0.14); }
   .es-pill.es-planned { color: #fbbf24; background: rgba(251, 191, 36, 0.15); }
   .es-pill.es-t0 { color: #2dd4bf; background: rgba(45, 212, 191, 0.14); }
+  .es-copy { appearance: none; cursor: pointer; margin-top: 1rem; width: 100%; font: 600 0.8rem/1 var(--font-body); color: var(--es-ink); background: transparent; border: 1px solid var(--es-line); border-radius: 999px; padding: 0.6rem 0.9rem; }
+  .es-copy:hover { border-color: var(--zc, #2dd4bf); }
+  .es-copy:focus-visible { outline: 2px solid var(--es-accent); outline-offset: 2px; }
   .es-x { position: absolute; top: 0.6rem; right: 0.6rem; width: 2rem; height: 2rem; border-radius: 50%; border: 1px solid var(--es-line); background: transparent; color: var(--es-ink-2); font-size: 1.1rem; line-height: 1; cursor: pointer; }
 
   .es-explore { position: absolute; z-index: 3; left: 50%; transform: translateX(-50%); bottom: 1.4rem; display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; justify-content: center; padding: 0.6rem 0.7rem 0.6rem 1.1rem; background: var(--es-glass); border: 1px solid var(--es-line); border-radius: 999px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); max-width: calc(100% - 2rem); }

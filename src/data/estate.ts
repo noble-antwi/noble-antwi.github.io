@@ -8,7 +8,20 @@ export interface Zone { id: number; name: string; x: number; color: number; css:
 export interface Host {
   name: string; zone: number; at: [number, number]; h: number; ip: string; role: string;
   agent: string | null; state: 'built' | 'planned'; tier0?: boolean; vm?: number; note: string;
+  since: string; // an ERAS id: when the host joined the estate in its current form
 }
+export interface Era { id: string; tick: string; label: string; title: string; text: string }
+
+/* The timeline in Explore mode. Coarse on purpose: each stage is a month the
+   estate visibly changed, dated from the homelab repository's docs and backlog. */
+export const ERAS: Era[] = [
+  { id: '2025',    tick: '2025',   label: '2025',          title: 'The network',      text: 'pfSense and six VLANs on one trunk, the admin laptop, a practice host and the VLAN 40 desktop that later became APP01.' },
+  { id: '2026-05', tick: 'May 26', label: 'May 2026',      title: 'The hypervisor',   text: 'PVE01 arrives: one Proxmox host that places every guest on its network by VLAN tag.' },
+  { id: '2026-09', tick: 'Sep 26', label: 'September 2026', title: 'The bank',        text: 'DC01 rebuilt on corp.biirabank.com, SIEM01 on its own hardware, a contained attack host, credentialed scanning and a domain-joined workstation.' },
+  { id: '2026-10', tick: 'Oct 26', label: 'October 2026',  title: 'Tier 0',           text: 'The Biira Bank Root CA on CA01, LDAPS everywhere, and Keycloak on IDP01 signing people and the AI agent in.' },
+  { id: '2026-11', tick: 'Nov 26', label: 'November 2026', title: 'Secrets',          text: 'VAULT01 holds the secrets behind 3-of-5 key shares, and remote connections keep their real source address.' },
+  { id: 'next',    tick: 'Next',   label: 'Next',          title: 'Still being built', text: 'Monitoring returns as MON01, automation as ANS01, and Vault starts handing the AI agent its secrets.' },
+];
 export interface Link { from: string; to: string; kind: 'identity' | 'cert' | 'agent'; label: string; scene: string; planned?: boolean }
 export interface Scene {
   id: string; rail: string; cam: [number, number, number]; look: [number, number, number];
@@ -28,33 +41,33 @@ export const ESTATE: { updated: string; zones: Zone[]; hosts: Host[]; links: Lin
     { id: 60, name: 'Monitoring',    x: 15,  color: 0x22c55e, css: '#22c55e', subnet: '192.168.60.0/24' },
   ],
   hosts: [
-    { name: 'ADM01',   zone: 10, at: [-16.3,  1.4], h: 0.45, ip: '192.168.10.3', role: 'Admin laptop',               agent: '002', state: 'built',
+    { name: 'ADM01',   zone: 10, at: [-16.3,  1.4], h: 0.45, ip: '192.168.10.3', role: 'Admin laptop',               agent: '002', state: 'built', since: '2025',
       note: 'The administrator\'s laptop. Reaches the lab over Tailscale and signs in to servers with its own SSH key.' },
-    { name: 'PVE01',   zone: 10, at: [-14.0, -1.3], h: 1.25, ip: '192.168.10.6', role: 'Proxmox VE hypervisor',      agent: '003', state: 'built',
+    { name: 'PVE01',   zone: 10, at: [-14.0, -1.3], h: 1.25, ip: '192.168.10.6', role: 'Proxmox VE hypervisor',      agent: '003', state: 'built', since: '2026-05',
       note: 'Runs every virtual machine on one VLAN-aware bridge, placing each guest on its network by tag. Backs them up nightly.' },
-    { name: 'LAB01',   zone: 10, at: [-16.3, -1.5], h: 0.6,  ip: '192.168.10.4', role: 'Practice host',              agent: null,  state: 'built',
+    { name: 'LAB01',   zone: 10, at: [-16.3, -1.5], h: 0.6,  ip: '192.168.10.4', role: 'Practice host',              agent: null,  state: 'built', since: '2025',
       note: 'A machine for training exercises, kept apart from anything that matters.' },
-    { name: 'ANS01',   zone: 10, at: [-13.7,  1.4], h: 0.7,  ip: '192.168.10.2', role: 'Ansible controller',         agent: null,  state: 'planned',
+    { name: 'ANS01',   zone: 10, at: [-13.7,  1.4], h: 0.7,  ip: '192.168.10.2', role: 'Ansible controller',         agent: null,  state: 'planned', since: 'next',
       note: 'Will configure hosts from code, so a server can be rebuilt the same way twice.' },
-    { name: 'SIEM01',  zone: 20, at: [ -9.8, -1.1], h: 1.45, ip: '192.168.20.2', role: 'Wazuh 4.14.7 manager',       agent: 'manager', state: 'built',
+    { name: 'SIEM01',  zone: 20, at: [ -9.8, -1.1], h: 1.45, ip: '192.168.20.2', role: 'Wazuh 4.14.7 manager',       agent: 'manager', state: 'built', since: '2026-09',
       note: 'Wazuh manager, indexer and dashboard on its own hardware. Every agent in the lab reports here.' },
-    { name: 'SCAN01',  zone: 20, at: [ -7.9,  1.2], h: 0.85, ip: '192.168.20.3', role: 'Greenbone scanner',          agent: null,  state: 'built', vm: 104,
+    { name: 'SCAN01',  zone: 20, at: [ -7.9,  1.2], h: 0.85, ip: '192.168.20.3', role: 'Greenbone scanner',          agent: null,  state: 'built', since: '2026-09', vm: 104,
       note: 'Runs credentialed vulnerability scans, signed in as an account that holds nothing on the domain.' },
-    { name: 'KALI01',  zone: 30, at: [ -3.0,  0.2], h: 0.85, ip: '192.168.30.2', role: 'Attack host, contained',     agent: null,  state: 'built', vm: 103,
+    { name: 'KALI01',  zone: 30, at: [ -3.0,  0.2], h: 0.85, ip: '192.168.30.2', role: 'Attack host, contained',     agent: null,  state: 'built', since: '2026-09', vm: 103,
       note: 'Attack practice box, walled into its own network. A tested ruleset keeps it away from DC01 and the firewall.' },
-    { name: 'APP01',   zone: 40, at: [  3.0, -0.6], h: 0.95, ip: '192.168.40.2', role: 'Apps and the AI agent',      agent: '005', state: 'built',
+    { name: 'APP01',   zone: 40, at: [  3.0, -0.6], h: 0.95, ip: '192.168.40.2', role: 'Apps and the AI agent',      agent: '005', state: 'built', since: '2025',
       note: 'Hosts the internal web apps and the Ask-my-SIEM AI agent, published to the owner\'s devices over Tailscale.' },
-    { name: 'DC01',    zone: 50, at: [  7.5, -1.6], h: 1.45, ip: '192.168.50.2', role: 'Active Directory, DNS',      agent: '001', state: 'built', tier0: true,
+    { name: 'DC01',    zone: 50, at: [  7.5, -1.6], h: 1.45, ip: '192.168.50.2', role: 'Active Directory, DNS',      agent: '001', state: 'built', since: '2026-09', tier0: true,
       note: 'The domain controller for corp.biirabank.com. Holds every person and group, and is the only place passwords live.' },
-    { name: 'CA01',    zone: 50, at: [  9.0, -1.6], h: 1.0,  ip: '192.168.50.3', role: 'Biira Bank Root CA',         agent: null,  state: 'built', tier0: true, vm: 105,
+    { name: 'CA01',    zone: 50, at: [  9.0, -1.6], h: 1.0,  ip: '192.168.50.3', role: 'Biira Bank Root CA',         agent: null,  state: 'built', since: '2026-10', tier0: true, vm: 105,
       note: 'The bank\'s own certificate authority. Every Tier 0 service proves who it is with a certificate stamped here.' },
-    { name: 'IDP01',   zone: 50, at: [ 10.5, -1.6], h: 1.05, ip: '192.168.50.4', role: 'Keycloak identity provider', agent: '006', state: 'built', tier0: true, vm: 106,
+    { name: 'IDP01',   zone: 50, at: [ 10.5, -1.6], h: 1.05, ip: '192.168.50.4', role: 'Keycloak identity provider', agent: '006', state: 'built', since: '2026-10', tier0: true, vm: 106,
       note: 'Keycloak. Signs people in against Active Directory over LDAPS, and gives the AI agent tokens that last five minutes.' },
-    { name: 'VAULT01', zone: 50, at: [  8.2,  0.3], h: 1.05, ip: '192.168.50.5', role: 'HashiCorp Vault 2.2.1',      agent: '007', state: 'built', tier0: true, vm: 107,
+    { name: 'VAULT01', zone: 50, at: [  8.2,  0.3], h: 1.05, ip: '192.168.50.5', role: 'HashiCorp Vault 2.2.1',      agent: '007', state: 'built', since: '2026-11', tier0: true, vm: 107,
       note: 'Holds the secrets. Sealed behind 3-of-5 key shares, every request audited, the root token retired.' },
-    { name: 'WKS01',   zone: 50, at: [ 10.3,  1.6], h: 0.55, ip: 'DHCP',         role: 'Windows 11 workstation',     agent: '004', state: 'built', vm: 100,
+    { name: 'WKS01',   zone: 50, at: [ 10.3,  1.6], h: 0.55, ip: 'DHCP',         role: 'Windows 11 workstation',     agent: '004', state: 'built', since: '2026-09', vm: 100,
       note: 'A domain-joined Windows 11 workstation with Sysmon, used to prove sign-in, scanning and detection end to end.' },
-    { name: 'MON01',   zone: 60, at: [ 15.0,  0.2], h: 0.8,  ip: '192.168.60.2', role: 'Grafana and Prometheus',     agent: null,  state: 'planned', vm: 102,
+    { name: 'MON01',   zone: 60, at: [ 15.0,  0.2], h: 0.8,  ip: '192.168.60.2', role: 'Grafana and Prometheus',     agent: null,  state: 'planned', since: 'next', vm: 102,
       note: 'Will return as the metrics and dashboards host, next to the logs SIEM01 already keeps.' },
   ],
   links: [
