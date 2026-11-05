@@ -275,6 +275,22 @@ export function startEstate(root: HTMLElement) {
   controls.enabled = false; controls.enableDamping = true; controls.dampingFactor = 0.08;
   controls.minDistance = 6; controls.maxDistance = 60; controls.maxPolarAngle = PI * 0.47;
   controls.autoRotateSpeed = 0.5;
+  // Map-style: left drag (one finger) slides the estate along the ground,
+  // right drag, Shift + drag or two fingers turn it. Arrow keys slide too.
+  controls.mouseButtons = { LEFT: T.MOUSE.PAN, MIDDLE: T.MOUSE.DOLLY, RIGHT: T.MOUSE.ROTATE };
+  controls.touches = { ONE: T.TOUCH.PAN, TWO: T.TOUCH.DOLLY_ROTATE };
+  controls.screenSpacePanning = false;
+  controls.keyPanSpeed = 12;
+  controls.listenToKeyEvents(window);
+  canvas.addEventListener('contextmenu', (e) => { if (exploring) e.preventDefault(); });
+  // Keep the slide on the estate: the look-at point may not leave the hosts' footprint.
+  const bounds = new T.Box3(), shift = new T.Vector3(), clampT = new T.Vector3();
+  pickables.forEach((m) => bounds.expandByObject(m));
+  bounds.expandByScalar(4);
+  controls.addEventListener('change', () => {
+    clampT.copy(controls.target); clampT.x = clamp(clampT.x, bounds.min.x, bounds.max.x); clampT.z = clamp(clampT.z, bounds.min.z, bounds.max.z);
+    if (!clampT.equals(controls.target)) { shift.subVectors(clampT, controls.target); controls.target.add(shift); camera.position.add(shift); }
+  });
   controls.addEventListener('start', () => { controls.autoRotate = false; });
   function enterExplore() {
     exploring = true; root.classList.add('es-exploring'); exploreBar.hidden = false;
@@ -317,6 +333,29 @@ export function startEstate(root: HTMLElement) {
   const first = camFor(0);
   const camPos = first.pos.clone(), camLook = first.look.clone();
 
+  /* ---------- keep the subject clear of the text ---------- */
+  // The story card covers part of the stage, so shift the projection until the
+  // scene's subject sits in the open space beside it (desktop) or above it (phone).
+  let offX = 0, offY = 0;
+  function freeShift() {
+    if (exploring) return [0, 0];
+    const p = panels[active]; if (!p) return [0, 0];
+    const c = canvas.getBoundingClientRect(), r = p.getBoundingClientRect();
+    const W = c.width, H = c.height;
+    if (W < 900 || p.classList.contains('es-bottom')) {
+      const top = 96; // site header and topbar
+      return [0, Math.min(0, (top + (r.top - c.top)) / 2 - H / 2)];
+    }
+    const railW = 150;
+    return [Math.max(0, ((r.right - c.left) + (W - railW)) / 2 - W / 2), 0];
+  }
+  const quietBtn = root.querySelector('[data-quiet]');
+  quietBtn?.addEventListener('click', () => {
+    const on = root.classList.toggle('es-quiet');
+    quietBtn.setAttribute('aria-pressed', String(on));
+    quietBtn.textContent = on ? 'Show text' : 'Hide text';
+  });
+
   const focusSet = (s) => s.focus === 'all' ? null : s.focus === 'none' ? [] : s.focus === 'planned' ? ESTATE.hosts.filter((h) => h.state === 'planned').map((h) => h.name) : s.focus;
   const tgtPos = new T.Vector3(), tgtLook = new T.Vector3();
   let born = 0, t = 0, last = performance.now();
@@ -336,6 +375,13 @@ export function startEstate(root: HTMLElement) {
       tgtPos.x += Math.sin(t * 0.18) * 0.35; tgtPos.y += Math.sin(t * 0.23) * 0.2;
       const a = 1 - Math.exp(-dt * 6); camPos.lerp(tgtPos, a); camLook.lerp(tgtLook, a);
       camera.position.copy(camPos); camera.lookAt(camLook);
+    }
+    {
+      const [sx, sy] = freeShift(), a = 1 - Math.exp(-dt * 4);
+      offX += (sx - offX) * a; offY += (sy - offY) * a;
+      const W = canvas.clientWidth, H = canvas.clientHeight;
+      if (Math.abs(offX) > 0.5 || Math.abs(offY) > 0.5) camera.setViewOffset(W, H, -offX, -offY, W, H);
+      else if (camera.view && camera.view.enabled) camera.clearViewOffset();
     }
 
     const cur = Math.round(f);
