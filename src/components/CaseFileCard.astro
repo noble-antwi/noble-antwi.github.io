@@ -1,0 +1,30 @@
+---
+/* One case file as a dark card, used on the Case files page and in Writing. */
+import type { Post } from '../lib/site';
+import { postUrl, formatDate } from '../lib/site';
+
+interface Props { post: Post }
+const { post } = Astro.props;
+const d = post.data;
+---
+
+<a class="cf-card" href={postUrl(post)}>
+  <span class="cf-k">Case file · {formatDate(d.date)}{d.read_time ? ` · ${d.read_time} min, with a replay` : ''}</span>
+  <h3>{d.title}</h3>
+  {d.description && <p>{d.description}</p>}
+  {d.tags.length > 0 && <span class="cf-tags">{d.tags.slice(0, 5).map((t) => <i>{t}</i>)}</span>}
+  <span class="cf-go">Open the case file →</span>
+</a>
+
+<style>
+  .cf-card { display: block; padding: 1.6rem 1.7rem 1.5rem; border-radius: var(--radius); background: radial-gradient(120% 140% at 100% 0%, rgba(248, 113, 113, 0.18), transparent 55%), #0b1220; border: 1px solid #1e293b; color: #e2e8f0; text-decoration: none; box-shadow: 0 30px 60px -40px rgba(2, 6, 23, 0.7); transition: border-color 0.2s, transform 0.2s; }
+  .cf-card:hover { border-color: #f87171; transform: translateY(-2px); }
+  .cf-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .cf-k { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: #f87171; }
+  h3 { margin: 0.6rem 0 0; font-family: var(--font-display); font-size: clamp(1.35rem, 2.6vw, 1.9rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; color: #f8fafc; }
+  p { margin: 0.7rem 0 0; color: #cbd5e1; max-width: 46rem; line-height: 1.6; }
+  .cf-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 1rem; }
+  .cf-tags i { font-style: normal; font-family: var(--font-mono); font-size: 0.68rem; color: #94a3b8; border: 1px solid #334155; border-radius: 999px; padding: 0.1rem 0.55rem; }
+  .cf-go { display: inline-block; margin-top: 1rem; font-family: var(--font-mono); font-size: 0.78rem; color: #f87171; }
+  @media (prefers-reduced-motion: reduce) { .cf-card { transition: none; } .cf-card:hover { transform: none; } }
+</style>

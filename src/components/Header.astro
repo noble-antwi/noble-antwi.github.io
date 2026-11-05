@@ -5,7 +5,8 @@ import Mark from './Mark.astro';
 const path = Astro.url.pathname;
 const items = [
   { href: '/work/', label: 'Work', match: /^\/work/ },
-  { href: '/writing/', label: 'Writing', match: /^\/writing|^\/(lab-notes|learning|project-update|cloud-security|til|case-files)\// },
+  { href: '/writing/', label: 'Writing', match: /^\/writing|^\/(lab-notes|learning|project-update|cloud-security|til)\// },
+  { href: '/case-files/', label: 'Case files', match: /^\/case-files/ },
   { href: '/about/', label: 'About', match: /^\/about/ },
   { href: '/credentials/', label: 'Credentials', match: /^\/credentials/ },
   { href: '/now/', label: 'Now', match: /^\/now/ },

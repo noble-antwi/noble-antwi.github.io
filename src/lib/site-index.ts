@@ -8,6 +8,7 @@ export const SECTIONS: IndexRow[] = [
   { k: 'section', t: 'Home', u: '/' },
   { k: 'section', t: 'Work', u: '/work/' },
   { k: 'section', t: 'Writing', u: '/writing/' },
+  { k: 'section', t: 'Case files', u: '/case-files/' },
   { k: 'section', t: 'Credentials', u: '/credentials/' },
   { k: 'section', t: 'Training', u: '/credentials/training/' },
   { k: 'section', t: 'About', u: '/about/' },

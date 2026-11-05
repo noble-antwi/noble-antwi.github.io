@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CaseFileCard from '../../components/CaseFileCard.astro';
+import { byDateDesc } from '../../lib/site';
+
+const files = (await getCollection('posts')).filter((p) => p.data.casefile).sort(byDateDesc);
+---
+
+<Base title="Case files" description="Real security incidents read from their public reports, link by link: what happened at each step, the control that could have stopped it, and where that control stands in my lab.">
+  <div class="container">
+    <header class="page-head">
+      <span class="kicker">Case files</span>
+      <h1 class="display h1">Real incidents, link by link.</h1>
+      <p class="lead">Public breach reports, read in plain words. Each case file replays the attack, names the control that could have broken every link, maps it to MITRE ATT&amp;CK, and says where that control stands in my lab: built, being built, or next.</p>
+    </header>
+
+    <section class="section" style="padding-top:0;">
+      <div class="cf-list">
+        {files.map((p) => <CaseFileCard post={p} />)}
+      </div>
+      <ol class="cf-how" aria-label="How a case file is built">
+        <li><b>The report</b><span>Only what the organisation itself has published. Its figures, its times.</span></li>
+        <li><b>The chain</b><span>Every step from first foothold to the last transfer, in plain words, with a replay.</span></li>
+        <li><b>The controls</b><span>For each link, the control that could have broken it, and the ATT&amp;CK technique.</span></li>
+        <li><b>The lab</b><span>Where that control stands in my own lab, and the build that closes the gap.</span></li>
+      </ol>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .cf-list { display: grid; gap: 1rem; }
+  .cf-how { list-style: none; counter-reset: s; margin: 2.5rem 0 0; padding: 0; display: grid; gap: 1px; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .cf-how li { counter-increment: s; background: var(--paper); padding: 1.1rem 1.2rem 1.2rem; }
+  .cf-how b { display: block; font-family: var(--font-display); font-size: 1.02rem; color: var(--ink); }
+  .cf-how b::before { content: '0' counter(s) ' '; font-family: var(--font-mono); font-size: 0.72rem; color: var(--c-offence); margin-right: 0.3rem; }
+  .cf-how span { display: block; margin-top: 0.35rem; font-size: 0.9rem; color: var(--ink-3); line-height: 1.5; }
+</style>
