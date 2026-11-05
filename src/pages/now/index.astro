@@ -10,10 +10,9 @@ const LABS = [
   { repo: 'enterprise-security-homelab', what: 'The bank network: pfSense, Wazuh, Greenbone, the domain', href: '/work/enterprise-security-homelab/' },
   { repo: 'ai-agent-identity-lab', what: 'AI agents with their own identities', href: '/work/ai-agent-identity-lab/' },
   { repo: 'enterprise-iam-lab', what: 'Hybrid identity: AD, Okta, Entra', href: '/work/enterprise-iam-lab/' },
-  { repo: 'azure-labs', what: 'AZ-104 labs, built in Bicep', href: 'https://github.com/noble-antwi/azure-labs' },
+  { repo: 'azure-labs', what: 'AZ-104 labs, built in Bicep', href: '/work/azure-labs/' },
   { repo: 'biirabank-web', what: 'The bank’s public site on Cloudflare', href: '/work/biirabank-web/' },
   { repo: 'cloud-resume-challenge', what: 'The Cloud Resume Challenge, stage by stage', href: '/work/cloud-resume-challenge/' },
-  { repo: 'noble-antwi.github.io', what: 'This site', href: 'https://github.com/noble-antwi/noble-antwi.github.io' },
 ];
 let pushed: Record<string, string> = {};
 try {
@@ -28,7 +27,7 @@ LABS.sort((a, b) => (pushed[b.repo] ?? '').localeCompare(pushed[a.repo] ?? ''));
     <header class="page-head">
       <span class="kicker">Now · updated {updated}</span>
       <h1 class="display h1">What I am doing this month.</h1>
-      <p class="lead">A <a href="https://nownownow.com/about" target="_blank" rel="noopener">now page</a>: the short, current answer to "what are you working on?", kept honest by being dated.</p>
+      <p class="lead">The short, current answer to "what are you working on?", kept honest by being dated.</p>
     </header>
 
     <section class="labs-live" aria-labelledby="labs-live-h">

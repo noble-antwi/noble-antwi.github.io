@@ -12,6 +12,8 @@ const posts = defineCollection({
     read_time: z.number().optional(),
     /** Renders a full-width case file component instead of the prose body. */
     casefile: z.string().optional(),
+    /** A short name for links that have little room. */
+    short: z.string().optional(),
   }),
 });
 

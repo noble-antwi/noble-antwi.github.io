@@ -3,7 +3,7 @@
    the progress rail and the contact reveal. The 3D world is in
    src/scripts/journey.ts. Reduced motion or no WebGL stacks the copy. */
 import { getCollection } from 'astro:content';
-import { SITE, WORK_CATEGORIES } from '../lib/site';
+import { SITE, WORK_CATEGORIES, postUrl, byDateDesc } from '../lib/site';
 import { CERTS, RUNWAY } from '../data/certifications';
 
 const J = 0.42, JMAX = 0.92;
@@ -29,6 +29,8 @@ const cases = PICKS.map((id) => all.find((w) => w.id === id)).filter((w): w is (
 const pad = (n: number) => String(n).padStart(2, '0');
 
 const posts = await getCollection('posts');
+/* the newest case file gets a door on the first screen */
+const caseFile = posts.filter((p) => p.data.casefile).sort(byDateDesc)[0];
 const rail = [
   { from: 0, to: J, label: 'Sign-in' },
   { from: J, to: 0.605, label: 'Case files' },
@@ -47,6 +49,7 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
     <div class="j-copy">
       {journey.map((s, i) => (
         <div class="j-panel" data-from={s.from} data-to={s.to}>
+          {i === 0 && caseFile && <a class="j-new" href={postUrl(caseFile)}><b>New case file</b><span>{caseFile.data.short ?? caseFile.data.title}</span><i aria-hidden="true">→</i></a>}
           <span class="j-kicker">{s.n} · {s.k}</span>
           {i === 0 ? <h1 class="j-h">{s.h}</h1> : <h2 class="j-h">{s.h}</h2>}
           <p class="j-p">{s.p}</p>
@@ -86,7 +89,7 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
         <h2 class="j-h">{posts.length} of them became notes.</h2>
         <p class="j-p">The ones worth understanding got written up, mistakes included: the alert that cried wolf, the zone that did not exist, the scanner that is not a domain admin, the finding that was found, fixed and proved closed.</p>
         <div class="j-stats"><div><b data-count={String(posts.length)} data-from="0.748" data-dur="0.02">0</b><span>notes</span></div><div><b data-count="4" data-from="0.752" data-dur="0.02">0</b><span>series</span></div></div>
-        <div class="actions"><a class="btn" href="/writing/">Read the notes <span aria-hidden="true">→</span></a></div>
+        <div class="actions"><a class="btn" href="/writing/">Read the notes <span aria-hidden="true">→</span></a>{caseFile && <a class="btn btn-ghost" href={postUrl(caseFile)}>The newest case file <span aria-hidden="true">→</span></a>}</div>
       </div>
 
       <div class="j-panel" data-from="0.78" data-to="0.885" data-fade="0.012">
@@ -158,6 +161,12 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
   .j-copy { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
   .j-panel { position: absolute; left: max(1rem, calc((100vw - var(--wide)) / 2 + 1rem)); top: 50%; transform: translateY(-50%); width: min(34rem, calc(100vw - 2rem)); opacity: 0; visibility: hidden; pointer-events: none; will-change: opacity, transform; }
   .j-panel .actions, .j-panel a, .j-panel button { pointer-events: auto; }
+  .j-new { display: inline-flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.4rem; padding: 0.45rem 0.9rem 0.45rem 0.5rem; border: 1px solid color-mix(in srgb, var(--c-offence) 45%, transparent); border-radius: 999px; background: color-mix(in srgb, var(--c-offence) 8%, var(--paper)); color: var(--ink); text-decoration: none; font-size: 0.9rem; max-width: 100%; pointer-events: auto; }
+  .j-new b { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; background: var(--c-offence); border-radius: 999px; padding: 0.15rem 0.55rem; }
+  .j-new i { font-style: normal; color: var(--c-offence); transition: transform 0.2s; }
+  .j-new:hover i { transform: translateX(3px); }
+  @media (max-width: 520px) { .j-new { border-radius: 14px; } }
+  .j-new:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .j-kicker { display: block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.9rem; }
   .j-case .j-kicker, .j-case .j-stats b, .j-casen { color: var(--c, var(--accent)); }
   .j-btn-c { background: var(--c, var(--accent)); color: #0b1220; border: 0; }

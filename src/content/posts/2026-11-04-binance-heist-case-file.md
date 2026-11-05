@@ -6,6 +6,7 @@ tags: [incident-analysis, supply-chain, social-engineering, ai-agents, agent-ide
 description: "A plain-words reading of Binance's report on the 29 October 2026 theft: a poisoned download, a fake job interview, an internal AI tool with too much reach and one long-lived token on a laptop. Each of the seven links, the control that could have broken it, and where the same control lives in my lab."
 read_time: 10
 casefile: binance-2026-10-29
+short: "The $6.34B Binance theft, link by link"
 ---
 
 The page is drawn by the case file component; this text is the summary that feeds and search use.
