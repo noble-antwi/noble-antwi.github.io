@@ -10,7 +10,7 @@ const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 
 /* the four parts of the break-glass code; each one is a number on this site */
 const PARTS = [
-  { k: 'A', q: 'Wazuh agents reporting to SIEM01', a: '5', hint: 'Count the agents in the alert scene on the home page, or in the homelab case study.' },
+  { k: 'A', q: 'Wazuh agents reporting to SIEM01', a: '7', hint: 'Count the agents in the alert scene on the home page, or in the homelab case study.' },
   { k: 'B', q: 'The rule that keeps the scanner quiet', a: '100020', hint: '<a href="/lab-notes/2026/09/26/the-alert-that-cried-wolf.html">The Alert That Cried Wolf</a> names it.' },
   { k: 'C', q: 'The number to match on the push approval', a: '42', hint: 'Scroll to the end of the home page. Someone is trying to reach Noble.' },
   { k: 'D', q: 'The VLAN the domain controller lives on', a: '50', hint: 'Chapter 01 of the journey: "Checked at home first."' },

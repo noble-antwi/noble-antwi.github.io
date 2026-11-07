@@ -1,7 +1,7 @@
 ---
 title: "Enterprise Security Homelab"
 kicker: "Infrastructure · Detection · Biira Bank"
-summary: "A six-VLAN, default-deny network for a fictional regional bank: pfSense, managed switching, a Proxmox hypervisor on a trunk port, a Windows Server 2025 domain controller answering LDAPS with a certificate from the lab's own root CA, a Wazuh SIEM with five agents and its own detection rules, including thirty for an internal application's identity log, a Greenbone scanner whose identity is administrator on member machines and nothing on the domain, a first finding found, fixed and proved closed, and every firewall rule justified and mapped to a NIST control."
+summary: "A six-VLAN, default-deny network for a fictional regional bank: pfSense, managed switching, a Proxmox hypervisor on a trunk port, a Windows Server 2025 domain controller answering LDAPS with a certificate from the lab's own root CA, a Keycloak identity provider that signs people and machines in against Active Directory, a Wazuh SIEM with seven agents and its own detection rules, including thirty for an internal application's identity log, a Greenbone scanner whose identity is administrator on member machines and nothing on the domain, a first finding found, fixed and proved closed, and every firewall rule justified and mapped to a NIST control."
 category: detection
 status: active
 statusLabel: "In active build"
@@ -11,8 +11,8 @@ period: "2025 to present"
 role: "Design, build, operate, document"
 repo: https://github.com/noble-antwi/enterprise-security-homelab
 docs: https://github.com/noble-antwi/enterprise-security-homelab/tree/main/docs
-docsLabel: "22 runbooks"
-stack: ["pfSense", "802.1Q VLANs", "Proxmox VE", "Windows Server 2025", "Wazuh 4.14", "Sysmon", "Greenbone CE", "Group Policy", "AD CS", "LDAPS", "Kali Linux", "Ansible", "Tailscale", "CIS Benchmarks"]
+docsLabel: "23 runbooks"
+stack: ["pfSense", "802.1Q VLANs", "Proxmox VE", "Windows Server 2025", "Wazuh 4.14", "Sysmon", "Greenbone CE", "Group Policy", "AD CS", "LDAPS", "Keycloak", "Docker Compose", "HashiCorp Vault", "Kali Linux", "Ansible", "Tailscale", "CIS Benchmarks"]
 relatedTags: ["homelab", "proxmox", "pfsense", "vlan", "networking", "wazuh", "siem", "greenbone", "group-policy", "detection-engineering", "vulnerability-management"]
 hero: ../../assets/work/enterprise-security-homelab/network-architecture.png
 heroAlt: "Network architecture diagram: internet, pfSense, two switches and six VLAN security zones with firewall status, the hosts in each zone and their Wazuh agents"
@@ -20,9 +20,27 @@ heroCaption: "Current-state architecture on corp.biirabank.com, as of 30 October
 stats:
   - { value: "6", label: "VLAN security zones" }
   - { value: "3 / 6", label: "Rulesets hardened" }
-  - { value: "5", label: "Wazuh agents reporting" }
+  - { value: "7", label: "Wazuh agents reporting" }
   - { value: "4", label: "CIS baselines recorded" }
 gallery:
+  - src: ../../assets/work/enterprise-security-homelab/idp-50-emily-account-console.png
+    alt: "Keycloak account console for Emily Davis at idp01.corp.biirabank.com, her details read from Active Directory and greyed out"
+    caption: "IDP01 federated to Active Directory: a Biira Bank employee signs in with her directory password, and Keycloak shows details it read from AD but cannot change. Keycloak stored none of it; DC01 checked the password."
+  - src: ../../assets/work/enterprise-security-homelab/idp-52-agent-client-capability.png
+    alt: "Keycloak client capability settings: client authentication on, only service account roles ticked, every browser flow off"
+    caption: "The AI agent's own identity on IDP01: a confidential client that must prove itself with a secret, and only service account roles. With every browser flow off, no person can sign in through it."
+  - src: ../../assets/work/enterprise-security-homelab/idp-56-agent-token-claims.png
+    alt: "PowerShell decoding the agent's token: issuer the biira realm on IDP01, azp agent-ask-siem, expiring five minutes after issue"
+    caption: "A token for the agent, valid for 300 seconds: issued by the biira realm on IDP01, to agent-ask-siem, as its own service account. The secret itself never appears on screen."
+  - src: ../../assets/work/enterprise-security-homelab/idp-58-agent-invalid-client.png
+    alt: "Token requests succeeding, then refused with invalid_client while the client is disabled, then succeeding again"
+    caption: "The off switch: one token issued, every request refused with invalid_client while the client is disabled, tokens again once it is re-enabled."
+  - src: ../../assets/work/enterprise-security-homelab/idp-59-agent-client-disabled-event.png
+    alt: "Keycloak user events: CLIENT_LOGIN for the agent's service account, then CLIENT_LOGIN_ERROR with error client_disabled"
+    caption: "The caller is told only invalid_client; Keycloak's own record keeps the real reason, client_disabled, under the agent's name."
+  - src: ../../assets/work/enterprise-security-homelab/idp-14-wazuh-agent-006-active.png
+    alt: "agent_control on SIEM01 listing six active agents, IDP01 enrolled as agent 006"
+    caption: "IDP01 enrolled with the SIEM as agent 006 before Keycloak went on it. An identity provider is a Tier 0 system, so it was watched from its first day."
   - src: ../../assets/work/enterprise-security-homelab/pki-07-root-ca-alive-and-details.png
     alt: "The Biira Bank Root CA running on CA01, with its certificate details"
     caption: "CA01 alive: an enterprise root CA, RSA 4096 and SHA-256, valid for ten years. A CA is a Tier 0 asset, so it lives beside the domain controller it serves."
@@ -163,8 +181,8 @@ Internet enters through **pfSense**, which holds the `.1` gateway on all six VLA
 | 10 | Management | `192.168.10.0/24` | pfSense, PVE01 (the hypervisor), ADM01 (the admin workstation), a lab Ubuntu box |
 | 20 | BlueTeam | `192.168.20.0/24` | SIEM01: Wazuh manager, indexer and dashboard. SCAN01: Greenbone vulnerability scanner |
 | 30 | RedTeam | `192.168.30.0/24` | KALI01, the attack host, as a Proxmox guest |
-| 40 | DevOps | `192.168.40.0/24` | APP01, two web applications behind Tailscale Serve; VAULT01 planned |
-| 50 | EnterpriseLAN | `192.168.50.0/24` | DC01, the `corp.biirabank.com` domain controller; WKS01, the first member workstation |
+| 40 | DevOps | `192.168.40.0/24` | APP01, two web applications behind Tailscale Serve |
+| 50 | EnterpriseLAN | `192.168.50.0/24` | The Tier 0 identity systems: DC01, the `corp.biirabank.com` domain controller; CA01, the root CA; IDP01, the identity provider; VAULT01, the secrets server, being built. And WKS01, the first member workstation |
 | 60 | Monitoring | `192.168.60.0/24` | MON01, Grafana and Prometheus, being rebuilt as a guest |
 
 Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's network placement is one tag on its virtual NIC. Moving the hypervisor from an access port to the trunk without locking myself out is written up in [Proxmox on a Trunk Port](/lab-notes/2026/05/25/proxmox-vlan-trunk-configuration.html).
@@ -175,7 +193,7 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 - **Management-plane isolation**, verified by before-and-after testing: VLAN 50 cannot reach the pfSense administrative interface on any address, while it keeps the DNS, NTP and internet access it legitimately needs.
 - **KALI01**, the attack host, as a Proxmox guest on VLAN 30 with no standing path to any other segment, no ICMP-to-any, and a clean-install snapshot to roll back to after every exercise. Its containment is proven by a test from the host itself, and the runbook is explicit about what that test does and does not prove.
 - **SIEM01**, Wazuh 4.14.7, rebuilt on dedicated hardware after the original host died. The failure became a role swap: the 16 GB machine that had been running Grafana went to the memory-hungry, data-bearing SIEM, and monitoring moves to a hypervisor guest. Written up in [Standing Up Wazuh Twice](/lab-notes/2026/09/08/standing-up-wazuh-twice.html).
-- **Five agents reporting**: DC01, ADM01, PVE01, WKS01 and APP01, with Sysmon on the three Windows machines, and APP01 shipping an application's identity audit log rather than operating-system events. Enrolling ADM01 exposed that its traffic was bypassing the firewall over Tailscale; the fix, and the evidence, are in the runbook.
+- **Seven agents reporting**: DC01, ADM01, PVE01, WKS01, APP01, IDP01 and VAULT01, with Sysmon on the three Windows machines, and APP01 shipping an application's identity audit log rather than operating-system events. Enrolling ADM01 exposed that its traffic was bypassing the firewall over Tailscale; the fix, and the evidence, are in the runbook.
 - **Detection engineering, with the evidence kept.** A built-in rule fired at level 15 all day on PowerShell checking its own execution policy. It is now tuned by an exception that needs two conditions, so the rule still catches everything else, and the scanner's 2,051 sign-in alerts per scan became a silent rule for SCAN01 and a level 12 alert for the same account from anywhere else. Archives are on, so a silenced alert still leaves its event on the record. The rules live in the repository and are deployed from it. Written up in [The Alert That Cried Wolf](/lab-notes/2026/09/26/the-alert-that-cried-wolf.html).
 - **Detection rules for an application's identity log.** Stock Copilot, an internal app on APP01, writes an audit event for every sign-in, refused token, SCIM call, key rotation and break-glass use. Thirty Wazuh rules turn that log into alerts mapped to MITRE ATT&CK: forged SAML and unsigned tokens at level 12, password guessing counted per device, signing keys changed outside a declared rotation. They were tested before deployment against 61 sample events and a replay of 676 real ones, and went live on 23 October 2026: the app's attack probe produced 18 alerts, all decoded on SIEM01. The first password-guessing rule raised seven false alerts on the lab's own traffic, because it counted refusals by policy as well as wrong credentials; it now counts credentials only. The rules and their deployment steps live in the repository's `detections/` folder. Written up in [Watching the Front Door](/lab-notes/2026/10/27/watching-the-front-door.html).
 - **The first finding found, fixed and proved closed.** A credentialed scan found TLS 1.0 and 1.1 on WKS01's Remote Desktop. A scoped, reversible Group Policy removed them, each step was verified on the machine, and a third scan proved them gone from three directions. WMI stays closed to the scanner by decision, because it would let a stolen scan credential run commands everywhere. Written up in [Find, Fix, Prove](/lab-notes/2026/10/09/find-fix-prove.html).
@@ -185,9 +203,12 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 - **A public tier**, `biirabank.com`, served as Cloudflare Worker static assets and graded F to A+ by an independent header checker. Testing found the site still answering on its default `workers.dev` hostname, where none of the zone-level controls applied.
 - **Four CIS baselines recorded before any hardening**, one per host and operating system. They are the "before" half of a before-and-after, and the runbook explains why the four scores must not be read as a ranking.
 - **CA01, the bank's own certificate authority**, an enterprise root CA on the Tier 0 VLAN beside the domain controller. `DC01` enrolled itself through a certificate template, generating its key pair locally so the private key never left it, and now answers LDAPS on 636. Proven from inside the domain with `ldp.exe` and from a laptop that never joined it: with the root, checked against its published SHA-256 fingerprint, `Verification: OK`; without it, error 20. The first consumer is an [AI agent with its own identity](/work/ai-agent-identity-lab/). Written up in chapter 22.
+- **IDP01, the bank's identity provider**: Keycloak 26.8.1 and PostgreSQL 18.6 in Docker Compose on a hardened Ubuntu guest beside the domain controller, with keys-only SSH, the database unreachable from outside its container network, and HTTPS from a CA01 certificate whose private key never left the machine. Keycloak reads Active Directory over LDAPS with its own read-only account, limited to the Employees OU, and never stores a password: a Biira Bank employee signed in with her directory password and DC01 checked it. The administrator signs in with a one-time code, and the bootstrap administrator was deleted. Written up in chapter 23.
+- **The first machine identity**: the AI agent signs in to IDP01 as its own confidential client, with client credentials only and tokens that last five minutes. Disabling the client refused every request with `invalid_client`, while Keycloak's event log recorded the real reason, `client_disabled`, under the agent's name.
+- **VAULT01, being built**: HashiCorp Vault 2.2.1 on its own guest with the other Tier 0 systems, initialised with five key shares of which any three unseal it, a CA01 certificate, an audit device on from the start, and Wazuh agent 007. Its write-up and the first short-lived credentials follow.
 - **DC01**, a Windows Server 2025 domain controller with AD-integrated forward and reverse DNS zones and a clean `dcdiag`. It was the first agent.
 - **Nightly Proxmox backups** to a separate physical disk with a tested restore (NIST CP-9), and SHA256 verification of every installation image before use (SI-7).
-- **Remote access** over Tailscale with WireGuard, with its ability to bypass per-interface rules recorded as a known, risk-accepted hardening item rather than ignored.
+- **Remote access** over Tailscale with WireGuard, with pfSense as the subnet router. Every remote connection now arrives with the real device's address instead of the firewall's, proven in the SSH session itself and in a Wazuh logon event, so logs and rules can name the device. Written up in chapter 5.
 
 ## Decisions worth explaining
 
@@ -214,6 +235,8 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 - A retention policy for the new archive index, sized from the growth measured on the first day rather than an estimate.
 - Write the BLUETEAM, DEVOPS and MONITORING rulesets. The BlueTeam one is driven by the traffic SCAN01 actually needs, and the DevOps one starts with `DEV-01`, the rule that lets APP01's agent report to SIEM01.
 - Close the scanner's password debt: VAULT01 issuing a short-lived credential per scan, retiring the non-expiring password that is currently recorded as a tracked exception.
-- Rebuild MON01 and ANS01 as Proxmox guests, and give Vault its own guest (VAULT01) rather than a share of APP01.
+- Finish VAULT01: retire the root token, bring its audit log into Wazuh with rules of its own, and let the AI agent trade its Keycloak token for a short-lived, read-only SIEM credential, retiring a static password.
+- Put applications behind IDP01, each with its own scoped firewall rule, and send Keycloak's events to Wazuh so failed sign-ins on the identity provider are watched alongside the domain controller's.
+- Rebuild MON01 and ANS01 as Proxmox guests.
 - Scope Tailscale to close hardening item H-02, and build PAW01, a dedicated administrative workstation, to close H-01.
 - Rebuild the identity estate on the bank's new public domain, `biirabank.com`, with a new forest and a new Okta org, from a decision record this time. That work opens a Version 2 chapter here and in the IAM case study.

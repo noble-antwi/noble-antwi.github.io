@@ -254,7 +254,7 @@ export const REPLAYS: Record<string, Replay> = {
   },
 
   'azure-labs': {
-    title: 'Follow four requests through the rules.',
+    title: 'Follow the requests through the rules, and the files through the tiers.',
     scenarios: [
       {
         label: 'Untagged, but rescued',
@@ -291,6 +291,37 @@ export const REPLAYS: Record<string, Replay> = {
           { node: 'Lock', zone: 'CanNotDelete', log: 'Refused, whatever the role.', tone: 'block' },
         ],
         outcome: { tone: 'block', text: 'A lock beats permissions. It stops deletion and nothing else.' },
+      },
+      {
+        label: 'Lab 02 · An archived file',
+        hops: [
+          { node: 'Open', zone: 'report-archive.txt', log: 'Not permitted on an archived blob. The file is there, billed and offline.', tone: 'block' },
+          { node: 'Change tier', zone: 'to Hot', log: 'Two files, High and Standard priority, 20 seconds apart.' },
+          { node: 'High', zone: 'priority', log: 'Online in about 37 minutes.', tone: 'pass' },
+          { node: 'Standard', zone: 'priority', log: 'Online in about 3 hours 15 minutes, for the same 150 bytes.', tone: 'pass' },
+        ],
+        outcome: { tone: 'info', text: 'Archive is offline, not slow, and the way back goes straight to any online tier.' },
+      },
+      {
+        label: 'Lab 02 · The seven-day wall',
+        hops: [
+          { node: 'Day 1', zone: 'fast-demo', log: 'Hot to Cool, all three files. A phone alert for each.', tone: 'pass' },
+          { node: 'Day 2', log: 'Cool to Cold, all three.', tone: 'pass' },
+          { node: 'Day 3', log: 'Nothing moved. Every count is zero.', tone: 'quiet' },
+          { node: 'JSON', zone: 'tierToArchive', log: 'daysAfterLastTierChangeGreaterThan: 7, added by a default the form never named.', tone: 'alert' },
+          { node: 'Day 5', log: 'Condition removed from the demo rule: Cold to Archive, all three.', tone: 'pass' },
+        ],
+        outcome: { tone: 'info', text: 'The rule did exactly what it said. The form just said more than it showed.' },
+      },
+      {
+        label: 'Lab 02 · Keys off',
+        hops: [
+          { node: 'Account key', zone: 'disabled', log: 'Every Shared Key request now refused.' },
+          { node: 'Owner', zone: 'control plane', log: 'Cannot list a single file.', tone: 'block' },
+          { node: 'Data Reader', zone: 'one container', log: 'Reads every file. Upload refused.', tone: 'pass' },
+          { node: 'SAS', zone: 'user delegation', log: 'Read-only, one hour, opens with no sign-in. One changed character in the signature: refused.', tone: 'pass' },
+        ],
+        outcome: { tone: 'pass', text: 'Managing an account never implies reading its data.' },
       },
     ],
   },
