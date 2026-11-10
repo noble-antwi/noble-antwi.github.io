@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
 import BinanceHeist from '../components/casefiles/BinanceHeist.astro';
+import VaultRulesReplay from '../components/notes/VaultRulesReplay.astro';
 import { postPath, postUrl, formatDate, isoDate, categoryLabel, seriesFor, byDateDesc, SITE } from '../lib/site';
 
 export async function getStaticPaths() {
@@ -43,6 +44,9 @@ const caseStudy = (await getCollection('work'))
 /* A case file draws its own full-width page; the prose header and body step aside. */
 const CASEFILES = { 'binance-2026-10-29': BinanceHeist } as const;
 const CaseFile = d.casefile ? CASEFILES[d.casefile as keyof typeof CASEFILES] : undefined;
+/* A lab note can open with an interactive replay, drawn between the tldr and the prose. */
+const REPLAYS = { 'vault-rules': VaultRulesReplay } as const;
+const Replay = d.replay ? REPLAYS[d.replay as keyof typeof REPLAYS] : undefined;
 const toc = CaseFile ? [] : headings.filter((h) => h.depth === 2 || h.depth === 3);
 const shareUrl = new URL(postUrl(post), SITE.url).toString();
 const description = d.description ?? (post.body ?? '').replace(/<[^>]+>/g, '').replace(/[#*_`>\[\]]/g, '').replace(/\s+/g, ' ').trim().slice(0, 157) + '…';
@@ -79,6 +83,8 @@ const jsonLd = {
       </header>
 
       {d.description && <p class="tldr"><span aria-hidden="true">$ tldr</span>{d.description}</p>}
+
+      {Replay && <Replay />}
 
       {toc.length >= 4 && (
         <details class="toc">

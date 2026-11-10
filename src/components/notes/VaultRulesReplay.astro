@@ -1,0 +1,399 @@
+---
+/* How the six Vault audit-log rules on SIEM01 decide, as one 50-second
+   replay. Each dot is one response line from VAULT01's audit log; it enters
+   the rule tree at 100500 and stops at the rule that has the last word: an
+   alert, a quiet record, or a count that tips into an alert. One render(t)
+   draws any moment (playback, seeking, the reduced-motion still and video
+   export through window.__vaultReplay). Every rule, field and behaviour is
+   from the build of 5 to 9 November 2026. */
+import { C } from '../visuals/viz';
+
+const D = 50;
+const IN = 0.9; /* seconds from VAULT01 to the first rule */
+const HOP = 0.45; /* seconds from one rule to the next */
+
+const SCENES = [
+  { at: 0, chip: 'Intro', title: 'Every call, written down', note: 'Vault writes every request it receives into its audit log before it answers: one line for the request, one for the response. Six rules on the SIEM read every one of them.' },
+  { at: 4, chip: 'Collect', title: 'From VAULT01 to the SIEM', note: 'The Wazuh agent on VAULT01 follows the log and ships each new line to SIEM01. Rule 100500 claims every Vault line and stays silent. It is the parent the other five build on.' },
+  { at: 9, chip: 'Typo', title: 'One wrong password', note: 'A wrong password comes back as "invalid credentials". Rule 100501 matches the response line and raises a level 5 alert. The wording was taken from the log itself; the login screen says it differently.' },
+  { at: 14, chip: 'Guessing', title: 'Five in two minutes', note: 'One failure is a typo. Five from the same address inside two minutes is guessing. Rule 100502 counts 100501 and turns the fifth into a level 10 alert, mapped to MITRE T1110.' },
+  { at: 21, chip: 'Bad token', title: 'A bad token on a real path', note: 'A token that is expired, revoked or made up gets "invalid token". Here it is used to list the secret engines on sys/mounts, so rule 100503 alerts. The token itself only ever appears as a hash.' },
+  { at: 26, chip: 'Old tab', title: 'An expired browser tab', note: 'The Vault web page checks its own saved token every time it opens. An old tab makes the same error on auth/token/lookup-self, a check that reveals nothing. Rule 100504 records it at level 1: remembered, not alerted.' },
+  { at: 31, chip: 'Testing', title: 'Someone testing tokens', note: 'Ten of those checks in two minutes from one address is not a browser. It is someone working through a list of stolen tokens to see which still work. Rule 100505 counts the quiet ones and fires at level 10, MITRE T1550.001.' },
+  { at: 39, chip: 'Rotation', title: 'The log never fills', note: 'Vault refuses any request it cannot record, so a full disk would stop it. Every night the log is renamed, Vault is told to reopen it without resealing, and the agent follows the new file. The next alert proves it.' },
+  { at: 45, chip: 'Pattern', title: 'Quiet, with a loud path', note: 'Quiet the noise, but keep it countable. 100504 is level 1, not 0, because Wazuh never counts a level 0 match. That one digit is what lets 100505 catch the attack the quiet rule could otherwise hide.' },
+];
+
+/* the rule tree */
+const LV: Record<number, string> = { 0: '#64748b', 1: C.blue, 5: C.gold, 10: C.red };
+const NODES = [
+  { k: 'v500', at: [365, 128], id: '100500', sub: 'every Vault line', lvl: 0 },
+  { k: 'v501', at: [290, 240], id: '100501', sub: 'failed login', lvl: 5 },
+  { k: 'v503', at: [440, 240], id: '100503', sub: 'invalid token', lvl: 5 },
+  { k: 'v502', at: [290, 360], id: '100502', sub: '5 in 2 min, one source', lvl: 10 },
+  { k: 'v504', at: [440, 360], id: '100504', sub: 'the UI checking itself', lvl: 1 },
+  { k: 'v505', at: [440, 470], id: '100505', sub: '10 in 2 min, one source', lvl: 10 },
+] as const;
+const NODE = Object.fromEntries(NODES.map((n) => [n.k, n]));
+const SEG: Record<string, string> = {
+  in: 'M196 165 C 262 165 262 128 365 128',
+  a: 'M365 128 C 365 190 290 175 290 240',
+  b: 'M365 128 C 365 190 440 175 440 240',
+  c: 'M290 240 L290 360',
+  d: 'M440 240 L440 360',
+  e: 'M440 360 L440 470',
+};
+const END: Record<string, string> = { in: 'v500', a: 'v501', b: 'v503', c: 'v502', d: 'v504', e: 'v505' };
+
+/* the events: when each line leaves VAULT01, and the rules it passes */
+type Ev = { s: number; route: string[]; c: string };
+const EVENTS: Ev[] = [];
+for (let i = 0; i < 5; i++) EVENTS.push({ s: 4.4 + i * 0.85, route: ['in'], c: C.green });
+EVENTS.push({ s: 9.6, route: ['in', 'a'], c: C.gold });
+for (let i = 0; i < 5; i++) EVENTS.push({ s: 14.4 + i * 0.7, route: i === 4 ? ['in', 'a', 'c'] : ['in', 'a'], c: C.gold });
+EVENTS.push({ s: 21.6, route: ['in', 'b'], c: C.red });
+EVENTS.push({ s: 26.6, route: ['in', 'b', 'd'], c: C.blue });
+for (let i = 0; i < 10; i++) EVENTS.push({ s: 31.4 + i * 0.5, route: i === 9 ? ['in', 'b', 'd', 'e'] : ['in', 'b', 'd'], c: C.red });
+EVENTS.push({ s: 42.0, route: ['in', 'b'], c: C.teal });
+
+const r2 = (x: number) => Math.round(x * 100) / 100;
+const arrivals = (ev: Ev) => {
+  let t = ev.s;
+  return ev.route.map((seg) => { t += seg === 'in' ? IN : HOP; return [END[seg], r2(t)] as [string, number]; });
+};
+const FLASH = EVENTS.flatMap(arrivals);
+const FINAL = EVENTS.map((ev) => arrivals(ev).at(-1)!);
+const finalsAt = (k: string) => FINAL.filter(([n]) => n === k).map(([, t]) => t);
+const ALERTS = FINAL.filter(([n]) => n !== 'v500' && n !== 'v504').map(([, t]) => t);
+const QUIET = finalsAt('v504');
+const COUNT502 = FLASH.filter(([n, t]) => n === 'v501' && t > 14 && t < 21).map(([, t]) => t);
+const COUNT505 = FLASH.filter(([n, t]) => n === 'v504' && t > 31 && t < 39).map(([, t]) => t);
+const [T503a, T503b] = finalsAt('v503');
+
+/* alert cards, in arrival order */
+const CARDS = [
+  { y: 114, lvl: 5, id: '100501', tag: '', title: 'Failed login', on: finalsAt('v501')[0], count: finalsAt('v501') },
+  { y: 172, lvl: 10, id: '100502', tag: 'T1110', title: 'Password guessing', on: finalsAt('v502')[0] },
+  { y: 230, lvl: 5, id: '100503', tag: 'sys/mounts', title: 'Invalid token used', on: T503a },
+  { y: 288, lvl: 10, id: '100505', tag: 'T1550.001', title: 'Stolen-token testing', on: finalsAt('v505')[0] },
+  { y: 346, lvl: 5, id: '100503', tag: 'new file', title: 'After the rotation', on: T503b },
+];
+
+/* what the line itself says, scene by scene: [key, value, colour] */
+type Row = [string, string, string?];
+const LOG: { on: number; off: number; rows: Row[] }[] = [
+  { on: -1, off: 9, rows: [['type', 'request, then response'], ['request.path', 'what was asked for'], ['client_token', 'hmac-sha256:…'], ['error', 'only on a refusal']] },
+  { on: 9, off: 14, rows: [['type', 'response'], ['request.path', 'auth/userpass/login/…'], ['error', 'invalid credentials', C.gold]] },
+  { on: 14, off: 21, rows: [['type', 'response'], ['request.path', 'auth/userpass/login/…'], ['error', 'invalid credentials', C.gold], ['remote_address', 'one source, five times', C.red]] },
+  { on: 21, off: 26, rows: [['type', 'response'], ['request.path', 'sys/mounts', C.red], ['error', 'permission denied,'], ['', 'invalid token', C.red], ['client_token', 'hmac-sha256:5b3f…']] },
+  { on: 26, off: 31, rows: [['type', 'response'], ['request.path', 'auth/token/lookup-self', C.blue], ['error', 'invalid token'], ['user-agent', 'Mozilla/5.0, a browser', C.blue]] },
+  { on: 31, off: 39, rows: [['request.path', 'auth/token/lookup-self'], ['error', 'invalid token'], ['user-agent', 'Go-http-client, a script', C.red], ['remote_address', 'one source, ten times', C.red]] },
+  { on: 39, off: 45, rows: [['logrotate', 'daily, or at 100 MB'], ['then', 'systemctl reload vault'], ['signal', 'HUP: reopen the file', C.teal], ['vault', 'stays unsealed', C.teal]] },
+  { on: 45, off: D + 1, rows: [['quiet', '100504, level 1', C.blue], ['loud', '100505, level 10', C.red], ['level 0', 'never counted'], ['level 1', 'counted, not alerted', C.teal]] },
+];
+const tr = (p: readonly number[]) => `translate(${p[0]} ${p[1]})`;
+---
+
+<figure class="vr" data-vreplay data-d={D} data-in={IN} data-hop={HOP}>
+  <div class="vr-bar">
+    <span><i></i>Detection replay · six Vault rules in 50 seconds</span>
+    <span class="vr-time" data-vr-clock>0:00 / 0:50</span>
+  </div>
+  <div class="vr-scroll">
+    <div class="vr-stage">
+      <svg viewBox="0 0 760 600" role="img" aria-labelledby="vr-t vr-d">
+        <title id="vr-t">How six Wazuh rules read the HashiCorp Vault audit log</title>
+        <desc id="vr-d">VAULT01 writes each request to its audit log and the Wazuh agent ships every line to SIEM01, where rule 100500 claims it silently. A wrong password lands on 100501 as a level 5 alert; five from one source in two minutes promote to 100502 at level 10. An invalid token on sys/mounts alerts through 100503. An expired browser tab checking itself on auth/token/lookup-self is recorded quietly by 100504 at level 1, and ten of those in two minutes from one source fire 100505 at level 10. After a nightly log rotation, Vault reopens its file and the next alert still arrives.</desc>
+        <defs>
+          {Object.entries(SEG).map(([k, d]) => <path id={`vrp-${k}`} d={d} />)}
+          <pattern id="vr-grid" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#1e293b" /></pattern>
+          <radialGradient id="vr-vig" cx="50%" cy="45%" r="75%"><stop offset="0.6" stop-color="#0b1220" stop-opacity="0" /><stop offset="1" stop-color="#020617" stop-opacity="0.6" /></radialGradient>
+          <linearGradient id="vr-metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#475569" /><stop offset="1" stop-color="#1e293b" /></linearGradient>
+        </defs>
+
+        <!-- ground -->
+        <rect width="760" height="600" fill="#0b1220" />
+        <rect width="760" height="600" fill="url(#vr-grid)" />
+        <rect width="760" height="600" fill="url(#vr-vig)" />
+
+        <!-- header -->
+        <text x="18" y="42" font-size="21" font-weight="800" data-vr-title>{SCENES[0].title}</text>
+        <text x="742" y="40" text-anchor="end" class="vm dim" font-size="10.5" letter-spacing="0.6">vault_rules.xml · 100500-100505</text>
+
+        <!-- columns -->
+        <text x="18" y="70" class="vm" font-size="10" letter-spacing="1.4" fill={C.gold}>VAULT01</text>
+        <text x="208" y="70" class="vm" font-size="10" letter-spacing="1.4" fill={C.teal}>SIEM01 · THE RULES</text>
+        <text x="536" y="70" class="vm" font-size="10" letter-spacing="1.4" fill={C.red}>WHAT THE ANALYST SEES</text>
+        <rect x="16" y="80" width="180" height="156" rx="12" fill="rgba(251,191,36,0.04)" stroke={C.gold} stroke-opacity="0.3" />
+        <rect x="16" y="250" width="180" height="310" rx="12" fill="rgba(148,163,184,0.03)" stroke={C.edge} />
+        <rect x="206" y="80" width="318" height="480" rx="12" fill="rgba(45,212,191,0.03)" stroke={C.teal} stroke-opacity="0.25" />
+        <rect x="534" y="80" width="210" height="480" rx="12" fill="rgba(248,113,113,0.035)" stroke={C.red} stroke-opacity="0.28" />
+
+        <!-- VAULT01: the vault, its log files, the agent -->
+        <g transform="translate(52 120)">
+          <rect x="-22" y="-22" width="44" height="44" rx="9" fill="url(#vr-metal)" stroke="#94a3b8" stroke-width="1.4" />
+          <circle r="11" fill="#0f172a" stroke={C.gold} stroke-width="2" />
+          <path d="M0 -11 V-6 M0 6 V11 M-11 0 H-6 M6 0 H11" stroke={C.gold} stroke-width="2" stroke-linecap="round" />
+          <circle r="2.6" fill={C.gold} />
+          <rect x="17" y="-10" width="4" height="20" rx="2" fill="#94a3b8" />
+        </g>
+        <text x="84" y="116" font-size="14" font-weight="800">VAULT01</text>
+        <text x="84" y="133" class="dim" font-size="11">HashiCorp Vault</text>
+        <g data-on="40.5" data-off="42.2">
+          <rect x="134" y="210" width="48" height="20" rx="10" fill={C.teal} fill-opacity="0.2" stroke={C.teal} />
+          <text x="158" y="224" text-anchor="middle" class="vm" font-size="11" font-weight="700" fill={C.teal}>HUP</text>
+        </g>
+        <line x1="28" y1="150" x2="184" y2="150" stroke={C.edge} />
+        <g transform="translate(30 172)">
+          <path d="M-5 -8 h7 l4 4 v12 h-11 Z" fill="#1e293b" stroke="#94a3b8" stroke-width="1.1" />
+          <text x="12" y="4" class="vm" font-size="11.5">audit.log</text>
+        </g>
+        <text x="182" y="176" text-anchor="end" class="vm dim" font-size="11" data-off="40">252K</text>
+        <text x="182" y="176" text-anchor="end" class="vm" font-size="11" fill={C.teal} data-on="40" data-off="42.1">0 B</text>
+        <text x="182" y="176" text-anchor="end" class="vm" font-size="11" fill={C.teal} data-on="42.1">1.4K</text>
+        <g data-on="39.4">
+          <g transform="translate(30 196)">
+            <path d="M-5 -8 h7 l4 4 v12 h-11 Z" fill="#1e293b" stroke="#64748b" stroke-width="1.1" />
+            <text x="12" y="4" class="vm dim" font-size="11.5">audit.log.1</text>
+          </g>
+          <text x="182" y="200" text-anchor="end" class="vm dim" font-size="11">252K</text>
+        </g>
+        <text x="28" y="224" class="vm" font-size="10" fill={C.teal}>wazuh agent →</text>
+
+        <!-- the line Wazuh reads -->
+        <text x="28" y="274" class="vm dim" font-size="10" letter-spacing="1.2">THE LINE WAZUH READS</text>
+        {LOG.map((g) => (
+          <g data-on={g.on} data-off={g.off}>
+            {g.rows.map(([k, v, c], i) => (
+              <Fragment>
+                {k && <text x="28" y={300 + i * 44} class="vm dim" font-size="10">{k}</text>}
+                <text x="28" y={316 + i * 44 - (k ? 0 : 14)} class="vm" font-size="11.5" fill={c ?? '#e2e8f0'}>{v}</text>
+              </Fragment>
+            ))}
+          </g>
+        ))}
+
+        <!-- quiet tracks between the rules -->
+        {Object.keys(SEG).map((k) => <use href={`#vrp-${k}`} fill="none" stroke={C.faint} stroke-width="1.4" stroke-dasharray="3 6" />)}
+        <g data-on="45.4">
+          <use href="#vrp-c" fill="none" stroke={C.gold} stroke-width="3" stroke-linecap="round" />
+          <use href="#vrp-e" fill="none" stroke={C.gold} stroke-width="3" stroke-linecap="round" />
+        </g>
+
+        <!-- counters on the counting rules -->
+        <g data-on="14.2" data-off="21">
+          <text x="300" y="292" class="vm dim" font-size="9.5">counts 100501</text>
+          <text x="300" y="313" class="vm" font-size="15" font-weight="800" fill={C.gold} data-count={JSON.stringify(COUNT502)} data-fmt="{n} / 5">0 / 5</text>
+        </g>
+        <g data-on="31.2" data-off="39">
+          <text x="430" y="408" text-anchor="end" class="vm dim" font-size="9.5">counts 100504</text>
+          <text x="430" y="429" text-anchor="end" class="vm" font-size="15" font-weight="800" fill={C.red} data-count={JSON.stringify(COUNT505)} data-fmt="{n} / 10">0 / 10</text>
+        </g>
+
+        <!-- the rules -->
+        {NODES.map((n) => (
+          <g transform={tr(n.at)}>
+            <rect x="-70" y="-25" width="140" height="50" rx="10" fill="#111a2e" stroke={LV[n.lvl]} stroke-opacity="0.55" stroke-width="1.3" />
+            <text x="-58" y="-4" class="vm" font-size="13" font-weight="700">{n.id}</text>
+            <rect x="26" y="-17" width="34" height="17" rx="8.5" fill={LV[n.lvl]} fill-opacity="0.18" stroke={LV[n.lvl]} stroke-opacity="0.8" />
+            <text x="43" y="-4.5" text-anchor="middle" class="vm" font-size="10" font-weight="700" fill={LV[n.lvl]}>L{n.lvl}</text>
+            <text x="-58" y="15" class="dim" font-size="10.5">{n.sub}</text>
+          </g>
+        ))}
+        <!-- a flash each time a line reaches a rule -->
+        {FLASH.map(([k, t]) => (
+          <rect data-on={r2(t - 0.12)} data-off={r2(t + 0.75)} transform={tr(NODE[k].at)} x="-73" y="-28" width="146" height="56" rx="12" fill={LV[NODE[k].lvl]} fill-opacity="0.12" stroke={LV[NODE[k].lvl]} stroke-width="2.2" />
+        ))}
+        <!-- a burst where a rule has the last word and raises an alert -->
+        {FINAL.filter(([k]) => k !== 'v500' && k !== 'v504').map(([k, t]) => (
+          <rect data-on={t} data-off={r2(t + 1.3)} transform={tr(NODE[k].at)} x="-82" y="-36" width="164" height="72" rx="16" fill="none" stroke={LV[NODE[k].lvl]} stroke-width="1.6" stroke-opacity="0.7" />
+        ))}
+
+        <!-- the line, moving -->
+        {EVENTS.map((ev) => <circle data-route={ev.route.join(',')} data-s={ev.s} r="5.5" fill={ev.c} color={ev.c} stroke="#0b1220" stroke-width="1.2" opacity="0" />)}
+
+        <text x="365" y="538" text-anchor="middle" font-size="13" font-weight="800" fill={C.gold} data-on="45.6">Quiet the noise. Keep a loud path.</text>
+
+        <!-- alerts -->
+        <text x="548" y="102" class="vm dim" font-size="10" letter-spacing="1.2">WAZUH-ALERTS</text>
+        <text x="730" y="104" text-anchor="end" class="vm" font-size="17" font-weight="800" fill={C.red} data-count={JSON.stringify(ALERTS)} data-fmt="{n}">0</text>
+        {CARDS.map((c) => (
+          <g data-on={c.on}>
+            <rect x="546" y={c.y} width="186" height="50" rx="8" fill="#111a2e" stroke={LV[c.lvl]} stroke-opacity="0.45" />
+            <rect x="546" y={c.y} width="4" height="50" rx="2" fill={LV[c.lvl]} />
+            <text x="558" y={c.y + 18} class="vm" font-size="10" font-weight="700" fill={LV[c.lvl]}>L{c.lvl}</text>
+            <text x="584" y={c.y + 18} class="vm dim" font-size="10">{c.id}</text>
+            {c.count
+              ? <text x="724" y={c.y + 18} text-anchor="end" class="vm" font-size="10.5" font-weight="700" fill={LV[c.lvl]} data-count={JSON.stringify(c.count)} data-fmt="×{n}">×1</text>
+              : <text x="724" y={c.y + 18} text-anchor="end" class="vm dim" font-size="10">{c.tag}</text>}
+            <text x="558" y={c.y + 38} font-size="12.5" font-weight="700">{c.title}</text>
+          </g>
+        ))}
+        {CARDS.map((c) => <rect data-on={c.on} data-off={r2(c.on + 1.4)} x="543" y={c.y - 3} width="192" height="56" rx="10" fill="none" stroke={LV[c.lvl]} stroke-width="2" />)}
+
+        <!-- recorded, not alerted -->
+        <line x1="546" y1="418" x2="732" y2="418" stroke={C.edge} />
+        <text x="548" y="440" class="vm dim" font-size="10" letter-spacing="1.2">RECORDED, NOT ALERTED</text>
+        <g data-on={QUIET[0]}>
+          <rect x="546" y="452" width="186" height="50" rx="8" fill="#111a2e" stroke={C.blue} stroke-opacity="0.35" stroke-dasharray="4 4" />
+          <text x="558" y="470" class="vm" font-size="10" font-weight="700" fill={C.blue}>L1</text>
+          <text x="584" y="470" class="vm dim" font-size="10">100504</text>
+          <text x="724" y="470" text-anchor="end" class="vm" font-size="10.5" font-weight="700" fill={C.blue} data-count={JSON.stringify(QUIET)} data-fmt="×{n}">×1</text>
+          <text x="558" y="490" font-size="12.5" font-weight="700" fill="#cbd5e1">Token self-check</text>
+        </g>
+        <text x="548" y="540" class="vm dim" font-size="9.5">alerts start at level 3</text>
+
+        <!-- legend -->
+        <g transform="translate(18 584)" class="vm" font-size="10">
+          <circle cx="4" cy="-3.5" r="4" fill={LV[0]} /><text x="13" y="0" class="dim">L0 silent</text>
+          <circle cx="104" cy="-3.5" r="4" fill={LV[1]} /><text x="113" y="0" class="dim">L1 recorded, countable</text>
+          <circle cx="284" cy="-3.5" r="4" fill={LV[5]} /><text x="293" y="0" class="dim">L5 alert</text>
+          <circle cx="374" cy="-3.5" r="4" fill={LV[10]} /><text x="383" y="0" class="dim">L10 serious alert</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <p class="vr-hint" aria-hidden="true">Swipe the replay sideways to see it all →</p>
+  <figcaption class="vr-cap" data-vr-cap><b>{SCENES[0].chip}</b> <span>{SCENES[0].note}</span></figcaption>
+  <div class="vr-ctl">
+    <button type="button" class="vr-play" data-vr-play aria-label="Play the replay">Play</button>
+    <input type="range" min="0" max={D} step="0.01" value="0" aria-label="Replay position" data-vr-seek />
+  </div>
+  <ol class="vr-chips" data-vr-chips>
+    {SCENES.map((s, i) => <li><button type="button" data-at={s.at} aria-label={`Jump to ${s.title}`}><span>{i}</span>{s.chip}</button></li>)}
+  </ol>
+  <script type="application/json" data-vr-scenes set:html={JSON.stringify(SCENES)} />
+</figure>
+
+<style>
+  .vr { margin: 2rem 0 2.4rem; border-radius: var(--radius); overflow: hidden; background: #0b1220; border: 1px solid #1e293b; box-shadow: 0 30px 60px -40px rgba(2, 6, 23, 0.7); color: #e2e8f0; }
+  .vr-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.6rem 1rem; border-bottom: 1px solid #1e293b; font: 500 0.68rem var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: #94a3b8; }
+  .vr-bar i { display: inline-block; width: 0.5rem; height: 0.5rem; margin-right: 0.55rem; border-radius: 50%; background: #2dd4bf; box-shadow: 0 0 10px #2dd4bf; vertical-align: 0.05em; }
+  .vr-time { font-variant-numeric: tabular-nums; letter-spacing: 0.04em; white-space: nowrap; }
+  .vr-scroll { overflow-x: auto; scrollbar-width: thin; }
+  .vr-stage { min-width: 640px; }
+  @media (min-width: 700px) { .vr-stage { min-width: 0; } }
+  .vr-hint { display: none; margin: 0; padding: 0.45rem 1.1rem; font: 0.7rem var(--font-mono); color: #2dd4bf; border-top: 1px solid #1e293b; }
+  @media (max-width: 699px) { .vr-hint { display: block; } }
+  .vr-stage :global(svg) { display: block; width: 100%; height: auto; }
+  .vr-stage :global(text) { font-family: var(--font-body); }
+  .vr-stage :global(text:not([fill])) { fill: #e2e8f0; }
+  .vr-stage :global(text.dim:not([fill])), .vr-stage :global(.dim text:not([fill])) { fill: #94a3b8; }
+  .vr-stage :global(.vm), .vr-stage :global(.vm text) { font-family: var(--font-mono); }
+  .vr-stage :global([data-route]) { filter: drop-shadow(0 0 5px currentColor); }
+  .vr-cap { margin: 0; padding: 0.9rem 1.1rem; border-top: 1px solid #1e293b; font-family: var(--font-body); font-size: 0.98rem; line-height: 1.55; color: #cbd5e1; min-height: 6.4em; }
+  .vr-cap b { font-family: var(--font-mono); font-size: 0.76rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #2dd4bf; margin-right: 0.4rem; }
+  .vr-ctl { display: flex; align-items: center; gap: 0.9rem; padding: 0.2rem 1.1rem 0.7rem; }
+  .vr-play { font: 600 0.72rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: #0b1220; background: #2dd4bf; border: 0; border-radius: 999px; padding: 0.4rem 0.95rem; cursor: pointer; min-width: 5.2rem; }
+  .vr-play:focus-visible, .vr-chips button:focus-visible, .vr-ctl input:focus-visible { outline: 2px solid #fbbf24; outline-offset: 2px; }
+  .vr-ctl input { flex: 1; accent-color: #2dd4bf; min-width: 0; }
+  .vr-chips { list-style: none; margin: 0; padding: 0 1.1rem 1rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .vr-chips button { font: 500 0.7rem var(--font-mono); letter-spacing: 0.04em; color: #94a3b8; background: transparent; border: 1px solid #334155; border-radius: 999px; padding: 0.25rem 0.65rem; cursor: pointer; }
+  .vr-chips button span { color: #64748b; margin-right: 0.35rem; }
+  .vr-chips button:hover { border-color: #2dd4bf; color: #f1f5f9; }
+  .vr-chips button[aria-current='step'] { border-color: #2dd4bf; color: #f1f5f9; background: rgba(45, 212, 191, 0.14); }
+</style>
+
+<script>
+  /* render(t) draws any moment; playback, seeking and video export all go through it. */
+  const fig = document.querySelector<HTMLElement>('[data-vreplay]');
+  if (fig) {
+    const D = Number(fig.dataset.d);
+    const IN = Number(fig.dataset.in);
+    const HOP = Number(fig.dataset.hop);
+    const scenes: { at: number; chip: string; title: string; note: string }[] = JSON.parse(fig.querySelector('[data-vr-scenes]')!.textContent || '[]');
+    const fades = [...fig.querySelectorAll<SVGElement>('[data-on], [data-off]')].map((el) => ({
+      el, on: Number(el.dataset.on ?? -1), off: Number(el.dataset.off ?? D + 1),
+    }));
+    const counters = [...fig.querySelectorAll<SVGElement>('[data-count]')].map((el) => ({
+      el, times: JSON.parse(el.dataset.count || '[]') as number[], fmt: el.dataset.fmt || '{n}',
+    }));
+    const segs = new Map<string, { path: SVGPathElement; len: number; d: number }>();
+    const seg = (k: string) => {
+      if (!segs.has(k)) {
+        const path = fig.querySelector<SVGPathElement>(`#vrp-${k}`)!;
+        segs.set(k, { path, len: path.getTotalLength(), d: k === 'in' ? IN : HOP });
+      }
+      return segs.get(k)!;
+    };
+    const movers = [...fig.querySelectorAll<SVGCircleElement>('[data-route]')].map((el) => {
+      const parts = (el.dataset.route || '').split(',').map(seg);
+      return { el, parts, s: Number(el.dataset.s), total: parts.reduce((a, p) => a + p.d, 0) };
+    });
+    const titleEl = fig.querySelector('[data-vr-title]')!;
+    const cap = fig.querySelector('[data-vr-cap]')!;
+    const clock = fig.querySelector('[data-vr-clock]')!;
+    const seek = fig.querySelector<HTMLInputElement>('[data-vr-seek]')!;
+    const play = fig.querySelector<HTMLButtonElement>('[data-vr-play]')!;
+    const chips = [...fig.querySelectorAll<HTMLButtonElement>('[data-vr-chips] button')];
+
+    const clamp = (x: number) => Math.max(0, Math.min(1, x));
+    const ease = (x: number) => x * x * (3 - 2 * x);
+    const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    let shown = -1;
+
+    function render(t: number) {
+      for (const f of fades) f.el.style.opacity = String(clamp((t - f.on) / 0.3) * clamp((f.off - t) / 0.3));
+      for (const c of counters) c.el.textContent = c.fmt.replace('{n}', String(Math.max(c.fmt.startsWith('×') ? 1 : 0, c.times.filter((x) => x <= t).length)));
+      for (const m of movers) {
+        const tt = t - m.s;
+        if (tt < 0 || tt > m.total + 0.35) { m.el.setAttribute('opacity', '0'); continue; }
+        let acc = 0;
+        let pt: DOMPoint | null = null;
+        for (const p of m.parts) {
+          if (tt <= acc + p.d) { pt = p.path.getPointAtLength(p.len * ease((tt - acc) / p.d)); break; }
+          acc += p.d;
+        }
+        if (!pt) { const p = m.parts[m.parts.length - 1]; pt = p.path.getPointAtLength(p.len); }
+        m.el.setAttribute('cx', String(pt.x));
+        m.el.setAttribute('cy', String(pt.y));
+        m.el.setAttribute('opacity', String(tt < 0.12 ? tt / 0.12 : tt > m.total ? 1 - (tt - m.total) / 0.35 : 1));
+      }
+      let i = 0;
+      while (i + 1 < scenes.length && t >= scenes[i + 1].at) i++;
+      if (i !== shown) {
+        shown = i;
+        titleEl.textContent = scenes[i].title;
+        cap.innerHTML = '';
+        const b = document.createElement('b'); b.textContent = scenes[i].chip;
+        const s = document.createElement('span'); s.textContent = scenes[i].note;
+        cap.append(b, ' ', s);
+        chips.forEach((c, k) => { if (k === i) c.setAttribute('aria-current', 'step'); else c.removeAttribute('aria-current'); });
+      }
+      clock.textContent = `${mmss(t)} / ${mmss(D)}`;
+      seek.value = String(t);
+    }
+
+    let t = 0;
+    let playing = false;
+    let last = 0;
+    let seen = false;
+    const label = () => { play.textContent = playing ? 'Pause' : t >= D ? 'Replay' : 'Play'; play.setAttribute('aria-label', `${play.textContent} the replay`); };
+    const tick = (now: number) => {
+      if (!playing) return;
+      t = Math.min(D, t + (now - last) / 1000);
+      last = now;
+      render(t);
+      if (t >= D) { playing = false; label(); return; }
+      requestAnimationFrame(tick);
+    };
+    const start = () => { if (t >= D) t = 0; playing = true; last = performance.now(); label(); requestAnimationFrame(tick); };
+    const stop = () => { playing = false; label(); };
+
+    play.addEventListener('click', () => (playing ? stop() : start()));
+    seek.addEventListener('input', () => { stop(); t = Number(seek.value); render(t); label(); });
+    chips.forEach((c) => c.addEventListener('click', () => { t = Number(c.dataset.at) + 0.01; render(t); if (!playing) start(); }));
+
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { t = 47; render(t); label(); }
+    else {
+      render(0);
+      new IntersectionObserver((es) => {
+        const vis = es.some((e) => e.isIntersecting);
+        if (vis && !seen) { seen = true; start(); }
+        else if (!vis && playing) stop();
+      }, { threshold: 0.45 }).observe(fig);
+    }
+    (window as unknown as { __vaultReplay: unknown }).__vaultReplay = { D, render: (x: number) => { stop(); t = x; render(x); } };
+  }
+</script>
