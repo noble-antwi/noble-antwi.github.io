@@ -1,0 +1,449 @@
+---
+/* The flat architecture diagram, made interactive. The drawing itself comes
+   from src/lib/diagram.ts and is inlined at build time, so the page reads
+   without JavaScript. The script below adds hover tracing, a details panel,
+   layers, and zoom that rewrites the viewBox so the drawing stays vector-sharp. */
+import Base from '../../../layouts/Base.astro';
+import { ESTATE, ERAS } from '../../../data/estate';
+import { renderDiagram, DIAGRAM, NODES, ZONE_EXTRA } from '../../../lib/diagram';
+
+const svg = renderDiagram();
+const built = ESTATE.hosts.filter((h) => h.state === 'built').length;
+const agents = ESTATE.hosts.filter((h) => h.agent && h.agent !== 'manager').length;
+
+// Everything the panel needs, as data: the page script never imports the generator.
+const data = {
+  w: DIAGRAM.w, h: DIAGRAM.h,
+  zones: ESTATE.zones.map((z) => ({ id: z.id, name: z.name, css: z.css, subnet: z.subnet, ...ZONE_EXTRA[z.id] })),
+  hosts: ESTATE.hosts.map((h) => ({ name: h.name, zone: h.zone, ip: h.ip, role: h.role, agent: h.agent, state: h.state, tier0: !!h.tier0, vm: h.vm ?? null, note: h.note, since: ERAS.find((e) => e.id === h.since)?.label ?? '' })),
+  links: ESTATE.links.map((l) => ({ from: l.from, to: l.to, kind: l.kind, label: l.label, planned: !!l.planned })),
+  nodes: NODES,
+};
+
+const LAYERS: [string, string, boolean][] = [
+  ['net', 'Network', true],
+  ['flow', 'Trust flows', true],
+  ['planned', 'Planned', true],
+  ['mon', 'Monitoring', false],
+];
+---
+
+<Base title="Architecture diagram" description="The Biira Bank security lab as one interactive network diagram: pfSense, six VLANs, every switch port, the Proxmox guests, the Tier 0 identity group and the trust flows between them.">
+  <div class="container">
+    <header class="page-head dgp-head">
+      <span class="kicker">Architecture · the drawing</span>
+      <h1 class="display">Every wire, port and host, on one page.</h1>
+      <p class="lead">The lab as a network diagram. Hover a host to trace what it talks to, select anything for the detail behind it, and zoom until you can read a single port. It is drawn from the same host list as the <a href="/architecture/">3D walkthrough</a>, so the two never disagree.</p>
+    </header>
+
+    <div class="dgw" id="dgw">
+      <div class="dgw-bar">
+        <div class="dgw-layers" role="group" aria-label="Layers">
+          {LAYERS.map(([id, label, on]) => <button type="button" class="dgw-chip" data-layer-btn={id} aria-pressed={on ? 'true' : 'false'}>{label}</button>)}
+        </div>
+        <div class="dgw-tools">
+          <span class="dgw-zoom" role="group" aria-label="Zoom">
+            <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+            <button type="button" data-zoom="fit" class="dgw-pct" aria-label="Fit the whole diagram">Fit</button>
+            <button type="button" data-zoom="in" aria-label="Zoom in">+</button>
+          </span>
+          <button type="button" class="dgw-chip dgw-full" data-full aria-pressed="false">Full screen</button>
+        </div>
+      </div>
+      <div class="dgw-stage" id="dgw-stage" set:html={svg} />
+      <p class="dgw-hint"><span class="dgw-hint-l">Hover to trace · select for details · Ctrl + scroll to zoom · drag to move</span><span class="dgw-hint-s">Tap a host for details · pinch to zoom · drag to move</span></p>
+      <aside class="dgw-panel" id="dgw-panel" hidden aria-live="polite"></aside>
+    </div>
+
+    <div class="dgp-after">
+      <p class="dgp-count"><b>{built} hosts built, {ESTATE.hosts.length - built} planned, {agents} Wazuh agents.</b> As of {ESTATE.updated}. Biira Bank is a fictional bank and every address is a private lab address.</p>
+      <div class="dgp-links">
+        <a class="btn" href="/architecture/">Walk through it in 3D <span aria-hidden="true">→</span></a>
+        <a class="btn btn-ghost" href="/architecture/diagram.svg" download="biira-bank-network-architecture.svg">Download the SVG</a>
+        <a class="btn btn-ghost" href="/work/enterprise-security-homelab/">Read the case file</a>
+      </div>
+    </div>
+  </div>
+  <script type="application/json" id="dg-data" set:html={JSON.stringify(data).replace(/</g, '\\u003c')} />
+</Base>
+
+<script>
+  interface DZone { id: number; name: string; css: string; subnet: string; purpose?: string; port?: number; ok?: string }
+  interface DHost { name: string; zone: number; ip: string; role: string; agent: string | null; state: string; tier0: boolean; vm: number | null; note: string; since: string }
+  interface DLink { from: string; to: string; kind: string; label: string; planned: boolean }
+  interface DNode { title: string; kind: string; facts: [string, string][]; note: string }
+  const D = JSON.parse(document.getElementById('dg-data')!.textContent!) as { w: number; h: number; zones: DZone[]; hosts: DHost[]; links: DLink[]; nodes: Record<string, DNode> };
+
+  const wrap = document.getElementById('dgw')!;
+  const stage = document.getElementById('dgw-stage')!;
+  const svg = document.getElementById('dg-svg') as unknown as SVGSVGElement;
+  const panel = document.getElementById('dgw-panel')!;
+  const pct = wrap.querySelector<HTMLButtonElement>('[data-zoom="fit"]')!;
+  const host = (n: string) => D.hosts.find((h) => h.name === n);
+  const zone = (id: number) => D.zones.find((z) => z.id === id)!;
+  const esc = (s: string | number) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  wrap.classList.add('is-live');
+
+  /* ---------- view: zoom and pan by rewriting the viewBox ---------- */
+  let sw = 1, sh = 1;                 // stage size, px
+  let s = 1, s0 = 1;                  // px per drawing unit; s0 is "fit"
+  let vx = 0, vy = 0;                 // top-left of the view, drawing units
+  let anim = 0;
+  const SMAX = 3;
+
+  function clamp() {
+    const vw = sw / s, vh = sh / s;
+    vx = vw >= D.w ? (D.w - vw) / 2 : Math.min(Math.max(vx, 0), D.w - vw);
+    vy = vh >= D.h ? (D.h - vh) / 2 : Math.min(Math.max(vy, 0), D.h - vh);
+  }
+  function apply() {
+    clamp();
+    svg.setAttribute('viewBox', `${vx.toFixed(2)} ${vy.toFixed(2)} ${(sw / s).toFixed(2)} ${(sh / s).toFixed(2)}`);
+    const zoomed = s > s0 * 1.02;
+    wrap.classList.toggle('is-zoomed', zoomed);
+    pct.textContent = zoomed ? `${Math.round((s / s0) * 100)}%` : 'Fit';
+  }
+  function measure(keep = false) {
+    const r = stage.getBoundingClientRect();
+    if (!r.width || !r.height) return;
+    const cx = vx + sw / s / 2, cy = vy + sh / s / 2, rel = s / s0;
+    sw = r.width; sh = r.height;
+    s0 = Math.min(sw / D.w, sh / D.h);
+    s = keep ? Math.min(Math.max(s0 * rel, s0), SMAX) : s0;
+    vx = cx - sw / s / 2; vy = cy - sh / s / 2;
+    apply();
+  }
+  /** Zoom to scale ns, keeping the drawing point under (px, py) where it is. */
+  function zoomAt(ns: number, px: number, py: number) {
+    ns = Math.min(Math.max(ns, s0), SMAX);
+    const ux = vx + px / s, uy = vy + py / s;
+    s = ns; vx = ux - px / s; vy = uy - py / s;
+    apply();
+  }
+  function glide(ns: number, cx: number, cy: number) {
+    cancelAnimationFrame(anim);
+    ns = Math.min(Math.max(ns, s0), SMAX);
+    const from = { s, x: vx + sw / s / 2, y: vy + sh / s / 2 };
+    if (still) { s = ns; vx = cx - sw / s / 2; vy = cy - sh / s / 2; apply(); return; }
+    const t0 = performance.now(), dur = 420;
+    const step = (now: number) => {
+      const t = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - t, 3);
+      s = from.s + (ns - from.s) * e;
+      const x = from.x + (cx - from.x) * e, y = from.y + (cy - from.y) * e;
+      vx = x - sw / s / 2; vy = y - sh / s / 2;
+      apply();
+      if (t < 1) anim = requestAnimationFrame(step);
+    };
+    anim = requestAnimationFrame(step);
+  }
+  const fit = () => glide(s0, D.w / 2, D.h / 2);
+  new ResizeObserver(() => measure(true)).observe(stage);
+  measure();
+
+  wrap.querySelectorAll<HTMLButtonElement>('[data-zoom]').forEach((b) => b.addEventListener('click', () => {
+    const k = b.dataset.zoom;
+    if (k === 'fit') return fit();
+    const ns = Math.min(Math.max(s * (k === 'in' ? 1.5 : 1 / 1.5), s0), SMAX);
+    glide(ns, vx + sw / s / 2, vy + sh / s / 2);
+  }));
+
+  stage.addEventListener('wheel', (e) => {
+    const r = stage.getBoundingClientRect();
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      cancelAnimationFrame(anim);
+      zoomAt(s * Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0085)), e.clientX - r.left, e.clientY - r.top);
+      return;
+    }
+    if (s <= s0 * 1.02) return;       // at fit, the wheel belongs to the page
+    const bx = vx, by = vy;
+    vx += e.deltaX / s; vy += e.deltaY / s;
+    apply();
+    if (vx !== bx || vy !== by) e.preventDefault();   // at an edge, let the page scroll on
+  }, { passive: false });
+
+  // Drag to move, pinch to zoom. A press that barely moves is still a click.
+  const pts = new Map<number, { x: number; y: number }>();
+  let moved = 0, pinch = 0, lastTap = 0;
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pts.size === 1) moved = 0;
+    if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch = Math.hypot(a.x - b.x, a.y - b.y); moved = 99; }
+    cancelAnimationFrame(anim);
+  });
+  stage.addEventListener('pointermove', (e) => {
+    const p = pts.get(e.pointerId);
+    if (!p) return;
+    const dx = e.clientX - p.x, dy = e.clientY - p.y;
+    const r = stage.getBoundingClientRect();
+    if (pts.size === 1) {
+      moved += Math.abs(dx) + Math.abs(dy);
+      if (s > s0 * 1.02 && moved > 4) {
+        if (!stage.hasPointerCapture(e.pointerId)) stage.setPointerCapture(e.pointerId);
+        wrap.classList.add('is-drag');
+        vx -= dx / s; vy -= dy / s; apply();
+      }
+      p.x = e.clientX; p.y = e.clientY;
+    } else if (pts.size === 2) {
+      p.x = e.clientX; p.y = e.clientY;
+      const [a, b] = [...pts.values()];
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinch > 0 && dist > 0) zoomAt(s * (dist / pinch), (a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top);
+      pinch = dist;
+    }
+  });
+  const up = (e: PointerEvent) => {
+    pts.delete(e.pointerId);
+    if (pts.size < 2) pinch = 0;
+    if (!pts.size) wrap.classList.remove('is-drag');
+  };
+  stage.addEventListener('pointerup', up);
+  stage.addEventListener('pointercancel', up);
+  stage.addEventListener('dblclick', (e) => {
+    const r = stage.getBoundingClientRect();
+    const px = e.clientX - r.left, py = e.clientY - r.top;
+    if (s > s0 * 1.6) fit(); else glide(Math.min(s * 2, SMAX), vx + px / s, vy + py / s);
+  });
+
+  /* ---------- tracing: what lights up for a host or a network node ---------- */
+  const q = <T extends Element = SVGElement>(sel: string) => [...svg.querySelectorAll<T>(sel)];
+  function lit(kind: 'host' | 'node' | 'zone', id: string): Element[] {
+    if (kind === 'host') {
+      const h = host(id); if (!h) return [];
+      const links = D.links.filter((l) => l.from === id || l.to === id);
+      const names = new Set([id, ...links.flatMap((l) => [l.from, l.to])]);
+      if (id === 'PVE01') D.hosts.filter((o) => o.vm !== null).forEach((o) => names.add(o.name));
+      if (h.vm !== null) names.add('PVE01');
+      const out: Element[] = [];
+      names.forEach((n) => out.push(...q(`[data-host="${n}"]`)));
+      out.push(...q(`.dg-flow[data-from="${id}"], .dg-flow[data-to="${id}"]`));
+      out.push(...q(`[data-wire][data-zone="${h.zone}"]`));
+      if (h.vm !== null || id === 'PVE01') out.push(...q('[data-wire~="PVE01"]'));
+      return out;
+    }
+    if (kind === 'zone') return [...q(`.dg-host[data-zone="${id}"]`), ...q(`[data-wire][data-zone="${id}"]`), ...D.hosts.filter((h) => String(h.zone) === id).flatMap((h) => q(`.dg-vmchip[data-host="${h.name}"]`))];
+    const wires = q(`[data-wire~="${id}"]`);
+    const out: Element[] = [...q(`[data-node="${id}"]`), ...wires];
+    wires.forEach((w) => (w.getAttribute('data-wire') ?? '').split(' ').forEach((n) => out.push(...q(`[data-node="${n}"], .dg-node[data-host="${n}"]`))));
+    if (id === 'sw1') out.push(...q('.dg-host'));
+    return out;
+  }
+  let sel: { kind: 'host' | 'node' | 'zone'; id: string } | null = null;
+  function paint(f: { kind: 'host' | 'node' | 'zone'; id: string } | null) {
+    q('.is-lit').forEach((n) => n.classList.remove('is-lit'));
+    q('.is-sel').forEach((n) => n.classList.remove('is-sel'));
+    svg.classList.toggle('has-focus', !!f);
+    if (f) lit(f.kind, f.id).forEach((n) => n.classList.add('is-lit'));
+    if (sel) q(sel.kind === 'host' ? `.dg-host[data-host="${sel.id}"], .dg-node[data-host="${sel.id}"]` : sel.kind === 'node' ? `[data-node="${sel.id}"]` : `.dg-lane[data-zone="${sel.id}"]`).forEach((n) => n.classList.add('is-sel'));
+  }
+  function target(el: EventTarget | null): { kind: 'host' | 'node' | 'zone'; id: string; el: Element } | null {
+    const t = el instanceof Element ? el : null;
+    const h = t?.closest('[data-host]'); if (h) return { kind: 'host', id: h.getAttribute('data-host')!, el: h };
+    const n = t?.closest('[data-node]'); if (n) return { kind: 'node', id: n.getAttribute('data-node')!, el: n };
+    const z = t?.closest('[data-zonehead]'); if (z) return { kind: 'zone', id: z.getAttribute('data-zonehead')!, el: z };
+    return null;
+  }
+  svg.addEventListener('pointerover', (e) => { if (e.pointerType === 'mouse' && !pts.size) { const t = target(e.target); paint(t ?? sel); } });
+  svg.addEventListener('pointerleave', () => paint(sel));
+  svg.addEventListener('focusin', (e) => { const t = target(e.target); if (t) paint(t); });
+  svg.addEventListener('focusout', () => paint(sel));
+
+  /* ---------- the details panel ---------- */
+  const KIND: Record<string, string> = { identity: 'var(--dg-id)', cert: 'var(--dg-cert)', agent: 'var(--dg-agent)' };
+  function panelHost(h: DHost): string {
+    const z = zone(h.zone);
+    const links = D.links.filter((l) => l.from === h.name || l.to === h.name);
+    const rows: [string, string][] = [['Role', esc(h.role)], ['Network', `VLAN ${z.id} · ${esc(z.name)}`], ['Address', `<span class="dgw-mono">${esc(h.ip)}</span>`]];
+    if (h.vm !== null) rows.push(['Runs on', `PVE01, as VM ${h.vm}`]);
+    if (h.agent) rows.push(['Monitoring', h.agent === 'manager' ? 'Wazuh manager' : `Wazuh agent ${esc(h.agent)}`]);
+    if (h.since) rows.push([h.state === 'planned' ? 'Due' : 'Since', esc(h.since)]);
+    return `<p class="dgw-k">VLAN ${z.id} · ${esc(z.name)}</p>
+<h2>${esc(h.name)}<span class="dgw-pill ${h.state === 'built' ? 'is-ok' : 'is-plan'}">${esc(h.state)}</span>${h.tier0 ? '<span class="dgw-pill is-t0">Tier 0</span>' : ''}</h2>
+<p class="dgw-note">${esc(h.note)}</p>
+<dl>${rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+${links.length ? `<div class="dgw-conn"><b>Connections</b>${links.map((l) => {
+      const out = l.from === h.name, other = out ? l.to : l.from;
+      return `<button type="button" data-go="${esc(other)}"><i style="background:${KIND[l.kind] ?? 'currentColor'}"></i><span>${out ? 'to' : 'from'} <strong>${esc(other)}</strong> · ${esc(l.label)}${l.planned ? ' <em>planned</em>' : ''}</span></button>`;
+    }).join('')}</div>` : ''}`;
+  }
+  function panelZone(z: DZone): string {
+    const hs = D.hosts.filter((h) => h.zone === z.id);
+    const rows: [string, string][] = [['Subnet', `<span class="dgw-mono">${esc(z.subnet)}</span>`], ['Gateway', `<span class="dgw-mono">192.168.${z.id}.1</span> on pfSense`]];
+    if (z.port) rows.push(['Switch port', `Switch 1, port ${z.port}`]);
+    if (z.ok) rows.push(['Ruleset', esc(z.ok)]);
+    return `<p class="dgw-k">VLAN ${z.id}</p><h2>${esc(z.name)}</h2>
+<p class="dgw-note">${esc(z.purpose ?? '')}. One network, one access port, and a firewall decision for every packet that leaves it.</p>
+<dl>${rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
+<div class="dgw-conn"><b>Hosts</b>${hs.map((h) => `<button type="button" data-go="${esc(h.name)}"><i style="background:${z.css}"></i><span><strong>${esc(h.name)}</strong> · ${esc(h.role)}${h.state === 'planned' ? ' <em>planned</em>' : ''}</span></button>`).join('')}</div>`;
+  }
+  function panelNode(n: DNode): string {
+    return `<p class="dgw-k">${esc(n.kind)}</p><h2>${esc(n.title)}</h2><p class="dgw-note">${esc(n.note)}</p>
+<dl>${n.facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`;
+  }
+  function boxOf(f: { kind: string; id: string }): DOMRect | SVGRect | null {
+    const el = svg.querySelector<SVGGraphicsElement>(f.kind === 'host' ? `.dg-host[data-host="${f.id}"], .dg-node[data-host="${f.id}"]` : f.kind === 'node' ? `[data-node="${f.id}"]` : `.dg-lane[data-zone="${f.id}"]`);
+    return el ? el.getBBox() : null;
+  }
+  function select(f: { kind: 'host' | 'node' | 'zone'; id: string } | null, opts: { hash?: boolean; pan?: boolean; reveal?: boolean } = {}) {
+    sel = f;
+    paint(f);
+    if (!f) { panel.hidden = true; if (opts.hash !== false && location.hash) history.replaceState(null, '', location.pathname); return; }
+    let html = '', color = 'var(--accent)';
+    if (f.kind === 'host') { const h = host(f.id); if (!h) return select(null); html = panelHost(h); color = zone(h.zone).css; }
+    else if (f.kind === 'zone') { const z = zone(Number(f.id)); html = panelZone(z); color = z.css; }
+    else { const n = D.nodes[f.id]; if (!n) return select(null); html = panelNode(n); }
+    panel.innerHTML = `<button type="button" class="dgw-x" aria-label="Close details">×</button>${html}`;
+    panel.style.setProperty('--zc', color);
+    panel.hidden = false;
+    const b = boxOf(f);
+    if (b) {
+      // Keep the panel off the thing it describes.
+      panel.classList.toggle('is-left', b.x + b.width / 2 > D.w / 2);
+      const small = s * 12 < 8.5;      // 12-unit text would render under ~8.5px
+      const off = b.x + b.width < vx || b.x > vx + sw / s || b.y + b.height < vy || b.y > vy + sh / s;
+      if (opts.pan !== false && (small || off)) glide(Math.max(s, Math.min(0.92, SMAX), s0), b.x + b.width / 2, b.y + b.height / 2);
+      else if (opts.reveal) {
+        // Reached from a link rather than a click: bring it on screen if the page has scrolled past it.
+        const r = stage.getBoundingClientRect(), y = r.top + (b.y + b.height / 2 - vy) * s;
+        if (y < 90 || y > innerHeight - 60) scrollBy({ top: y - innerHeight / 2, behavior: still ? 'auto' : 'smooth' });
+      }
+    }
+    if (opts.hash !== false) history.replaceState(null, '', f.kind === 'host' ? `#${f.id}` : location.pathname);
+  }
+  svg.addEventListener('click', (e) => {
+    if (moved > 6) return;
+    const t = target(e.target);
+    if (!t) return select(null);
+    if (e.detail > 1) return;
+    select(sel && sel.kind === t.kind && sel.id === t.id ? null : { kind: t.kind, id: t.id });
+  });
+  svg.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const t = target(e.target); if (!t) return;
+    e.preventDefault(); select({ kind: t.kind, id: t.id });
+  });
+  panel.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    if (t.closest('.dgw-x')) return select(null);
+    const go = t.closest<HTMLElement>('[data-go]');
+    if (go) select({ kind: 'host', id: go.dataset.go! }, { reveal: true });
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sel) select(null); });
+
+  /* ---------- layers ---------- */
+  wrap.querySelectorAll<HTMLButtonElement>('[data-layer-btn]').forEach((b) => {
+    const id = b.dataset.layerBtn!;
+    const sync = () => { const on = b.getAttribute('aria-pressed') === 'true'; svg.classList.toggle(id === 'mon' ? 'on-mon' : `off-${id}`, id === 'mon' ? on : !on); };
+    b.addEventListener('click', () => { b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); sync(); });
+    sync();
+  });
+
+  /* ---------- full screen ---------- */
+  const fullBtn = wrap.querySelector<HTMLButtonElement>('[data-full]')!;
+  const setFull = (on: boolean) => { wrap.classList.toggle('is-full', on); fullBtn.setAttribute('aria-pressed', String(on)); fullBtn.textContent = on ? 'Exit full screen' : 'Full screen'; document.documentElement.classList.toggle('dgw-lock', on && !document.fullscreenElement); requestAnimationFrame(() => measure()); };
+  fullBtn.addEventListener('click', () => {
+    const on = !wrap.classList.contains('is-full');
+    if (on && wrap.requestFullscreen) wrap.requestFullscreen().then(() => setFull(true), () => setFull(true));
+    else if (!on && document.fullscreenElement) document.exitFullscreen();
+    else setFull(on);
+  });
+  document.addEventListener('fullscreenchange', () => setFull(document.fullscreenElement === wrap));
+
+  /* ---------- deep links: /architecture/diagram/#DC01 ---------- */
+  const fromHash = () => { const id = decodeURIComponent(location.hash.slice(1)).toUpperCase(); if (id && host(id)) select({ kind: 'host', id }, { hash: false, reveal: true }); };
+  addEventListener('hashchange', fromHash);
+  fromHash();
+</script>
+
+<style is:global>
+  .dgp-head { max-width: 50rem; padding-bottom: 2rem; }
+  .dgp-head .lead { max-width: 44rem; }
+
+  /* The drawing's own palette, by theme. */
+  .dgw { --dg-id: #4338ca; --dg-cert: #0f766e; --dg-agent: #b45309; position: relative; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); box-shadow: var(--shadow); }
+  :root[data-theme='dark'] .dgw { --dg-id: #a5b4fc; --dg-cert: #2dd4bf; --dg-agent: #fbbf24; }
+  :root[data-theme='dark'] .dg { --bg: #0b1322; --dot: #1c2740; --card: #131d31; --ink: #f1f5f9; --ink2: #cbd5e1; --ink3: #94a3b8; --line: #334155; --wire: #94a3b8; --id: #a5b4fc; --cert: #2dd4bf; --agent: #fbbf24; --ts: #f472b6; --plan: #fbbf24; --ok: #4ade80; --mon: #2dd4bf; }
+
+  .dgw-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem 1rem; padding: 0.65rem 0.75rem; border-bottom: 1px solid var(--line); }
+  .dgw-layers, .dgw-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+  .dgw-chip { appearance: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; font: 600 0.8rem/1 var(--font-body); color: var(--ink-3); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 0.5rem 0.8rem; white-space: nowrap; }
+  .dgw-chip::before { content: ''; width: 0.5rem; height: 0.5rem; border-radius: 50%; border: 1.5px solid currentColor; }
+  .dgw-chip[aria-pressed='true'] { color: var(--ink); border-color: var(--accent-line); background: var(--accent-soft); }
+  .dgw-chip[aria-pressed='true']::before { background: var(--accent); border-color: var(--accent); }
+  .dgw-full::before { display: none; }
+  .dgw-chip:hover { color: var(--ink); }
+  .dgw-zoom { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .dgw-zoom button { appearance: none; cursor: pointer; min-width: 2.3rem; font: 600 0.95rem/1 var(--font-body); color: var(--ink); background: transparent; border: 0; padding: 0.45rem 0.6rem; }
+  .dgw-zoom .dgw-pct { min-width: 3.4rem; font-size: 0.78rem; font-family: var(--font-mono); border-inline: 1px solid var(--line); }
+  .dgw-zoom button:hover { background: var(--accent-soft); }
+  .dgw-chip:focus-visible, .dgw-zoom button:focus-visible, .dgw-x:focus-visible, .dgw-conn button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .dgw:not(.is-live) .dgw-bar, .dgw:not(.is-live) .dgw-hint { display: none; }
+
+  .dgw-stage { position: relative; aspect-ratio: 1200 / 1446; overflow: hidden; border-radius: 0 0 13px 13px; background: #f6f8fb; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+  :root[data-theme='dark'] .dgw-stage { background: #0b1322; }
+  .dgw-stage > svg { display: block; width: 100%; height: 100%; max-width: none; }
+  .dgw.is-zoomed .dgw-stage { cursor: grab; touch-action: none; }
+  .dgw.is-drag .dgw-stage { cursor: grabbing; }
+  .dgw-hint { margin: 0; padding: 0.55rem 0.9rem; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em; color: var(--ink-3); text-align: center; }
+  .dgw-hint-s { display: none; }
+  @media (hover: none), (max-width: 760px) { .dgw-hint-l { display: none; } .dgw-hint-s { display: inline; } }
+
+  /* Interactive states on the drawing. */
+  .dg [data-host], .dg [data-node], .dg [data-zonehead] { cursor: pointer; outline: none; }
+  .dg .dg-host, .dg .dg-node, .dg .dg-vmchip, .dg .dg-flow, .dg [data-wire] { transition: opacity 0.16s ease; }
+  .dg .dg-host > .dg-card, .dg .dg-node > .dg-card, .dg .dg-vmchip > .dg-card { transition: stroke 0.16s ease, stroke-width 0.16s ease; }
+  .dg .dg-host:hover > .dg-card, .dg .dg-host:focus-visible > .dg-card, .dg .dg-vmchip:hover > .dg-card { stroke: var(--z); stroke-width: 2.2; stroke-dasharray: none; }
+  .dg .dg-node:hover > .dg-card, .dg .dg-node:focus-visible > .dg-card { stroke: var(--ink); stroke-width: 2.2; }
+  .dg [data-zonehead]:hover .dg-lane-n, .dg [data-zonehead]:focus-visible .dg-lane-n { text-decoration: underline; }
+  .dg.has-focus .dg-host:not(.is-lit), .dg.has-focus .dg-vmchip:not(.is-lit), .dg.has-focus .dg-flow:not(.is-lit), .dg.has-focus [data-wire]:not(.is-lit), .dg.has-focus .dg-node[data-node]:not(.is-lit) { opacity: 0.24; }
+  .dg .dg-flow.is-lit .dg-line { stroke-width: 3; }
+  .dg .is-sel > .dg-card { stroke: var(--z, var(--ink)); stroke-width: 3; stroke-dasharray: none; }
+  .dg .dg-lane.is-sel > .dg-lane-bg { stroke: var(--z); stroke-width: 2.5; }
+  .dg.off-net [data-layer~='net'], .dg.off-flow [data-layer~='flow'], .dg.off-planned [data-layer~='planned'] { display: none; }
+  .dg.on-mon [data-mon] > .dg-card { stroke: var(--mon); stroke-width: 2.6; }
+  .dg.on-mon [data-host='SIEM01'] > .dg-card { fill: color-mix(in srgb, var(--mon) 14%, var(--card)); }
+  @media (prefers-reduced-motion: reduce) { .dg * { transition: none !important; } }
+
+  /* The details panel: a card beside the pointer's side of the drawing, a sheet on phones. */
+  .dgw-panel { position: fixed; z-index: 45; left: 0.6rem; right: 0.6rem; bottom: 0.6rem; max-height: 42vh; overflow: auto; padding: 1.05rem 1.15rem 1.15rem; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-top: 3px solid var(--zc, var(--accent)); border-radius: 14px; box-shadow: 0 24px 60px -24px rgba(15, 23, 42, 0.45); animation: dgw-in 0.25s cubic-bezier(.2,.7,.2,1); }
+  .dgw-panel[hidden] { display: none; }
+  @keyframes dgw-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @media (min-width: 900px) {
+    .dgw-panel { left: auto; bottom: auto; top: 5.5rem; right: max(1.25rem, calc((100vw - var(--wide)) / 2 - 1rem)); width: 21.5rem; max-height: calc(100vh - 7rem); }
+    .dgw-panel.is-left { right: auto; left: max(1.25rem, calc((100vw - var(--wide)) / 2 - 1rem)); }
+    .dgw.is-full .dgw-panel { top: 4.25rem; right: 1.25rem; }
+    .dgw.is-full .dgw-panel.is-left { right: auto; left: 1.25rem; }
+  }
+  .dgw-k { margin: 0; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--zc, var(--accent)) 72%, var(--ink)); }
+  .dgw-panel h2 { margin: 0.3rem 2rem 0 0; font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; }
+  .dgw-pill { display: inline-block; margin-left: 0.5em; padding: 0.15em 0.55em; border-radius: 999px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0; vertical-align: 0.3em; }
+  .dgw-pill.is-ok { color: var(--ok); background: var(--ok-soft); }
+  .dgw-pill.is-plan { color: var(--warn); background: var(--warn-soft); }
+  .dgw-pill.is-t0 { color: var(--paper); background: var(--ink); }
+  .dgw-note { margin: 0.55rem 0 0; font-size: 0.93rem; line-height: 1.55; color: var(--ink-2); }
+  .dgw-panel dl { display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: 0.35rem 0.75rem; margin: 0.9rem 0 0; font-size: 0.87rem; }
+  .dgw-panel dt { padding-top: 0.15em; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .dgw-panel dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+  .dgw-mono { font-family: var(--font-mono); font-size: 0.82rem; }
+  .dgw-conn { display: grid; gap: 0.3rem; margin-top: 0.95rem; }
+  .dgw-conn b { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .dgw-conn button { appearance: none; cursor: pointer; display: flex; align-items: baseline; gap: 0.5rem; width: 100%; text-align: left; font: 400 0.86rem/1.4 var(--font-body); color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 9px; padding: 0.45rem 0.6rem; }
+  .dgw-conn button:hover { border-color: var(--zc, var(--accent)); color: var(--ink); }
+  .dgw-conn i { flex: none; width: 0.55rem; height: 0.55rem; border-radius: 50%; transform: translateY(-0.05em); }
+  .dgw-conn strong { color: var(--ink); font-weight: 600; font-family: var(--font-mono); font-size: 0.82rem; }
+  .dgw-conn em { font-style: normal; font-family: var(--font-mono); font-size: 0.68rem; color: var(--warn); }
+  .dgw-x { position: absolute; top: 0.55rem; right: 0.55rem; width: 2rem; height: 2rem; cursor: pointer; font-size: 1.15rem; line-height: 1; color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 50%; }
+
+  /* Full screen: the drawing takes the whole window and Fit shows all of it. */
+  .dgw.is-full { position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column; border: 0; border-radius: 0; }
+  .dgw.is-full .dgw-stage { flex: 1; min-height: 0; aspect-ratio: auto; border-radius: 0; }
+  .dgw:fullscreen { width: 100%; height: 100%; }
+  html.dgw-lock { overflow: hidden; }
+
+  .dgp-after { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem 2rem; padding-block: 2rem 5rem; }
+  .dgp-count { margin: 0; max-width: 34rem; font-size: 0.9rem; color: var(--ink-3); }
+  .dgp-count b { color: var(--ink-2); font-weight: 600; }
+  .dgp-links { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+</style>

@@ -44,7 +44,7 @@ const related = d.relatedTags.length
         <div class="span"><dt>Links</dt><dd>
           {d.repo && <a href={d.repo} target="_blank" rel="noopener">Repository ↗</a>}
           {d.docs && <> · <a href={d.docs} target="_blank" rel="noopener">{d.docsLabel ?? 'Documentation'} ↗</a></>}
-          {work.id === 'enterprise-security-homelab' && <> · <a href="/architecture/">The lab in 3D →</a></>}
+          {work.id === 'enterprise-security-homelab' && <> · <a href="/architecture/diagram/">Interactive diagram →</a> · <a href="/architecture/">The lab in 3D →</a></>}
         </dd></div>
         <div class="span"><dt>Stack</dt><dd><div class="tags">{d.stack.map((t) => <span>{t}</span>)}</div></dd></div>
       </dl>
@@ -52,10 +52,16 @@ const related = d.relatedTags.length
 
     {d.hero && (
       <figure class="hero-figure">
-        <a class="frame" href={d.hero.src} target="_blank" rel="noopener" style="display:block;">
-          <Image src={d.hero} alt={d.heroAlt ?? ''} widths={[720, 1200, 1800]} sizes="(max-width: 72rem) 100vw, 72rem" />
-        </a>
-        {d.heroCaption && <figcaption>{d.heroCaption} Click to open full size.</figcaption>}
+        {work.id === 'enterprise-security-homelab' ? (
+          <a class="frame" href="/architecture/diagram/" style="display:block;">
+            <Image src={d.hero} alt={d.heroAlt ?? ''} widths={[720, 1200, 1800]} sizes="(max-width: 72rem) 100vw, 72rem" />
+          </a>
+        ) : (
+          <a class="frame" href={d.hero.src} target="_blank" rel="noopener" style="display:block;">
+            <Image src={d.hero} alt={d.heroAlt ?? ''} widths={[720, 1200, 1800]} sizes="(max-width: 72rem) 100vw, 72rem" />
+          </a>
+        )}
+        {d.heroCaption && <figcaption>{d.heroCaption} {work.id === 'enterprise-security-homelab' ? 'Click to open the interactive diagram.' : 'Click to open full size.'}</figcaption>}
       </figure>
     )}
 

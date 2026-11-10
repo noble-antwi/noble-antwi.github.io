@@ -15,8 +15,8 @@ docsLabel: "23 runbooks"
 stack: ["pfSense", "802.1Q VLANs", "Proxmox VE", "Windows Server 2025", "Wazuh 4.14", "Sysmon", "Greenbone CE", "Group Policy", "AD CS", "LDAPS", "Keycloak", "Docker Compose", "HashiCorp Vault", "Kali Linux", "Ansible", "Tailscale", "CIS Benchmarks"]
 relatedTags: ["homelab", "proxmox", "pfsense", "vlan", "networking", "wazuh", "siem", "greenbone", "group-policy", "detection-engineering", "vulnerability-management"]
 hero: ../../assets/work/enterprise-security-homelab/network-architecture.png
-heroAlt: "Network architecture diagram: internet, pfSense, two switches and six VLAN security zones with firewall status, the hosts in each zone and their Wazuh agents"
-heroCaption: "Current-state architecture on corp.biirabank.com, as of 30 October 2026, with the Tier 0 identity systems grouped on VLAN 50. Switch 1 trunks to pfSense and to Switch 2, which carries every tagged VLAN to the Proxmox host; each zone shows its firewall status, its hosts and which of them report to the SIEM."
+heroAlt: "Network architecture diagram: internet and Tailscale into the pfSense firewall, two switches, the Proxmox hypervisor and its guests, six VLAN security zones with the hosts in each, the Tier 0 identity group, and the trust flows between them"
+heroCaption: "Current-state architecture on corp.biirabank.com, as of 4 November 2026. Switch 1 trunks to pfSense and to Switch 2, which carries every tagged VLAN to the Proxmox host. Each zone shows its hosts and which of them report to the SIEM, and the arrows show who signs in to, issues certificates for or calls whom."
 stats:
   - { value: "6", label: "VLAN security zones" }
   - { value: "3 / 6", label: "Rulesets hardened" }
