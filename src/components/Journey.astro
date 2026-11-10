@@ -12,7 +12,7 @@ const STOPS = [0.447, 0.475, 0.503, 0.531, 0.559, 0.587];
 
 type Stat = [string, string, number];
 const journeyRaw: { from: number; to: number; n: string; k: string; h: string; p: string; stats?: Stat[]; cta?: [string, string] }[] = [
-  { from: 0.0, to: 0.11, n: SITE.tagline, k: SITE.location, h: 'I secure identities, and the cloud they live in.', p: 'Follow one sign-in through the lab I built to prove it: a Windows workstation, a domain, a firewall, two cloud identity providers, two clouds and a SIEM. Scroll.' },
+  { from: 0.0, to: 0.11, n: SITE.tagline, k: SITE.location, h: 'I secure identities, and the cloud they live in.', p: 'People, servers and now AI agents all sign in. I build the controls that decide who gets through, break them on purpose to see where they fail, and take real breaches apart to find the one link that would have stopped them. Follow one sign-in through the lab. Scroll.' },
   { from: 0.13, to: 0.26, n: '01', k: 'Directory', h: 'Checked at home first.', p: 'The request reaches DC01, the domain controller on VLAN 50. Active Directory checks the password and issues a Kerberos ticket. Nothing has left the segment yet.' },
   { from: 0.27, to: 0.37, n: '02', k: 'Network', h: 'Default deny.', p: 'To reach the cloud, DC01 must cross pfSense. Every interface denies by default; one written, justified rule lets this traffic out, and nothing comes back in uninvited.' },
   { from: 0.38, to: 0.47, n: '03', k: 'Identity', h: 'Verified, then verified again.', p: 'Entra ID and Okta check the device and the second factor. No single system says yes on its own, and the providers are reached from DC01, never the other way round.' },
@@ -160,7 +160,7 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
   .j-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
   .j-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .j-copy { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
-  .j-panel { position: absolute; left: max(1rem, calc((100vw - var(--wide)) / 2 + 1rem)); top: 50%; transform: translateY(-50%); width: min(34rem, calc(100vw - 2rem)); opacity: 0; visibility: hidden; pointer-events: none; will-change: opacity, transform; }
+  .j-panel { position: absolute; left: max(1rem, calc((100vw - var(--wide)) / 2 + 1rem)); top: 50%; transform: translateY(calc(var(--base, -50%) + var(--ty, 0px))); width: min(34rem, calc(100vw - 2rem)); opacity: 0; visibility: hidden; pointer-events: none; will-change: opacity, transform; }
   .j-panel .actions, .j-panel a, .j-panel button { pointer-events: auto; }
   .j-new { display: inline-flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.4rem; padding: 0.45rem 0.9rem 0.45rem 0.5rem; border: 1px solid color-mix(in srgb, var(--c-offence) 45%, transparent); border-radius: 999px; background: color-mix(in srgb, var(--c-offence) 8%, var(--paper)); color: var(--ink); text-decoration: none; font-size: 0.9rem; max-width: 100%; pointer-events: auto; }
   .j-new b { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; background: var(--c-offence); border-radius: 999px; padding: 0.15rem 0.55rem; }
@@ -189,17 +189,17 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
   .j-granted, .j-denied { display: none; margin-top: 1.2rem; }
   .journey.is-approved .j-ask, .journey.is-denied .j-ask { display: none; }
   .journey.is-approved .j-granted { display: block; animation: j-in 0.5s ease; }
-  /* The granted list grows the panel downward; lift it so the last link clears the ticker. */
-  .j-push { transition: top 0.5s ease; }
-  @media (min-width: 721px) { .journey.is-approved .j-push { top: max(5rem, calc(50% - 16rem)); } }
   .journey.is-denied .j-denied { display: block; animation: j-in 0.5s ease; }
+  /* Once approved, the prompt has done its job: drop it and shrink the heading so the granted list fits a laptop screen. */
+  .journey.is-approved .j-push > .j-p { display: none; }
+  @media (min-width: 721px) { .journey.is-approved .j-push .j-h { font-size: clamp(1.6rem, 3vw, 2.4rem); } }
   @keyframes j-in { from { opacity: 0; transform: translateY(10px); } }
   .j-links { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; gap: 0.6rem; }
   .j-links li { display: flex; flex-direction: column; gap: 0.1rem; }
   .j-links a { font-weight: 700; color: var(--ink); text-decoration: none; font-size: 1.05rem; }
   .j-links a:hover { color: var(--accent); }
   .j-links span { font-size: 0.82rem; color: var(--ink-3); }
-  @media (min-width: 721px) { .j-play { top: max(4.5rem, calc(50% - 17rem)); } }
+  @media (min-width: 721px) { .j-play { top: max(4.5rem, calc(50% - 17rem)); --base: 0%; } }
   .j-games { list-style: none; margin: 1.4rem 0 0; padding: 0; display: grid; gap: 0.55rem; max-width: 32rem; }
   .j-games button { width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 0.15rem 1rem; text-align: left; background: color-mix(in srgb, var(--paper) 70%, transparent); border: 1px solid var(--line-2); border-radius: 12px; padding: 0.8rem 1rem; color: var(--ink); cursor: pointer; font: inherit; transition: border-color 0.2s ease, transform 0.2s ease; }
   .j-games button:hover { border-color: var(--accent); transform: translateX(4px); }
@@ -232,7 +232,7 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
   .journey.is-static .j-panel { position: static; transform: none; opacity: 1 !important; visibility: visible !important; width: auto; max-width: var(--measure); margin: 0 auto; padding: 3rem 1rem; }
 
   @media (max-width: 720px) {
-    .j-panel { top: auto; bottom: 4.5rem; transform: none; }
+    .j-panel { top: auto; bottom: 4.5rem; --base: 0%; }
     .j-copy::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 60%; background: linear-gradient(to top, color-mix(in srgb, var(--paper) 94%, transparent) 62%, transparent); pointer-events: none; }
     .j-h, .j-h-case { font-size: clamp(1.6rem, 7vw, 2.2rem) !important; }
     .j-stats-4 { gap: 0.9rem 1.2rem; }

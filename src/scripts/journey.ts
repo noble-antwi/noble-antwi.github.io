@@ -753,7 +753,8 @@ export function startJourney(root: HTMLElement) {
       // The opening panel is already in at the very top; the rest fade in at their start.
       const o = (a <= 0 ? 1 : span(g, a, a + f)) * (1 - span(g, b - f, b));
       el.style.opacity = String(o);
-      el.style.transform = `translateY(${(1 - o) * 18}px)`;
+      // Offset only: the CSS keeps each panel centred on desktop.
+      el.style.setProperty('--ty', `${(1 - o) * 18}px`);
       el.style.visibility = o > 0.01 ? 'visible' : 'hidden';
     }
     for (const el of counters) {
