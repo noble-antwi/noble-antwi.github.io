@@ -1,7 +1,7 @@
 ---
 title: "Azure Labs: Built Twice, Portal Then Bicep"
 kicker: "Cloud · Azure · Built twice"
-summary: "Hands-on Azure labs, each built twice: by hand in the portal to see what the service really does, then from scratch as Bicep and compared. Lab 01 tested four Azure Policy rules and a delete lock until they broke, then rebuilt them as code in ten seconds. Lab 02 walked files down the storage tiers into Archive and back, with a phone alert on every move, and switched the account's master keys off. Lab 03, a virtual machine taken apart, is under way."
+summary: "Hands-on Azure labs, each built twice: by hand in the portal to see what the service really does, then from scratch as Bicep and compared. Lab 01 tested four Azure Policy rules and a delete lock until they broke, then rebuilt them as code in ten seconds. Lab 02 walked files down the storage tiers into Archive and back, with a phone alert on every move, switched the account's master keys off, and read its 1.2-cent bill meter by meter. Lab 03 took a virtual machine apart: seven resources, two ways of turning it off, and only one of them stops the bill."
 category: cloud
 status: active
 statusLabel: "2 of 20 labs built"
@@ -11,14 +11,29 @@ role: "Build, break, rebuild as code, document"
 repo: https://github.com/noble-antwi/azure-labs
 docs: https://github.com/noble-antwi/azure-labs
 docsLabel: "Lab write-ups"
-stack: ["Azure Policy", "Resource locks", "Managed identity", "Azure RBAC", "Bicep", "Azure CLI", "what-if", "Activity log", "Blob Storage tiers", "Lifecycle management", "Event Grid", "Logic Apps", "Data-plane RBAC", "User delegation SAS"]
+stack: ["Azure Policy", "Resource locks", "Managed identity", "Azure RBAC", "Bicep", "Azure CLI", "what-if", "Activity log", "Blob Storage tiers", "Lifecycle management", "Event Grid", "Logic Apps", "Data-plane RBAC", "User delegation SAS", "Cost Management", "Virtual machines", "Network security groups", "Run Command"]
 relatedTags: ["az-104", "bicep", "azure-policy"]
 stats:
   - { value: "4", label: "Policy rules tested to failure" }
   - { value: "37 min", label: "Archive back to Hot, High priority" }
-  - { value: "10 s", label: "To rebuild lab 01 as Bicep" }
-  - { value: "2 / 20", label: "Labs built" }
+  - { value: "26 s", label: "To rebuild lab 02 as Bicep" }
+  - { value: "$0.012", label: "Lab 02's whole bill, read by meter" }
 gallery:
+  - src: ../../assets/work/azure-labs/lab03-architecture.png
+    alt: "Lab 03 architecture: one VM in a subnet with its network interface, network security group, OS disk, static public IP, temporary disk and auto-shutdown schedule, each marked as free or still billing while deallocated"
+    caption: "Lab 03 as built: one VM is seven resources. Deallocated, the OS disk and the public IP keep billing, and the temporary disk is wiped."
+  - src: ../../assets/work/azure-labs/03-02-rg-seven-resources.png
+    alt: "The resource group listing seven resources for one VM: the virtual machine, its disk, network interface, public IP address, network security group, virtual network and a shutdown schedule"
+    caption: "Seven resources for one VM, once hidden types are shown. Deleting the VM alone leaves six of them behind."
+  - src: ../../assets/work/azure-labs/03-06-status-stopped-not-deallocated.png
+    alt: "The VM overview after a shutdown from inside Linux, with Status showing Stopped"
+    caption: "After shutting down from inside Linux: Stopped, not Stopped (deallocated). The server is still reserved and compute is still billed."
+  - src: ../../assets/work/azure-labs/03-07-stop-deallocate-prompt.png
+    alt: "The portal's Stop prompt: deallocating stops the charges for compute, while storage and networking continue to be charged"
+    caption: "Azure's own Stop prompt answers the billing question: compute charges stop, storage and networking continue."
+  - src: ../../assets/work/azure-labs/03-10-proof-after-restart.png
+    alt: "Run Command output after a deallocate and start: the file on the OS disk prints, the file on the temporary disk returns No such file or directory"
+    caption: "After a deallocate and a start: the file on the OS disk survived, the file on the temporary disk did not. Never keep data on /mnt."
   - src: ../../assets/work/azure-labs/lab02-architecture.png
     alt: "Lab 02 architecture: a storage account with key access off, a private container holding one file per tier, two lifecycle rules, a Storage Blob Data Reader assignment, and Event Grid feeding a Logic App that pushes phone alerts"
     caption: "Lab 02 as built: one file per tier, two lifecycle rules, master keys switched off, one data role on one container, and every tier change routed through Event Grid and a Logic App to a phone."
@@ -40,6 +55,9 @@ gallery:
   - src: ../../assets/work/azure-labs/02-46-sas-tampered-refused.png
     alt: "A browser showing AuthenticationFailed: signature did not match, for a SAS URL with one character changed"
     caption: "A one-hour, read-only user delegation SAS opened the file with no sign-in. Change one character of its signature and it is refused, so the only lever a holder has is waiting for it to expire."
+  - src: ../../assets/work/azure-labs/02-52-cost-by-meter-chart.png
+    alt: "Cost Management chart for the lab's resource group, accumulated cost grouped by meter, flat until 31 October and then climbing to about one cent"
+    caption: "Lab 02's whole bill, about 1.2 cents. The dark band is one High-priority rehydration; the light band underneath is the Logic App sending the phone alerts, which came to about half the total."
   - src: ../../assets/work/azure-labs/lab01-architecture.png
     alt: "Lab 01 architecture: four policy assignments, P1 Modify and P2 to P4 Deny, a managed identity for P1, the resource group with its tags and a CanNotDelete lock, the networks created before and after the policies, and a West US network that was never created"
     caption: "Lab 01 as built: P1 to P3 on the resource group, P4 on the subscription, a delete lock on the group. The faded network in West US was refused by P4 and never existed."
@@ -121,7 +139,7 @@ Blob Storage keeps files in four tiers. The colder the tier, the cheaper it is t
 |---|---|---|
 | What does it take to open an archived file? | It steps back through Cold and Cool to Hot first | Half right. It cannot be read at all until it is rehydrated, but it goes straight to any online tier. High priority took about **37 minutes**, Standard about **3 hours 15 minutes**, for the same 150-byte file. |
 | Once the master keys are off, can the Owner read the files? | No | Correct. Owner manages the account; reading what is in it needs a separate data role. |
-| What does each tier cost, and what does leaving one early cost? | Cool is cheapest overall; an early move costs a day | Waiting on the bill. Azure let a file leave Cool minutes after entering it: the 30-day minimum is billed, not enforced. |
+| What does each tier cost, and what does leaving one early cost? | Cool is cheapest overall; an early move costs a day | Keeping kilobytes cost nothing measurable in any tier; every cent came from reading, writing and rehydrating. Leaving early was the wrong way round: you pay for the days you did not stay. Nothing was blocked, and a **Cold LRS Early Delete** line appeared for leaving Cold after 3 of its 90 days. |
 
 **Every tier change on a phone.** The storage account publishes an event for each tier change and each daily lifecycle run. Event Grid routes them to a Logic App, which formats a one-line alert, such as `lc-1.txt: Cold -> Archive (by SetBlobTier)`, and pushes it to a phone. The trigger first failed without a word: the `Microsoft.EventGrid` resource provider had never been registered on the subscription. Registering it and publishing again created the subscription.
 
@@ -129,12 +147,38 @@ Blob Storage keeps files in four tiers. The colder the tier, the cheaper it is t
 
 **Keys off, least privilege on.** The portal had been reading the files with the account's master key the whole time. With key access disabled, the subscription Owner could not list a single file. Storage Blob Data Reader, on the one container and for the one user, restored reading and nothing else: upload was refused. Sharing still worked without the key: a one-hour, read-only user delegation SAS, signed through Entra ID, opened the file in a private browser window, and changing one character of its signature was refused.
 
-Still to come: the bill, which answers the cost questions, and the Bicep rebuild. The lifecycle rules will translate almost line for line, because the portal's Code View already shows them as JSON.
+<video controls muted loop playsinline preload="none" poster="/assets/work/azure-labs/lab02-tier-flow-poster.jpg" width="1200" height="760" aria-label="Animation: a file moving from Hot to Cool, Cold and Archive under a lifecycle rule, rehydrating back, with each tier change sent to a phone">
+  <source src="/assets/work/azure-labs/lab02-tier-flow.mp4" type="video/mp4" />
+</video>
 
-## Lab 03, running: a virtual machine, taken apart
+**The bill, by meter.** Twelve days of the lab cost about **1.2 cents**. Cost analysis shows every line as less than a cent, so the exact figures came from the Cost Management query API, grouped by meter. No line for stored data appeared in any tier. One High-priority rehydration of a 150-byte file cost half a cent, almost as much as all other storage activity combined. And the Logic App sending the phone alerts was about half the bill, more than the storage it was watching. Written up in [The Alert Was the Expensive Part](/lab-notes/2026/11/14/the-alert-was-the-expensive-part.html).
 
-A virtual machine looks like one thing in the portal, but Azure builds it from separate resources: a size, an OS disk, a network interface, often a public address and a network security group, each billed and deleted on its own terms. The third lab builds one small Linux VM with no inbound ports open at all, manages it without SSH, and tests the two ways of turning it off: shutting down inside Linux, and deallocating in Azure. Predictions are written; the build is under way.
+**Rebuilt as code.** About 120 lines of Bicep rebuild the storage account, the container, both lifecycle rules and the one data role. The lifecycle rules were copied from Code View, hidden seven-day condition included. The deployment took **26 seconds**, and read-back checks matched the portal build setting for setting. The alert pipeline was left out on purpose, and the reader's identity is passed at deploy time, so no identifier sits in the repository. Both resource groups were then deleted.
+
+## Lab 03: a virtual machine, taken apart
+
+A virtual machine looks like one thing in the portal, but Azure builds it from separate resources, each billed and deleted on its own terms. The third lab built one small Linux VM with no inbound ports open, managed it through Run Command instead of SSH, and tested the two ways of turning it off: shutting down inside Linux, and deallocating in Azure.
+
+| Question | Prediction | What happened |
+|---|---|---|
+| What is a VM made of, and what still costs money when it is off? | The OS disk and the public IP keep billing | Right. "One VM" is **seven resources**. Deallocated, the OS disk and the static public IP keep billing; the other five cost nothing. |
+| Is shutting down inside the OS the same as stopping it in Azure? | Yes, it stops the compute charge | Wrong. The portal showed **Stopped**, not *Stopped (deallocated)*. The server is still reserved, so compute keeps billing. Only Azure can deallocate. |
+| What survives a deallocate? | The OS disk file is lost, the temp disk file is lost, the public IP stays, the private IP changes | Two of four. The OS disk file survived and the temp disk file did not. Both addresses stayed, because they belong to the network interface and the public IP resource, not to the server. |
+
+<video controls muted loop playsinline preload="none" poster="/assets/work/azure-labs/lab03-vm-states-poster.jpg" width="1200" height="760" aria-label="Animation: a VM running, shut down inside the OS, deallocated and started again, showing what bills and what survives at each step">
+  <source src="/assets/work/azure-labs/lab03-vm-states.mp4" type="video/mp4" />
+</video>
+
+**The quota wall.** The cheap burstable size was listed but greyed out: the subscription's quota for that family was 0 vCPUs. The automatic increase was refused, and a support request was approved a day later. Quota is a ceiling on how many vCPUs of a family can run at once, it costs nothing to hold, and a low one is a guardrail.
+
+**The portal can keep a default without saying so.** A size chosen on the create form did not stick, and the VM deployed with the portal's default. It cost the same per hour and had the temporary disk the test needed, so it stayed. The lesson is to read the size on the Review page, not the Basics tab.
+
+**A public IP is an address, not an open door.** With no inbound rule, SSH timed out: the default rules dropped the packets before they reached anything. One rule allowing TCP 22 from one address fixed it.
+
+**Rebuilt as code.** The Bicep file builds the same seven resources, with the SSH public key and the allowed address passed at deploy time so nothing personal sits in the repository. It deployed first time, SSH worked straight away because the rule was part of the template, and the VM again took `10.30.0.4`, the first free address in the subnet. The copy was deleted once verified. The bill is still to come, and the portal build stays deallocated until it is read.
+
+The sentence to keep: *a stopped VM is not a free VM until Azure says "deallocated".*
 
 ## What is next
 
-Twenty labs in three groups. **Foundations:** storage tiers (done), a virtual machine deep dive (running), a custom RBAC role, Entra ID users and groups at scale, Azure Files. **Composition:** a three-tier network, hub-and-spoke with Bastion, load balancer failover, monitoring and alerts, backup and restore, Key Vault with managed identity, VNet-to-VNet VPN, App Service slots, private endpoints. **Applied:** a Bicep CI/CD pipeline, a Defender for Cloud baseline, a cost guardrail, Conditional Access with PIM, and a full environment built and destroyed from one template.
+Twenty labs in three groups. **Foundations:** storage tiers (done), a virtual machine deep dive (built twice, bill to come), a custom RBAC role, Entra ID users and groups at scale, Azure Files. **Composition:** a three-tier network, hub-and-spoke with Bastion, load balancer failover, monitoring and alerts, backup and restore, Key Vault with managed identity, VNet-to-VNet VPN, App Service slots, private endpoints. **Applied:** a Bicep CI/CD pipeline, a Defender for Cloud baseline, a cost guardrail, Conditional Access with PIM, and a full environment built and destroyed from one template.
