@@ -43,7 +43,7 @@ const work = defineCollection({
       heroCaption: z.string().optional(),
       stats: z.array(z.object({ value: z.string(), label: z.string() })).default([]),
       gallery: z
-        .array(z.object({ src: image(), alt: z.string(), caption: z.string().optional() }))
+        .array(z.object({ src: image(), alt: z.string(), caption: z.string().optional(), group: z.string().optional() }))
         .default([]),
     }),
 });

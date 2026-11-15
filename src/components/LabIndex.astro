@@ -1,0 +1,123 @@
+---
+/* The Azure labs at a glance: a twenty-step progress strip, one card for
+   each lab that is built or running, and the roadmap for the rest.
+   Everything is drawn from src/data/azure-labs.ts. */
+import { AZURE_LABS, AZURE_LABS_REPO, labNo, type LabGroup } from '../data/azure-labs';
+
+const built = AZURE_LABS.filter((l) => l.state === 'built');
+const running = AZURE_LABS.filter((l) => l.state === 'running');
+const planned = AZURE_LABS.filter((l) => l.state === 'planned');
+const cards = AZURE_LABS.filter((l) => l.state !== 'planned');
+const groups: LabGroup[] = ['Foundations', 'Composition', 'Applied'];
+const words = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+const say = (n: number) => words[n] ?? String(n);
+const stateLabel = { built: 'Built twice', running: 'Running', planned: 'Planned' } as const;
+---
+
+<section class="labx" aria-labelledby="labx-h">
+  <div class="labx-head">
+    <div>
+      <span class="kicker">The labs</span>
+      <h2 class="display h2" id="labx-h">{say(built.length)} built, {say(running.length).toLowerCase()} running, {planned.length} to go.</h2>
+    </div>
+    <p>Each lab answers a question I wrote down before building anything. Pick one to read it on this page, or open its full write-up with every step and screenshot.</p>
+  </div>
+
+  <ol class="labx-track" aria-label="Progress through the twenty labs">
+    {AZURE_LABS.map((l) => (
+      <li class={`is-${l.state}`} title={`Lab ${labNo(l.n)}: ${l.title} (${stateLabel[l.state].toLowerCase()})`}>
+        {l.state === 'planned'
+          ? <span>{labNo(l.n)}</span>
+          : <a href={`#lab-${labNo(l.n)}`} aria-label={`Lab ${labNo(l.n)}: ${l.title}, ${stateLabel[l.state].toLowerCase()}`}>{labNo(l.n)}</a>}
+      </li>
+    ))}
+  </ol>
+  <p class="labx-key"><span class="k is-built"></span>Built twice <span class="k is-running"></span>Running <span class="k is-planned"></span>Planned</p>
+
+  <div class="labx-cards">
+    {cards.map((l) => (
+      <article class={`labx-card is-${l.state}`}>
+        <header>
+          <span class="labx-no">Lab {labNo(l.n)}</span>
+          <span class={`pill ${l.state === 'built' ? 'pill-ok' : 'pill-warn'}`}>{stateLabel[l.state]}</span>
+        </header>
+        <h3>{l.title}</h3>
+        {l.asks && <p class="labx-q"><b>Asked</b>{l.asks}</p>}
+        {l.found
+          ? <p class="labx-a"><b>Found</b>{l.found}</p>
+          : <p class="labx-a is-wait"><b>Found</b>Still building. The answer goes here when the lab is done.</p>}
+        {l.stat && <p class="labx-stat"><strong>{l.stat.value}</strong><span>{l.stat.label}</span></p>}
+        <footer>
+          <a href={`#lab-${labNo(l.n)}`}>Read it here <span aria-hidden="true">↓</span></a>
+          <a href={`${AZURE_LABS_REPO}${l.folder}`} target="_blank" rel="noopener">Full write-up <span aria-hidden="true">↗</span></a>
+        </footer>
+      </article>
+    ))}
+  </div>
+
+  <div class="labx-road">
+    <h3>Still to build</h3>
+    <div class="labx-cols">
+      {groups.map((g) => {
+        const rows = planned.filter((l) => l.group === g);
+        return rows.length > 0 && (
+          <div>
+            <h4>{g}</h4>
+            <ul>{rows.map((l) => <li><span>{labNo(l.n)}</span>{l.title}</li>)}</ul>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<style>
+  .labx { margin: 0 0 3.5rem; padding-top: 0.5rem; }
+  .labx-head { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1rem 3rem; align-items: end; margin-bottom: 1.6rem; }
+  .labx-head .kicker { display: block; margin-bottom: 0.5rem; }
+  .labx-head h2 { margin: 0; }
+  .labx-head p { margin: 0; color: var(--ink-2); font-size: 0.98rem; line-height: 1.6; }
+
+  .labx-track { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 0.3rem; }
+  .labx-track li > * { display: grid; place-items: center; height: 2.3rem; border-radius: var(--radius-sm); font: 600 0.72rem/1 var(--font-mono); text-decoration: none; border: 1px solid var(--line); color: var(--ink-3); background: transparent; }
+  .labx-track .is-built > * { background: var(--ok); border-color: var(--ok); color: var(--paper); }
+  .labx-track .is-running > * { border: 2px solid var(--warn); color: var(--warn); background: var(--warn-soft); }
+  .labx-track a:hover, .labx-track a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .labx-key { margin: 0.7rem 0 2rem; font: 500 0.7rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.5rem; }
+  .labx-key .k { width: 0.75rem; height: 0.75rem; border-radius: 3px; border: 1px solid var(--line-2); display: inline-block; margin-left: 0.8rem; }
+  .labx-key .k:first-child { margin-left: 0; }
+  .labx-key .k.is-built { background: var(--ok); border-color: var(--ok); }
+  .labx-key .k.is-running { background: var(--warn-soft); border: 2px solid var(--warn); }
+
+  .labx-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: 1rem; }
+  .labx-card { display: flex; flex-direction: column; border: 1px solid var(--line-2); border-radius: var(--radius); background: var(--paper); padding: 1.2rem 1.25rem 1rem; box-shadow: var(--shadow); }
+  .labx-card.is-running { border-style: dashed; box-shadow: none; }
+  .labx-card header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+  .labx-no { font: 600 0.74rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-ink, var(--accent)); }
+  .labx-card h3 { font-family: var(--font-display); font-weight: 800; font-size: 1.3rem; line-height: 1.15; letter-spacing: -0.015em; margin: 0.75rem 0 0.8rem; }
+  .labx-card p { margin: 0 0 0.75rem; font-size: 0.93rem; line-height: 1.55; color: var(--ink-2); }
+  .labx-card p b { display: block; font: 600 0.64rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 0.35rem; }
+  .labx-a { color: var(--ink) !important; }
+  .labx-a.is-wait { color: var(--ink-3) !important; font-style: italic; }
+  .labx-stat { margin-top: auto !important; padding-top: 0.75rem; border-top: 1px solid var(--line); display: flex; align-items: baseline; gap: 0.6rem; }
+  .labx-stat strong { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; line-height: 1; color: var(--ink); white-space: nowrap; }
+  .labx-stat span { font: 500 0.68rem/1.35 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+  .labx-card footer { margin-top: auto; display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; padding-top: 0.8rem; font-size: 0.86rem; font-weight: 600; }
+  .labx-stat + footer { margin-top: 0; }
+  .labx-card footer a { color: var(--accent-ink, var(--accent)); text-decoration: none; }
+  .labx-card footer a:hover { text-decoration: underline; }
+
+  .labx-road { margin-top: 2rem; border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.25rem; background: var(--paper-2); }
+  .labx-road h3 { margin: 0 0 0.9rem; font: 600 0.72rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+  .labx-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.2rem 2rem; }
+  .labx-cols h4 { margin: 0 0 0.5rem; font-size: 0.95rem; font-weight: 700; }
+  .labx-cols ul { list-style: none; margin: 0; padding: 0; }
+  .labx-cols li { display: flex; gap: 0.65rem; padding: 0.22rem 0; font-size: 0.9rem; color: var(--ink-2); }
+  .labx-cols li span { font: 500 0.74rem/1.7 var(--font-mono); color: var(--ink-3); flex: none; }
+
+  @media (max-width: 760px) {
+    .labx-head { grid-template-columns: 1fr; }
+    .labx-track { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+    .labx-cards { grid-template-columns: 1fr; }
+  }
+</style>

@@ -590,6 +590,24 @@ figcaption { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink
 .prose a { color: var(--accent-ink); }
 .prose .footnotes { font-size: 0.9rem; color: var(--ink-2); }
 
+/* A case study made of several labs: each lab is its own section, with a
+   band naming it, and the gallery is shown one lab at a time. */
+.lab-sec { margin-top: 4rem; padding-top: 1.6rem; border-top: 2px solid var(--line-2); scroll-margin-top: 5.5rem; }
+.lab-sec > * + * { margin-top: 1.1em; }
+.lab-sec > h2 { margin-top: 0.9rem; }
+.lab-band { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; }
+.lab-band .lab-no { font: 700 0.8rem/1 var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--paper); background: var(--ink); padding: 0.45rem 0.65rem; border-radius: var(--radius-sm); }
+.lab-band a { margin-left: auto; font-size: 0.86rem; font-weight: 600; text-decoration: none; }
+.lab-band a:hover { text-decoration: underline; }
+.lab-more { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.9rem; font-weight: 600; }
+.lab-more a { text-decoration: none; }
+.lab-more a:hover { text-decoration: underline; }
+.lab-sec video { width: 100%; height: auto; border: 1px solid var(--line-2); border-radius: var(--radius); background: #050b18; }
+.gallery-group { scroll-margin-top: 5.5rem; }
+.gallery-group + .gallery-group { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+.gallery-group h3 { font: 600 0.78rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 1.1rem; }
+@media (max-width: 560px) { .lab-band a { margin-left: 0; flex-basis: 100%; } }
+
 /* ------------------------------------------------------------
    Article layout: a centred reading column with a sticky rail
    ------------------------------------------------------------ */
