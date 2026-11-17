@@ -7,7 +7,7 @@ export interface Cert {
   domain: CertDomain;
   blurb: string;
   featured?: boolean;
-  image?: string; // Credly CDN; sized 220x220
+  image?: string; // the badge's Credly source; the page serves a local copy (scripts/fetch-badges.mjs)
   mark?: string; // fallback monogram when there is no badge image
   issued?: string;
   expires?: string;
@@ -18,7 +18,12 @@ export interface Cert {
   short: string; // label for the home strip
 }
 
+/* Where a badge comes from on Credly. The page never loads it from there:
+   run `node scripts/fetch-badges.mjs` to copy it into public/assets/credentials/. */
 const credly = (uuid: string, file = 'image.png') => `https://images.credly.com/size/220x220/images/${uuid}/${file}`;
+
+/** The local copy of a badge, served from the site itself. */
+export const badgeSrc = (c: Cert) => (c.image ? `/assets/credentials/${c.id}.webp` : undefined);
 
 export const DOMAIN_LABELS: Record<CertDomain, string> = {
   identity: 'Identity',
