@@ -54,7 +54,7 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
           <span class="j-kicker">{s.n} · {s.k}</span>
           {i === 0 ? <h1 class="j-h">{s.h}</h1> : <h2 class="j-h">{s.h}</h2>}
           <p class="j-p">{s.p}</p>
-          {s.stats && <div class="j-stats">{s.stats.map(([val, l, a]) => <div><b data-count={val} data-from={a}>0</b><span>{l}</span></div>)}</div>}
+          {s.stats && <div class="j-stats">{s.stats.map(([val, l, a]) => <div><b data-count={val} data-from={a} data-dur="0.012">0</b><span>{l}</span></div>)}</div>}
           {s.cta && <div class="actions"><a class="btn" href={s.cta[0]}>{s.cta[1]} <span aria-hidden="true">→</span></a></div>}
         </div>
       ))}
