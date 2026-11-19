@@ -3,6 +3,7 @@
    a token, then a push approval to make contact. One camera, one dark
    ground, everything built in code from the lab's real layout. Three.js. */
 import * as THREE from 'three';
+import { buildTower, TOWER_KEYS } from './journey-tower';
 import { CERTS, RUNWAY } from '../data/certifications';
 
 type Vec = [number, number, number];
@@ -297,6 +298,8 @@ export function startJourney(root: HTMLElement) {
   const trailPts: THREE.Vector3[] = [];
   const screenPoint = new THREE.Vector3();
   const lidWorld = () => { screen.getWorldPosition(screenPoint); return screenPoint.clone(); };
+  /* the opening: one sign-in rising through six controls, away from the lab map (journey-tower.ts) */
+  const tower = buildTower(scene, label);
   const legA = new THREE.CatmullRomCurve3([lidWorld(), new THREE.Vector3(9.6, 1.3, 0.4), v(DC)]);
   const legB = new THREE.CatmullRomCurve3([v(DC), new THREE.Vector3(7.2, 1.6, -3.5), v(GATE_DC), new THREE.Vector3(4.5, 4.5, -11), v(CLOUD)]);
   const legD = new THREE.CatmullRomCurve3([v(CLOUD), new THREE.Vector3(-4, 9.5, -17), new THREE.Vector3(PLATFORM[0], PLATFORM[1] + 0.6, PLATFORM[2])]);
@@ -488,27 +491,7 @@ export function startJourney(root: HTMLElement) {
   root.querySelectorAll<HTMLElement>('[data-deny]').forEach((b) => b.addEventListener('click', () => { drawPhone('no'); root.classList.add('is-denied'); }));
 
   /* ---------- camera ---------- */
-  const KEYS: Key[] = [
-    { t: 0.00, pos: [11.5, 1.0, 4.1], look: [10.25, 0.5, 1.8] },
-    { t: 0.09, pos: [11.4, 1.15, 3.7], look: [10.3, 0.5, 1.75] },
-    { t: 0.17, pos: [10.6, 2.4, 4.6], look: [8.9, 1.1, 0.0] },
-    { t: 0.25, pos: [9.6, 2.6, 2.4], look: [7.4, 1.2, -4.0] },
-    { t: 0.31, pos: [9.4, 2.4, -3.4], look: [6.3, 1.3, -7.2] },
-    { t: 0.37, pos: [8.0, 4.5, -6.5], look: [3.0, 6.0, -12.0] },
-    { t: 0.42, pos: [4.0, 13.5, -5.5], look: [0, 9, -15] },
-    { t: 0.49, pos: [-3.5, 11.5, -9.5], look: [-9, 7.6, -17] },
-    { t: 0.56, pos: [-7.0, 9.6, -12.0], look: [-10, 7.4, -17] },
-    { t: 0.60, pos: [-2, 5.0, 5.5], look: [-6, 1.2, -4] },
-    { t: 0.66, pos: [-13.6, 2.6, 5.0], look: [-9.3, 0.9, -0.7] },
-    { t: 0.71, pos: [-12.8, 1.2, 3.2], look: [-9.6, 0.6, -0.8] },
-    { t: 0.745, pos: [-17, 9, 17], look: [-7, 0.5, -1] },
-    { t: 0.80, pos: [3, 9, 17], look: [5, 0.5, -1] },
-    { t: 0.825, pos: [12.8, 3.4, 6.8], look: [10.2, 1.3, 0.5] },
-    { t: 0.85, pos: [12.5, 3.2, 6.5], look: [10.2, 1.2, 0.5] },
-    { t: 0.885, pos: [-1, 15, 23], look: [-5, 0, -6] },
-    { t: 0.94, pos: [0, 23, 31], look: [0, -6, -4] },
-    { t: 1.00, pos: [0, 27, 35], look: [0, -9, -3] },
-  ];
+  const KEYS: Key[] = TOWER_KEYS;
   const hold = (c: number, pos: Vec, look: Vec, w = 0.009): Key[] => [{ t: c - w, pos, look }, { t: c + w, pos, look }];
   const WKEYS: Key[] = [
     { t: J, pos: [-0.2, 21.5, 29.5], look: [-1, -4.8, -4.4] },
@@ -538,17 +521,21 @@ export function startJourney(root: HTMLElement) {
     camLook.set(...a.look).lerp(v(b.look), k);
     if (camera.aspect < 1) {
       // Desktop pushes some subjects right of the text; a phone has its text at the bottom, so centre them.
-      const dx = 2.5 * span(t, 0.60, 0.615) * (1 - span(t, 0.775, 0.785))
-               + 2.1 * span(t, STOPS[4] - 0.013, STOPS[4] - 0.006) * (1 - span(t, STOPS[4] + 0.006, STOPS[4] + 0.013));
+      // These corrections belong to the later stretches, which run on scroll units; the opening has its own clock.
+      const later = keys === KEYS ? 0 : 1;
+      const dx = later * (2.5 * span(t, 0.60, 0.615) * (1 - span(t, 0.775, 0.785))
+               + 2.1 * span(t, STOPS[4] - 0.013, STOPS[4] - 0.006) * (1 - span(t, STOPS[4] + 0.006, STOPS[4] + 0.013)));
       camPos.x += dx; camLook.x += dx;
       // The token is centred and narrow, so the camera can come closer there than anywhere else.
-      const tok = span(t, 0.775, 0.79) * (1 - span(t, 0.885, 0.9));
-      camPos.sub(camLook).multiplyScalar(1.5 - 0.28 * tok).add(camLook);
+      const tok = later * span(t, 0.775, 0.79) * (1 - span(t, 0.885, 0.9));
+      // The closing view of the tower is tall: step further back so all six layers and their captions fit above the copy.
+      const stack = keys === KEYS ? tower.whole(t) : 0;
+      camPos.sub(camLook).multiplyScalar(1.5 - 0.28 * tok + 0.55 * stack).add(camLook);
       // Lift the subject into the top half: aim below it, by a share of the distance.
       // The swarm sits low and its rising notes climb into the text, so lift it further.
-      const swarm = span(t, 0.60, 0.615) * (1 - span(t, 0.775, 0.785));
+      const swarm = later * span(t, 0.60, 0.615) * (1 - span(t, 0.775, 0.785));
       const dist = camPos.distanceTo(camLook);
-      camLook.y -= dist * (0.2 + 0.12 * swarm - 0.025 * tok);
+      camLook.y -= dist * (0.2 + 0.12 * swarm - 0.025 * tok + 0.06 * stack);
     } else {
       // Narrow landscape (small windows, tablets): step back so the right-hand subject stays in frame.
       if (camera.aspect < 1.6) camPos.sub(camLook).multiplyScalar(1.6 / camera.aspect).add(camLook);
@@ -611,7 +598,8 @@ export function startJourney(root: HTMLElement) {
     if (wantDark !== dark) { dark = wantDark; html.dataset.theme = dark ? 'dark' : theme; }
     renderer.toneMappingExposure = 1.05 - 0.25 * d;
 
-    const est = span(tt, 0.08, 0.17);
+    const est = span(g, 0.403, 0.42);
+    tower.update(tt, frame, g < J + 0.012);
     for (const m of estate) m.opacity = est * ((m as THREE.LineBasicMaterial).isLineBasicMaterial ? 0.8 : 1);
 
     if (g <= J) camFrom(KEYS, tt); else camFrom(WKEYS, g);
@@ -625,11 +613,7 @@ export function startJourney(root: HTMLElement) {
     /* ===== the journey (tt) ===== */
     let p: THREE.Vector3; let orbOn = 1;
     if (tt < 0.11) { p = lidWorld(); orbOn = span(tt, 0.03, 0.09); }
-    else if (tt < 0.26) p = legA.getPoint(span(tt, 0.11, 0.24));
-    else if (tt < 0.46) p = legB.getPoint(span(tt, 0.27, 0.45));
-    else if (tt < 0.58) { p = legD.getPoint(span(tt, 0.47, 0.56)); orbOn = 1 - span(tt, 0.565, 0.59); }
-    else if (tt < 0.73) { p = legC.getPoint(span(tt, 0.60, 0.70)); orbOn = span(tt, 0.595, 0.615) * (1 - span(tt, 0.705, 0.725)); }
-    else { p = v(SIEM); orbOn = 0; }
+    else { p = tower.orbAt(tt, lidWorld()); orbOn = 1 - span(tt, 0.895, 0.915); }
     orb.position.copy(p); orb.visible = orbOn > 0.01;
     orbGlow.scale.setScalar(1 + Math.sin(frame * 0.15) * 0.12); orbLight.intensity = 6 * orbOn;
     (orb.material as THREE.MeshBasicMaterial).opacity = orbOn;
@@ -638,32 +622,34 @@ export function startJourney(root: HTMLElement) {
     trailGeo.attributes.position.needsUpdate = true;
     (trail.material as THREE.LineBasicMaterial).opacity = 0.55 * orbOn * span(tt, 0.11, 0.13);
 
+    const lt = JMAX;
     const fIam = stopFocus(0, g), fLab = stopFocus(1, g), fPost = stopFocus(2, g), fWeb = stopFocus(3, g), fAud = stopFocus(4, g), fScout = stopFocus(5, g);
-    dcMat.emissiveIntensity = 0.15 + 0.9 * span(tt, 0.22, 0.25) * (1 - span(tt, 0.48, 0.52)) + 1.1 * fIam;
-    const gDC = span(tt, 0.30, 0.34) * (1 - span(tt, 0.46, 0.50));
+    dcMat.emissiveIntensity = 0.15 + 0.9 * span(lt, 0.22, 0.25) * (1 - span(lt, 0.48, 0.52)) + 1.1 * fIam;
+    const gDC = span(lt, 0.30, 0.34) * (1 - span(lt, 0.46, 0.50));
     gateDC.frame.material.opacity = gDC; gateDC.frame.visible = gDC > 0.01; setOpacity(gateDC.tag, gDC);
-    const gLog = span(tt, 0.62, 0.65) * (1 - span(tt, 0.72, 0.75));
+    const gLog = span(lt, 0.62, 0.65) * (1 - span(lt, 0.72, 0.75));
     gateLog.frame.material.opacity = gLog; gateLog.frame.visible = gLog > 0.01; setOpacity(gateLog.tag, gLog);
-    const fwOn = span(tt, 0.27, 0.32) * (1 - span(tt, 0.87, 0.92));
+    const fwOn = span(lt, 0.27, 0.32) * (1 - span(lt, 0.87, 0.92));
     denyMat.opacity = fwOn * (0.35 + 0.35 * Math.abs(Math.sin(frame * 0.07)));
-    const pull = span(tt, 0.855, 0.90) * jEnd;
+    /* the map and its labels arrive together, as the camera comes down from the tower */
+    const pull = span(g, 0.405, 0.418) * jEnd;
     setOpacity(fwLabel, Math.max(pull, fLab));
-    const hOn = span(tt, 0.37, 0.43) * (1 - span(tt, 0.56, 0.61)) + pull * 0.5;
+    const hOn = span(lt, 0.37, 0.43) * (1 - span(lt, 0.56, 0.61)) + pull * 0.5;
     halo.rotation.y = frame * 0.0025;
     (halo.material as THREE.PointsMaterial).opacity = hOn;
-    (halo.material as THREE.PointsMaterial).size = 0.07 + 0.05 * span(tt, 0.42, 0.46);
-    setOpacity(cloudLabel, span(tt, 0.40, 0.45) * (1 - span(tt, 0.55, 0.59)) + pull * 0.9);
-    const pOn = Math.max(span(tt, 0.46, 0.51) * (1 - span(tt, 0.62, 0.66)) + pull, fPost);
+    (halo.material as THREE.PointsMaterial).size = 0.07 + 0.05 * span(lt, 0.42, 0.46);
+    setOpacity(cloudLabel, span(lt, 0.40, 0.45) * (1 - span(lt, 0.55, 0.59)) + pull * 0.9);
+    const pOn = Math.max(span(lt, 0.46, 0.51) * (1 - span(lt, 0.62, 0.66)) + pull, fPost);
     for (const m of platMats) m.opacity = Math.min(1, pOn) * ((m as THREE.LineBasicMaterial).isLineBasicMaterial ? 0.85 : 1);
-    const fixed = span(tt, 0.53, 0.575);
+    const fixed = span(lt, 0.53, 0.575);
     for (const r of resources) { if (r.flagged) r.rim.color.copy(flagColor).lerp(fixedColor, fixed); r.mat.emissiveIntensity = 0.25 + 0.6 * fPost * (0.5 + 0.5 * Math.sin(frame * 0.08 + r.k)); }
     platform.position.y = PLATFORM[1] + Math.sin(frame * 0.012) * 0.08;
-    setOpacity(platLabel, Math.max(span(tt, 0.49, 0.53) * (1 - span(tt, 0.6, 0.64)) + pull * 0.9, fPost));
+    setOpacity(platLabel, Math.max(span(lt, 0.49, 0.53) * (1 - span(lt, 0.6, 0.64)) + pull * 0.9, fPost));
 
     const swarmField = span(g, 0.605, 0.635) * (1 - span(g, 0.775, 0.80));
-    const fieldOn = Math.max(span(tt, 0.63, 0.69) * (1 - span(tt, 0.90, 0.96)) * jEnd, swarmField);
+    const fieldOn = swarmField;
     if (fieldOn > 0 || frame % 30 === 0) {
-      const r = Math.max(0.2 + 6 * span(tt, 0.64, 0.74), 6 * swarmField);
+      const r = Math.max(0.2 + 6 * span(lt, 0.64, 0.74), 6 * swarmField);
       for (let i = 0; i < N * N; i++) {
         const [x, z] = tileXZ[i];
         const dist = Math.hypot(x - SIEM[0], z - SIEM[2]);
@@ -681,20 +667,19 @@ export function startJourney(root: HTMLElement) {
 
     for (const s of hostLabels) setOpacity(s, Math.max(pull, fLab));
     for (const s of zoneLabels) setOpacity(s, Math.max(pull, fLab));
-    setOpacity(hostLabels[6], Math.max(pull, fLab, fIam, span(tt, 0.15, 0.19) * (1 - span(tt, 0.24, 0.28))));
-    setOpacity(hostLabels[2], Math.max(pull, fLab, span(tt, 0.62, 0.65) * (1 - span(tt, 0.71, 0.74)), swarmField));
+    setOpacity(hostLabels[6], Math.max(pull, fLab, fIam, span(lt, 0.15, 0.19) * (1 - span(lt, 0.24, 0.28))));
+    setOpacity(hostLabels[2], Math.max(pull, fLab, span(lt, 0.62, 0.65) * (1 - span(lt, 0.71, 0.74)), swarmField));
 
-    const sOn = span(tt, 0.735, 0.755) * (1 - span(tt, 0.80, 0.82));
-    const sx = -20 + 40 * span(tt, 0.745, 0.805);
+    const sOn = span(lt, 0.735, 0.755) * (1 - span(lt, 0.80, 0.82));
+    const sx = -20 + 40 * span(lt, 0.745, 0.805);
     sweep.position.x = sx; sweepGlow.position.x = sx; sweepLabel.position.x = sx;
     sweepMat.opacity = 0.16 * sOn; sweepGlowMat.opacity = 0.35 * sOn; setOpacity(sweepLabel, sOn);
     for (const f of FINDINGS) {
-      const seen = sx > f.x ? span(tt, 0.745, 0.76) : 0;
-      const on = Math.min(1, seen + pull) * jEnd;
+      const on = pull * jEnd;
       f.mat.opacity = on * (0.75 + 0.25 * Math.sin(frame * 0.12)); f.mesh.visible = on > 0.01; f.mesh.rotation.y = frame * 0.03;
-      const closed = f.closes ? span(tt, 0.815, 0.835) : 0;
+      const closed = f.closes ? span(lt, 0.815, 0.835) : 0;
       f.mat.color.copy(foundColor).lerp(closedColor, closed);
-      setOpacity(f.tag, on * (tt > 0.855 ? 0.9 : 1));
+      setOpacity(f.tag, on * (lt > 0.855 ? 0.9 : 1));
     }
 
     /* ===== case files (g) ===== */
