@@ -44,6 +44,7 @@
           <span class="gate-vbig">Access granted</span>
           <span class="gate-vsub" data-vsub>Visitor · read everything · nothing you saw here left your browser.</span>
           <button class="btn gate-enter" type="button" data-skip>Enter <span aria-hidden="true">→</span></button>
+          <span class="gate-wait" data-wait>Press <kbd>Enter</kbd> to continue</span>
         </div>
       </section>
     </div>
@@ -192,8 +193,11 @@
       if (auto) sub.textContent = 'Automation detected and allowed anyway. It is a portfolio: read everything.';
       verdict.classList.add('is-on');
       verdict.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'end' });
-      await sleep(still ? 1200 : 3400);
-      finish();
+      /* The decision is made; the visitor chooses when to go in. Enter (key or button) or Esc proceeds. */
+      const wait = gate.querySelector<HTMLElement>('[data-wait]');
+      if (wait && window.matchMedia('(hover: none)').matches) wait.textContent = 'Tap Enter to continue';
+      gate.classList.add('is-waiting');
+      gate.querySelector<HTMLElement>('.gate-enter')?.focus({ preventScroll: true });
     })();
   }
 </script>
@@ -265,6 +269,13 @@
   .gate-vsub { font-size: 0.9rem; color: #94a3b8; max-width: 26rem; }
   .gate-enter { margin-top: 0.8rem; background: #2dd4bf; color: #06201c; border: 0; }
   .gate-enter:hover { background: #5eead4; }
+  .gate-enter:focus-visible { outline: 2px solid #5eead4; outline-offset: 4px; }
+  .gate-wait { margin-top: 0.7rem; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: #94a3b8; opacity: 0; transition: opacity 0.6s ease 0.4s; }
+  .gate-wait kbd { font-family: var(--font-mono); font-size: 0.66rem; padding: 0.1rem 0.4rem; border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 4px; color: #e2e8f0; }
+  .gate.is-waiting .gate-wait { opacity: 1; }
+  .gate.is-waiting .gate-enter { animation: gate-ready 1.8s ease-in-out infinite; }
+  @keyframes gate-ready { 0%, 100% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.45); } 50% { box-shadow: 0 0 0 10px rgba(45, 212, 191, 0); } }
+  @media (prefers-reduced-motion: reduce) { .gate.is-waiting .gate-enter { animation: none; } }
   .gate-foot { font-family: var(--font-mono); font-size: 0.68rem; color: #64748b; letter-spacing: 0.04em; }
 
   @media (max-width: 860px) {
