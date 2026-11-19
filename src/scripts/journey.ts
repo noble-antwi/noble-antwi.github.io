@@ -549,16 +549,43 @@ export function startJourney(root: HTMLElement) {
       const swarm = span(t, 0.60, 0.615) * (1 - span(t, 0.775, 0.785));
       const dist = camPos.distanceTo(camLook);
       camLook.y -= dist * (0.2 + 0.12 * swarm - 0.025 * tok);
-    } else if (camera.aspect < 1.6) {
+    } else {
       // Narrow landscape (small windows, tablets): step back so the right-hand subject stays in frame.
-      camPos.sub(camLook).multiplyScalar(1.6 / camera.aspect).add(camLook);
+      if (camera.aspect < 1.6) camPos.sub(camLook).multiplyScalar(1.6 / camera.aspect).add(camLook);
+      // The copy has the left column to itself (see resize), so the picture has less room: step back to fit it.
+      if (stepBack !== 1) camPos.sub(camLook).multiplyScalar(1 + (stepBack - 1) * roomFor(t, keys === KEYS)).add(camLook);
     }
   }
 
   /* ---------- frame state ---------- */
   const bg = new THREE.Color();
+  let bgCss = '';
   let target = 0, t = 0;
-  function resize() { const w = root.clientWidth, h = window.innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w < h ? 56 : 42; camera.updateProjectionMatrix(); }
+  /* On a desktop the copy sits in a column on the left. Left alone, the camera centres its subject on the
+     screen, which is under the words. So the picture is slid right, toward the middle of the room beside
+     the copy, and the camera steps back so the subject still fits there. A phone keeps its copy at the
+     bottom and its picture centred. */
+  let viewW = 1, viewH = 1, slide = 0, stepBack = 1, slideNow = -1;
+  /* How much of the slide a moment of the scroll wants: 1 is all of it. Scenes that already place their
+     subject on the right (the opening laptop, the token, the phone at the end) take less. */
+  function roomFor(x: number, journey: boolean) {
+    if (journey) return 0.45 + 0.55 * span(x, 0.10, 0.17);
+    const token = span(x, 0.772, 0.79) * (1 - span(x, 0.885, 0.9));
+    const push = span(x, 0.94, 0.955);
+    return 1 - 0.85 * token - 0.6 * push - 0.45 * stopFocus(4, x);
+  }
+  function resize() {
+    const w = root.clientWidth, h = window.innerHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w < h ? 56 : 42;
+    viewW = w; viewH = h; slideNow = -1;
+    if (w >= 900 && w > h && panels.length) {
+      const copyRight = panels[0].getBoundingClientRect().right;
+      slide = 0.6 * ((copyRight + w) / 2 - w / 2);
+      stepBack = 1.2;
+      root.style.setProperty('--j-copy-r', `${Math.round(copyRight)}px`);
+    } else { slide = 0; stepBack = 1; camera.clearViewOffset(); }
+    camera.updateProjectionMatrix();
+  }
   function readScroll() { const rect = root.getBoundingClientRect(); const total = root.offsetHeight - window.innerHeight; target = clamp(-rect.top / total); }
   const stopFocus = (i: number, g: number) => span(g, STOPS[i] - 0.013, STOPS[i] - 0.005) * (1 - span(g, STOPS[i] + 0.005, STOPS[i] + 0.013));
 
@@ -578,6 +605,8 @@ export function startJourney(root: HTMLElement) {
     const d = span(g, 0.09 * J / JMAX, 0.18 * J / JMAX);
     bg.copy(theme === 'dark' ? NIGHT : WHITE).lerp(SLATE, d);
     (scene.background as THREE.Color).copy(bg); scene.fog!.color.copy(bg);
+    const bgHex = bg.getHexString();
+    if (bgHex !== bgCss) { bgCss = bgHex; root.style.setProperty('--j-bg', `#${bgHex}`); }
     const wantDark = d > 0.5;
     if (wantDark !== dark) { dark = wantDark; html.dataset.theme = dark ? 'dark' : theme; }
     renderer.toneMappingExposure = 1.05 - 0.25 * d;
@@ -587,6 +616,10 @@ export function startJourney(root: HTMLElement) {
 
     if (g <= J) camFrom(KEYS, tt); else camFrom(WKEYS, g);
     camera.position.copy(camPos); camera.lookAt(camLook);
+    if (slide) {
+      const want = Math.round(slide * (g <= J ? roomFor(tt, true) : roomFor(g, false)));
+      if (want !== slideNow) { slideNow = want; camera.setViewOffset(viewW, viewH, -want, 0, viewW, viewH); camera.updateProjectionMatrix(); }
+    }
     lid.rotation.x = -0.32 + Math.sin(frame * 0.01) * 0.01;
 
     /* ===== the journey (tt) ===== */

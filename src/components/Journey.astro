@@ -10,25 +10,26 @@ const J = 0.42, JMAX = 0.92;
 const jt = (x: number) => +(x * J / JMAX).toFixed(4);
 const STOPS = [0.447, 0.475, 0.503, 0.531, 0.559, 0.587];
 
+const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+const posts = await getCollection('posts');
+
 type Stat = [string, string, number];
 const journeyRaw: { from: number; to: number; n: string; k: string; h: string; p: string; stats?: Stat[]; cta?: [string, string] }[] = [
-  { from: 0.0, to: 0.11, n: SITE.tagline, k: SITE.location, h: 'I secure identities, and the cloud they live in.', p: 'People, servers and now AI agents all sign in. I build the controls that decide who gets through, break them on purpose to see where they fail, and take real breaches apart to find the one link that would have stopped them. Follow one sign-in through the lab. Scroll.' },
-  { from: 0.13, to: 0.26, n: '01', k: 'Directory', h: 'Checked at home first.', p: 'The request reaches DC01, the domain controller on VLAN 50. Active Directory checks the password and issues a Kerberos ticket. Nothing has left the segment yet.' },
-  { from: 0.27, to: 0.37, n: '02', k: 'Network', h: 'Default deny.', p: 'To reach the cloud, DC01 must cross pfSense. Every interface denies by default; one written, justified rule lets this traffic out, and nothing comes back in uninvited.' },
-  { from: 0.38, to: 0.47, n: '03', k: 'Identity', h: 'Verified, then verified again.', p: 'Entra ID and Okta check the device and the second factor. No single system says yes on its own, and the providers are reached from DC01, never the other way round.' },
+  { from: 0.0, to: 0.11, n: SITE.tagline, k: SITE.location, h: 'I secure identities, and the cloud they live in.', p: 'People, servers and now AI agents all sign in. I build the controls that decide who gets through, break them on purpose to see where they fail, and take real breaches apart to find the one link that would have stopped them. Follow one sign-in past every control. Scroll.' },
+  { from: 0.13, to: 0.26, n: '01', k: 'Directory', h: 'Who is asking?', p: 'Every sign-in starts with proof. A directory checks the password and issues a ticket. Nothing is trusted because of where it sits on the network.' },
+  { from: 0.27, to: 0.37, n: '02', k: 'Network', h: 'Default deny.', p: 'Between any two systems sits a firewall that says no unless a written rule says yes. Every rule has a purpose, an owner and a review date.' },
+  { from: 0.38, to: 0.47, n: '03', k: 'Identity', h: 'Verified, then verified again.', p: 'Before anything in the cloud opens, Entra ID and Okta check the device and a second factor. No single system says yes on its own.' },
   { from: 0.48, to: 0.60, n: '04', k: 'Cloud', h: 'Least privilege, in the cloud too.', p: 'The same identity reaches AWS and Azure by federation, with no standing keys. Posture is scanned with Prowler and ScoutSuite, every finding mapped to CIS, NIST and PCI, and idle resources found before they cost money.', stats: [['2', 'clouds', 0.50], ['500+', 'posture checks', 0.51], ['0', 'standing keys', 0.52]] },
-  { from: 0.60, to: 0.725, n: '05', k: 'Detection', h: 'On the record.', p: 'Every step was logged. Agents on WKS01 and DC01 ship their events through the firewall to SIEM01, where Wazuh decodes each one, alerts on the few that matter, and keeps the rest.', stats: [['39,322', 'events decoded', 0.63], ['1,963', 'alerts, about 5%', 0.645], ['100%', 'kept in the archive', 0.66]] },
-  { from: 0.735, to: 0.85, n: '06', k: 'Assessment', h: 'Scanned, fixed, proved.', p: 'A credentialed scan from SCAN01 found TLS 1.0 and 1.1 still offered on WKS01. A scoped, reversible Group Policy removed them, and a third scan proved them gone.', stats: [['3', 'scans of one machine', 0.76], ['1', 'finding closed, with proof', 0.77]] },
-  { from: 0.86, to: 0.92, n: '07', k: 'The estate', h: 'Built, documented, proven.', p: 'Six VLANs behind one default-deny firewall, a rebuilt forest federated to two cloud identity providers, two clouds under posture scanning, a SIEM with its own rules, and every decision written down.', stats: [['6', 'VLANs', 0.87], ['3', 'identity providers', 0.88], ['2', 'clouds', 0.89], ['23', 'runbooks', 0.90]], cta: ['/architecture/', 'Walk through the lab in 3D'] },
+  { from: 0.60, to: 0.725, n: '05', k: 'Detection', h: 'On the record.', p: 'Every step was logged. A SIEM decodes each event, alerts on the few that matter and keeps the rest, so a silenced alert still leaves its evidence behind.', stats: [['39,322', 'events decoded', 0.63], ['1,963', 'alerts, about 5%', 0.645], ['100%', 'kept in the archive', 0.66]] },
+  { from: 0.735, to: 0.85, n: '06', k: 'Assessment', h: 'Scanned, fixed, proved.', p: 'A credentialed scan found old TLS versions still offered on a workstation. A scoped, reversible policy removed them, and a third scan proved them gone.', stats: [['3', 'scans of one machine', 0.76], ['1', 'finding closed, with proof', 0.77]] },
+  { from: 0.86, to: 0.92, n: '07', k: 'The work', h: 'One sign-in, five disciplines.', p: 'Identity, network, cloud, detection and assessment: that sign-in crossed all of them. Each is a body of work with its evidence kept. The case files are next.', stats: [[String(all.length), 'projects', 0.87], [String(CERTS.length), 'credentials', 0.88], ['2', 'clouds', 0.89], [String(posts.length), 'notes written', 0.90]], cta: ['/architecture/', 'See the lab it runs on'] },
 ];
 const journey = journeyRaw.map((s) => ({ ...s, from: jt(s.from), to: jt(s.to), stats: s.stats?.map(([val, l, a]) => [val, l, jt(a)] as Stat) }));
 
-const all = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
 const PICKS = ['enterprise-iam-lab', 'enterprise-security-homelab', 'cloud-security-posture-dashboard', 'biirabank-web', 'collins-aerospace-it-audit', 'ai-agent-identity-lab'];
 const cases = PICKS.map((id) => all.find((w) => w.id === id)).filter((w): w is (typeof all)[number] => !!w);
 const pad = (n: number) => String(n).padStart(2, '0');
 
-const posts = await getCollection('posts');
 /* the newest case file gets a door on the first screen */
 const caseFile = posts.filter((p) => p.data.casefile).sort(byDateDesc)[0];
 const rail = [
@@ -76,7 +77,7 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
       <div class="j-panel" data-from="0.612" data-to="0.705" data-fade="0.012">
         <span class="j-kicker">08 · Signal</span>
         <h2 class="j-h">Every event, kept.</h2>
-        <p class="j-p">Each host ships what it sees to SIEM01: sign-ins, file writes, policy changes, scans. Wazuh decodes every one and sorts them by how loud they are. Most are noise. Some are not. All of them are on the record.</p>
+        <p class="j-p">Every machine ships what it sees to the SIEM: sign-ins, file writes, policy changes, scans. Wazuh decodes every one and sorts them by how loud they are. Most are noise. Some are not. All of them are on the record.</p>
         <div class="j-stats"><div><b data-count="39,322" data-from="0.62" data-dur="0.06">0</b><span>events in one day</span></div><div><b data-count="7" data-from="0.63" data-dur="0.03">0</b><span>agents</span></div></div>
       </div>
       <div class="j-panel" data-from="0.705" data-to="0.742" data-fade="0.008">
@@ -162,6 +163,12 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
   .j-copy { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
   .j-panel { position: absolute; left: max(1rem, calc((100vw - var(--wide)) / 2 + 1rem)); top: 50%; transform: translateY(calc(var(--base, -50%) + var(--ty, 0px))); width: min(34rem, calc(100vw - 2rem)); opacity: 0; visibility: hidden; pointer-events: none; will-change: opacity, transform; }
   .j-panel .actions, .j-panel a, .j-panel button { pointer-events: auto; }
+  /* Desktop: the copy column gets a backing in the scene's own colour, fading out to the right, so no
+     wall, slab or label ever runs behind the words. The script slides the picture into the room beside it. */
+  @media (min-width: 900px) and (orientation: landscape) {
+    .j-copy::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: calc(var(--j-copy-r, 46vw) + 16vw); pointer-events: none;
+      background: linear-gradient(to right, var(--j-bg, var(--paper)) 0, var(--j-bg, var(--paper)) calc(100% - 26vw), transparent 100%); }
+  }
   .j-new { display: inline-flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.4rem; padding: 0.45rem 0.9rem 0.45rem 0.5rem; border: 1px solid color-mix(in srgb, var(--c-offence) 45%, transparent); border-radius: 999px; background: color-mix(in srgb, var(--c-offence) 8%, var(--paper)); color: var(--ink); text-decoration: none; font-size: 0.9rem; max-width: 100%; pointer-events: auto; }
   .j-new b { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; background: var(--c-offence); border-radius: 999px; padding: 0.15rem 0.55rem; }
   .j-new i { font-style: normal; color: var(--c-offence); transition: transform 0.2s; }
