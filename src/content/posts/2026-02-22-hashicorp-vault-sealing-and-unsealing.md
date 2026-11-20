@@ -1,5 +1,6 @@
 ---
 title: "HashiCorp Vault: How Sealing, Unsealing, and Auto-Unseal Actually Work"
+tabTitle: "HashiCorp Vault: Sealing, Unsealing and Auto-Unseal"
 date: 2026-02-22
 category: lab-notes
 tags: [hashicorp-vault, secrets-management, cloud-security, aws-kms, devops]

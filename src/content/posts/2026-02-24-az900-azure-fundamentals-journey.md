@@ -1,5 +1,6 @@
 ---
 title: "My AZ-900 Journey: Learning Azure Fundamentals from the Ground Up"
+tabTitle: "AZ-900: Azure Fundamentals from the Ground Up"
 date: 2026-02-24
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft]

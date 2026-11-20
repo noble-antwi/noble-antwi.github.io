@@ -1,5 +1,6 @@
 ---
 title: "Proxmox on a Trunk Port: Configuring Multi-VLAN Support for a Homelab Hypervisor"
+tabTitle: "Proxmox on a Trunk Port: Multi-VLAN Support"
 date: 2026-05-25
 category: lab-notes
 tags: [proxmox, vlan, networking, homelab, pfsense, trunk-port, virtualization]

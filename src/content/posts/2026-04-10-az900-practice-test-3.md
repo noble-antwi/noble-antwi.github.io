@@ -1,5 +1,6 @@
 ---
 title: "My AZ-900 Journey: Third Practice Test - A New Question Set and What It Exposed"
+tabTitle: "AZ-900 Practice Test 3: A New Question Set"
 date: 2026-04-10
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, practice-test]

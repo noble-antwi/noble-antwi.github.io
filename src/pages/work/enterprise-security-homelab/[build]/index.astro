@@ -20,7 +20,7 @@ const entry = await getEntry('homelab', b.slug);
 const Body = entry ? (await render(entry)).Content : null;
 ---
 
-<Base title={`${strip(b.title).split(/[,:]/)[0]} · Homelab`} description={strip(b.lead)}>
+<Base title={`${b.tab ?? strip(b.title).split(/[,:]/)[0]} · Homelab`} description={strip(b.lead)}>
   <div class="container">
     <article class="hb">
       <header class="hb-head" data-topic="detection">

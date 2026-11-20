@@ -1,5 +1,6 @@
 ---
 title: "My Okta Certification Journey: Two Passes, Two Fails, and a Valuable Lesson"
+tabTitle: "Okta Certification: Two Passes, Two Fails"
 date: 2026-02-22
 category: learning
 tags: [okta, iam, certification, career, identity-management]

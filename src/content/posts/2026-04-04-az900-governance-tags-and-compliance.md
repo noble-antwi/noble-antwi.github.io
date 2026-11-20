@@ -1,5 +1,6 @@
 ---
 title: "My AZ-900 Journey: Organising Resources, Governance, and Compliance"
+tabTitle: "AZ-900: Governance, Tags and Compliance"
 date: 2026-04-04
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, governance]

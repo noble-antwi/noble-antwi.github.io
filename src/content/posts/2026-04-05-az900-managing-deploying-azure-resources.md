@@ -1,5 +1,6 @@
 ---
 title: "My AZ-900 Journey: Managing and Deploying Azure Resources"
+tabTitle: "AZ-900: Managing and Deploying Resources"
 date: 2026-04-05
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, iac, azure-arc]

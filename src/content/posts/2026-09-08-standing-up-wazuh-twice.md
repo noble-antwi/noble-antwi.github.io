@@ -1,5 +1,6 @@
 ---
 title: "Standing Up Wazuh Twice: What the Hardware Swap Taught Me"
+tabTitle: "Standing Up Wazuh Twice: The Hardware Swap"
 date: 2026-09-08
 category: lab-notes
 tags: [wazuh, siem, homelab, ubuntu, pfsense, cis-benchmark, proxmox, incident]

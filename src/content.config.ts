@@ -14,6 +14,8 @@ const posts = defineCollection({
     casefile: z.string().optional(),
     /** Places an interactive replay between the tldr and the prose (key in REPLAYS, [...slug].astro). */
     replay: z.string().optional(),
+    /** A shorter title for the browser tab and search results, when the full title is long. The page keeps its full title. */
+    tabTitle: z.string().optional(),
     /** A short name for links that have little room. */
     short: z.string().optional(),
   }),
@@ -24,6 +26,8 @@ const work = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      /** A shorter title for the browser tab, when the full title is long. */
+      tabTitle: z.string().optional(),
       kicker: z.string(),
       summary: z.string(),
       /** One short sentence for places with little room, such as the homepage case files. */

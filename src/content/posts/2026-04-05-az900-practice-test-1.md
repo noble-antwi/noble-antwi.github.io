@@ -1,5 +1,6 @@
 ---
 title: "My AZ-900 Journey: First Practice Test - 83.78% and What It Revealed"
+tabTitle: "AZ-900 Practice Test 1: 83.78%"
 date: 2026-04-05
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, practice-test]

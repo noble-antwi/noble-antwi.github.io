@@ -64,7 +64,7 @@ const jsonLd = {
 };
 ---
 
-<Base title={d.title} description={description} type="article" published={d.date} tags={d.tags} jsonLd={jsonLd}>
+<Base title={d.tabTitle ?? d.title} description={description} type="article" published={d.date} tags={d.tags} jsonLd={jsonLd}>
   <div class="read-progress" aria-hidden="true"></div>
   {CaseFile && <CaseFile date={formatDate(d.date)} readTime={d.read_time} author={SITE.author} />}
   <div class="container">

@@ -1,5 +1,6 @@
 ---
 title: "HashiCorp Vault: Audit Devices and Visibility into Vault Activity"
+tabTitle: "HashiCorp Vault: Audit Devices"
 date: 2026-03-08
 category: lab-notes
 tags: [hashicorp-vault, secrets-management, cloud-security, auditing, compliance, devops]

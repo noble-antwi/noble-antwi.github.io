@@ -40,7 +40,7 @@ export const CERTS: Cert[] = [
     image: 'https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-associate-badge.svg',
     blurb: 'Entra ID tenants, conditional access, identity governance and entitlement management. Renewed April 2026 with a 92% score.',
     issued: 'Renewed Apr 19, 2026', credential: 'FEC4CC-112274',
-    verify: 'https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/324D5F14A4B47A0F?sharingId=3DD1334494500325', verifyLabel: 'Verify on Microsoft Learn',
+    verify: 'https://learn.microsoft.com/en-us/users/nobleantwi/credentials/324d5f14a4b47a0f', verifyLabel: 'Verify on Microsoft Learn',
     studyLog: '/learning/2026/04/19/sc300-renewal-microsoft-identity-administrator.html', short: 'SC-300',
   },
   {
@@ -89,7 +89,7 @@ export const CERTS: Cert[] = [
     image: 'https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-fundamentals-badge.svg',
     blurb: 'Cloud concepts, core Azure services, and Azure management and governance. Scored 873 / 1000.',
     issued: 'Apr 19, 2026', credential: '950F3F-VB3714',
-    verify: 'https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/59914E901AC5CF08?sharingId=3DD1334494500325', verifyLabel: 'Verify on Microsoft Learn',
+    verify: 'https://learn.microsoft.com/en-us/users/nobleantwi/credentials/59914e901ac5cf08', verifyLabel: 'Verify on Microsoft Learn',
     studyLog: '/learning/2026/04/19/az900-certified-full-journey.html', short: 'AZ-900',
   },
   {

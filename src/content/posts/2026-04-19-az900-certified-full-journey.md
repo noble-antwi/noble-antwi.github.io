@@ -1,5 +1,6 @@
 ---
 title: "AZ-900 Certified: From Zero to 873 - The Full Journey"
+tabTitle: "AZ-900 Certified: From Zero to 873"
 date: 2026-04-19
 category: learning
 tags: [azure, az-900, microsoft, certification, cloud, study-notes]
@@ -192,7 +193,7 @@ The section that had caused problems in practice, Management and Governance, hel
       <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.2rem;">Earned April 19, 2026</div>
       <div style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.4rem;">Credential ID: 59914E901AC5CF08 &nbsp;|&nbsp; Cert No: 950F3F-VB3714</div>
       <div style="margin-top: 0.8rem;">
-        <a href="https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/59914E901AC5CF08?sharingId=3DD1334494500325" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.3); color: #06b6d4; padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-decoration: none;">
+        <a href="https://learn.microsoft.com/en-us/users/nobleantwi/credentials/59914e901ac5cf08" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.3); color: #06b6d4; padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-decoration: none;">
           <i class="fas fa-external-link-alt" style="font-size: 0.75rem;"></i> Verify on Microsoft Learn
         </a>
       </div>

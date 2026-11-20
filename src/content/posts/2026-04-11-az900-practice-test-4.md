@@ -1,5 +1,6 @@
 ---
 title: "My AZ-900 Journey: Fourth Practice Test - 78.38% and a Honest Wake-Up Call"
+tabTitle: "AZ-900 Practice Test 4: 78.38%"
 date: 2026-04-11
 category: learning
 tags: [azure, cloud, certification, az-900, microsoft, practice-test]

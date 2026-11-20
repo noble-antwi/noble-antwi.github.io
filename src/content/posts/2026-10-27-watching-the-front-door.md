@@ -1,5 +1,6 @@
 ---
 title: "Watching the Front Door: Detection Rules for an Application's Identity Log"
+tabTitle: "Watching the Front Door: Identity Log Rules"
 date: 2026-10-27
 category: lab-notes
 tags: [detection-engineering, wazuh, identity, mitre-attack, saml, oauth, scim, homelab]

@@ -14,6 +14,8 @@ export interface Build {
   /** The runbook chapter in the repository's docs folder, when there is one. */
   runbook: string;
   shots: BuildShot[];
+  /** A shorter name for the browser tab, when the title is a long sentence. */
+  tab?: string;
 }
 
 export const HOMELAB_DOCS = 'https://github.com/noble-antwi/enterprise-security-homelab/blob/main/docs/';
@@ -652,7 +654,8 @@ export const BUILDS: Build[] = [
         "alt": "Wazuh Discover filtered to the stock_copilot rule group: 18 hits from APP01, with an access-denied event decoded into its fields.",
         "caption": "Eighteen alerts from the probe, each decoded into fields on SIEM01. One address is redacted."
       }
-    ]
+    ],
+    "tab": "Detection rules for an app identity log"
   },
   {
     "slug": "scan01-scanner",
@@ -752,7 +755,8 @@ export const BUILDS: Build[] = [
         "alt": "Windows Firewall inbound rule for SMB with its remote address scoped to the scanner",
         "caption": "The workstation's SMB rule, scoped to one remote address: SCAN01. A scan does not need a port opened to a segment, only to a host."
       }
-    ]
+    ],
+    "tab": "A least-privilege scan identity"
   },
   {
     "slug": "find-fix-prove",
@@ -822,6 +826,7 @@ export const BUILDS: Build[] = [
         "alt": "Wazuh Configuration Assessment events for SIEM01 filtered to passed checks, showing 147 hits against CIS Ubuntu Linux 24.04 LTS",
         "caption": "The 147 passing checks on SIEM01, counted from assessment events. Most are account and permission hygiene that Ubuntu gets right by default, such as shadowed passwords and no duplicate UIDs."
       }
-    ]
+    ],
+    "tab": "CIS baselines before hardening"
   }
 ];

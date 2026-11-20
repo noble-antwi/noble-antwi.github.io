@@ -1,5 +1,6 @@
 ---
 title: "PSAA Training: Reconstructing an Attack Kill Chain with MITRE ATT&CK"
+tabTitle: "PSAA: An Attack Kill Chain with MITRE ATT&CK"
 date: 2026-05-15
 category: learning
 tags: [mitre-attack, soc, incident-response, psaa, tcm-security, threat-analysis, kill-chain]

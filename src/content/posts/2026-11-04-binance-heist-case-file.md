@@ -1,5 +1,6 @@
 ---
 title: "Five Months of Preparation, Four Minutes to Empty the Wallets"
+tabTitle: "The $6.34B Binance Theft, Link by Link"
 date: 2026-11-04
 category: case-files
 tags: [incident-analysis, supply-chain, social-engineering, ai-agents, agent-identity, secrets-management, mitre-attack]

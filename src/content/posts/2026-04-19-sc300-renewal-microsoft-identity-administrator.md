@@ -1,5 +1,6 @@
 ---
 title: "SC-300 Renewed: Microsoft Identity and Access Administrator"
+tabTitle: "SC-300 Renewed: Identity and Access Administrator"
 date: 2026-04-19
 category: learning
 tags: [sc-300, microsoft, azure, identity, iam, entra-id, certification, renewal]
@@ -211,7 +212,7 @@ These are not theoretical concepts. They are the building blocks of every mature
       <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.2rem;">Renewed April 19, 2026</div>
       <div style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.4rem;">Credential ID: 324D5F14A4B47A0F &nbsp;|&nbsp; Cert No: FEC4CC-112274</div>
       <div style="margin-top: 0.8rem;">
-        <a href="https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/324D5F14A4B47A0F?sharingId=3DD1334494500325" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.3); color: #06b6d4; padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-decoration: none;">
+        <a href="https://learn.microsoft.com/en-us/users/nobleantwi/credentials/324d5f14a4b47a0f" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.3); color: #06b6d4; padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-decoration: none;">
           <i class="fas fa-external-link-alt" style="font-size: 0.75rem;"></i> Verify on Microsoft Learn
         </a>
       </div>

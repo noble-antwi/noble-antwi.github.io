@@ -1,5 +1,6 @@
 ---
 title: "HashiCorp Vault: Authentication Methods, Roles, and AppRole"
+tabTitle: "HashiCorp Vault: Auth Methods and AppRole"
 date: 2026-03-08
 category: lab-notes
 tags: [hashicorp-vault, secrets-management, cloud-security, authentication, approle, devops]

@@ -40,7 +40,7 @@ const related = d.relatedTags.length
   : [];
 ---
 
-<Base title={d.title} description={d.summary}>
+<Base title={d.tabTitle ?? d.title} description={d.summary}>
   <div class="container">
     <header class="work-head" data-topic={d.category}>
       <div>

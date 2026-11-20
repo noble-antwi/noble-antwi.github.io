@@ -843,7 +843,7 @@ changes.
 az group export --name rg-lab-governance-tagging > exported-reference.json
 ```
 
-[`bicep/exported-reference.json`](https://github.com/noble-antwi/az-104-labs/blob/master/01-governance-tagging/bicep/exported-reference.json) holds **only
+The export (kept locally, not published, because it carries subscription details) holds **only
 the five networks and their subnets**. No policy assignments, no lock. Those are
 *extension resources*: attached **to** the resource group, not **in** it, so a
 group export leaves them out. An exported template is not a backup of a

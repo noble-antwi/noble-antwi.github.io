@@ -1,5 +1,6 @@
 ---
 title: "HashiCorp Vault: Understanding Tokens, TTLs, and Token Hierarchies"
+tabTitle: "HashiCorp Vault: Tokens, TTLs and Hierarchies"
 date: 2026-03-01
 category: lab-notes
 tags: [hashicorp-vault, secrets-management, cloud-security, authentication, devops]
