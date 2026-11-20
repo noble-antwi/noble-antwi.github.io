@@ -31,6 +31,13 @@ const HOSTS: { name: string; zone: number; x: number; z: number; h: number; role
   { name: 'VAULT01', zone: 50, x: 8.1, z: 1.0, h: 0.9, role: 'Vault' },
   { name: 'MON01', zone: 60, x: 15, z: 0.4, h: 0.8, role: 'Grafana' },
 ];
+/* What a visitor reads on the map: the job first, the product or zone second. Host names stay in the lab's own pages. */
+const SHOWN: Record<string, [string, string]> = {
+  ADM01: ['Admin workstation', 'management'], PVE01: ['Hypervisor', 'Proxmox'], SIEM01: ['SIEM', 'Wazuh'], SCAN01: ['Scanner', 'Greenbone'],
+  KALI01: ['Attack host', 'contained'], APP01: ['Applications', 'and the AI agent'], DC01: ['Directory', 'Active Directory'], CA01: ['Certificate authority', 'root CA'],
+  IDP01: ['Identity provider', 'Keycloak'], VAULT01: ['Secrets vault', 'HashiCorp Vault'], MON01: ['Monitoring', 'Grafana'],
+};
+const ZONE_SHOWN: Record<number, string> = { 10: 'Management', 20: 'Detection', 30: 'Attack simulation', 40: 'Applications', 50: 'Identity and secrets', 60: 'Monitoring' };
 const WKS = { x: 10.6, z: 1.3 };
 const FW_Z = -7;
 const CLOUD: Vec = [0, 9, -15];
@@ -139,7 +146,7 @@ export function startJourney(root: HTMLElement) {
     const rim = new THREE.LineSegments(rimGeo, new THREE.LineBasicMaterial({ color: z.color, transparent: true, opacity: 0.9 }));
     rim.position.copy(slab.position);
     scene.add(rim); estate.push(rim.material);
-    const l = label(`VLAN ${z.id}`, z.name);
+    const l = label(ZONE_SHOWN[z.id] ?? z.name, 'network zone');
     l.position.set(z.x, -0.6, 3.1); l.scale.multiplyScalar(0.9);
     scene.add(l); zoneLabels.push(l);
   }
@@ -162,7 +169,7 @@ export function startJourney(root: HTMLElement) {
   for (const h of HOSTS) {
     const zone = ZONES.find((z) => z.id === h.zone)!;
     block(h.x, 0.11 + h.h / 2, h.z, 0.9, h.h, 0.9, zone.color);
-    const l = label(h.name, h.role);
+    const l = label(...(SHOWN[h.name] ?? [h.name, h.role]));
     l.position.set(h.x, 0.11 + h.h + 0.55, h.z); l.scale.multiplyScalar(0.75);
     scene.add(l); hostLabels.push(l);
   }
@@ -193,7 +200,7 @@ export function startJourney(root: HTMLElement) {
   const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.22, 0.78), new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false }));
   screen.position.set(0, 0.43, 0.019);
   lid.add(screen); laptop.add(lid); scene.add(laptop);
-  const wksLabel = label('WKS01', 'Windows 11 · VLAN 50');
+  const wksLabel = label('Workstation', 'where the sign-in starts');
   wksLabel.position.set(WKS.x, 1.45, WKS.z); wksLabel.scale.multiplyScalar(0.75);
   scene.add(wksLabel); hostLabels.push(wksLabel);
 
@@ -204,7 +211,7 @@ export function startJourney(root: HTMLElement) {
   const wallRim = new THREE.LineSegments(new THREE.EdgesGeometry(wall.geometry), new THREE.LineBasicMaterial({ color: 0x64748b, transparent: true, opacity: 0.6 }));
   wallRim.position.copy(wall.position);
   scene.add(wallRim); estate.push(wallRim.material);
-  const fwLabel = label('FW01 · pfSense', 'default deny on every interface');
+  const fwLabel = label('Firewall', 'default deny on every interface');
   fwLabel.position.set(0, 4.0, FW_Z); fwLabel.scale.multiplyScalar(1.1);
   scene.add(fwLabel);
   function gate(p: Vec, name: string) {

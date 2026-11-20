@@ -2,6 +2,7 @@
 title: "Collins Aerospace IT Audit: Post-Incident Assessment"
 kicker: "Assessment · IT audit"
 summary: "A graduate IT-audit engagement on a simulated aerospace breach: COBIT-framed planning, NIST 800-30 risk assessment, CMMC Level 3 gap analysis, five headline findings and a costed remediation roadmap."
+teaser: "An IT audit of a simulated aerospace breach: risk assessment, CMMC gap analysis, five headline findings and a costed remediation roadmap."
 category: assessment
 status: academic
 statusLabel: "Academic · Completed"

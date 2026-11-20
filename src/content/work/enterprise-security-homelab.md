@@ -1,7 +1,8 @@
 ---
 title: "Enterprise Security Homelab"
 kicker: "Infrastructure · Detection · Biira Bank"
-summary: "A six-VLAN, default-deny network for a fictional regional bank: pfSense, managed switching, a Proxmox hypervisor on a trunk port, a Windows Server 2025 domain controller answering LDAPS with a certificate from the lab's own root CA, a Keycloak identity provider that signs people and machines in against Active Directory, a Wazuh SIEM with seven agents and its own detection rules, including thirty for an internal application's identity log, a Greenbone scanner whose identity is administrator on member machines and nothing on the domain, a first finding found, fixed and proved closed, and every firewall rule justified and mapped to a NIST control."
+summary: "A six-VLAN, default-deny network built and documented as the infrastructure of a fictional regional bank, with its own directory, certificate authority, identity provider, secrets vault, SIEM and vulnerability scanner. Every firewall rule is justified and mapped to a NIST control, and every control is tested, not just described."
+teaser: "A six-VLAN, default-deny network for a fictional bank, with its own certificate authority, identity provider, SIEM and scanner, and every firewall rule justified."
 category: detection
 status: active
 statusLabel: "In active build"
@@ -189,26 +190,167 @@ Proxmox sits on a trunk port with a single VLAN-aware Linux bridge, so a VM's ne
 
 ## What is built
 
-- **Default-deny segmentation** on three of the six interfaces (MANAGEMENT, ENTERPRISELAN, REDTEAM). Every rule carries a business justification and a NIST SP 800-53 control mapping in a living rule register, with a change log that records tester, rollback and validation evidence. The register now has a ninth principle, learned the hard way: a saved rule is not an enforced rule until the filter is reloaded.
-- **Management-plane isolation**, verified by before-and-after testing: VLAN 50 cannot reach the pfSense administrative interface on any address, while it keeps the DNS, NTP and internet access it legitimately needs.
-- **KALI01**, the attack host, as a Proxmox guest on VLAN 30 with no standing path to any other segment, no ICMP-to-any, and a clean-install snapshot to roll back to after every exercise. Its containment is proven by a test from the host itself, and the runbook is explicit about what that test does and does not prove.
-- **SIEM01**, Wazuh 4.14.7, rebuilt on dedicated hardware after the original host died. The failure became a role swap: the 16 GB machine that had been running Grafana went to the memory-hungry, data-bearing SIEM, and monitoring moves to a hypervisor guest. Written up in [Standing Up Wazuh Twice](/lab-notes/2026/09/08/standing-up-wazuh-twice.html).
-- **Seven agents reporting**: DC01, ADM01, PVE01, WKS01, APP01, IDP01 and VAULT01, with Sysmon on the three Windows machines, and APP01 shipping an application's identity audit log rather than operating-system events. Enrolling ADM01 exposed that its traffic was bypassing the firewall over Tailscale; the fix, and the evidence, are in the runbook.
-- **Detection engineering, with the evidence kept.** A built-in rule fired at level 15 all day on PowerShell checking its own execution policy. It is now tuned by an exception that needs two conditions, so the rule still catches everything else, and the scanner's 2,051 sign-in alerts per scan became a silent rule for SCAN01 and a level 12 alert for the same account from anywhere else. Archives are on, so a silenced alert still leaves its event on the record. The rules live in the repository and are deployed from it. Written up in [The Alert That Cried Wolf](/lab-notes/2026/09/26/the-alert-that-cried-wolf.html).
-- **Detection rules for an application's identity log.** Stock Copilot, an internal app on APP01, writes an audit event for every sign-in, refused token, SCIM call, key rotation and break-glass use. Thirty Wazuh rules turn that log into alerts mapped to MITRE ATT&CK: forged SAML and unsigned tokens at level 12, password guessing counted per device, signing keys changed outside a declared rotation. They were tested before deployment against 61 sample events and a replay of 676 real ones, and went live on 23 October 2026: the app's attack probe produced 18 alerts, all decoded on SIEM01. The first password-guessing rule raised seven false alerts on the lab's own traffic, because it counted refusals by policy as well as wrong credentials; it now counts credentials only. The rules and their deployment steps live in the repository's `detections/` folder. Written up in [Watching the Front Door](/lab-notes/2026/10/27/watching-the-front-door.html).
-- **The first finding found, fixed and proved closed.** A credentialed scan found TLS 1.0 and 1.1 on WKS01's Remote Desktop. A scoped, reversible Group Policy removed them, each step was verified on the machine, and a third scan proved them gone from three directions. WMI stays closed to the scanner by decision, because it would let a stolen scan credential run commands everywhere. Written up in [Find, Fix, Prove](/lab-notes/2026/10/09/find-fix-prove.html).
-- **SCAN01**, a Greenbone Community Edition scanner on VLAN 20 with all four feeds loaded and 186,567 vulnerability tests, built as a VM rather than a container because a scanner stores administrative credentials for everything it scans. Nessus Essentials was the first choice and was ruled out on its own current terms: five addresses on a thirty-day licence cannot cover nine hosts, or sustain a loop of scanning, fixing and scanning again. Written up in [A Scanner That Is Not a Domain Admin](/lab-notes/2026/09/14/a-scanner-that-is-not-a-domain-admin.html).
-- **A scan identity that is an administrator on member machines and nothing on the domain.** One service account in one group, and a Group Policy that places that group in each machine's local Administrators, linked to the member OUs only so the Domain Controllers OU sits structurally outside the grant. Four of the five ways to sign in to Windows are then denied to the account, leaving network logon alone, and the closed door is proven by a Remote Desktop session refused with the correct password.
-- **A forest rebuilt from an export**, `corp.biirabank.com` replacing the retired `ad.biira.online`, by demoting and repromoting the same hardware rather than renaming it. A password typed back under a different keyboard layout locked the controller out after the promotion reboot, and the recovery is recorded as an incident rather than quietly fixed.
-- **A public tier**, `biirabank.com`, served as Cloudflare Worker static assets and graded F to A+ by an independent header checker. Testing found the site still answering on its default `workers.dev` hostname, where none of the zone-level controls applied.
-- **Four CIS baselines recorded before any hardening**, one per host and operating system. They are the "before" half of a before-and-after, and the runbook explains why the four scores must not be read as a ranking.
-- **CA01, the bank's own certificate authority**, an enterprise root CA on the Tier 0 VLAN beside the domain controller. `DC01` enrolled itself through a certificate template, generating its key pair locally so the private key never left it, and now answers LDAPS on 636. Proven from inside the domain with `ldp.exe` and from a laptop that never joined it: with the root, checked against its published SHA-256 fingerprint, `Verification: OK`; without it, error 20. The first consumer is an [AI agent with its own identity](/work/ai-agent-identity-lab/). Written up in chapter 22.
-- **IDP01, the bank's identity provider**: Keycloak 26.8.1 and PostgreSQL 18.6 in Docker Compose on a hardened Ubuntu guest beside the domain controller, with keys-only SSH, the database unreachable from outside its container network, and HTTPS from a CA01 certificate whose private key never left the machine. Keycloak reads Active Directory over LDAPS with its own read-only account, limited to the Employees OU, and never stores a password: a Biira Bank employee signed in with her directory password and DC01 checked it. The administrator signs in with a one-time code, and the bootstrap administrator was deleted. Written up in chapter 23.
-- **The first machine identity**: the AI agent signs in to IDP01 as its own confidential client, with client credentials only and tokens that last five minutes. Disabling the client refused every request with `invalid_client`, while Keycloak's event log recorded the real reason, `client_disabled`, under the agent's name.
-- **VAULT01, being built**: HashiCorp Vault 2.2.1 on its own guest with the other Tier 0 systems, initialised with five key shares of which any three unseal it, a CA01 certificate, an audit device on from the start, and Wazuh agent 007. Six Wazuh rules now read its audit log: a failed login, a password-guessing run, an invalid token, and an expired browser session that stays quiet unless it repeats. They were proven live from VAULT01 to SIEM01, including after a forced log rotation. Written up in [What Wazuh Hears When Vault Says No](/lab-notes/2026/11/09/what-wazuh-hears-when-vault-says-no.html). The first short-lived credentials follow.
-- **DC01**, a Windows Server 2025 domain controller with AD-integrated forward and reverse DNS zones and a clean `dcdiag`. It was the first agent.
-- **Nightly Proxmox backups** to a separate physical disk with a tested restore (NIST CP-9), and SHA256 verification of every installation image before use (SI-7).
-- **Remote access** over Tailscale with WireGuard, with pfSense as the subnet router. Every remote connection now arrives with the real device's address instead of the firewall's, proven in the SSH session itself and in a Wazuh logon event, so logs and rules can name the device. Written up in chapter 5.
+Twenty things are built and proven, in four areas. Each card opens for the detail and the evidence behind it.
+
+<p class="built-jump"><a href="#built-network">Network and segmentation <b>6</b></a><a href="#built-identity">Identity and secrets <b>6</b></a><a href="#built-detection">Detection <b>4</b></a><a href="#built-assessment">Assessment and hardening <b>4</b></a></p>
+
+<section class="built" id="built-network">
+<h3>Network and segmentation</h3>
+<div class="built-grid">
+
+<details class="built-card">
+<summary><span class="built-t">Default-deny segmentation</span><span class="built-s">On three of the six interfaces (MANAGEMENT, ENTERPRISELAN, REDTEAM).</span></summary>
+
+Every rule carries a business justification and a NIST SP 800-53 control mapping in a living rule register, with a change log that records tester, rollback and validation evidence. The register now has a ninth principle, learned the hard way: a saved rule is not an enforced rule until the filter is reloaded.
+
+</details>
+
+<div class="built-card"><span class="built-t">Management-plane isolation</span><span class="built-s">Verified by before-and-after testing: VLAN 50 cannot reach the pfSense administrative interface on any address, while it keeps the DNS, NTP and internet access it legitimately needs.</span></div>
+
+<details class="built-card">
+<summary><span class="built-t">KALI01</span><span class="built-s">The attack host, as a Proxmox guest on VLAN 30 with no standing path to any other segment, no ICMP-to-any, and a clean-install snapshot to roll back to after every exercise.</span></summary>
+
+Its containment is proven by a test from the host itself, and the runbook is explicit about what that test does and does not prove.
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">Remote access</span><span class="built-s">Over Tailscale with WireGuard, with pfSense as the subnet router.</span></summary>
+
+Every remote connection now arrives with the real device's address instead of the firewall's, proven in the SSH session itself and in a Wazuh logon event, so logs and rules can name the device. Written up in chapter 5.
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">A public tier</span><span class="built-s"><code>biirabank.com</code>, served as Cloudflare Worker static assets and graded F to A+ by an independent header checker.</span></summary>
+
+Testing found the site still answering on its default `workers.dev` hostname, where none of the zone-level controls applied.
+
+</details>
+
+<div class="built-card"><span class="built-t">Nightly Proxmox backups</span><span class="built-s">To a separate physical disk with a tested restore (NIST CP-9), and SHA256 verification of every installation image before use (SI-7).</span></div>
+
+</div>
+</section>
+
+<section class="built" id="built-identity">
+<h3>Identity and secrets</h3>
+<div class="built-grid">
+
+<details class="built-card">
+<summary><span class="built-t">DC01</span><span class="built-s">A Windows Server 2025 domain controller with AD-integrated forward and reverse DNS zones and a clean <code>dcdiag</code>.</span></summary>
+
+It was the first agent.
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">A forest rebuilt from an export</span><span class="built-s"><code>corp.biirabank.com</code> replacing the retired <code>ad.biira.online</code>, by demoting and repromoting the same hardware rather than renaming it.</span></summary>
+
+A password typed back under a different keyboard layout locked the controller out after the promotion reboot, and the recovery is recorded as an incident rather than quietly fixed.
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">CA01, the bank's own certificate authority</span><span class="built-s">An enterprise root CA on the Tier 0 VLAN beside the domain controller.</span></summary>
+
+`DC01` enrolled itself through a certificate template, generating its key pair locally so the private key never left it, and now answers LDAPS on 636. Proven from inside the domain with `ldp.exe` and from a laptop that never joined it: with the root, checked against its published SHA-256 fingerprint, `Verification: OK`; without it, error 20. The first consumer is an [AI agent with its own identity](/work/ai-agent-identity-lab/). Written up in chapter 22.
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">IDP01, the bank's identity provider</span><span class="built-s">Keycloak 26.8.1 and PostgreSQL 18.6 in Docker Compose on a hardened Ubuntu guest beside the domain controller, with keys-only SSH, the database unreachable from outside its container network, and HTTPS from a CA01 certificate whose private key never left the machine.</span></summary>
+
+Keycloak reads Active Directory over LDAPS with its own read-only account, limited to the Employees OU, and never stores a password: a Biira Bank employee signed in with her directory password and DC01 checked it. The administrator signs in with a one-time code, and the bootstrap administrator was deleted. Written up in chapter 23.
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">The first machine identity</span><span class="built-s">The AI agent signs in to IDP01 as its own confidential client, with client credentials only and tokens that last five minutes.</span></summary>
+
+Disabling the client refused every request with `invalid_client`, while Keycloak's event log recorded the real reason, `client_disabled`, under the agent's name.
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">VAULT01, being built</span><span class="built-s">HashiCorp Vault 2.2.1 on its own guest with the other Tier 0 systems, initialised with five key shares of which any three unseal it, a CA01 certificate, an audit device on from the start, and Wazuh agent 007.</span></summary>
+
+Six Wazuh rules now read its audit log: a failed login, a password-guessing run, an invalid token, and an expired browser session that stays quiet unless it repeats. They were proven live from VAULT01 to SIEM01, including after a forced log rotation. Written up in [What Wazuh Hears When Vault Says No](/lab-notes/2026/11/09/what-wazuh-hears-when-vault-says-no.html). The first short-lived credentials follow.
+
+</details>
+
+</div>
+</section>
+
+<section class="built" id="built-detection">
+<h3>Detection</h3>
+<div class="built-grid">
+
+<details class="built-card">
+<summary><span class="built-t">SIEM01</span><span class="built-s">Wazuh 4.14.7, rebuilt on dedicated hardware after the original host died.</span></summary>
+
+The failure became a role swap: the 16 GB machine that had been running Grafana went to the memory-hungry, data-bearing SIEM, and monitoring moves to a hypervisor guest. Written up in [Standing Up Wazuh Twice](/lab-notes/2026/09/08/standing-up-wazuh-twice.html).
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">Seven agents reporting</span><span class="built-s">DC01, ADM01, PVE01, WKS01, APP01, IDP01 and VAULT01, with Sysmon on the three Windows machines, and APP01 shipping an application's identity audit log rather than operating-system events.</span></summary>
+
+Enrolling ADM01 exposed that its traffic was bypassing the firewall over Tailscale; the fix, and the evidence, are in the runbook.
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">Detection engineering, with the evidence kept</span><span class="built-s">A built-in rule fired at level 15 all day on PowerShell checking its own execution policy.</span></summary>
+
+It is now tuned by an exception that needs two conditions, so the rule still catches everything else, and the scanner's 2,051 sign-in alerts per scan became a silent rule for SCAN01 and a level 12 alert for the same account from anywhere else. Archives are on, so a silenced alert still leaves its event on the record. The rules live in the repository and are deployed from it. Written up in [The Alert That Cried Wolf](/lab-notes/2026/09/26/the-alert-that-cried-wolf.html).
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">Detection rules for an application's identity log</span><span class="built-s">Stock Copilot, an internal app on APP01, writes an audit event for every sign-in, refused token, SCIM call, key rotation and break-glass use.</span></summary>
+
+Thirty Wazuh rules turn that log into alerts mapped to MITRE ATT&CK: forged SAML and unsigned tokens at level 12, password guessing counted per device, signing keys changed outside a declared rotation. They were tested before deployment against 61 sample events and a replay of 676 real ones, and went live on 23 October 2026: the app's attack probe produced 18 alerts, all decoded on SIEM01. The first password-guessing rule raised seven false alerts on the lab's own traffic, because it counted refusals by policy as well as wrong credentials; it now counts credentials only. The rules and their deployment steps live in the repository's `detections/` folder. Written up in [Watching the Front Door](/lab-notes/2026/10/27/watching-the-front-door.html).
+
+</details>
+
+</div>
+</section>
+
+<section class="built" id="built-assessment">
+<h3>Assessment and hardening</h3>
+<div class="built-grid">
+
+<details class="built-card">
+<summary><span class="built-t">SCAN01</span><span class="built-s">A Greenbone Community Edition scanner on VLAN 20 with all four feeds loaded and 186,567 vulnerability tests, built as a VM rather than a container because a scanner stores administrative credentials for everything it scans.</span></summary>
+
+Nessus Essentials was the first choice and was ruled out on its own current terms: five addresses on a thirty-day licence cannot cover nine hosts, or sustain a loop of scanning, fixing and scanning again. Written up in [A Scanner That Is Not a Domain Admin](/lab-notes/2026/09/14/a-scanner-that-is-not-a-domain-admin.html).
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">A scan identity that is an administrator on member machines and nothing on the domain</span><span class="built-s">One service account in one group, and a Group Policy that places that group in each machine's local Administrators, linked to the member OUs only so the Domain Controllers OU sits structurally outside the grant.</span></summary>
+
+Four of the five ways to sign in to Windows are then denied to the account, leaving network logon alone, and the closed door is proven by a Remote Desktop session refused with the correct password.
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">The first finding found, fixed and proved closed</span><span class="built-s">A credentialed scan found TLS 1.0 and 1.1 on WKS01's Remote Desktop.</span></summary>
+
+A scoped, reversible Group Policy removed them, each step was verified on the machine, and a third scan proved them gone from three directions. WMI stays closed to the scanner by decision, because it would let a stolen scan credential run commands everywhere. Written up in [Find, Fix, Prove](/lab-notes/2026/10/09/find-fix-prove.html).
+
+</details>
+
+<details class="built-card">
+<summary><span class="built-t">Four CIS baselines recorded before any hardening</span><span class="built-s">One per host and operating system.</span></summary>
+
+They are the "before" half of a before-and-after, and the runbook explains why the four scores must not be read as a ranking.
+
+</details>
+
+</div>
+</section>
 
 ## Decisions worth explaining
 

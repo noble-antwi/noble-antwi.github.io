@@ -2,6 +2,7 @@
 title: "Cloud Security Posture Dashboard"
 kicker: "Cloud posture · AWS + Azure"
 summary: "Terraform deploys deliberately misconfigured AWS and Azure resources, Prowler and ScoutSuite scan them, and a Flask dashboard normalises 500+ checks into one findings schema with remediation commands and CIS, NIST and PCI mapping."
+teaser: "Deliberately misconfigured AWS and Azure resources, scanned by Prowler and ScoutSuite, with 500+ checks normalised into one findings dashboard."
 category: cloud
 status: complete
 statusLabel: "Completed"

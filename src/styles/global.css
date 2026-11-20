@@ -603,6 +603,25 @@ figcaption { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink
 .lab-more a { text-decoration: none; }
 .lab-more a:hover { text-decoration: underline; }
 .lab-sec video { width: 100%; height: auto; border: 1px solid var(--line-2); border-radius: var(--radius); background: #050b18; }
+/* A long list of built things, grouped, each one a card that opens for the detail. The grid is wider
+   than the reading column, so it runs to the edge of the page container. */
+.built-jump { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.built-jump a { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.8rem; border: 1px solid var(--line-2); border-radius: 999px; font-size: 0.88rem; font-weight: 600; text-decoration: none; color: var(--ink); }
+.built-jump a:hover { border-color: var(--accent-line); background: var(--accent-soft); }
+.built-jump b { font: 600 0.72rem/1 var(--font-mono); color: var(--ink-3); }
+.built { width: min(calc(var(--wide) - 2rem), calc(100vw - 2rem)); margin-top: 2.6rem; scroll-margin-top: 5.5rem; }
+.prose .built > h3 { font: 600 0.78rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 1rem; padding-bottom: 0.7rem; border-bottom: 1px solid var(--line-2); }
+.built-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); gap: 0.8rem; align-items: start; }
+.built-card { border: 1px solid var(--line-2); border-radius: var(--radius); background: var(--paper); padding: 1rem 1.15rem; font-size: 0.95rem; line-height: 1.6; }
+.built-card > summary { list-style: none; cursor: pointer; display: block; padding-right: 1.6rem; position: relative; }
+.built-card > summary::-webkit-details-marker { display: none; }
+.built-card > summary::after { content: '+'; position: absolute; right: 0; top: -0.1rem; font: 600 1.15rem/1.3 var(--font-mono); color: var(--accent-ink, var(--accent)); }
+.built-card[open] > summary::after { content: '\2212'; }
+.built-card > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+.built-t { display: block; font-family: var(--font-display); font-weight: 800; font-size: 1.08rem; line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 0.3rem; }
+.built-s { display: block; color: var(--ink-2); }
+.built-card[open] { border-color: var(--accent-line); box-shadow: var(--shadow); }
+.built-card > p { margin: 0.8rem 0 0; padding-top: 0.8rem; border-top: 1px solid var(--line); color: var(--ink-2); }
 .gallery-group { scroll-margin-top: 5.5rem; }
 .gallery-group + .gallery-group { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--line); }
 .gallery-group h3 { font: 600 0.78rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 1.1rem; }

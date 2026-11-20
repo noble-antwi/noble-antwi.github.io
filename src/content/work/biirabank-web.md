@@ -2,6 +2,7 @@
 title: "biirabank.com: The Public Tier"
 kicker: "Edge security · Cloudflare · Biira Bank"
 summary: "Biira Bank's public website on Cloudflare Workers: zero JavaScript, a Content Security Policy with no script source at all, TLS 1.2 as the floor, and an independent security-header grade that moved from F to A+. Testing found the site still answering on a default hostname the zone's controls did not cover, and closed it."
+teaser: "A bank's public site with zero JavaScript and a security-header grade taken from F to A+, plus the default hostname the controls had missed."
 category: cloud
 status: active
 statusLabel: "Live · hardening continues"

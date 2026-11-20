@@ -26,6 +26,8 @@ const work = defineCollection({
       title: z.string(),
       kicker: z.string(),
       summary: z.string(),
+      /** One short sentence for places with little room, such as the homepage case files. */
+      teaser: z.string().optional(),
       category: z.enum(['identity', 'cloud', 'detection', 'assessment']),
       status: z.enum(['active', 'complete', 'academic']),
       statusLabel: z.string(),

@@ -63,7 +63,7 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
         <div class="j-panel j-case" data-from={STOPS[i] - 0.013} data-to={STOPS[i] + 0.013} data-fade="0.006" style={`--c: var(--c-${w.data.category})`}>
           <span class="j-kicker"><span class="j-casen">Case {pad(i + 1)} / {pad(cases.length)}</span> · {WORK_CATEGORIES[w.data.category]}</span>
           <h2 class="j-h j-h-case">{w.data.title}</h2>
-          <p class="j-p">{w.data.summary}</p>
+          <p class="j-p">{w.data.teaser ?? w.data.summary}</p>
           <div class="j-stats j-stats-4">{w.data.stats.slice(0, 4).map((s) => <div><b data-count={s.value} data-from={STOPS[i] - 0.009} data-dur="0.012">0</b><span>{s.label}</span></div>)}</div>
           <div class="actions"><a class="btn j-btn-c" href={`/work/${w.id}/`}>Open the case file <span aria-hidden="true">→</span></a>{w.data.repo && <a class="btn btn-ghost" href={w.data.repo} target="_blank" rel="noopener">Repository ↗</a>}</div>
         </div>

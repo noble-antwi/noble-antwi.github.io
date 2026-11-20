@@ -2,6 +2,7 @@
 title: "Enterprise IAM Lab: Hybrid Identity for a Regulated Bank"
 kicker: "Identity · Hybrid identity · Biira Bank"
 summary: "On-prem Active Directory with a tiered admin model, federated to Okta Workforce Identity and Microsoft Entra ID over SAML, OIDC and SWA, with network-aware conditional access and graduated MFA. Built to the regulatory drivers a real bank would have to satisfy, and now being rebuilt on a new forest from a written decision record."
+teaser: "Active Directory with tiered admins, federated to Okta and Entra ID, with conditional access and graduated MFA, built to the rules a real bank has to meet."
 category: identity
 status: active
 statusLabel: "Phase 5 of 6 · rebuilding"

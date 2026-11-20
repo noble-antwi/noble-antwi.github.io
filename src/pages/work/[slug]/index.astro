@@ -129,7 +129,7 @@ const related = d.relatedTags.length
               {grp.items.map((g) => (
                 <figure>
                   <a class="frame" href={g.src.src} target="_blank" rel="noopener">
-                    <Image src={g.src} alt={g.alt} width={800} densities={[1, 1.5]} />
+                    <Image src={g.src} alt={g.alt} width={720} height={450} fit="cover" position="left top" densities={[1, 1.5]} />
                   </a>
                   {g.caption && <figcaption>{g.caption}</figcaption>}
                 </figure>
@@ -141,7 +141,7 @@ const related = d.relatedTags.length
             {d.gallery.map((g) => (
               <figure>
                 <a class="frame" href={g.src.src} target="_blank" rel="noopener">
-                  <Image src={g.src} alt={g.alt} width={800} densities={[1, 1.5]} />
+                  <Image src={g.src} alt={g.alt} width={720} height={450} fit="cover" position="left top" densities={[1, 1.5]} />
                 </a>
                 {g.caption && <figcaption>{g.caption}</figcaption>}
               </figure>
