@@ -1,0 +1,82 @@
+---
+/* One implementation of the Enterprise Security Homelab: its write-up and its own screenshots.
+   The entries live in src/data/homelab-builds.ts. */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Base from '../../../../layouts/Base.astro';
+import { BUILDS, HOMELAB_DOCS } from '../../../../data/homelab-builds';
+
+export function getStaticPaths() {
+  return BUILDS.map((b, i) => ({ params: { build: b.slug }, props: { b, n: i + 1, prev: BUILDS[i - 1] ?? null, next: BUILDS[i + 1] ?? null } }));
+}
+const { b, n, prev, next } = Astro.props;
+const files = import.meta.glob<{ default: ImageMetadata }>('../../../../assets/work/enterprise-security-homelab/*.{png,jpg,svg}', { eager: true });
+const img = (file: string) => files[`../../../../assets/work/enterprise-security-homelab/${file}`]?.default;
+const strip = (h: string) => h.replace(/<[^>]+>/g, '');
+const HOME = '/work/enterprise-security-homelab/';
+---
+
+<Base title={`${strip(b.title)} · Enterprise Security Homelab`} description={strip(b.lead)}>
+  <div class="container">
+    <article class="hb">
+      <header class="hb-head" data-topic="detection">
+        <a class="hb-back" href={`${HOME}#built-${b.group === 'Network and segmentation' ? 'network' : b.group === 'Identity and secrets' ? 'identity' : b.group === 'Detection' ? 'detection' : 'assessment'}`}><span aria-hidden="true">←</span> Enterprise Security Homelab</a>
+        <span class="kicker">{b.group} · {String(n).padStart(2, '0')} of {BUILDS.length}</span>
+        <h1 class="display h1" set:html={b.title} />
+        <p class="lead" set:html={b.lead} />
+      </header>
+
+      {b.more && <div class="prose hb-body" set:html={b.more} />}
+
+      <p class="hb-links">
+        {b.runbook && <a class="btn" href={HOMELAB_DOCS + b.runbook} target="_blank" rel="noopener">The full runbook <span aria-hidden="true">↗</span></a>}
+        <a class="btn btn-ghost" href={HOME}>All twenty implementations</a>
+      </p>
+
+      {b.shots.length > 0 ? (
+        <section class="hb-shots" aria-label="Screenshots">
+          <h2 class="hb-h">The evidence</h2>
+          {b.shots.map((s, k) => {
+            const m = img(s.file);
+            return m && (
+              <figure class="hb-fig" style={`max-width: min(62rem, ${m.width}px)`}>
+                <a class="frame" href={m.src} target="_blank" rel="noopener">
+                  {s.file.endsWith('.svg')
+                    ? <img src={m.src} alt={s.alt} width={m.width} height={m.height} loading="lazy" decoding="async" />
+                    : <Image src={m} alt={s.alt} widths={[720, 1200, 1800]} sizes="(max-width: 72rem) 100vw, 72rem" />}
+                </a>
+                <figcaption><b>Figure {n}.{k + 1}</b> {s.caption}</figcaption>
+              </figure>
+            );
+          })}
+        </section>
+      ) : (
+        <p class="hb-none">The screenshots for this one are still to be captured. The runbook has the commands and their output.</p>
+      )}
+
+      <nav class="pager" aria-label="More implementations">
+        {prev ? <a href={`${HOME}${prev.slug}/`}><small>← Previous</small><span class="t" set:html={prev.title} /></a> : <span></span>}
+        {next && <a class="next" href={`${HOME}${next.slug}/`}><small>Next →</small><span class="t" set:html={next.title} /></a>}
+      </nav>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .hb-head { padding: 3.5rem 0 1.5rem; max-width: 48rem; }
+  .hb-back { display: inline-block; margin-bottom: 1.6rem; font-size: 0.9rem; font-weight: 600; text-decoration: none; color: var(--ink-2); }
+  .hb-back:hover { color: var(--accent); }
+  .hb-head .kicker { display: block; margin-bottom: 0.9rem; }
+  .hb-head .lead { margin-top: 1.1rem; }
+  .hb-body { margin-top: 0.5rem; }
+  .hb-links { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.8rem 0 0; }
+  .hb-shots { margin-top: 3.5rem; padding-top: 2.2rem; border-top: 1px solid var(--line-2); }
+  .hb-h { font: 600 0.78rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 1.6rem; }
+  .hb-fig { margin: 0 0 2.6rem; max-width: 62rem; }
+  .hb-fig .frame { display: block; border: 1px solid var(--line-2); border-radius: var(--radius); overflow: hidden; background: var(--paper-2); box-shadow: var(--shadow); }
+  .hb-fig img { display: block; width: 100%; height: auto; }
+  .hb-fig figcaption { font-family: var(--font-mono); font-size: 0.76rem; line-height: 1.6; color: var(--ink-3); margin-top: 0.8rem; padding-left: 0.9rem; border-left: 2px solid var(--accent-line); max-width: 48rem; }
+  .hb-fig figcaption b { color: var(--ink-2); margin-right: 0.35rem; }
+  .hb-none { margin-top: 3rem; padding: 1rem 1.2rem; border: 1px dashed var(--line-2); border-radius: var(--radius); color: var(--ink-2); max-width: 42rem; }
+  .hb .pager { margin-top: 3.5rem; }
+</style>
