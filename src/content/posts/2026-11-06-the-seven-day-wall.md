@@ -79,4 +79,4 @@ The walk took five nightly runs instead of three. The runs were not at a fixed t
 
 **A default is a decision someone else made.** This one was reasonable. It still had to be found, understood, and kept or removed on purpose.
 
-The full build, including the rehydration timings, the keys-off test and the alert pipeline, is in the [Lab 02 write-up](https://github.com/noble-antwi/azure-labs/tree/master/02-storage-tiers).
+The full build, including the rehydration timings, the keys-off test and the alert pipeline, is in the [Lab 02 write-up](https://github.com/noble-antwi/az-104-labs/tree/master/02-storage-tiers).

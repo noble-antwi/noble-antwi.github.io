@@ -21,7 +21,7 @@ export interface AzureLab {
   stat?: { value: string; label: string };
 }
 
-export const AZURE_LABS_REPO = 'https://github.com/noble-antwi/azure-labs/tree/master/';
+export const AZURE_LABS_REPO = 'https://github.com/noble-antwi/az-104-labs/tree/master/';
 
 export const AZURE_LABS: AzureLab[] = [
   {
@@ -49,10 +49,15 @@ export const AZURE_LABS: AzureLab[] = [
     stat: { value: '412 to 5', label: 'actions, built-in to custom' },
   },
   {
-    n: 5, folder: '05-entra-users-groups', title: 'Entra ID users and groups at scale', group: 'Foundations', state: 'running',
-    asks: 'Users in bulk, guests by invitation, and groups filled by rules: where do dynamic rules lag?',
+    n: 5, folder: '05-entra-users-groups', title: 'Entra ID users and groups at scale', group: 'Foundations', state: 'built',
+    asks: 'If one group holds a role, does it reach people who are two groups down?',
+    found: 'Yes. One assignment covered six people through nesting, and the guests, in no group, got nothing.',
+    stat: { value: '1', label: 'role assignment, six people' },
   },
-  { n: 6, folder: '06-azure-files-share', title: 'Azure Files share', group: 'Foundations', state: 'planned' },
+  {
+    n: 6, folder: '06-azure-files-share', title: 'An Azure Files share', group: 'Foundations', state: 'running',
+    asks: 'Can a file share be mounted, snapshotted and controlled by identity, with no storage keys?',
+  },
   { n: 7, folder: '07-three-tier-vnet', title: 'Three-tier network', group: 'Composition', state: 'planned' },
   { n: 8, folder: '08-hub-spoke-bastion', title: 'Hub and spoke with Bastion', group: 'Composition', state: 'planned' },
   { n: 9, folder: '09-load-balancer-failover', title: 'Load balancer failover', group: 'Composition', state: 'planned' },

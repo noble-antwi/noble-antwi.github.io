@@ -4,14 +4,14 @@ kicker: "Cloud · Azure · Built twice"
 summary: "Twenty hands-on Azure labs, each built twice: first by hand in the portal to see what the service really does, then from scratch as Bicep, and compared. Every lab starts with predictions written down before anything is created."
 category: cloud
 status: active
-statusLabel: "4 of 20 labs built"
+statusLabel: "5 of 20 labs built"
 order: 27
 period: "October 2026 to present"
 role: "Build, break, rebuild as code, document"
-repo: https://github.com/noble-antwi/azure-labs
-docs: https://github.com/noble-antwi/azure-labs
+repo: https://github.com/noble-antwi/az-104-labs
+docs: https://github.com/noble-antwi/az-104-labs
 docsLabel: "Lab write-ups"
-stack: ["Azure Policy", "Resource locks", "Managed identity", "Azure RBAC", "Bicep", "Azure CLI", "what-if", "Activity log", "Blob Storage tiers", "Lifecycle management", "Event Grid", "Logic Apps", "Data-plane RBAC", "User delegation SAS", "Cost Management", "Virtual machines", "Network security groups", "Run Command", "Custom RBAC roles", "Entra SSH login"]
+stack: ["Azure Policy", "Resource locks", "Managed identity", "Azure RBAC", "Bicep", "Azure CLI", "what-if", "Activity log", "Blob Storage tiers", "Lifecycle management", "Event Grid", "Logic Apps", "Data-plane RBAC", "User delegation SAS", "Cost Management", "Virtual machines", "Network security groups", "Run Command", "Custom RBAC roles", "Entra SSH login", "Entra ID groups", "B2B guests", "Microsoft Graph"]
 relatedTags: ["az-104", "bicep", "azure-policy"]
 stats: []
 gallery:
@@ -119,6 +119,22 @@ gallery:
     alt: "An error in the portal: the test user does not have authorization to perform the virtual machine delete action"
     caption: "The portal offered Delete and Azure refused it. The check happens on the request, not on the menu."
     group: "Lab 04 · A custom role, on both planes"
+  - src: ../../assets/work/azure-labs/lab05-architecture.png
+    alt: "Lab 05 architecture: six member users and two guests in Entra ID, two team groups nested inside one all-staff group, and one Reader assignment on a resource group given to that group"
+    caption: "Lab 05 as built: six staff in two team groups, the teams nested in one all-staff group, and one Reader assignment on that group. The guests sit in no group."
+    group: "Lab 05 · Entra ID users and groups"
+  - src: ../../assets/work/azure-labs/05-10-all-staff-all-members.png
+    alt: "The all-staff group's All members tab listing eight members: six users and the two team groups"
+    caption: "The nested group, all members: eight, from two direct members. The two team groups plus the six people inside them."
+    group: "Lab 05 · Entra ID users and groups"
+  - src: ../../assets/work/azure-labs/05-12-kofi-role-assignments.png
+    alt: "Azure role assignments for one user: Reader on a resource group, assigned to the all-staff group"
+    caption: "The proof. A teller who is only in a team group holds Reader, and the portal names the all-staff group it came from."
+    group: "Lab 05 · Entra ID users and groups"
+  - src: ../../assets/work/azure-labs/05-06-bulk-import-failed.png
+    alt: "Bulk operation results showing the same members file imported twice, both with status Failed"
+    caption: "The portal's bulk import failing twice with the same file. The API underneath did the job first time."
+    group: "Lab 05 · Entra ID users and groups"
 ---
 
 ## Why build everything twice
@@ -130,7 +146,7 @@ So every lab here is built twice. First by hand, with predictions written down b
 Each lab follows the same five steps: build it in the portal, break something deliberately, export what Azure created, write the Bicep and deploy it, then write up the findings and tear everything down. Every resource carries `environment`, `purpose`, `lab` and `autoDelete` tags, and a script checks for anything left running.
 
 <section class="lab-sec" id="lab-01">
-<div class="lab-band"><span class="lab-no">Lab 01</span><span class="pill pill-ok">Built twice</span><a href="https://github.com/noble-antwi/azure-labs/tree/master/01-governance-tagging" target="_blank" rel="noopener">Full write-up ↗</a></div>
+<div class="lab-band"><span class="lab-no">Lab 01</span><span class="pill pill-ok">Built twice</span><a href="https://github.com/noble-antwi/az-104-labs/tree/master/01-governance-tagging" target="_blank" rel="noopener">Full write-up ↗</a></div>
 
 ## Governance and tagging
 
@@ -168,12 +184,12 @@ The Bicep rebuild deploys at subscription scope: the group and P4 from `main.bic
 - **Tag Contributor is enough.** The portal quietly gave P1's managed identity Contributor. In code the role assignment is its own resource, and the narrow Tag Contributor role did the job, proven by the Activity log.
 - **Redeploying re-runs Modify.** A second deployment sent the network's tags as owner only, and P1 put `costCenter` back inside that same request.
 
-<p class="lab-more"><a href="#evidence-lab-01">Screenshots from this lab ↓</a><a href="https://github.com/noble-antwi/azure-labs/tree/master/01-governance-tagging" target="_blank" rel="noopener">Every step, in the repository ↗</a></p>
+<p class="lab-more"><a href="#evidence-lab-01">Screenshots from this lab ↓</a><a href="https://github.com/noble-antwi/az-104-labs/tree/master/01-governance-tagging" target="_blank" rel="noopener">Every step, in the repository ↗</a></p>
 
 </section>
 
 <section class="lab-sec" id="lab-02">
-<div class="lab-band"><span class="lab-no">Lab 02</span><span class="pill pill-ok">Built twice</span><a href="https://github.com/noble-antwi/azure-labs/tree/master/02-storage-tiers" target="_blank" rel="noopener">Full write-up ↗</a></div>
+<div class="lab-band"><span class="lab-no">Lab 02</span><span class="pill pill-ok">Built twice</span><a href="https://github.com/noble-antwi/az-104-labs/tree/master/02-storage-tiers" target="_blank" rel="noopener">Full write-up ↗</a></div>
 
 ## Storage tiers
 
@@ -199,12 +215,12 @@ Blob Storage keeps files in four tiers. The colder the tier, the cheaper it is t
 
 **Rebuilt as code.** About 120 lines of Bicep rebuild the storage account, the container, both lifecycle rules and the one data role. The lifecycle rules were copied from Code View, hidden seven-day condition included. The deployment took **26 seconds**, and read-back checks matched the portal build setting for setting. The alert pipeline was left out on purpose, and the reader's identity is passed at deploy time, so no identifier sits in the repository. Both resource groups were then deleted.
 
-<p class="lab-more"><a href="#evidence-lab-02">Screenshots from this lab ↓</a><a href="https://github.com/noble-antwi/azure-labs/tree/master/02-storage-tiers" target="_blank" rel="noopener">Every step, in the repository ↗</a></p>
+<p class="lab-more"><a href="#evidence-lab-02">Screenshots from this lab ↓</a><a href="https://github.com/noble-antwi/az-104-labs/tree/master/02-storage-tiers" target="_blank" rel="noopener">Every step, in the repository ↗</a></p>
 
 </section>
 
 <section class="lab-sec" id="lab-03">
-<div class="lab-band"><span class="lab-no">Lab 03</span><span class="pill pill-ok">Built twice</span><a href="https://github.com/noble-antwi/azure-labs/tree/master/03-vm-deep-dive" target="_blank" rel="noopener">Full write-up ↗</a></div>
+<div class="lab-band"><span class="lab-no">Lab 03</span><span class="pill pill-ok">Built twice</span><a href="https://github.com/noble-antwi/az-104-labs/tree/master/03-vm-deep-dive" target="_blank" rel="noopener">Full write-up ↗</a></div>
 
 ## A virtual machine, taken apart
 
@@ -226,16 +242,16 @@ A virtual machine looks like one thing in the portal, but Azure builds it from s
 
 **A public IP is an address, not an open door.** With no inbound rule, SSH timed out: the default rules dropped the packets before they reached anything. One rule allowing TCP 22 from one address fixed it.
 
-**Rebuilt as code.** The Bicep file builds the same seven resources, with the SSH public key and the allowed address passed at deploy time so nothing personal sits in the repository. It deployed first time, SSH worked straight away because the rule was part of the template, and the VM again took `10.30.0.4`, the first free address in the subnet. The copy was deleted once verified. The bill is still to come, and the portal build stays deallocated until it is read.
+**Rebuilt as code.** The Bicep file builds the same seven resources, with the SSH public key and the allowed address passed at deploy time so nothing personal sits in the repository. It deployed first time, SSH worked straight away because the rule was part of the template, and the VM again took `10.30.0.4`, the first free address in the subnet. The copy was deleted once verified. Labs 04 and 05 then reused the VM, and everything was deleted on 19 November.
 
 The sentence to keep: *a stopped VM is not a free VM until Azure says "deallocated".*
 
-<p class="lab-more"><a href="#evidence-lab-03">Screenshots from this lab ↓</a><a href="https://github.com/noble-antwi/azure-labs/tree/master/03-vm-deep-dive" target="_blank" rel="noopener">Every step, in the repository ↗</a></p>
+<p class="lab-more"><a href="#evidence-lab-03">Screenshots from this lab ↓</a><a href="https://github.com/noble-antwi/az-104-labs/tree/master/03-vm-deep-dive" target="_blank" rel="noopener">Every step, in the repository ↗</a></p>
 
 </section>
 
 <section class="lab-sec" id="lab-04">
-<div class="lab-band"><span class="lab-no">Lab 04</span><span class="pill pill-ok">Built twice</span><a href="https://github.com/noble-antwi/azure-labs/tree/master/04-custom-rbac-role" target="_blank" rel="noopener">Full write-up ↗</a></div>
+<div class="lab-band"><span class="lab-no">Lab 04</span><span class="pill pill-ok">Built twice</span><a href="https://github.com/noble-antwi/az-104-labs/tree/master/04-custom-rbac-role" target="_blank" rel="noopener">Full write-up ↗</a></div>
 
 ## A custom role, tested on both planes
 
@@ -262,17 +278,48 @@ Built-in roles are broad. Virtual Machine Contributor, the obvious choice for so
 
 The sentence to keep: *read the actions list, not the role name.*
 
-<p class="lab-more"><a href="#evidence-lab-04">Screenshots from this lab ↓</a><a href="https://github.com/noble-antwi/azure-labs/tree/master/04-custom-rbac-role" target="_blank" rel="noopener">Every step, in the repository ↗</a></p>
+<p class="lab-more"><a href="#evidence-lab-04">Screenshots from this lab ↓</a><a href="https://github.com/noble-antwi/az-104-labs/tree/master/04-custom-rbac-role" target="_blank" rel="noopener">Every step, in the repository ↗</a></p>
 
 </section>
 
 <section class="lab-sec" id="lab-05">
-<div class="lab-band"><span class="lab-no">Lab 05</span><span class="pill pill-warn">Running</span><a href="https://github.com/noble-antwi/azure-labs/tree/master/05-entra-users-groups" target="_blank" rel="noopener">Full write-up ↗</a></div>
+<div class="lab-band"><span class="lab-no">Lab 05</span><span class="pill pill-ok">Built twice</span><a href="https://github.com/noble-antwi/az-104-labs/tree/master/05-entra-users-groups" target="_blank" rel="noopener">Full write-up ↗</a></div>
 
 ## Entra ID users and groups at scale
 
-The fifth lab moves from one test user to many: users created in bulk, guests invited, and groups filled by dynamic membership rules and used for licensing, with one question to answer: where do dynamic rules lag? The build is under way.
+The fifth lab moves from one test user to many. It creates six staff for a fictional bank branch and treasury team, invites two outside guests, groups the staff by team, nests both teams inside one all-staff group, and gives a single Azure role to that one group, to prove the access reaches people two levels down. The tenant has no paid licences, so the lab does everything Entra ID Free allows.
 
-<p class="lab-more"><a href="https://github.com/noble-antwi/azure-labs/tree/master/05-entra-users-groups" target="_blank" rel="noopener">Follow the build in the repository ↗</a></p>
+| Question | Prediction | What happened |
+|---|---|---|
+| Where does a guest's password live: in our tenant or theirs? | In theirs | Right. The guest signs in at home. Our tenant holds a pointer account with no password. |
+| A group whose members are two groups: how many members does it have? | Not answered | Two direct members, eight in all: the two groups plus the six people. |
+| If the all-staff group gets Reader, does a teller who is only in a team group get it too? | Yes, through inheritance | Right. Check access on the teller shows Reader, and names the all-staff group it came from. |
+
+<video controls muted loop playsinline preload="none" poster="/assets/work/azure-labs/lab05-nested-groups-poster.jpg" width="1200" height="760" aria-label="Animation: six users land in two team groups, the teams are nested inside one all-staff group, Reader is given to that group, and the access reaches every person. The guests sit in no group and get nothing">
+  <source src="/assets/work/azure-labs/lab05-nested-groups.mp4" type="video/mp4" />
+</video>
+
+**When a portal tool fails, the API underneath usually works.** The portal's bulk user create failed three times out of three, and its bulk member import twice out of two, with the same unexpected error. The audit log showed the job accepted and no user ever attempted, which put the fault on the service. A script calling Microsoft Graph, the API the portal itself uses, created the same users first time.
+
+**A guest is a pointer, not an account.** No password is held in the tenant, and the guest's name in the directory is their email rewritten with `#EXT#`. Both guests were invited and put in no group, so they got nothing: membership is the access.
+
+**Give roles to groups, not people.** One assignment covered six people two levels down, and adding someone to a team is the whole access change. Nesting works for Azure roles but not for everything: group-based licensing ignores nested groups.
+
+**Rebuilt as code.** Groups live in Entra ID, not in Azure Resource Manager, so plain Bicep cannot create them. The Microsoft Graph Bicep extension can. The file looks the users up at deploy time, builds the two team groups and the nested group, and assigns Reader to it. It deployed first time. Dynamic groups, group-based licensing and self-service password reset need a paid Entra licence, so they are deferred to a trial alongside lab 19.
+
+The sentence to keep: *assign to groups, and check effective access with Check access, which names the group it came from.*
+
+<p class="lab-more"><a href="#evidence-lab-05">Screenshots from this lab ↓</a><a href="https://github.com/noble-antwi/az-104-labs/tree/master/05-entra-users-groups" target="_blank" rel="noopener">Every step, in the repository ↗</a></p>
+
+</section>
+
+<section class="lab-sec" id="lab-06">
+<div class="lab-band"><span class="lab-no">Lab 06</span><span class="pill pill-warn">Running</span><a href="https://github.com/noble-antwi/az-104-labs/tree/master/06-azure-files-share" target="_blank" rel="noopener">Full write-up ↗</a></div>
+
+## An Azure Files share
+
+The sixth lab stands up an Azure Files SMB share, mounts it, snapshots it, and controls access with identity instead of storage keys. From this lab on, anything an earlier lab already built by hand is deployed from Bicep at the start, so portal time goes only to what is new. The build is under way.
+
+<p class="lab-more"><a href="https://github.com/noble-antwi/az-104-labs/tree/master/06-azure-files-share" target="_blank" rel="noopener">Follow the build in the repository ↗</a></p>
 
 </section>
