@@ -2,14 +2,30 @@ A running VM is not a backup of itself. Snapshots help with a quick rollback, bu
 
 ## Where the backups live
 
-The Proxmox host is a standalone node with eight cores, about 32 GiB of RAM and two physical disks.
+The Proxmox host is a standalone node with eight cores, about 32 GiB of RAM and two physical disks. Figure 6.1 is its Datacenter summary view in Proxmox.
+
+![Proxmox Datacenter summary showing one online standalone node and a healthy status](../../assets/work/enterprise-security-homelab/pve-01-datacenter-summary.png)
+
+*Figure 6.1: The Proxmox Datacenter summary: a healthy standalone node, `proxmox-01`, with no cluster. This is the top-level health and inventory view.*
+
+The two disks have separate roles.
 
 | Disk | Size | Role |
 |---|---|---|
 | `/dev/sda` | 3 TB | Proxmox OS and primary guest storage (`local`, `local-lvm`) |
 | `/dev/sdb` | 500 GB | Backup target (`backup`, ext4 Directory storage) |
 
-The second disk had previously been an operating system disk, with leftover EFI and ext4 partitions. I wiped it and created a Directory storage named `backup`, mounted at `/mnt/pve/backup`, with the content type set to VZDump backup file.
+Figure 6.2 shows both disks as the node reports them.
+
+![Proxmox node disk list showing /dev/sda at 3 TB and /dev/sdb at 500 GB, both with SMART status PASSED](../../assets/work/enterprise-security-homelab/pve-02-node-disks.png)
+
+*Figure 6.2: The two physical disks, `/dev/sda` at 3 TB and `/dev/sdb` at 500 GB, before `sdb` was repurposed. Both report SMART "PASSED".*
+
+The second disk had previously been an operating system disk, with leftover EFI and ext4 partitions. I wiped it and created a Directory storage named `backup`, mounted at `/mnt/pve/backup`, with the content type set to VZDump backup file. Figure 6.3 shows the result.
+
+![Proxmox directory storage list showing /mnt/pve/backup on ext4, with the disk wipe and directory creation in the task log](../../assets/work/enterprise-security-homelab/pve-03-storage-backup.png)
+
+*Figure 6.3: The `backup` Directory storage mounted at `/mnt/pve/backup` on the ext4 `sdb` disk. This is the dedicated backup target, separate from the disk that holds the running guests.*
 
 The reason for a separate disk is a basic tenet of recoverable design: the backup must survive the thing it is protecting against. If the backups sat on the same disk as the running VMs, a failure or corruption of that disk would take both.
 
@@ -28,11 +44,11 @@ I configured one scheduled job on 30 August 2026.
 
 ## Proving it ran
 
-A schedule is a promise, not evidence, so I did not wait for 02:00. I started the job on demand and checked two things: the task finished with `TASK OK`, and backup files were present under the `backup` storage for both guests that existed at the time. Figure 6.1 shows the job, with that verification run as the task at the bottom.
+A schedule is a promise, not evidence, so I did not wait for 02:00. I started the job on demand and checked two things: the task finished with `TASK OK`, and backup files were present under the `backup` storage for both guests that existed at the time. Figure 6.4 shows the job, with that verification run as the task at the bottom.
 
 ![Proxmox scheduled backup job](../../assets/work/enterprise-security-homelab/pve-04-backup-job.png)
 
-*Figure 6.1: Nightly backup job, verified by an on-demand restore point. Mapped to NIST CP-9 in the runbook.*
+*Figure 6.4: Nightly backup job, verified by an on-demand restore point. Mapped to NIST CP-9 in the runbook.*
 
 Recovery is a short, documented path: open the `backup` storage, choose Backups, select the restore point and choose Restore. A lost or broken guest becomes a restore, not a rebuild. The runbook puts the principle bluntly: a backup never verified by a restore is only a hope.
 

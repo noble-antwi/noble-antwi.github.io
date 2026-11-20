@@ -15,41 +15,57 @@ Figure 18.1 shows the answer I built: four pieces, each doing one job and passin
 
 The scope is the control. A domain controller has no local account database: its Administrators group is the domain's built-in Administrators. The same instruction that makes the scanner an administrator of a member server would, on DC01, make a stored credential one of the most privileged objects in the directory. Linking to the member OUs excludes DC01 structurally rather than by luck.
 
+The account's own settings were read back from the directory rather than assumed, as Figure 18.2 shows.
+
+![PowerShell Get-ADUser output for svc-greenbone showing AccountNotDelegated, CannotChangePassword and PasswordNeverExpires all True](../../assets/work/enterprise-security-homelab/scan-13-svc-greenbone-verified.png)
+
+*Figure 18.2: The account's settings read back from the directory: `AccountNotDelegated`, `CannotChangePassword` and `PasswordNeverExpires` all True, and a description naming purpose, granting group and owner.*
+
 ## The grant itself
 
-Figure 18.2 shows the single item that delivers the right, a Group Policy Preferences local group item.
+Figure 18.3 shows the single item that delivers the right, a Group Policy Preferences local group item.
 
 ![Group Policy Preferences local group item adding a security group to the built-in Administrators group](../../assets/work/enterprise-security-homelab/scan-16-gpo-local-administrators-item.png)
 
-*Figure 18.2: The grant itself. Action Update so existing administrators survive, the built-in Administrators group picked from the list so its well-known identifier is stored rather than a typed name, and the member added rather than the list replaced.*
+*Figure 18.3: The grant itself. Action Update so existing administrators survive, the built-in Administrators group picked from the list so its well-known identifier is stored rather than a typed name, and the member added rather than the list replaced.*
 
 Preferences are used rather than Restricted Groups because Preferences can add a member. Restricted Groups replaces the whole membership list, which removes administrators nobody meant to remove. Machines re-read the policy at startup and roughly every 90 minutes, so an entry removed by hand is restored.
 
 ## One door open, four closed
 
-An administrator may sign in to Windows in every way it offers, and the scanner needs exactly one of them. Figure 18.3 shows the five logon types and what the same policy does to four of them.
+An administrator may sign in to Windows in every way it offers, and the scanner needs exactly one of them. Figure 18.4 shows the five logon types and what the same policy does to four of them.
 
 ![Diagram of the five Windows logon types, four denied to the scan identity and only network logon permitted](../../assets/work/enterprise-security-homelab/scanner-logon-rights.svg)
 
-*Figure 18.3: Five ways to sign in to Windows, four of them closed to the scanner. Its password is stored in a database and never expires, so the design assumes the credential leaks and narrows what a leak is worth.*
+*Figure 18.4: Five ways to sign in to Windows, four of them closed to the scanner. Its password is stored in a database and never expires, so the design assumes the credential leaks and narrows what a leak is worth.*
 
 Four of the five are denied to the group: local, Remote Desktop, batch and service logon. Network logon alone is left. Two rules decided that. Deny beats allow, so the scanner keeps the administrator membership scanning requires while losing every door it does not use. And defining a right replaces it: a right set in a policy becomes the machine's entire list, so I read the workstation's existing deny rights first and carried its Guests entry over.
 
 ## Proving it on a real machine
 
-A policy in a console shows intent. When I checked the directory, the target OU was empty, so the policy was linked correctly and applied to nothing. I pre-staged the first workstation, WKS01, in the right OU, joined it, and confirmed on the machine that the policy had arrived and the group was in its local Administrators.
+A policy in a console shows intent. When I checked the directory, the target OU was empty, so the policy was linked correctly and applied to nothing. I pre-staged the first workstation, WKS01, in the right OU, joined it, and confirmed on the machine that the policy had arrived and the group was in its local Administrators. Figure 18.5 shows that result on WKS01.
 
-Then I tried the closed door. Figure 18.4 shows a Remote Desktop sign-in to WKS01 as `CORP\svc-greenbone` with the correct password.
+![PowerShell on WKS01 confirming domain membership and listing the SG-Scanner-LocalAdmin group in the local Administrators group](../../assets/work/enterprise-security-homelab/sys-06-wks01-local-administrators-proof.png)
+
+*Figure 18.5: The result, on the machine: `SG-Scanner-LocalAdmin` in WKS01's local Administrators group, placed there by the policy and not by hand.*
+
+The logon rights were checked the same way. Figure 18.6 shows an export of the workstation's deny rights before and after a policy refresh: two, then five.
+
+![PowerShell on WKS01 exporting user rights before and after a policy refresh, with two deny rights before and five after](../../assets/work/enterprise-security-homelab/sys-09-wks01-deny-rights-after.png)
+
+*Figure 18.6: The same machine before and after in one view: two deny rights holding only Guest, then five, with the scanner group in local, Remote Desktop, batch and service logon. The network right is unchanged.*
+
+Then I tried the closed door. Figure 18.7 shows a Remote Desktop sign-in to WKS01 as `CORP\svc-greenbone` with the correct password.
 
 ![Windows refusing a Remote Desktop sign-in for the scanner service account](../../assets/work/enterprise-security-homelab/sys-10-rdp-refused-svc-greenbone.png)
 
-*Figure 18.4: The closed door, tried. The account is an administrator of this machine and the password is correct, and Windows still refuses, because deny overrides both. A configuration screen is not proof that a right is enforced.*
+*Figure 18.7: The closed door, tried. The account is an administrator of this machine and the password is correct, and Windows still refuses, because deny overrides both. A configuration screen is not proof that a right is enforced.*
 
-The same policy prepares the target for a scan. It sets Remote Registry to start automatically and enables the inbound SMB rule, narrowed as Figure 18.5 shows.
+The same policy prepares the target for a scan. It sets Remote Registry to start automatically and enables the inbound SMB rule, narrowed as Figure 18.8 shows.
 
 ![Windows Firewall inbound rule for SMB with its remote address scoped to the scanner](../../assets/work/enterprise-security-homelab/scan-24-gpo-smb-rule-scoped-to-scan01.png)
 
-*Figure 18.5: The workstation's SMB rule, scoped to one remote address: SCAN01. A scan does not need a port opened to a segment, only to a host.*
+*Figure 18.8: The workstation's SMB rule, scoped to one remote address: SCAN01. A scan does not need a port opened to a segment, only to a host.*
 
 ## What I took from it
 

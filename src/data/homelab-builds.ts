@@ -33,9 +33,19 @@ export const BUILDS: Build[] = [
         "caption": "The 802.1Q VLAN table on the managed switch: six VLANs, two trunk ports, six access ports."
       },
       {
+        "file": "net-03-pfsense-interface-assignments.png",
+        "alt": "pfSense Interface Assignments page listing six VLAN interfaces on the parent NIC ue0",
+        "caption": "Interface assignments on pfSense. Each of the six VLANs is a tagged sub-interface of the single LAN NIC, so one cable to the switch trunk carries every segment."
+      },
+      {
         "file": "net-04-pfsense-vlan-gateways.png",
         "alt": "pfSense interface list showing a gateway on every VLAN",
         "caption": "pfSense holds the .1 gateway on every segment, so every inter-VLAN packet crosses the firewall."
+      },
+      {
+        "file": "pve-06-interfaces-vlan-aware.png",
+        "alt": "/etc/network/interfaces on Proxmox with a VLAN-aware bridge",
+        "caption": "The VLAN-aware bridge on Proxmox. A VM's segment is decided by one tag on its virtual NIC, not by cabling."
       },
       {
         "file": "packet-path.svg",
@@ -53,9 +63,9 @@ export const BUILDS: Build[] = [
         "caption": "ENT-05: agents dial out, so the rule that lets DC01 report lives on the ENTERPRISELAN interface, not the BlueTeam one. It failed twice before it passed traffic; the runbook records both reasons."
       },
       {
-        "file": "pve-06-interfaces-vlan-aware.png",
-        "alt": "/etc/network/interfaces on Proxmox with a VLAN-aware bridge",
-        "caption": "The VLAN-aware bridge on Proxmox. A VM's segment is decided by one tag on its virtual NIC, not by cabling."
+        "file": "fw-11-filter-reload.png",
+        "alt": "pfSense Status, Filter Reload page with the reload status log",
+        "caption": "Status > Filter Reload on pfSense. Reloading by hand compiled and loaded the current ruleset, and the VLAN 50 isolation tests then returned the expected result."
       }
     ]
   },
@@ -68,9 +78,19 @@ export const BUILDS: Build[] = [
     "runbook": "13-firewall-rulebase-governance.md",
     "shots": [
       {
+        "file": "fw-09-ent-isolation-before.png",
+        "alt": "PowerShell on DC01 before the change: Test-NetConnection to port 443 returns True for both gateways",
+        "caption": "The baseline, recorded before the rules were tightened. Both tests return True; Figure 2.2 repeats them after the change."
+      },
+      {
         "file": "fw-10-ent-isolation-after.png",
         "alt": "Test output showing VLAN 50 cannot reach the pfSense admin interface",
         "caption": "Management-plane isolation, proven rather than assumed: EnterpriseLAN cannot reach the firewall's admin interface on any VLAN, while DNS, NTP and internet still work."
+      },
+      {
+        "file": "fw-11-filter-reload.png",
+        "alt": "pfSense Status, Filter Reload page with the reload status log",
+        "caption": "Status > Filter Reload. Reloading by hand compiled and loaded the current ruleset, after which the isolation control took effect."
       }
     ]
   },
@@ -83,9 +103,19 @@ export const BUILDS: Build[] = [
     "runbook": "15-kali-attack-host-build.md",
     "shots": [
       {
+        "file": "red-01-iso-checksum.png",
+        "alt": "Proxmox shell showing the published SHA256 for the Kali 2026.2 installer ISO and a matching sha256sum of the downloaded file",
+        "caption": "The downloaded Kali ISO verified against the published SHA256 before installation. Checking software before it enters the environment is a control in its own right, and it matters most for the machine that runs offensive tooling."
+      },
+      {
         "file": "red-02-vm-network-vlan30.png",
         "alt": "Proxmox network device settings for KALI01 with VLAN tag 30",
         "caption": "KALI01's placement is one number on its virtual NIC. Nothing inside the guest can move it to another segment, which is why the tag lives at the hypervisor."
+      },
+      {
+        "file": "red-06-static-ip-verified.png",
+        "alt": "Terminal on KALI01 showing 192.168.30.2/24 on eth0 and a default route via 192.168.30.1",
+        "caption": "`192.168.30.2/24` with `valid_lft forever`, a static address and not a lease, and a default route via `192.168.30.1`. The unanswered ping to the gateway is expected: no RedTeam rule permits ICMP to the firewall, by design."
       },
       {
         "file": "red-14-redteam-rules-final.png",
@@ -96,6 +126,16 @@ export const BUILDS: Build[] = [
         "file": "red-16-containment-test.png",
         "alt": "Containment test run from the Kali host",
         "caption": "Containment test from KALI01: no reachability to the domain controller or the firewall management plane, and the attempt is logged."
+      },
+      {
+        "file": "red-09-redteam-states-diagnostic.png",
+        "alt": "pfSense REDTEAM rules tab with RED-01 showing 3/1 KiB in the States column",
+        "caption": "RED-01 showing 3/1 KiB in the States column while DNS was failing, which proves the firewall accepted and delivered the queries. The greyed row at the bottom is the legacy any-to-any rule, disabled here and deleted once containment was proven."
+      },
+      {
+        "file": "red-11-dns-working.png",
+        "alt": "nslookup on KALI01 returning a non-authoritative answer for kali.org from 192.168.30.1",
+        "caption": "The query that had been timing out now returns an answer from `192.168.30.1`. RED-01 works end to end: the rule passes the traffic and the service is listening."
       },
       {
         "file": "red-17-clean-install-snapshot.png",
@@ -111,7 +151,43 @@ export const BUILDS: Build[] = [
     "lead": "Over Tailscale with WireGuard, with pfSense as the subnet router.",
     "more": "<p>Every remote connection now arrives with the real device's address instead of the firewall's, proven in the SSH session itself and in a Wazuh logon event, so logs and rules can name the device. Written up in chapter 5.</p>",
     "runbook": "05-remote-access.md",
-    "shots": []
+    "shots": [
+      {
+        "file": "vpn-02-shellcmd-legacy-entries.png",
+        "alt": "pfSense Services, Shellcmd settings listing two entries: one starts the Tailscale daemon and one runs tailscale up",
+        "caption": "The two startup entries left over from the manual install: start `tailscaled` by hand, then `tailscale up` ten seconds later."
+      },
+      {
+        "file": "vpn-03-shellcmd-removed.png",
+        "alt": "pfSense Services, Shellcmd settings with an empty command list",
+        "caption": "Both entries deleted. A search of the firewall's configuration file for the old daemon command then returned zero matches."
+      },
+      {
+        "file": "vpn-04-netstack-setting-active.png",
+        "alt": "pfSense command prompt output showing TS_DEBUG_NETSTACK_SUBNETS=0 on the running Tailscale daemon",
+        "caption": "`procstat -e` on the running `tailscaled` shows `TS_DEBUG_NETSTACK_SUBNETS=0`, so the setting is active and not only saved."
+      },
+      {
+        "file": "vpn-06-tailscale-rules.png",
+        "alt": "pfSense rules on the Tailscale interface: the 100.64.0.0/10 rule carrying traffic and the older 192.168.0.0/16 rule at zero states",
+        "caption": "The rule for `100.64.0.0/10`, Tailscale's address range, to the lab networks carries the traffic. The earlier `192.168.0.0/16` rule shows 0 states and was disabled on 2 November 2026."
+      },
+      {
+        "file": "vpn-05-ssh-client-real-ip.png",
+        "alt": "Terminal on IDP01 where echo SSH_CLIENT returns the laptop's Tailscale address",
+        "caption": "On IDP01, over the tunnel, `echo $SSH_CLIENT` shows `100.118.195.0`, the laptop's Tailscale address. The same command showed `192.168.50.1` before the change."
+      },
+      {
+        "file": "vpn-07-wazuh-real-source-ip.png",
+        "alt": "Wazuh search for the laptop's Tailscale address returning one Windows logon event with that address in the ipAddress field",
+        "caption": "Wazuh, searching on the laptop's Tailscale address: one logon event from DC01, for a Remote Desktop session opened over Tailscale, with that address as its source."
+      },
+      {
+        "file": "vpn-10-app01-reply-path.png",
+        "alt": "Terminal on APP01 where ip route get for the laptop's address returns the tailscale0 interface",
+        "caption": "On APP01, the route to the laptop's address goes through APP01's own Tailscale interface, `tailscale0`, not back through pfSense."
+      }
+    ]
   },
   {
     "slug": "public-tier",
@@ -121,6 +197,11 @@ export const BUILDS: Build[] = [
     "more": "<p>Testing found the site still answering on its default <code>workers.dev</code> hostname, where none of the zone-level controls applied.</p>",
     "runbook": "18-public-web-presence-and-edge-hardening.md",
     "shots": [
+      {
+        "file": "web-01-securityheaders-before-f.png",
+        "alt": "securityheaders.com report for biirabank.com before hardening, showing grade F",
+        "caption": "The starting point, scanned before any hardening: grade F, with five headers absent. The scan resolved over plain HTTP, which is the finding that led to enabling Always Use HTTPS."
+      },
       {
         "file": "web-02-securityheaders-after-aplus.png",
         "alt": "An independent security header grader reporting A plus for biirabank.com",
@@ -137,6 +218,21 @@ export const BUILDS: Build[] = [
     "runbook": "14-proxmox-storage-backup-capacity.md",
     "shots": [
       {
+        "file": "pve-01-datacenter-summary.png",
+        "alt": "Proxmox Datacenter summary showing one online standalone node and a healthy status",
+        "caption": "The Proxmox Datacenter summary: a healthy standalone node, `proxmox-01`, with no cluster. This is the top-level health and inventory view."
+      },
+      {
+        "file": "pve-02-node-disks.png",
+        "alt": "Proxmox node disk list showing /dev/sda at 3 TB and /dev/sdb at 500 GB, both with SMART status PASSED",
+        "caption": "The two physical disks, `/dev/sda` at 3 TB and `/dev/sdb` at 500 GB, before `sdb` was repurposed. Both report SMART \"PASSED\"."
+      },
+      {
+        "file": "pve-03-storage-backup.png",
+        "alt": "Proxmox directory storage list showing /mnt/pve/backup on ext4, with the disk wipe and directory creation in the task log",
+        "caption": "The `backup` Directory storage mounted at `/mnt/pve/backup` on the ext4 `sdb` disk. This is the dedicated backup target, separate from the disk that holds the running guests."
+      },
+      {
         "file": "pve-04-backup-job.png",
         "alt": "Proxmox scheduled backup job",
         "caption": "Nightly backup job, verified by an on-demand restore point. Mapped to NIST CP-9 in the runbook."
@@ -150,7 +246,33 @@ export const BUILDS: Build[] = [
     "lead": "A Windows Server 2025 domain controller with AD-integrated forward and reverse DNS zones and a clean <code>dcdiag</code>.",
     "more": "<p>It was the first agent.</p>",
     "runbook": "11-domain-controller-firewall.md",
-    "shots": []
+    "shots": [
+      {
+        "file": "fw-01-aliases-ip.png",
+        "alt": "The pfSense IP aliases page listing SRV1_DC as the host 192.168.50.2, described as the Windows Server 2025 domain controller, beside the LAB_NETS network alias",
+        "caption": "The domain controller as a named object. `SRV1_DC` holds its one address, beside `LAB_NETS`, the alias for the six internal VLAN subnets."
+      },
+      {
+        "file": "fw-02-aliases-ports.png",
+        "alt": "The pfSense port aliases page listing AD_RPC_DYNAMIC, AD_TCP, AD_UDP and MGMT_TCP with their ports and descriptions",
+        "caption": "The four port groups. `AD_TCP`, `AD_UDP` and `AD_RPC_DYNAMIC` are the domain-membership bundle; `MGMT_TCP` is administration, kept separate on purpose."
+      },
+      {
+        "file": "fw-04-alias-ad-tcp-detail.png",
+        "alt": "The AD_TCP alias open for editing in pfSense, each of its eight ports labelled with its role, from DNS and Kerberos to LDAPS and the Global Catalog",
+        "caption": "The `AD_TCP` alias as configured, each port carrying an inline description of what it is for."
+      },
+      {
+        "file": "dc-01-rename-to-dc01.png",
+        "alt": "A PowerShell session on DC01: Netlogon restarted, then dcdiag /test:dns passing connectivity, DNS and the partition tests",
+        "caption": "`dcdiag /test:dns` on DC01 after the rename and the Netlogon restart. Connectivity, DNS, every partition test and the enterprise DNS test all pass, so the rename left Active Directory healthy."
+      },
+      {
+        "file": "dc-04-security-groups-rebuilt.png",
+        "alt": "Active Directory Users and Computers on corp.biirabank.com, with the BIIRA tree and twelve security groups listed under SecurityGroups",
+        "caption": "The same controller serving `corp.biirabank.com`: the BIIRA tree rebuilt, and the twelve security groups restored under it."
+      }
+    ]
   },
   {
     "slug": "forest-rebuild",
@@ -164,6 +286,26 @@ export const BUILDS: Build[] = [
         "file": "dc-01-rename-to-dc01.png",
         "alt": "A PowerShell session on the domain controller: Netlogon restarted, then dcdiag /test:dns passing for DC01 and for the old forest",
         "caption": "The same controller on the old forest, just after it took the name DC01: Netlogon restarted and its DNS tests passing."
+      },
+      {
+        "file": "dc-02-server-manager-corp-biirabank.png",
+        "alt": "Server Manager on the rebuilt controller at 192.168.50.2, with the AD DS, DNS and File and Storage Services tiles showing green manageability",
+        "caption": "Server Manager after the recovery: AD DS, DNS and File and Storage Services all report as manageable. The promotion had completed and the lockout was resolved without data loss."
+      },
+      {
+        "file": "dc-03-directory-rebuild-ous-users.png",
+        "alt": "A PowerShell session creating the organisational unit tree under BIIRA, then recreating the users from export-users.csv with a hidden temporary password, ending with a count of the accounts",
+        "caption": "The organisational unit tree and the user accounts recreated on `corp.biirabank.com` from the exported CSV files, ending with the account count."
+      },
+      {
+        "file": "dc-04-security-groups-rebuilt.png",
+        "alt": "Active Directory Users and Computers on corp.biirabank.com listing twelve security groups with the SG- prefix under the SecurityGroups unit",
+        "caption": "The twelve security groups restored under the SecurityGroups unit, in three families: departmental, tiered administration and Okta integration."
+      },
+      {
+        "file": "dc-05-group-membership-verified.png",
+        "alt": "PowerShell counting members per group from export-group-members.csv: ten groups, from 1 member in the Tier 0 group to 25 in the all-users group",
+        "caption": "Membership counts derived from the export file, which the rebuilt directory matched group for group. The two groups absent from this list are the two that were empty before the migration."
       }
     ]
   },
@@ -176,9 +318,19 @@ export const BUILDS: Build[] = [
     "runbook": "22-certificate-authority-ca01-and-ldaps.md",
     "shots": [
       {
+        "file": "pki-04-ca01-snapshots-before-and-after.png",
+        "alt": "The Proxmox snapshot list for CA01: pre-adcs, taken before AD CS, then adcs-built, described as the known-good CA restore point",
+        "caption": "Two restore points around the change: `pre-adcs`, taken once the machine was joined and addressed, and `adcs-built`, the known-good CA."
+      },
+      {
         "file": "pki-07-root-ca-alive-and-details.png",
         "alt": "The Biira Bank Root CA running on CA01, with its certificate details",
         "caption": "CA01 alive: an enterprise root CA, RSA 4096 and SHA-256, valid for ten years. A CA is a Tier 0 asset, so it lives beside the domain controller it serves."
+      },
+      {
+        "file": "pki-09-dc-template-enroll-right.png",
+        "alt": "The Domain Controller certificate template's Security tab, with the Domain Controllers group allowed Enroll",
+        "caption": "Template permissions are the CA's access control: they decide who may obtain which kind of certificate. Here the Domain Controllers group holds Enroll."
       },
       {
         "file": "pki-10-dc01-enrolled.png",
@@ -216,9 +368,44 @@ export const BUILDS: Build[] = [
     "runbook": "23-identity-provider-idp01-keycloak.md",
     "shots": [
       {
+        "file": "idp-11-password-auth-denied.png",
+        "alt": "A terminal on the laptop: ssh told to use a password and no key, refused with Permission denied (publickey)",
+        "caption": "Password sign-in refused. A client that will not offer a key is turned away with `Permission denied (publickey)`."
+      },
+      {
+        "file": "idp-14-wazuh-agent-006-active.png",
+        "alt": "agent_control on SIEM01 listing the agents, with IDP01 as ID 006 and Active",
+        "caption": "IDP01 enrolled with the Wazuh manager as agent 006 and active, beside the five existing agents."
+      },
+      {
+        "file": "idp-21-root-fingerprint-verify-ok.png",
+        "alt": "A terminal on IDP01: the root certificate's SHA-256 fingerprint printed, then openssl verify returning OK for idp01.crt",
+        "caption": "The root certificate matched against its published fingerprint first, and only then used: `openssl verify` confirms CA01 signed IDP01's certificate."
+      },
+      {
+        "file": "idp-28-keycloak-curl-200.png",
+        "alt": "docker compose ps showing the PostgreSQL 18.6 and Keycloak 26.8.1 containers up, then curl to the master realm over HTTPS returning 200",
+        "caption": "Both containers up, and only 8443 published to the network. The `200` from `curl` proves the name resolves, the certificate is trusted and Keycloak answers."
+      },
+      {
+        "file": "idp-35-temp-admin-deleted.png",
+        "alt": "The Keycloak users list in the master realm after the deletion, showing noble-admin as the only user",
+        "caption": "The temporary account deleted. The named administrator is the only one left."
+      },
+      {
+        "file": "idp-42-ldap-search-settings.png",
+        "alt": "The Keycloak LDAP provider settings: bind as svc-keycloak-ldap with the credential hidden, edit mode READ_ONLY, Users DN the Employees OU, username from userPrincipalName",
+        "caption": "The federation settings: edit mode READ_ONLY, the search limited to the Employees OU, and the username taken from `userPrincipalName`, so people sign in exactly as they do to Windows."
+      },
+      {
         "file": "idp-50-emily-account-console.png",
         "alt": "Keycloak account console for Emily Davis at idp01.corp.biirabank.com, her details read from Active Directory and greyed out",
         "caption": "IDP01 federated to Active Directory: a Biira Bank employee signs in with her directory password, and Keycloak shows details it read from AD but cannot change. Keycloak stored none of it; DC01 checked the password."
+      },
+      {
+        "file": "idp-46-ldap-sync-25.png",
+        "alt": "Keycloak reporting that the sync of users finished successfully: 25 users added, 0 updated, 0 removed, 0 failed",
+        "caption": "With the trailing spaces removed, the synchronisation added 25 users and failed none, matching the count in the directory."
       }
     ]
   },
@@ -236,9 +423,24 @@ export const BUILDS: Build[] = [
         "caption": "The AI agent's own identity on IDP01: a confidential client that must prove itself with a secret, and only service account roles. With every browser flow off, no person can sign in through it."
       },
       {
+        "file": "idp-54-agent-client-credentials.png",
+        "alt": "The agent-ask-siem client's Credentials tab in Keycloak: client authenticator Client Id and Secret, the secret field masked, the copy button highlighted",
+        "caption": "The generated client secret, masked on screen and never displayed. It was copied straight into the password manager with the copy button."
+      },
+      {
+        "file": "idp-55-agent-token-issued.png",
+        "alt": "PowerShell requesting a token with the secret typed into a hidden prompt, then printing only token_type Bearer, expires_in 300 and the scope",
+        "caption": "A Bearer token valid for 300 seconds. Only its type, lifetime and scope are shown, never the token itself."
+      },
+      {
         "file": "idp-56-agent-token-claims.png",
         "alt": "PowerShell decoding the agent's token: issuer the biira realm on IDP01, azp agent-ask-siem, expiring five minutes after issue",
         "caption": "A token for the agent, valid for 300 seconds: issued by the biira realm on IDP01, to agent-ask-siem, as its own service account. The secret itself never appears on screen."
+      },
+      {
+        "file": "idp-57-agent-client-disabled.png",
+        "alt": "The agent-ask-siem client in Keycloak switched to Disabled, its description naming the project, the owner and the creation date",
+        "caption": "The client switched to Disabled, in one place. Its description records the owner and the purpose."
       },
       {
         "file": "idp-58-agent-invalid-client.png",
@@ -301,6 +503,36 @@ export const BUILDS: Build[] = [
     "runbook": "16-siem01-build.md",
     "shots": [
       {
+        "file": "siem-01-host-specs.png",
+        "alt": "Terminal on the OptiPlex showing 8 cores, 15 GiB of memory and 424 GB free on a 455 GB volume",
+        "caption": "The candidate host: 8 cores, 15 GiB of usable memory and 424 GB free of a 455 GB volume. The disk matters as much as the memory, because the Indexer is what eventually fills a SIEM's storage."
+      },
+      {
+        "file": "siem-02-netplan-vlan20.png",
+        "alt": "The netplan file on SIEM01 with the static VLAN 20 address, and netplan generate confirming it parses",
+        "caption": "The VLAN 20 configuration after a reboot, with `netplan generate` confirming it parses. That it survived the reboot is the evidence that cloud-init no longer manages the interface."
+      },
+      {
+        "file": "siem-03-network-verified.png",
+        "alt": "Terminal on SIEM01 showing the static address, the default route, a ping to the gateway and a name lookup",
+        "caption": "Post-reboot verification in one command: the static address held, the default route is marked `proto static`, the gateway answers and name resolution works."
+      },
+      {
+        "file": "siem-07-components-started.png",
+        "alt": "The Wazuh installer log on SIEM01 showing the indexer, manager, Filebeat and dashboard each installed and started",
+        "caption": "The Indexer, manager, Filebeat and Dashboard each installing and starting in sequence. The capture is cropped on purpose, because the installer prints the generated admin credentials immediately below."
+      },
+      {
+        "file": "siem-08-dashboard-overview.png",
+        "alt": "Wazuh dashboard overview on first login, with no agents registered and alerts already counted",
+        "caption": "The dashboard on first login. \"No agents registered\" alongside 336 alerts is not a contradiction: the manager monitors its own host as agent `000`."
+      },
+      {
+        "file": "siem-06-agent-removed-clean-install.png",
+        "alt": "Terminal on SIEM01 purging the leftover wazuh-agent package, confirming the ports are free and restarting the installer",
+        "caption": "The leftover agent purged, `/var/ossec` gone, Wazuh's ports confirmed free, and the installer proceeding past the check that had blocked it."
+      },
+      {
         "file": "siem-15-three-agents.png",
         "alt": "Wazuh agents view showing DC01, ADM01 and PVE01 active",
         "caption": "The first three agents, across two operating-system families: the domain controller, the administrative workstation and the hypervisor. WKS01 joined later as agent 004."
@@ -329,6 +561,21 @@ export const BUILDS: Build[] = [
         "file": "idp-14-wazuh-agent-006-active.png",
         "alt": "agent_control on SIEM01 listing six active agents, IDP01 enrolled as agent 006",
         "caption": "IDP01 enrolled with the SIEM as agent 006 before Keycloak went on it. An identity provider is a Tier 0 system, so it was watched from its first day."
+      },
+      {
+        "file": "siem-13-agents-summary.png",
+        "alt": "Wazuh overview showing one active agent, none disconnected, and alert counts by severity",
+        "caption": "One agent active and none disconnected. The alert counts on the overview now include a real endpoint rather than the manager alone."
+      },
+      {
+        "file": "siem-14-agents-adm01-lan-path.png",
+        "alt": "Wazuh agents list showing DC01 and ADM01 active, with ADM01 registered from 192.168.10.3",
+        "caption": "DC01 and ADM01 both active. ADM01's registered address is `192.168.10.3` rather than its earlier tailnet address, which confirms the management rule is being exercised."
+      },
+      {
+        "file": "siem-15-three-agents.png",
+        "alt": "Wazuh agents list showing DC01, ADM01 and PVE01 all active",
+        "caption": "Three agents active across two operating-system families: two Windows and one Debian. PVE01 is registered from `192.168.10.6`, the host's real address."
       }
     ]
   },
@@ -341,9 +588,19 @@ export const BUILDS: Build[] = [
     "runbook": "20-detection-engineering-tuning-and-archives.md",
     "shots": [
       {
+        "file": "siem-22-sysmon-11-powershell-probe.png",
+        "alt": "Sysmon event 11 in the Wazuh dashboard: powershell.exe creating its execution policy test file in a temporary folder",
+        "caption": "The event as it appeared in the dashboard: a PowerShell process writing a script file into a temporary folder. Every element of that sentence looks suspicious in isolation."
+      },
+      {
         "file": "siem-23-rule-92213-level-15-t1105.png",
         "alt": "Wazuh rule 92213 firing at level 15 with MITRE technique T1105",
         "caption": "The first piece of detection engineering. A built-in rule at the top of the severity scale, tagged as an attacker transferring tools, firing several times an hour on every Windows endpoint. It was PowerShell checking its own execution policy."
+      },
+      {
+        "file": "siem-25-ruleset-deployed-verified.png",
+        "alt": "Terminal on SIEM01 backing up the rules file, copying the new ruleset into place, validating it, restarting the manager and counting three rules",
+        "caption": "The deployment in one screen: the existing file's ownership read first, a backup taken, the new ruleset copied into place, validated, the manager restarted, and three rules confirmed present."
       },
       {
         "file": "siem-30-92213-last-alert-before-rule.png",
@@ -361,6 +618,11 @@ export const BUILDS: Build[] = [
         "caption": "The scan window as the SIEM saw it: 2,051 successful sign-ins and no failures in one hour. A credentialed scan is a very large number of successful logons in a very short time."
       },
       {
+        "file": "siem-26-local-rules-scanner-pair.png",
+        "alt": "The local rules file open in an editor, showing rules 100020 and 100021 for the scan account with the narrow rule first",
+        "caption": "Rules 100020 and 100021 in `local_rules.xml`. The narrow rule is deliberately placed first."
+      },
+      {
         "file": "siem-29-archives-index-first-events.png",
         "alt": "The wazuh-archives index in the Wazuh dashboard returning 2,121 events in 24 minutes",
         "caption": "Archives switched on: 2,121 events in the first 24 minutes, including events that raised no alert. Before this, about 5% of what the SIEM saw was ever written down, so a silenced alert also erased its evidence."
@@ -374,7 +636,23 @@ export const BUILDS: Build[] = [
     "lead": "Stock Copilot, an internal app on APP01, writes an audit event for every sign-in, refused token, SCIM call, key rotation and break-glass use.",
     "more": "<p>Thirty Wazuh rules turn that log into alerts mapped to MITRE ATT&amp;CK: forged SAML and unsigned tokens at level 12, password guessing counted per device, signing keys changed outside a declared rotation. They were tested before deployment against 61 sample events and a replay of 676 real ones, and went live on 23 October 2026: the app's attack probe produced 18 alerts, all decoded on SIEM01. The first password-guessing rule raised seven false alerts on the lab's own traffic, because it counted refusals by policy as well as wrong credentials; it now counts credentials only. The rules and their deployment steps live in the repository's <code>detections/</code> folder. Written up in <a href=\"/lab-notes/2026/10/27/watching-the-front-door.html\">Watching the Front Door</a>.</p>",
     "runbook": "../detections/README.md",
-    "shots": []
+    "shots": [
+      {
+        "file": "app-01-agent-reads-audit-log.png",
+        "alt": "A terminal on APP01: a localfile block added to the Wazuh agent's configuration for the app's audit log as JSON, the agent restarted, and its log reporting that it is analysing the file.",
+        "caption": "The agent on APP01 reading the app's identity audit log as JSON, confirmed in its own log."
+      },
+      {
+        "file": "app-02-rules-deployed-manager-restarted.png",
+        "alt": "A terminal on SIEM01: the rules file fetched from the repository, installed into the Wazuh rules folder, the configuration tested, and the manager restarted and reported active.",
+        "caption": "The rules deployed from version control: installed, tested and loaded, with the manager back to active."
+      },
+      {
+        "file": "app-03-eighteen-alerts-decoded.png",
+        "alt": "Wazuh Discover filtered to the stock_copilot rule group: 18 hits from APP01, with an access-denied event decoded into its fields.",
+        "caption": "Eighteen alerts from the probe, each decoded into fields on SIEM01. One address is redacted."
+      }
+    ]
   },
   {
     "slug": "scan01-scanner",
@@ -385,9 +663,39 @@ export const BUILDS: Build[] = [
     "runbook": "19-vulnerability-scanning-scan01.md",
     "shots": [
       {
+        "file": "scan-01-vm-network-vlan20.png",
+        "alt": "Proxmox Create Virtual Machine dialog, Network tab, with bridge vmbr0 and VLAN tag 20",
+        "caption": "The VM's network interface at creation: bridge `vmbr0`, VLAN tag 20. The guest is placed on the BlueTeam segment by the hypervisor, not by anything the guest itself configures."
+      },
+      {
+        "file": "scan-02-installer-lvm-half-allocated.png",
+        "alt": "Ubuntu installer storage summary showing a 28.996 GB root volume inside a 57.996 GB volume group with 29 GB free",
+        "caption": "The root cause, visible at install time: the root filesystem on a 28.996 GB logical volume inside a 57.996 GB volume group, with 29 GB left free. Accepting the default produced the disk-full failure a day later."
+      },
+      {
+        "file": "scan-11-disk-extended-97g.png",
+        "alt": "Terminal on SCAN01 showing the disk, physical volume, logical volume and filesystem each extended, ending at 97 GB with 41 GB free",
+        "caption": "Each layer confirmed in turn: the 100 GB disk and 98 GB partition, the physical volume resized, the logical volume extended from 58 GB to 98 GB, the filesystem grown online, and 97 GB reported with 41 GB free."
+      },
+      {
+        "file": "scan-06-psql-volume-reset-all-started.png",
+        "alt": "Docker Compose output on SCAN01 after the database volume was removed, showing Running 23/23 with every service started",
+        "caption": "The single named volume removed, then `Running 23/23`: a fresh database volume created, the migrator exiting cleanly, and every previously blocked service started."
+      },
+      {
+        "file": "scan-08-gvmd-186567-vts-loaded.png",
+        "alt": "Greenbone manager log showing version 26.38.0 ready for connections and 186,567 vulnerability tests loaded",
+        "caption": "Greenbone Vulnerability Manager 26.38.0 ready for connections at 18:31 UTC, then 186,567 new vulnerability tests loaded and the refresh complete at 18:40. This is the moment the scanner became capable of scanning."
+      },
+      {
         "file": "scan-17-feed-status-all-loaded.png",
         "alt": "Greenbone feed status page showing all four feeds loaded and scanning available",
         "caption": "All four feeds loaded, after an initial load of about four hours and three separate failures. In this deployment the feeds never update themselves, so how often they are refreshed is a control rather than housekeeping."
+      },
+      {
+        "file": "scan-20-snapshot-greenbone-feeds-loaded.png",
+        "alt": "Proxmox snapshot list for SCAN01 with three snapshots, the latest named greenbone-feeds-loaded",
+        "caption": "SCAN01's snapshot chain: the clean static-address install, the first working state on 9 September, and `greenbone-feeds-loaded` with all four feeds in place. A rollback point for every stage that took hours to reach."
       },
       {
         "file": "scan-25-greenbone-credentialed-baseline-running.png",
@@ -410,6 +718,11 @@ export const BUILDS: Build[] = [
         "caption": "How the scanner becomes an administrator of member machines without gaining anything on the domain. Four links, each doing one job, and the Domain Controllers OU deliberately outside the chain."
       },
       {
+        "file": "scan-13-svc-greenbone-verified.png",
+        "alt": "PowerShell Get-ADUser output for svc-greenbone showing AccountNotDelegated, CannotChangePassword and PasswordNeverExpires all True",
+        "caption": "The account's settings read back from the directory: `AccountNotDelegated`, `CannotChangePassword` and `PasswordNeverExpires` all True, and a description naming purpose, granting group and owner."
+      },
+      {
         "file": "scan-16-gpo-local-administrators-item.png",
         "alt": "Group Policy Preferences local group item adding a security group to the built-in Administrators group",
         "caption": "The grant itself. Action Update so existing administrators survive, the built-in Administrators group picked from the list so its well-known identifier is stored rather than a typed name, and the member added rather than the list replaced."
@@ -418,6 +731,16 @@ export const BUILDS: Build[] = [
         "file": "scanner-logon-rights.svg",
         "alt": "Diagram of the five Windows logon types, four denied to the scan identity and only network logon permitted",
         "caption": "Five ways to sign in to Windows, four of them closed to the scanner. Its password is stored in a database and never expires, so the design assumes the credential leaks and narrows what a leak is worth."
+      },
+      {
+        "file": "sys-06-wks01-local-administrators-proof.png",
+        "alt": "PowerShell on WKS01 confirming domain membership and listing the SG-Scanner-LocalAdmin group in the local Administrators group",
+        "caption": "The result, on the machine: `SG-Scanner-LocalAdmin` in WKS01's local Administrators group, placed there by the policy and not by hand."
+      },
+      {
+        "file": "sys-09-wks01-deny-rights-after.png",
+        "alt": "PowerShell on WKS01 exporting user rights before and after a policy refresh, with two deny rights before and five after",
+        "caption": "The same machine before and after in one view: two deny rights holding only Guest, then five, with the scanner group in local, Remote Desktop, batch and service logon. The network right is unchanged."
       },
       {
         "file": "sys-10-rdp-refused-svc-greenbone.png",
@@ -445,9 +768,24 @@ export const BUILDS: Build[] = [
         "caption": "The first finding chosen for the remediation loop: Remote Desktop on WKS01 still offering TLS 1.0 and 1.1, confirmed by handshake. Not the highest score on the report, but real, the lab's own configuration, and fixable by policy."
       },
       {
+        "file": "scan-27-wks01-ou-confirmed-before-linking.png",
+        "alt": "PowerShell Get-ADComputer output giving WKS01's canonical name inside the Workstations OU",
+        "caption": "WKS01's location read from the directory before the link was moved: `corp.biirabank.com/BIIRA/Computers/Workstations/WKS01`. Moving a link to the wrong unit would have silently dropped the target out of scope."
+      },
+      {
         "file": "scan-28-gpo-tls-linked-to-workstations-ou.png",
         "alt": "Group Policy Management showing the TLS hardening policy linked only to the Workstations OU",
         "caption": "One policy with one job, linked to the Workstations OU only, after the directory confirmed where the target lives. The first link would have reached the servers too."
+      },
+      {
+        "file": "scan-31-gpo-tls-four-registry-items.png",
+        "alt": "Group Policy Management Editor listing four registry preference items for the TLS hardening policy, all with action Replace",
+        "caption": "The four registry items: `Enabled` set to 0 and `DisabledByDefault` set to 1 for both the TLS 1.0 and TLS 1.1 `Server` keys. The action reads Replace because each item is set to be removed when the policy no longer applies."
+      },
+      {
+        "file": "sys-16-wks01-gpresult-tls-gpo-applied.png",
+        "alt": "gpresult output on WKS01 listing SEC-Workstation-TLS-Hardening among the applied Group Policy objects",
+        "caption": "WKS01's own policy report after a refresh: applied from `DC01.corp.biirabank.com`, with `SEC-Workstation-TLS-Hardening` listed alongside `SEC-Scanner-Access`."
       },
       {
         "file": "sys-17-wks01-schannel-values-verified.png",
@@ -478,6 +816,11 @@ export const BUILDS: Build[] = [
         "file": "cis-baseline-comparison.png",
         "alt": "Chart of CIS benchmark baselines for DC01, ADM01, PVE01 and SIEM01, bars proportional to benchmark size",
         "caption": "Four CIS baselines captured before any hardening: DC01 26%, ADM01 26%, PVE01 43%, SIEM01 53.6%. Bars are proportional to benchmark size on purpose; the Windows benchmarks have twice the checks, which is most of the score difference."
+      },
+      {
+        "file": "siem-11-sca-baseline-passed.png",
+        "alt": "Wazuh Configuration Assessment events for SIEM01 filtered to passed checks, showing 147 hits against CIS Ubuntu Linux 24.04 LTS",
+        "caption": "The 147 passing checks on SIEM01, counted from assessment events. Most are account and permission hygiene that Ubuntu gets right by default, such as shadowed passwords and no duplicate UIDs."
       }
     ]
   }

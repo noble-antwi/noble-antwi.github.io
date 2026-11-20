@@ -16,7 +16,11 @@ No rule mentions the admin ports. The control is the absence of a pass rule, enf
 
 ## Before and after
 
-A blocked connection proves little on its own, so I recorded a baseline first. On 15 August 2026, before the interface was tightened, I ran `Test-NetConnection` from DC01 against port 443 on the firewall and it returned True: the domain controller could load the admin interface. The before capture shows the same True for both the VLAN 50 gateway and the Management gateway.
+A blocked connection proves little on its own, so I recorded a baseline first. On 15 August 2026, before the interface was tightened, I ran `Test-NetConnection` from DC01 against port 443 on the firewall and it returned True: the domain controller could load the admin interface. Figure 2.1 is the before capture, with the same True for both the VLAN 50 gateway and the Management gateway.
+
+![PowerShell on DC01 before the change: Test-NetConnection to port 443 returns True for both gateways](../../assets/work/enterprise-security-homelab/fw-09-ent-isolation-before.png)
+
+*Figure 2.1: The baseline, recorded before the rules were tightened. Both tests return True; Figure 2.2 repeats them after the change.*
 
 On 30 August, with ENT-01 to ENT-04 in place, the same tests gave the opposite answer.
 
@@ -26,17 +30,21 @@ On 30 August, with ENT-01 to ENT-04 in place, the same tests gave the opposite a
 | 30 August 2026 | `192.168.50.1` port 443 | Blocked | False |
 | 30 August 2026 | `192.168.10.1` port 443 | Blocked | False |
 
-Figure 2.1 shows the after state. Both tests return False while ping stays True, because ENT-03 permits ICMP. That detail matters: it shows the rule set is surgical rather than a blanket block. `dcdiag`, DNS and internet access on the domain controller all still passed.
+Figure 2.2 shows the after state. Both tests return False while ping stays True, because ENT-03 permits ICMP. That detail matters: it shows the rule set is surgical rather than a blanket block. `dcdiag`, DNS and internet access on the domain controller all still passed.
 
 ![Test output showing VLAN 50 cannot reach the pfSense admin interface](../../assets/work/enterprise-security-homelab/fw-10-ent-isolation-after.png)
 
-*Figure 2.1: Management-plane isolation, proven rather than assumed: EnterpriseLAN cannot reach the firewall's admin interface on any VLAN, while DNS, NTP and internet still work.*
+*Figure 2.2: Management-plane isolation, proven rather than assumed: EnterpriseLAN cannot reach the firewall's admin interface on any VLAN, while DNS, NTP and internet still work.*
 
 ## The test that kept passing
 
 The change from True to False did not happen when the rules were saved. With the new rules in place and correct, the isolation test kept returning True.
 
-I worked through it by elimination. The floating rules were empty. Disabling the anti-lockout rule changed nothing. Packet filtering was enabled. Deleting the any-to-any rule outright changed nothing either. No rule change was taking effect at all, and that was the clue: pfSense had saved the new rules in the GUI, but the kernel was still enforcing the old ruleset. Status > Filter Reload > Reload Filter compiled and loaded the current rules, and both tests then returned False.
+I worked through it by elimination. The floating rules were empty. Disabling the anti-lockout rule changed nothing. Packet filtering was enabled. Deleting the any-to-any rule outright changed nothing either. No rule change was taking effect at all, and that was the clue: pfSense had saved the new rules in the GUI, but the kernel was still enforcing the old ruleset. Status > Filter Reload > Reload Filter compiled and loaded the current rules, and both tests then returned False. Figure 2.3 shows the reload.
+
+![pfSense Status, Filter Reload page with the reload status log](../../assets/work/enterprise-security-homelab/fw-11-filter-reload.png)
+
+*Figure 2.3: Status > Filter Reload. Reloading by hand compiled and loaded the current ruleset, after which the isolation control took effect.*
 
 ## What I took from it
 

@@ -28,11 +28,19 @@ The demotion refused at first, because the controller was the last DNS server fo
 
 After the promotion reboot, the sign-in screen rejected the password I expected. I had set it over a Remote Desktop session, where a symbol was transmitted under one keyboard layout and typed back under another, so the stored value did not match what I was typing. The sign-in also showed a longer string than the password I had set, which pointed to a mismatch rather than a forgotten password.
 
-Remote Desktop could not fix it, because every reset method needs console access. With a physical screen and keyboard attached, I booted the server from Windows Server installation media and reset the local Administrator password offline. Afterwards Server Manager showed AD DS, DNS and File and Storage Services all manageable on the new forest. It is in the runbook as an incident, not quietly fixed.
+Remote Desktop could not fix it, because every reset method needs console access. With a physical screen and keyboard attached, I booted the server from Windows Server installation media and reset the local Administrator password offline. Afterwards Server Manager showed AD DS, DNS and File and Storage Services all manageable on the new forest, as Figure 8.2 shows. It is in the runbook as an incident, not quietly fixed.
+
+![Server Manager on the rebuilt controller at 192.168.50.2, with the AD DS, DNS and File and Storage Services tiles showing green manageability](../../assets/work/enterprise-security-homelab/dc-02-server-manager-corp-biirabank.png)
+
+*Figure 8.2: Server Manager after the recovery: AD DS, DNS and File and Storage Services all report as manageable. The promotion had completed and the lockout was resolved without data loss.*
 
 ## Rebuilding the directory, and checking it
 
-The new forest starts empty. I added the `biirabank.com` UPN suffix, then recreated the organisational units top down. Users were recreated from the export, filtered to the `BIIRA` tree so the built-in accounts were not touched, and each was placed back in its original unit. Every account received a temporary password that must be changed at first logon, because passwords are not exported and must not be.
+The new forest starts empty. I added the `biirabank.com` UPN suffix, then recreated the organisational units top down. Users were recreated from the export, filtered to the `BIIRA` tree so the built-in accounts were not touched, and each was placed back in its original unit. Every account received a temporary password that must be changed at first logon, because passwords are not exported and must not be. Figure 8.3 shows the rebuild as it ran.
+
+![A PowerShell session creating the organisational unit tree under BIIRA, then recreating the users from export-users.csv with a hidden temporary password, ending with a count of the accounts](../../assets/work/enterprise-security-homelab/dc-03-directory-rebuild-ous-users.png)
+
+*Figure 8.3: The organisational unit tree and the user accounts recreated on `corp.biirabank.com` from the exported CSV files, ending with the account count.*
 
 I verified the rebuild by comparing the source data with the result, not by trusting the run:
 
@@ -43,6 +51,16 @@ I verified the rebuild by comparing the source data with the result, not by trus
 | Members of the three tiered administration groups | 7 | 7 |
 
 Twenty organisational units and twelve security groups were restored, and the membership counts matched the export group for group. The Tier 0 administrators group holds one account and the MFA exemption group is empty, which is what both should look like.
+
+Figure 8.4 shows the twelve groups in the new forest, and Figure 8.5 the membership counts taken from the export file.
+
+![Active Directory Users and Computers on corp.biirabank.com listing twelve security groups with the SG- prefix under the SecurityGroups unit](../../assets/work/enterprise-security-homelab/dc-04-security-groups-rebuilt.png)
+
+*Figure 8.4: The twelve security groups restored under the SecurityGroups unit, in three families: departmental, tiered administration and Okta integration.*
+
+![PowerShell counting members per group from export-group-members.csv: ten groups, from 1 member in the Tier 0 group to 25 in the all-users group](../../assets/work/enterprise-security-homelab/dc-05-group-membership-verified.png)
+
+*Figure 8.5: Membership counts derived from the export file, which the rebuilt directory matched group for group. The two groups absent from this list are the two that were empty before the migration.*
 
 ## What I took from it
 

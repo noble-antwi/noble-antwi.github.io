@@ -19,39 +19,51 @@ The agent is an OpenID Connect client in the `biira` realm with the client ID `a
 | Browser and password flows | Off | Nothing this client does needs them |
 | Description | Purpose, owner, project, creation date | A non-human identity needs an accountable owner, the same as a person |
 
-With the browser flows off there is no redirect address to register either, which removes the open-redirect class of mistakes from this client. The generated secret was never displayed. It went straight from Keycloak's copy button into the password manager. It is the agent's secret zero, the one credential it holds to get everything else, and Keycloak moves it up a layer so that everything downstream is short-lived.
+With the browser flows off there is no redirect address to register either, which removes the open-redirect class of mistakes from this client. The generated secret was never displayed. It went straight from Keycloak's copy button into the password manager, as Figure 11.2 shows. It is the agent's secret zero, the one credential it holds to get everything else, and Keycloak moves it up a layer so that everything downstream is short-lived.
+
+![The agent-ask-siem client's Credentials tab in Keycloak: client authenticator Client Id and Secret, the secret field masked, the copy button highlighted](../../assets/work/enterprise-security-homelab/idp-54-agent-client-credentials.png)
+
+*Figure 11.2: The generated client secret, masked on screen and never displayed. It was copied straight into the password manager with the copy button.*
 
 ## A token, without exposing anything
 
-I requested a token from my laptop in PowerShell. The secret is typed into a hidden prompt, held for the one request, then cleared, and the token itself is never printed. What came back was a bearer token valid for 300 seconds.
+I requested a token from my laptop in PowerShell. The secret is typed into a hidden prompt, held for the one request, then cleared, and the token itself is never printed. What came back was a bearer token valid for 300 seconds, as Figure 11.3 shows.
 
-A token's payload is only encoded, not encrypted, so anyone holding it can read it and it must never carry secrets. What makes it trustworthy is the signature, which only Keycloak's private key can produce. Decoding just the payload shows what Keycloak asserted, as in Figure 11.2.
+![PowerShell requesting a token with the secret typed into a hidden prompt, then printing only token_type Bearer, expires_in 300 and the scope](../../assets/work/enterprise-security-homelab/idp-55-agent-token-issued.png)
+
+*Figure 11.3: A Bearer token valid for 300 seconds. Only its type, lifetime and scope are shown, never the token itself.*
+
+A token's payload is only encoded, not encrypted, so anyone holding it can read it and it must never carry secrets. What makes it trustworthy is the signature, which only Keycloak's private key can produce. Decoding just the payload shows what Keycloak asserted, as in Figure 11.4.
 
 ![PowerShell decoding the agent's token: issuer the biira realm on IDP01, azp agent-ask-siem, expiring five minutes after issue](../../assets/work/enterprise-security-homelab/idp-56-agent-token-claims.png)
 
-*Figure 11.2: A token for the agent, valid for 300 seconds: issued by the biira realm on IDP01, to agent-ask-siem, as its own service account. The secret itself never appears on screen.*
+*Figure 11.4: A token for the agent, valid for 300 seconds: issued by the biira realm on IDP01, to agent-ask-siem, as its own service account. The secret itself never appears on screen.*
 
 ## The off switch
 
-The point of a central identity is that turning it off works everywhere at once. I disabled the client in Keycloak and repeated the same request. Figure 11.3 shows the sequence.
+The point of a central identity is that turning it off works everywhere at once. I disabled the client in Keycloak, as Figure 11.5 shows, and repeated the same request. Figure 11.6 shows the sequence.
+
+![The agent-ask-siem client in Keycloak switched to Disabled, its description naming the project, the owner and the creation date](../../assets/work/enterprise-security-homelab/idp-57-agent-client-disabled.png)
+
+*Figure 11.5: The client switched to Disabled, in one place. Its description records the owner and the purpose.*
 
 ![Token requests succeeding, then refused with invalid_client while the client is disabled, then succeeding again](../../assets/work/enterprise-security-homelab/idp-58-agent-invalid-client.png)
 
-*Figure 11.3: The off switch: one token issued, every request refused with invalid_client while the client is disabled, tokens again once it is re-enabled.*
+*Figure 11.6: The off switch: one token issued, every request refused with invalid_client while the client is disabled, tokens again once it is re-enabled.*
 
-The caller learns nothing useful from `invalid_client`. Keycloak's own event log, in Figure 11.4, keeps the real reason under the agent's name.
+The caller learns nothing useful from `invalid_client`. Keycloak's own event log, in Figure 11.7, keeps the real reason under the agent's name.
 
 ![Keycloak user events: CLIENT_LOGIN for the agent's service account, then CLIENT_LOGIN_ERROR with error client_disabled](../../assets/work/enterprise-security-homelab/idp-59-agent-client-disabled-event.png)
 
-*Figure 11.4: The caller is told only invalid_client; Keycloak's own record keeps the real reason, client_disabled, under the agent's name.*
+*Figure 11.7: The caller is told only invalid_client; Keycloak's own record keeps the real reason, client_disabled, under the agent's name.*
 
 Two facts make the switch strong. A token already issued stays valid until it expires, at most five minutes, because services check its signature without calling Keycloak. That is the trade-off of short-lived tokens, and the reason the lifetime is short. And every new request is refused the moment the client is disabled, so an agent that misbehaves loses all access within one token lifetime, from one place.
 
 ## What surprised me
 
-In Figure 11.3 a "Bearer 300" line appears under each refusal, as if a token had been issued anyway. None was. A failed `Invoke-RestMethod` does not overwrite the variable holding the last response, so PowerShell printed the previous value again. The lesson is to clear the variable before each attempt, or to read the error and not the table.
+In Figure 11.6 a "Bearer 300" line appears under each refusal, as if a token had been issued anyway. None was. A failed `Invoke-RestMethod` does not overwrite the variable holding the last response, so PowerShell printed the previous value again. The lesson is to clear the variable before each attempt, or to read the error and not the table.
 
-The event in Figure 11.4 also records the firewall as the source address. At the time, Tailscale on pfSense was relabelling remote connections; that was fixed afterwards, so events now name the real device.
+The event in Figure 11.7 also records the firewall as the source address. At the time, Tailscale on pfSense was relabelling remote connections; that was fixed afterwards, so events now name the real device.
 
 The next step is for VAULT01 to accept this token and release a short-lived, read-only Wazuh credential to the agent.
 

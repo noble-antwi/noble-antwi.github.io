@@ -14,17 +14,33 @@ pfSense joins the tailnet as a subnet router and advertises the seven lab networ
 
 I first installed Tailscale on pfSense by hand in July 2025, with two Shellcmd entries to start it at every boot. When I later moved to the pfSense Tailscale package, I did not remove those entries. Nothing failed for over a year.
 
-On 1 November 2026, after upgrading pfSense from 2.8.0 to 2.9.0, the firewall came back logged out of Tailscale, and the console showed Tailscale log lines instead of the pfSense menu. The old entries were starting a second `tailscaled` before the package's own. The package's start script saw a Tailscale already running and stepped aside, and its routine for migrating an old identity then copied the stray copy's empty state file over the real one. The upgrade did not cause the fault. It restarted everything and exposed it.
+On 1 November 2026, after upgrading pfSense from 2.8.0 to 2.9.0, the firewall came back logged out of Tailscale, and the console showed Tailscale log lines instead of the pfSense menu. The old entries were starting a second `tailscaled` before the package's own. The package's start script saw a Tailscale already running and stepped aside, and its routine for migrating an old identity then copied the stray copy's empty state file over the real one. The upgrade did not cause the fault. It restarted everything and exposed it. Figure 4.1 shows the two entries, still in place from July 2025.
 
-I deleted both entries, signed the firewall in once more, kept a copy of the working identity on the firewall, readable by root only, and rebooted to prove it: one `tailscaled`, started by the package, with the same identity as before the reboot.
+![pfSense Services, Shellcmd settings listing two entries: one starts the Tailscale daemon and one runs tailscale up](../../assets/work/enterprise-security-homelab/vpn-02-shellcmd-legacy-entries.png)
+
+*Figure 4.1: The two startup entries left over from the manual install: start `tailscaled` by hand, then `tailscale up` ten seconds later.*
+
+I deleted both entries, signed the firewall in once more, kept a copy of the working identity on the firewall, readable by root only, and rebooted to prove it: one `tailscaled`, started by the package, with the same identity as before the reboot. Figure 4.2 shows the Shellcmd list after the deletion.
+
+![pfSense Services, Shellcmd settings with an empty command list](../../assets/work/enterprise-security-homelab/vpn-03-shellcmd-removed.png)
+
+*Figure 4.2: Both entries deleted. A search of the firewall's configuration file for the old daemon command then returned zero matches.*
 
 ## Seeing the real device
 
 Until this change, every remote connection reached the lab from the firewall's own address. Keycloak events, SSH logins and Windows logon events all showed the same source, so an alert could say that a remote device signed in but never which one.
 
-The cause is specific to FreeBSD. There, Tailscale handles subnet traffic in its own user-space network stack: it accepts the connection itself and opens a new one from the firewall's address. One environment setting, given to the service through `/etc/rc.conf.d/tailscaled`, turns that stack off for subnet traffic, so packets go to the pfSense kernel and are routed like any other traffic.
+The cause is specific to FreeBSD. There, Tailscale handles subnet traffic in its own user-space network stack: it accepts the connection itself and opens a new one from the firewall's address. One environment setting, given to the service through `/etc/rc.conf.d/tailscaled`, turns that stack off for subnet traffic, so packets go to the pfSense kernel and are routed like any other traffic. After a restart through the package's own script, the running daemon carries the setting, as Figure 4.3 shows.
 
-Because the traffic is now routed rather than re-originated, the rules on the Tailscale interface see the real source. One rule allows Tailscale's address range, `100.64.0.0/10`, to the lab networks. The older rule written for relabelled traffic showed zero states afterwards and was disabled on 2 November 2026.
+![pfSense command prompt output showing TS_DEBUG_NETSTACK_SUBNETS=0 on the running Tailscale daemon](../../assets/work/enterprise-security-homelab/vpn-04-netstack-setting-active.png)
+
+*Figure 4.3: `procstat -e` on the running `tailscaled` shows `TS_DEBUG_NETSTACK_SUBNETS=0`, so the setting is active and not only saved.*
+
+Because the traffic is now routed rather than re-originated, the rules on the Tailscale interface see the real source. One rule allows Tailscale's address range, `100.64.0.0/10`, to the lab networks. The older rule written for relabelled traffic showed zero states afterwards and was disabled on 2 November 2026. Figure 4.4 shows both rules.
+
+![pfSense rules on the Tailscale interface: the 100.64.0.0/10 rule carrying traffic and the older 192.168.0.0/16 rule at zero states](../../assets/work/enterprise-security-homelab/vpn-06-tailscale-rules.png)
+
+*Figure 4.4: The rule for `100.64.0.0/10`, Tailscale's address range, to the lab networks carries the traffic. The earlier `192.168.0.0/16` rule shows 0 states and was disabled on 2 November 2026.*
 
 ## The proof
 
@@ -33,11 +49,27 @@ Every remote connection now arrives with the real device's address instead of th
 - **In the SSH session itself.** On IDP01, over the tunnel, `echo $SSH_CLIENT` shows the laptop's Tailscale address. The same command showed `192.168.50.1` before the change.
 - **In a Wazuh logon event.** A Remote Desktop session to DC01 over Tailscale produced a logon event carrying the laptop's Tailscale address and its computer name.
 
+Figure 4.5 is the SSH session and Figure 4.6 is the Wazuh event.
+
+![Terminal on IDP01 where echo SSH_CLIENT returns the laptop's Tailscale address](../../assets/work/enterprise-security-homelab/vpn-05-ssh-client-real-ip.png)
+
+*Figure 4.5: On IDP01, over the tunnel, `echo $SSH_CLIENT` shows `100.118.195.0`, the laptop's Tailscale address. The same command showed `192.168.50.1` before the change.*
+
+![Wazuh search for the laptop's Tailscale address returning one Windows logon event with that address in the ipAddress field](../../assets/work/enterprise-security-homelab/vpn-07-wazuh-real-source-ip.png)
+
+*Figure 4.6: Wazuh, searching on the laptop's Tailscale address: one logon event from DC01, for a Remote Desktop session opened over Tailscale, with that address as its source.*
+
 A Wazuh event gives a Tailscale address, and the Tailscale admin console maps that address to a device and its owner, so logs and rules can now name the device. I repeated the tests after a reboot with the same result.
 
 ## What surprised me
 
-One server, APP01, runs Tailscale itself, and it stopped answering remote devices by its lab address. The request arrived through pfSense with a Tailscale source, APP01 replied through its own tunnel, and the laptop discarded an answer it expected from the subnet router. The rule that follows: a server that runs Tailscale is reached by its Tailscale name, which is also a direct, end-to-end encrypted path.
+One server, APP01, runs Tailscale itself, and it stopped answering remote devices by its lab address. The request arrived through pfSense with a Tailscale source, APP01 replied through its own tunnel, and the laptop discarded an answer it expected from the subnet router. Figure 4.7 shows the reply path on APP01.
+
+![Terminal on APP01 where ip route get for the laptop's address returns the tailscale0 interface](../../assets/work/enterprise-security-homelab/vpn-10-app01-reply-path.png)
+
+*Figure 4.7: On APP01, the route to the laptop's address goes through APP01's own Tailscale interface, `tailscale0`, not back through pfSense.*
+
+The rule that follows: a server that runs Tailscale is reached by its Tailscale name, which is also a direct, end-to-end encrypted path.
 
 The lesson from the outage: when a package takes over something that was set up by hand, retire the old start-up mechanism in the same change, and check that exactly one copy of the service is running.
 

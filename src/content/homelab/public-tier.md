@@ -36,11 +36,17 @@ The injection was invisible to command-line testing, because Cloudflare only add
 
 ## A grade that moved
 
-A score on its own proves nothing. A score that moves proves the work happened, and this scoreboard is public and not under my control. On 8 September 2026 at 01:19 UTC, securityheaders.com graded the site F, with five of the headers absent. Figure 5.1 is the same site at 02:21 UTC, about an hour later.
+A score on its own proves nothing. A score that moves proves the work happened, and this scoreboard is public and not under my control. On 8 September 2026 at 01:19 UTC, before any hardening, securityheaders.com graded the site F, with five of the headers absent, as Figure 5.1 shows.
+
+![securityheaders.com report for biirabank.com before hardening, showing grade F](../../assets/work/enterprise-security-homelab/web-01-securityheaders-before-f.png)
+
+*Figure 5.1: The starting point, scanned before any hardening: grade F, with five headers absent. The scan resolved over plain HTTP, which is the finding that led to enabling Always Use HTTPS.*
+
+Figure 5.2 is the same site at 02:21 UTC, about an hour later.
 
 ![An independent security header grader reporting A plus for biirabank.com](../../assets/work/enterprise-security-homelab/web-02-securityheaders-after-aplus.png)
 
-*Figure 5.1: The public tier after hardening, graded from outside rather than from the hosting platform's own dashboard. It started at F.*
+*Figure 5.2: The public tier after hardening, graded from outside rather than from the hosting platform's own dashboard. It started at F.*
 
 What I took from it is that both surprises, the default hostname and the injected script, were found by testing the live service, not by reading configuration.
 

@@ -30,7 +30,21 @@ A malformed rules file stops the Wazuh manager from starting at all, so nothing 
 - **61 sample events** written by the app's own audit code, all 61 reaching the rule they were written for.
 - **676 real events** from the lab's own history: earlier attack scenarios, key rotation drills and an attack probe. Every refusal landed on its rule. The forged-token rule fired nine times, the forged-SAML rule twice, the SCIM rule thirteen times.
 
-The rules went live on SIEM01 on 23 October 2026. That evening the app's attack probe was fired at 19:42 and produced 18 alerts, every event arriving on SIEM01 decoded, under `rule.groups: stock_copilot`.
+The rules went live on SIEM01 on 23 October 2026. Figure 16.1 shows the agent on APP01 being told to read the app's audit log and confirming that it is following the file. Figure 16.2 shows the rules file being installed on SIEM01, checked and loaded.
+
+![A terminal on APP01: a localfile block added to the Wazuh agent's configuration for the app's audit log as JSON, the agent restarted, and its log reporting that it is analysing the file.](../../assets/work/enterprise-security-homelab/app-01-agent-reads-audit-log.png)
+
+*Figure 16.1: The agent on APP01 reading the app's identity audit log as JSON, confirmed in its own log.*
+
+![A terminal on SIEM01: the rules file fetched from the repository, installed into the Wazuh rules folder, the configuration tested, and the manager restarted and reported active.](../../assets/work/enterprise-security-homelab/app-02-rules-deployed-manager-restarted.png)
+
+*Figure 16.2: The rules deployed from version control: installed, tested and loaded, with the manager back to active.*
+
+That evening the app's attack probe was fired at 19:42 and produced 18 alerts, every event arriving on SIEM01 decoded, under `rule.groups: stock_copilot`. Figure 16.3 is that result.
+
+![Wazuh Discover filtered to the stock_copilot rule group: 18 hits from APP01, with an access-denied event decoded into its fields.](../../assets/work/enterprise-security-homelab/app-03-eighteen-alerts-decoded.png)
+
+*Figure 16.3: Eighteen alerts from the probe, each decoded into fields on SIEM01. One address is redacted.*
 
 ## Two rules that were wrong
 

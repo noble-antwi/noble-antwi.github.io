@@ -21,7 +21,11 @@ Figure 20.1 shows the four side by side, and the table gives the benchmark behin
 | PVE01 | Hypervisor | CIS Debian Linux 13 | 207 | 43% |
 | SIEM01 | SIEM | CIS Ubuntu Linux 24.04 LTS | 274 | 53.6% |
 
-SIEM01's figure is worked out from the assessment events rather than read from a policy summary. The Wazuh manager is agent `000`, which does not appear in the agent list, so the summary view cannot be opened for it. The arithmetic is identical: passed divided by passed plus failed.
+SIEM01's figure is worked out from the assessment events rather than read from a policy summary. The Wazuh manager is agent `000`, which does not appear in the agent list, so the summary view cannot be opened for it. The arithmetic is identical: passed divided by passed plus failed. Figure 20.2 shows the passed half of that count, taken from the manager's first assessment.
+
+![Wazuh Configuration Assessment events for SIEM01 filtered to passed checks, showing 147 hits against CIS Ubuntu Linux 24.04 LTS](../../assets/work/enterprise-security-homelab/siem-11-sca-baseline-passed.png)
+
+*Figure 20.2: The 147 passing checks on SIEM01, counted from assessment events. Most are account and permission hygiene that Ubuntu gets right by default, such as shadowed passwords and no duplicate UIDs.*
 
 ## Why the four scores are not a ranking
 
