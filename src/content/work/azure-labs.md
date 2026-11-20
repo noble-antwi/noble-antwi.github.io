@@ -123,6 +123,14 @@ gallery:
     alt: "Lab 05 architecture: six member users and two guests in Entra ID, two team groups nested inside one all-staff group, and one Reader assignment on a resource group given to that group"
     caption: "Lab 05 as built: six staff in two team groups, the teams nested in one all-staff group, and one Reader assignment on that group. The guests sit in no group."
     group: "Lab 05 · Entra ID users and groups"
+  - src: ../../assets/work/azure-labs/05-02-invite-guest-review.png
+    alt: "The review step of inviting an external user: display name Guest One, user type Guest, job title External Auditor, no invitation message, and no groups or roles"
+    caption: "Inviting an outside guest: a name, a job title and no invitation email. No group and no role is given at this step."
+    group: "Lab 05 · Entra ID users and groups"
+  - src: ../../assets/work/azure-labs/05-03-guests-list.png
+    alt: "The Users list filtered to user type Guest, showing Guest One (Partner Auditor) and Guest Two (Vendor Engineer)"
+    caption: "The two guests in the directory. Each is a pointer to an account that lives in the guest's own tenant, and neither is in any group, so neither has any access."
+    group: "Lab 05 · Entra ID users and groups"
   - src: ../../assets/work/azure-labs/05-10-all-staff-all-members.png
     alt: "The all-staff group's All members tab listing eight members: six users and the two team groups"
     caption: "The nested group, all members: eight, from two direct members. The two team groups plus the six people inside them."
