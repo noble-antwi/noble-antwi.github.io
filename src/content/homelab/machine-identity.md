@@ -1,3 +1,19 @@
+## In plain words
+
+Software that works on its own, like my AI assistant that reads security alerts, needs an identity just as a person does. I gave the assistant its own account on the lab's sign-in system, with a named owner. It proves who it is with one secret and receives a pass, called a token, that expires after five minutes, and I can switch the account off in one place.
+
+## What I did, step by step
+
+1. Registered the assistant as its own identity on the lab's sign-in system, for programs only, with every browser sign-in switched off (Figure 11.1).
+2. Copied the generated secret straight into the password manager, without it ever being displayed (Figure 11.2).
+3. Requested a token from my laptop and received one valid for 300 seconds (Figure 11.3).
+4. Decoded the token to confirm which system issued it and which identity it was issued to (Figure 11.4).
+5. Disabled the identity in one place (Figure 11.5).
+6. Repeated the request and saw every attempt refused until I re-enabled the identity (Figure 11.6).
+7. Proved the refusal in the sign-in system's own log, which recorded the real reason under the assistant's name (Figure 11.7).
+
+## The background
+
 The "Ask my SIEM" agent in the [AI agent identity lab](/work/ai-agent-identity-lab/) reads Wazuh alerts. I wanted it to have the same governance a person gets: one identity, owned by someone, that issues short-lived proof and can be switched off in one place. So the agent became the first machine identity on IDP01, Biira Bank's identity provider.
 
 ## Why client credentials

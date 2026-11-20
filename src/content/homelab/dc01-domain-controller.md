@@ -1,3 +1,19 @@
+## In plain words
+
+The domain controller is the server that holds every account and checks who people are when they sign in. Other machines need to reach it in roughly a dozen specific ways, so I opened exactly those paths through the firewall, and kept the paths for administering the server separate. A network can then use the directory without also getting a remote console on the server.
+
+## What I did, step by step
+
+1. Worked out what a member machine needs from the domain controller: finding it, signing in, reading the directory and downloading policy.
+2. Grouped the server's address and the needed ports into named firewall groups, called aliases, so each rule states its intent (Figure 7.1).
+3. Kept the administration ports in their own group, apart from the ports needed for membership (Figure 7.2).
+4. Labelled every port inside a group with its role, so the setting explains itself (Figure 7.3).
+5. Granted the management network both membership and administration, and gave the attack network no standing access.
+6. Renamed the server to DC01 on 30 August 2026, with its directory health test clean before and after (Figure 7.4).
+7. Enrolled it on 6 September 2026 as the first agent of the security monitoring system, which then showed its inventory and benchmark results.
+
+## The background
+
 DC01 is the domain controller for Biira Bank: a Windows Server 2025 machine on dedicated hardware at `192.168.50.2`, on the EnterpriseLAN segment (VLAN 50). It runs Active Directory Domain Services and DNS, with AD-integrated forward and reverse zones, and it answers a clean `dcdiag`.
 
 ## What a domain controller asks of the network

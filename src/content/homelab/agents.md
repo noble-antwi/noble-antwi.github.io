@@ -1,3 +1,19 @@
+## In plain words
+
+A monitoring server only sees the machines that report to it. Each machine needs a program, called an agent, that sends its activity to the server. I installed that program on the lab's machines one at a time, and worked through the network and installation problems that came up along the way, until each machine was reporting.
+
+## What I did, step by step
+
+1. Installed the agent on the domain controller and found that nothing appeared on the monitoring server.
+2. Corrected the firewall rule, reloaded the firewall and saw the first machine connect (Figure 14.3).
+3. Enrolled the administrative workstation and saw, from its recorded address, that its traffic had gone around the firewall.
+4. Added a fixed route so the traffic crosses the firewall, and confirmed it by the agent's new address (Figure 14.4).
+5. Worked through three failed installs on the hypervisor, the machine every virtual machine depends on, then installed cleanly.
+6. Confirmed three machines reporting across two operating-system families (Figure 14.5).
+7. Enrolled four more machines afterwards, including the identity provider before its own software went on it (Figure 14.2).
+
+## The background
+
 A SIEM with no agents only watches itself: the Wazuh manager monitors its own host as agent `000`, and everything else has to be enrolled. The first three agents, DC01, ADM01 and PVE01, were reporting by 6 September 2026. WKS01, APP01, IDP01 and VAULT01 followed as agents 004 to 007.
 
 ## Who reports, and what they send

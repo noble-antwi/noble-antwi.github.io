@@ -1,3 +1,19 @@
+## In plain words
+
+The lab sits behind a home router that I do not control, so nothing on the internet can open a connection into it. I reach it remotely through Tailscale, a service that builds tunnels between my signed-in devices, with both ends dialling out. I also made each remote connection arrive with the address of the real device, so logs and rules can name it.
+
+## What I did, step by step
+
+1. Chose Tailscale because it needs no inbound connection, and ran it on the firewall so firewall rules still decide what remote traffic reaches.
+2. Traced a sign-out after a firewall upgrade on 1 November 2026 to two leftover start-up entries running a second copy (Figure 4.1).
+3. Deleted both entries, signed the firewall in again and rebooted to confirm one copy ran with the same identity (Figure 4.2).
+4. Changed one setting so the firewall routes remote traffic itself and the real source address is kept (Figure 4.3).
+5. Allowed Tailscale's address range to reach the lab networks with one rule, and disabled the older rule on 2 November 2026 (Figure 4.4).
+6. Confirmed in a remote login session that the server saw the laptop's own address, not the firewall's (Figure 4.5).
+7. Proved it in the security logs: a remote desktop logon event carried the laptop's address as its source (Figure 4.6).
+
+## The background
+
 The lab sits behind a home router it does not administer. The pfSense WAN takes a private address from that router, so the lab is behind two layers of address translation and nothing on the internet can open a connection inward. Remote access had to work without any inbound port, and Tailscale does: it builds WireGuard tunnels between devices that each sign in to the same tailnet, and both ends dial out.
 
 ## Why pfSense is the subnet router

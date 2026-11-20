@@ -1,3 +1,19 @@
+## In plain words
+
+A monitoring server is the system that collects every machine's activity log and raises an alert when something looks wrong. The lab's first one was a physical machine that lost power and did not return. I rebuilt the service on a machine with the memory and disk space it needs, and proved that other computers were reporting to it.
+
+## What I did, step by step
+
+1. Chose the replacement machine after checking its processor cores, memory and free disk space (Figure 13.1).
+2. Built the firewall rule that lets me manage the server, with logging on, before moving the machine.
+3. Renamed the machine, gave it a new fixed address and confirmed the address survived a reboot (Figure 13.2).
+4. Removed a package left over from the machine's previous role, which had stopped the installer from running (Figure 13.6).
+5. Installed Wazuh, the monitoring software, with its storage, detection and dashboard parts all on the one machine (Figure 13.4).
+6. Recorded the server's first assessment of its own settings before changing anything, as a starting measurement (Figure 13.8).
+7. Proved it works: three machines were reporting to it by 6 September (Figure 13.7).
+
+## The background
+
 The lab's original SIEM was a physical machine running Rocky Linux 9.6 at `192.168.20.2`. It lost power on 29 August 2026 and did not return. That was the second hardware failure in this lab, after a server NIC. pfSense kept logging locally, but until the rebuild nothing was being shipped or correlated.
 
 ## A failure that became a role swap

@@ -1,3 +1,19 @@
+## In plain words
+
+To check a Windows machine properly, a scanner has to sign in to it as an administrator. That is a risk, because the scanner's password is stored and the design has to assume it could leak. I built an account that can administer ordinary machines for scanning, has no power over the domain (the central directory of accounts and machines), and can sign in one way only.
+
+## What I did, step by step
+
+1. Created a dedicated account for the scanner, with a named owner, and read its settings back from the directory (Figure 18.2).
+2. Placed the account in a security group, so the right belongs to a group and never directly to an account.
+3. Wrote a Group Policy, a central instruction each machine carries out on itself, that adds the group to local administrators (Figure 18.3).
+4. Linked the policy to member machines only, which keeps the domain controller outside the chain (Figure 18.1).
+5. Denied the group four of the five ways to sign in to Windows, leaving network sign-in alone (Figure 18.4).
+6. Joined the first workstation and confirmed on the machine itself that the policy had arrived (Figure 18.5).
+7. Proved the closed door: a Remote Desktop sign-in with the correct password was refused (Figure 18.7).
+
+## The background
+
 Greenbone can inspect a Windows machine from outside, or log in and inspect it from inside. Logging in is what turns "port 445 is open" into "this machine is missing a specific update", and it requires membership of the target's local Administrators group. So the design question is how to give a scanner administrative rights inside many machines without giving it any power over the domain. NIST SP 800-53 names it: RA-5(5), privileged access for vulnerability scanning.
 
 ## A chain of four links

@@ -1,3 +1,19 @@
+## In plain words
+
+A security scan produces a list of weaknesses, but a list fixes nothing. This is one complete trip around the loop that does: scan, choose a finding, fix it, scan again and show it closed. The finding was that Remote Desktop on one workstation still offered two outdated versions of TLS, the encryption that protects the connection, and the final scan proves they are gone.
+
+## What I did, step by step
+
+1. Ran a signed-in scan of one workstation and chose one confirmed finding: Remote Desktop still offered TLS 1.0 and 1.1 (Figure 19.1).
+2. Wrote a single-purpose policy with four settings that switch the old versions off and are removed if the policy is unlinked (Figure 19.4).
+3. Read the workstation's location from the directory instead of assuming it (Figure 19.2).
+4. Linked the policy to the workstations only (Figure 19.3).
+5. Confirmed on the workstation itself that the policy had been applied (Figure 19.5).
+6. Read the new values back from the machine, then restarted it to put them in force (Figure 19.6).
+7. Ran the same scan a third time and proved the finding closed: only TLS 1.2 and 1.3 remained (Figure 19.7).
+
+## The background
+
 A single vulnerability report is a list. It says what was true at one moment, and nothing about whether anyone did anything about it. Vulnerability management is the loop around the list: scan, choose, fix, scan again, and show the finding closed. This is the lab's first complete trip around that loop, on one workstation, WKS01. Written up in [Find, Fix, Prove](/lab-notes/2026/10/09/find-fix-prove.html).
 
 ## Choosing what to fix

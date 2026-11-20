@@ -1,3 +1,19 @@
+## In plain words
+
+To know that a defence works, something has to attack it. I built a dedicated attack machine for the lab and placed it on the most tightly restricted network, so it can run exercises but cannot reach anything except on purpose. I then ran tests from that machine itself to prove it is contained and still works.
+
+## What I did, step by step
+
+1. Checked the downloaded installer against its published checksum, a fingerprint of the file, before installing it (Figure 3.1).
+2. Placed the virtual machine on the attack network with one setting on the host, which nothing inside the machine can change (Figure 3.2).
+3. Gave it a fixed address, because a machine named in firewall rules and test evidence needs a stable identity (Figure 3.3).
+4. Wrote three firewall rules for its network: name lookups, time sync and internet access, with nothing internal allowed (Figure 3.4).
+5. Fixed failing name lookups by adding that network to the firewall's lookup service, after the rule counters showed the traffic was passing (Figure 3.7).
+6. Ran five tests from the machine on 4 September 2026: two blocked paths stayed blocked and three everyday services worked (Figure 3.5).
+7. Saved a clean snapshot of the validated build, so every exercise starts from it and rolls back afterwards (Figure 3.8).
+
+## The background
+
 A lab that only contains defensive tooling can show that controls exist. It cannot show that they work. KALI01 is there so that every control is tested by something behaving the way an adversary behaves. That makes it the least trusted host in the lab, so it sits on the segment with the most restrictive rulebase: usable enough to run exercises, contained enough that it cannot reach anything except on purpose.
 
 ## How it was built

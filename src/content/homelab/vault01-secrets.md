@@ -1,3 +1,19 @@
+## In plain words
+
+The lab keeps its secrets, such as passwords, in one locked store, called a vault. Every request to that store is written to a log, so I taught the monitoring server (the system that collects every machine's activity log) to read it. One wrong password is simply noted, while many in quick succession from the same place raise an alarm.
+
+## What I did, step by step
+
+1. Switched on the vault's audit log from the start, so every request and every answer is written down.
+2. Created a group on the monitoring server that tells any machine placed in it to read that log (Figure 12.1).
+3. Placed the vault's machine in the group as its first member (Figure 12.2).
+4. Wrote six rules that note a single failure and raise an alarm on repeated ones (Figure 12.5).
+5. Entered five wrong passwords on purpose and found the alerts on the monitoring server (Figure 12.3).
+6. Used a made-up access token and saw it refused and reported (Figure 12.4).
+7. Forced the log to change over to a new file and proved the next alert still arrived (Figure 12.6).
+
+## The background
+
 VAULT01 holds the secrets of the Biira Bank lab. It is HashiCorp Vault 2.2.1 on its own guest, with the other Tier 0 systems. It was initialised with five key shares, of which any three unseal it, it has a certificate from CA01, and its audit device was on from the start. It reports to the SIEM as Wazuh agent 007.
 
 ## What the audit log gives the SIEM

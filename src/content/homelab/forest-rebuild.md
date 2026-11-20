@@ -1,3 +1,19 @@
+## In plain words
+
+The lab's company directory, the system that holds every account and group, was still named after a web domain that was being retired. I replaced it with a new directory named for the current brand by exporting the contents, rebuilding the server that runs it, and recreating the contents from the export. I then compared the export with the result to confirm the rebuilt directory matched.
+
+## What I did, step by step
+
+1. Chose a full rebuild over a rename, because the small directory could be exported to files and replayed as a script.
+2. Exported the organisational units, users and group memberships to files and copied them off the machine.
+3. Demoted the domain controller to a standalone server, then promoted it as the first controller of the new directory.
+4. Recovered from a password lockout by resetting the administrator password offline, at the console, from installation media (Figure 8.2).
+5. Recreated the organisational units and users from the export, giving each account a temporary password to change at first sign-in (Figure 8.3).
+6. Restored the twelve security groups and their members under the new directory (Figure 8.4).
+7. Compared the export with the result: user counts and group membership counts matched, group for group (Figure 8.5).
+
+## The background
+
 Biira Bank's public brand moved to `biirabank.com` while its Active Directory forest was still called `ad.biira.online`, after a domain that was being retired. I replaced it with a new forest, `corp.biirabank.com` (NetBIOS `CORP`), by taking the existing domain controller down to a standalone server, promoting it again as the first controller of the new forest, and recreating the directory from an export.
 
 ## Why a rebuild and not a rename

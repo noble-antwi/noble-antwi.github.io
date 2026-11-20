@@ -1,3 +1,18 @@
+## In plain words
+
+The firewall has an administration page, and whoever can open it can rewrite every other protection in the lab. I made sure the network where the domain controller (the server that holds every account) lives can no longer reach that page, while keeping the everyday services it needs. I tested it before and after the change, so the result is proven and not assumed.
+
+## What I did, step by step
+
+1. Recorded a baseline on 15 August 2026: the domain controller could open the firewall's administration page (Figure 2.1).
+2. Replaced the old allow-everything rule with four rules for name lookups, time sync, ping and internet access only.
+3. Repeated the test and saw it still pass, although the new rules were saved and correct.
+4. Ruled out other causes one by one, then reloaded the firewall's rules by hand so the new set took effect (Figure 2.3).
+5. Proved the block on 30 August 2026: the administration page was unreachable, while ping, name lookups and internet access still worked (Figure 2.2).
+6. Repeated the check from the attack network on 4 September 2026, and that connection timed out as well.
+
+## The background
+
 The firewall's administrative interface is the one place from which every other control in the lab can be rewritten, so only the management plane should be able to reach it. This build makes that true for ENTERPRISELAN, the segment the domain controller lives on. Hosts on VLAN 50 cannot open the pfSense admin interface on their own gateway address or on any other VLAN's, and they keep the DNS, NTP and internet access they legitimately need.
 
 ## The rules that do it

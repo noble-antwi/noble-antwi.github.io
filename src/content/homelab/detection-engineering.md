@@ -1,3 +1,19 @@
+## In plain words
+
+An alarm that sounds all day for harmless reasons teaches people to ignore it. My monitoring server was raising its most serious alert several times an hour for something Windows does to itself, and it flagged about two thousand sign-ins by my own security scanner as suspicious. I wrote narrow exceptions so that normal activity stays quiet, anything unusual still alerts, and a full record is kept either way.
+
+## What I did, step by step
+
+1. Noticed a top-severity alert that turned out to be PowerShell, a Windows tool, checking its own settings (Figure 15.2).
+2. Wrote an exception that needs two conditions to match, and tested it against a real event.
+3. Wrote a pair of rules for the scanner's account: silent from the scanner itself, louder from anywhere else (Figure 15.7).
+4. Deployed the rules from the repository, validated them and checked that they had loaded (Figure 15.3).
+5. Switched on an archive that records every event, including the ones that raise no alert (Figure 15.8).
+6. Confirmed on live data that the false alarm had stopped (Figure 15.4).
+7. Proved the scanner rules on the next scan: no false sign-in alerts, against 2,051 the time before.
+
+## The background
+
 While reviewing the Wazuh dashboard on 25 September 2026 I saw a Sysmon FileCreate event: `powershell.exe` had written a `.ps1` file into a temporary folder. Figure 15.1 shows the event as it appeared in the dashboard.
 
 ![Sysmon event 11 in the Wazuh dashboard: powershell.exe creating its execution policy test file in a temporary folder](../../assets/work/enterprise-security-homelab/siem-22-sysmon-11-powershell-probe.png)

@@ -1,3 +1,19 @@
+## In plain words
+
+An identity provider is one place to sign in: applications hand the sign-in to it instead of each keeping its own list of users and passwords. I built one for the lab and connected it to the existing company directory, so people use the same sign-in they use on Windows, and disabling someone once removes them from everything behind it. It never stores their directory password.
+
+## What I did, step by step
+
+1. Hardened the server first by allowing key-only remote login, proven by a refused password attempt (Figure 10.1).
+2. Enrolled it with the security monitoring system as agent 006 (Figure 10.2).
+3. Requested a web certificate from the lab's certificate authority, keeping the private key on the machine, and verified the result (Figure 10.3).
+4. Started Keycloak, the identity provider software, and its database with exact versions pinned and only the encrypted port published (Figure 10.4).
+5. Created a named administrator who needs a one-time code, then deleted the temporary start-up account (Figure 10.5).
+6. Connected it to the directory with a read-only account, limited to the employees' section (Figure 10.6).
+7. Proved the chain with a test employee, who signed in with her directory password, checked by the domain controller (Figure 10.7).
+
+## The background
+
 Every application that keeps its own user list adds another place to create, disable and audit accounts, and another password for people to reuse. An identity provider removes that. Applications hand sign-in to it, it checks the person, and the application receives a signed statement of who they are. Disable someone once and they are out of everything behind it.
 
 Biira Bank already has a source of truth for people: Active Directory on DC01. IDP01 puts Keycloak in front of it. Whoever controls an identity provider can sign in as anyone behind it, so it is a Tier 0 system and sits on VLAN 50 at `192.168.50.4`, beside the domain controller and the certificate authority.

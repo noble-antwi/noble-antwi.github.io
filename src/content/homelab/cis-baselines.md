@@ -1,3 +1,17 @@
+## In plain words
+
+A hardening benchmark is a published checklist of settings that make a computer harder to attack. My monitoring software scores each machine against the checklist for its own operating system. Before changing anything, I recorded those first scores for four machines, because a starting point cannot be measured later, and it is what later improvement is judged against.
+
+## What I did, step by step
+
+1. Enrolled each machine with the monitoring server, which ran the assessment automatically.
+2. Recorded the four results before changing anything: one per machine and operating system.
+3. Worked out the monitoring server's own score from its assessment events, because its summary view cannot be opened (Figure 20.2).
+4. Charted the four with bars proportional to the size of each benchmark, so the chart is not misread as a ranking (Figure 20.1).
+5. Kept the four scores as the "before" half of a before-and-after, to compare with the same assessment after hardening.
+
+## The background
+
 Wazuh ships CIS Benchmark policies and evaluates each host against its own platform's benchmark. Every agent runs that assessment when it enrols, and the manager assesses itself. The results are not detections of an attack. They are an audit of the machine's own hardening. Before changing anything on any host, I recorded the four results the lab produced: one per host and operating system.
 
 ## Why I captured them first

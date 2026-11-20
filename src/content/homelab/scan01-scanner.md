@@ -1,3 +1,19 @@
+## In plain words
+
+A vulnerability scanner tests machines for known weaknesses from across the network, which is the view an attacker meets first. My lab already checked each machine from the inside, so I built a scanner to add the outside view. It stores administrator credentials for the machines it scans, so I gave it its own isolated virtual machine.
+
+## What I did, step by step
+
+1. Chose Greenbone, an open-source scanner with no limit on the number of machines and no expiry.
+2. Created a dedicated virtual machine for it on the defenders' part of the lab network (Figure 17.1).
+3. Recovered from a full disk by removing one half-written database volume by name and keeping the downloaded data (Figure 17.4).
+4. Grew the virtual disk to 100 GB and confirmed the change at every layer (Figure 17.3).
+5. Loaded all four data feeds, with 186,567 vulnerability tests in place (Figure 17.6).
+6. Took a snapshot so the four-hour load never has to be repeated (Figure 17.7).
+7. Ran the first signed-in scan of a workstation, as the baseline that later scans are compared against (Figure 17.8).
+
+## The background
+
 Wazuh already finds CVEs in this lab: each agent reports its installed packages and the manager matches them against CVE data. That is the view from inside a host. SCAN01 exists for the view from the network: which ports actually answer, which services are exposed across VLANs, whether TLS is weak, and, once the scanner is given credentials, the patch level inside the machine. An attacker meets the outside view first, so the lab needs both. CIS Controls v8 safeguard 7.5 asks for exactly this pairing of authenticated and unauthenticated internal scans.
 
 ## Why Greenbone, and why a virtual machine

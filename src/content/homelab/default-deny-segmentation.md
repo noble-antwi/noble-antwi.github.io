@@ -1,3 +1,19 @@
+## In plain words
+
+The lab is split into six separate networks, and one firewall stands between all of them. I set that firewall to refuse everything by default, so traffic only passes where I have written a rule that allows it. This matters because separate networks only mean something if traffic cannot wander between them, and every rule has a recorded reason for existing.
+
+## What I did, step by step
+
+1. Divided the switch into six separate networks, with two shared trunk ports and one ordinary port for each network (Figure 1.1).
+2. Connected every network to the firewall over one cable, so anything travelling between two networks has to cross it (Figure 1.3).
+3. Joined the virtual machine host to the same link, so one tag on a virtual machine decides which network it sits on (Figure 1.4).
+4. Wrote a short list of explicit allow rules for the management, enterprise and attack networks, with everything else denied (Figure 1.6).
+5. Recorded every rule in a register with a fixed ID, a business reason and a matching control from a published security standard.
+6. Corrected a rule that failed twice: first a bad copy, then a correct rule the firewall had not yet loaded (Figure 1.7).
+7. Reloaded the firewall's rules by hand and repeated the isolation tests, which then returned the expected result (Figure 1.8).
+
+## The background
+
 Six VLANs only mean something if traffic cannot wander between them, so the pfSense rulebase is deny by default: nothing passes unless a rule allows it, and every interface ends in an implicit deny. Three of the six interfaces now carry a hardened, tested ruleset: MANAGEMENT (VLAN 10), ENTERPRISELAN (VLAN 50) and REDTEAM (VLAN 30).
 
 ## One firewall in the path of every packet

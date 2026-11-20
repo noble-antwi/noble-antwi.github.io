@@ -1,3 +1,19 @@
+## In plain words
+
+When an application turns someone away at sign-in, only that application knows it happened and why. I connected the sign-in audit log of Stock Copilot, an application in my lab, to the monitoring server (the system that collects every machine's activity log) and wrote thirty rules to read it. Forged or misused credentials now raise an alert, while routine sign-ins are recorded quietly.
+
+## What I did, step by step
+
+1. Wrote thirty rules for the application's audit log and mapped them to MITRE ATT&CK, a catalogue of attack techniques.
+2. Kept ten of the thirty as quiet records that never page anyone, such as an ordinary sign-in.
+3. Tested them in a throwaway copy of the monitoring software, replaying 61 sample events and 676 real ones from the lab's history.
+4. Corrected two rules whose first versions were wrong.
+5. Configured the reporting agent on the application's server to read the audit log, and confirmed it was following the file (Figure 16.1).
+6. Installed the rules on the monitoring server from version control, checked them and loaded them (Figure 16.2).
+7. Proved it that evening: the application's attack probe produced 18 alerts, every one decoded into its fields (Figure 16.3).
+
+## The background
+
 Most of my lab's alerts come from operating systems: Windows event logs, Sysmon, a Linux audit trail. A forged SAML assertion being turned away, a token used past its scope, or someone resetting the break-glass account happens somewhere else. Only the application that checked the credential knows it refused one, and why.
 
 Stock Copilot runs on APP01, in the DevOps segment. It signs people in through more than one identity provider, provisions accounts over SCIM, issues API tokens and rotates its own signing keys. Every one of those decisions writes a line to an audit log.

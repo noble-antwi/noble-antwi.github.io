@@ -74,6 +74,14 @@ const Body = entry ? (await render(entry)).Content : null;
   .hb-head .lead { margin-top: 1.1rem; }
   .hb-body { margin-top: 0.5rem; }
   .hb-long { max-width: 46rem; }
+  /* every write-up opens the same way: what it is in plain words, then what was done, as numbered steps */
+  .hb-long :global(#in-plain-words), .hb-long :global(#what-i-did-step-by-step) { font: 600 0.78rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-ink, var(--accent)); margin: 0 0 0.9rem; }
+  .hb-long :global(#what-i-did-step-by-step) { margin-top: 2.4rem; }
+  .hb-long :global(#in-plain-words + p) { font-size: 1.22rem; line-height: 1.6; color: var(--ink); margin: 0; padding: 1.1rem 1.3rem; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 var(--radius) var(--radius) 0; }
+  .hb-long :global(#what-i-did-step-by-step + ol) { list-style: none; counter-reset: step; margin: 0; padding: 0; }
+  .hb-long :global(#what-i-did-step-by-step + ol > li) { counter-increment: step; position: relative; padding: 0.15rem 0 0.15rem 2.9rem; margin: 0 0 0.75rem; min-height: 2rem; }
+  .hb-long :global(#what-i-did-step-by-step + ol > li::before) { content: counter(step); position: absolute; left: 0; top: 0; width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--paper); font: 700 0.82rem/1 var(--font-mono); }
+  .hb-long :global(#the-background) { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--line-2); }
   .hb-links { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.8rem 0 0; }
   .hb-shots { margin-top: 3.5rem; padding-top: 2.2rem; border-top: 1px solid var(--line-2); }
   .hb-h { font: 600 0.78rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 1.6rem; }

@@ -1,3 +1,17 @@
+## In plain words
+
+A backup is a separate, kept copy of a machine that survives when the original is lost or damaged. Every guest machine on the lab's virtual machine host is now copied each night to a different physical disk from the one it runs on. A lost or broken machine then becomes a restore, not a rebuild.
+
+## What I did, step by step
+
+1. Reviewed the host's two physical disks, which both reported a passing health status (Figure 6.2).
+2. Wiped the second disk, which had been an old operating system disk, and made it dedicated backup storage (Figure 6.3).
+3. Scheduled one job on 30 August 2026 to back up every guest machine daily at 02:00 and keep the last three copies.
+4. Ran the job by hand instead of waiting for the schedule, and it finished successfully (Figure 6.4).
+5. Confirmed that backup files were present on the backup disk for both guest machines that existed at the time.
+
+## The background
+
 A running VM is not a backup of itself. Snapshots help with a quick rollback, but a real backup is an independent, retained copy that survives disk loss, a bad change or a corrupted guest. Two failures of physical machines in this lab, a server NIC and the Wazuh host losing power, made the point concretely: anything not backed up is one hardware fault away from a rebuild. So every guest on the hypervisor is now backed up nightly to a separate physical disk.
 
 ## Where the backups live

@@ -1,3 +1,19 @@
+## In plain words
+
+Most of the lab is internal, but a real organisation also has a part that the internet can reach. I built a public website for the fictional Biira Bank and hardened it, so plain connections are redirected to encrypted ones and no JavaScript can run on the page. An independent grader scored it F before the work and A plus about an hour later.
+
+## What I did, step by step
+
+1. Hosted the site on Cloudflare Workers as static files that collect nothing, sign nobody in and run no application logic.
+2. Scanned it with an independent grader on 8 September 2026, before any hardening, and recorded grade F (Figure 5.1).
+3. Disabled the site's default second hostname, where the security settings did not apply, and confirmed that requests to it began to fail.
+4. Tightened three connection settings, so plain requests redirect to the encrypted site and outdated encryption versions are refused.
+5. Reworked the page so a strict content policy would not break it, then added six security headers with a single rule.
+6. Disabled an analytics script that Cloudflare was injecting, which the new policy had caught, so no JavaScript runs on the page.
+7. Scanned again about an hour after the first scan, and the independent grader returned A plus (Figure 5.2).
+
+## The background
+
 Everything else in this lab is an internal control: VLAN segmentation, internal firewall policy, an internal SIEM, an internal directory. That is one half of enterprise security. The other half is the part of the estate the internet can reach, and `biirabank.com` supplies it. A public site brings controls that have no internal equivalent, such as transport security graded by third parties and browser security headers.
 
 The site is deliberately hardened and uninteresting. It collects nothing, authenticates nobody and runs no application logic, and it states in three places that Biira Bank is fictional and not a financial institution. Anything intentionally vulnerable stays internal, behind the firewall.

@@ -1,3 +1,19 @@
+## In plain words
+
+When an application checks a password against the company directory, that conversation should be encrypted, and the application should know it is talking to the real server. Both depend on a certificate, a signed proof of a server's identity, issued by an authority the other machines trust. I built that authority for the lab, and the domain controller (the server that holds every account) now answers over an encrypted connection that clients can verify.
+
+## What I did, step by step
+
+1. Built a Windows server beside the domain controller, joined it to the domain and took a restore point before the change (Figure 9.1).
+2. Installed only the certificate authority role, then created the root authority with one recorded, repeatable command (Figure 9.2).
+3. Ran two commands on the domain controller so it requested its own certificate, with its private key never leaving it (Figure 9.4).
+4. Confirmed from inside the domain that the directory answered on its encrypted port, by name (Figure 9.5).
+5. Exported the public half of the root certificate and computed its fingerprint before the file went anywhere (Figure 9.6).
+6. Tested from a laptop outside the domain with the checked root, and the server's identity verified (Figure 9.7).
+7. Proved the check matters by repeating it without the root, which could not confirm who the server was (Figure 9.8).
+
+## The background
+
 Applications that use Active Directory as their source of users sign in to it over LDAP, with a password. Two were waiting in the lab: an identity provider and an AI agent with its own service account. Plain LDAP on port 389 would have sent those passwords across VLANs where anything on the path could read them. LDAPS on 636 wraps the same conversation in TLS, but a domain controller only offers it once it holds a suitable certificate, and a certificate has to be issued by someone the clients trust. So Biira Bank needed its own certificate authority, and CA01 is it.
 
 ## The design
