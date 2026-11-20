@@ -578,6 +578,10 @@ figcaption { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink
 .prose figure .frame { display: block; border: 1px solid var(--line-2); border-radius: var(--radius); overflow: hidden; background: var(--paper-2); box-shadow: var(--shadow); transition: border-color 0.2s ease, transform 0.2s ease; }
 .prose figure .frame:hover { border-color: var(--accent-line); transform: translateY(-2px); }
 .prose figure .frame img { border-radius: 0; }
+/* a screenshot narrower than the column keeps its own size instead of being stretched */
+.prose figure .frame { width: fit-content; max-width: 100%; }
+.prose figure .frame img { width: auto; max-width: 100%; }
+.prose figure figcaption b { color: var(--ink-2); font-weight: 600; margin-right: 0.2rem; }
 .prose figure figcaption { font-family: var(--font-mono); font-size: 0.73rem; line-height: 1.55; color: var(--ink-3); margin-top: 0.7rem; padding-left: 0.9rem; border-left: 2px solid var(--accent-line); }
 .prose code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); border: 1px solid var(--line); padding: 0.1em 0.4em; border-radius: 4px; color: var(--ink); }
 .prose pre { margin: 1.5em 0; padding: 1.1rem 1.3rem; border-radius: var(--radius-sm); border: 1px solid var(--line); overflow-x: auto; font-size: 0.86rem; line-height: 1.6; background: var(--code-bg) !important; }

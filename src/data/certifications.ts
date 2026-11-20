@@ -36,6 +36,8 @@ export const DOMAIN_LABELS: Record<CertDomain, string> = {
 export const CERTS: Cert[] = [
   {
     id: 'sc-300', title: 'Identity and Access Administrator Associate (SC-300)', issuer: 'Microsoft', domain: 'identity', featured: true, mark: 'MS',
+    /* Microsoft's own Associate badge, not a Credly one: saved by hand to public/assets/credentials/sc-300.webp */
+    image: 'https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-associate-badge.svg',
     blurb: 'Entra ID tenants, conditional access, identity governance and entitlement management. Renewed April 2026 with a 92% score.',
     issued: 'Renewed Apr 19, 2026', credential: 'FEC4CC-112274',
     verify: 'https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/324D5F14A4B47A0F?sharingId=3DD1334494500325', verifyLabel: 'Verify on Microsoft Learn',

@@ -162,8 +162,8 @@ export const BUILDS: Build[] = [
     "shots": [
       {
         "file": "dc-01-rename-to-dc01.png",
-        "alt": "Renaming the Windows Server host to DC01",
-        "caption": "DC01, the Windows Server 2025 domain controller, being brought into the role-based naming scheme."
+        "alt": "A PowerShell session on the domain controller: Netlogon restarted, then dcdiag /test:dns passing for DC01 and for the old forest",
+        "caption": "The same controller on the old forest, just after it took the name DC01: Netlogon restarted and its DNS tests passing."
       }
     ]
   },
@@ -259,7 +259,38 @@ export const BUILDS: Build[] = [
     "lead": "HashiCorp Vault 2.2.1 on its own guest with the other Tier 0 systems, initialised with five key shares of which any three unseal it, a CA01 certificate, an audit device on from the start, and Wazuh agent 007.",
     "more": "<p>Six Wazuh rules now read its audit log: a failed login, a password-guessing run, an invalid token, and an expired browser session that stays quiet unless it repeats. They were proven live from VAULT01 to SIEM01, including after a forced log rotation. Written up in <a href=\"/lab-notes/2026/11/09/what-wazuh-hears-when-vault-says-no.html\">What Wazuh Hears When Vault Says No</a>. The first short-lived credentials follow.</p>",
     "runbook": "",
-    "shots": []
+    "shots": [
+      {
+        "file": "vault-01-agent-group-conf.png",
+        "alt": "The agent.conf of the vault group in the Wazuh dashboard: one localfile block with log_format json and the location /var/log/vault/audit.log.",
+        "caption": "The agent group's whole configuration: read Vault's audit log as JSON. Any machine placed in the group inherits it."
+      },
+      {
+        "file": "vault-02-vault01-in-vault-group.png",
+        "alt": "The Wazuh dashboard managing the agents of group vault: agent 007, VAULT01, is the one agent in the group.",
+        "caption": "VAULT01, agent 007, placed in the vault group."
+      },
+      {
+        "file": "vault-04-rule-100501-failed-login.png",
+        "alt": "Wazuh Discover filtered to rule 100501 in the vault group: four hits, with the rule description reading Vault: failed login.",
+        "caption": "Rule 100501 firing on a failed login, read from Vault's audit log. The account and the address are redacted."
+      },
+      {
+        "file": "vault-07-rule-100503-invalid-token.png",
+        "alt": "Wazuh Discover filtered to rule 100503: one hit from VAULT01, with the error permission denied, invalid token.",
+        "caption": "Rule 100503: a made-up token refused by Vault and raised on SIEM01. The token appears only as its HMAC fingerprint."
+      },
+      {
+        "file": "vault-08-rules-file-100503-to-100505.png",
+        "alt": "The vault_rules.xml file in the Wazuh rules editor, showing rules 100503, 100504 and 100505 with their comments.",
+        "caption": "The rules as deployed on the manager, each with a comment saying why it exists."
+      },
+      {
+        "file": "vault-11-alert-after-rotation.png",
+        "alt": "Wazuh Discover filtered to rule 100503: one hit from VAULT01 timed one minute after a forced log rotation.",
+        "caption": "An alert from the new audit file, one minute after a forced log rotation. Nothing was lost in the handover."
+      }
+    ]
   },
   {
     "slug": "siem01",

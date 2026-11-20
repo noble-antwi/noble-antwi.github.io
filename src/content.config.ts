@@ -50,4 +50,11 @@ const work = defineCollection({
     }),
 });
 
-export const collections = { posts, work };
+/* One long-form write-up per homelab implementation; the file name is the slug in src/data/homelab-builds.ts.
+   Body only: the page supplies the title, the lead and the links. Screenshots sit inline, as numbered figures. */
+const homelab = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/homelab' }),
+  schema: z.object({}),
+});
+
+export const collections = { posts, work, homelab };
