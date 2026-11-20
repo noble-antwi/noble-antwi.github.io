@@ -2,6 +2,8 @@
 title: "Azure Labs: Built Twice, Portal Then Bicep"
 kicker: "Cloud · Azure · Built twice"
 summary: "Twenty hands-on Azure labs, each built twice: first by hand in the portal to see what the service really does, then from scratch as Bicep, and compared. Every lab starts with predictions written down before anything is created."
+cardImage: ../../assets/work/azure-labs/02-storage-tiers/architecture.png
+heroAlt: "Architecture diagram of the storage tiers lab: a storage account, its container, lifecycle rules and the alert pipeline"
 category: cloud
 status: active
 statusLabel: "5 of 20 labs built"

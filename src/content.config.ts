@@ -41,6 +41,8 @@ const work = defineCollection({
       stack: z.array(z.string()).default([]),
       relatedTags: z.array(z.string()).default([]),
       hero: image().optional(),
+      /** A picture for the project's card on the Work page, when the case study has no hero image. */
+      cardImage: image().optional(),
       heroAlt: z.string().optional(),
       heroCaption: z.string().optional(),
       stats: z.array(z.object({ value: z.string(), label: z.string() })).default([]),

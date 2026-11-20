@@ -27,7 +27,11 @@ export function rehypeFigures() {
       const link = {
         type: 'element',
         tagName: 'a',
-        properties: { className: ['frame'], href: src, target: '_blank', rel: 'noopener' },
+        /* An image with a relative path is optimised by Astro and gets its real address at build time, after this
+           plugin runs. Its link is filled in by the page (Base.astro) from the image itself. */
+        properties: /^(\/|https?:)/.test(src)
+          ? { className: ['frame'], href: src, target: '_blank', rel: 'noopener' }
+          : { className: ['frame'], 'data-zoom': '', role: 'link', tabIndex: 0 },
         children: [img],
       };
       const children = [link];

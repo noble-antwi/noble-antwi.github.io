@@ -86,6 +86,7 @@ export const CERTS: Cert[] = [
   },
   {
     id: 'az-900', title: 'Azure Fundamentals (AZ-900)', issuer: 'Microsoft', domain: 'platform', mark: 'MS',
+    image: 'https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-fundamentals-badge.svg',
     blurb: 'Cloud concepts, core Azure services, and Azure management and governance. Scored 873 / 1000.',
     issued: 'Apr 19, 2026', credential: '950F3F-VB3714',
     verify: 'https://learn.microsoft.com/api/credentials/share/en-us/nobleantwi/59914E901AC5CF08?sharingId=3DD1334494500325', verifyLabel: 'Verify on Microsoft Learn',
@@ -98,6 +99,7 @@ export const CERTS: Cert[] = [
   },
   {
     id: 'sc-900', title: 'Security, Compliance, and Identity Fundamentals (SC-900)', issuer: 'Microsoft', domain: 'security', mark: 'MS',
+    image: 'https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-fundamentals-badge.svg',
     blurb: 'The vocabulary of the Microsoft security stack: identity concepts, Entra ID, Defender, Purview and the shared responsibility model.',
     short: 'SC-900',
   },

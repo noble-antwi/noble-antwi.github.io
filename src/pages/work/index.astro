@@ -1,4 +1,5 @@
 ---
+import { BUILDS } from '../../data/homelab-builds';
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import WorkCard from '../../components/WorkCard.astro';
@@ -9,6 +10,10 @@ const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.
 const counts = Object.fromEntries(Object.keys(WORK_CATEGORIES).map((k) => [k, work.filter((w) => w.data.category === k).length]));
 const NUMBER_WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
 const howMany = NUMBER_WORDS[work.length] ?? String(work.length);
+/* every screenshot and diagram that proves something: the case study galleries, the homelab write-ups and the Azure lab pages */
+const evidence = work.reduce((n, w) => n + w.data.gallery.length, 0)
+  + BUILDS.reduce((n, b) => n + b.shots.length, 0)
+  + (await getCollection('azurelabs')).reduce((n, l) => n + ((l.body ?? '').match(/!\[/g)?.length ?? 0), 0);
 ---
 
 <Base title="Work" description="Cloud security and identity projects by Noble Antwi: a hybrid identity lab across Active Directory, Okta and Entra ID, a segmented security homelab with Wazuh, a multi-cloud posture dashboard, and enterprise security assessments.">
@@ -22,7 +27,7 @@ const howMany = NUMBER_WORDS[work.length] ?? String(work.length);
     <div class="stat-strip" style="margin-bottom:2.5rem;">
       <div><strong>{work.length}</strong><span>Case studies</span></div>
       <div><strong>{work.filter((w) => w.data.status === 'active').length}</strong><span>In active build</span></div>
-      <div><strong>{work.filter((w) => w.data.gallery.length > 0).reduce((n, w) => n + w.data.gallery.length, 0)}</strong><span>Evidence screenshots</span></div>
+      <div><strong>{evidence}</strong><span>Evidence screenshots</span></div>
       <div><strong>{work.length}</strong><span>Public repositories</span></div>
     </div>
 

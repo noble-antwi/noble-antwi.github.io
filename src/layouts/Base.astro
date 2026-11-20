@@ -20,6 +20,13 @@ interface Props {
 
 const { title, description = SITE.description, type = 'website', published, tags, jsonLd } = Astro.props;
 const fullTitle = title ? `${title} · ${SITE.title}` : `${SITE.title}, ${SITE.tagline}`;
+/* A description for search results and share cards: whole sentences, up to about 300 characters. */
+const brief = (() => {
+  if (description.length <= 300) return description;
+  const cut = description.slice(0, 300);
+  const stop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('? '));
+  return stop > 120 ? cut.slice(0, stop + 1) : cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:]$/, '') + '…';
+})();
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogKey = Astro.url.pathname.replace(/^\//, '').replace(/\/$/, '').replace(/\.html$/, '') || 'home';
 const ogImage = new URL(`/og/${ogKey}.png`, Astro.site);
@@ -44,7 +51,7 @@ const person = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={brief} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
@@ -57,7 +64,7 @@ const person = {
     <meta property="og:type" content={type} />
     <meta property="og:site_name" content={SITE.title} />
     <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={brief} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
@@ -67,7 +74,7 @@ const person = {
     {tags?.map((t) => <meta property="article:tag" content={t} />)}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:description" content={brief} />
     <meta name="twitter:image" content={ogImage} />
 
     <script is:inline>
@@ -93,6 +100,16 @@ const person = {
     <Play />
     <script>
       import '../scripts/site.ts';
+    </script>
+    <script is:inline>
+      /* Figures whose image was optimised at build time open that image, full size, in a new tab. */
+      document.querySelectorAll('a.frame[data-zoom]').forEach(function (a) {
+        var img = a.querySelector('img');
+        if (!img) return;
+        var set = function () { a.href = img.currentSrc || img.src; };
+        set(); a.target = '_blank'; a.rel = 'noopener'; a.removeAttribute('role'); a.removeAttribute('tabindex');
+        img.addEventListener('load', set);
+      });
     </script>
   </body>
 </html>

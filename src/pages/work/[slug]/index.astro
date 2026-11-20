@@ -1,6 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../../../layouts/Base.astro';
 import PostList from '../../../components/PostList.astro';
 import ChapterIndex from '../../../components/ChapterIndex.astro';
@@ -25,6 +25,8 @@ const hasChapters = Boolean(CHAPTERS[work.id]);
 const pill = d.status === 'complete' ? 'pill-ok' : d.status === 'active' ? 'pill-warn' : 'pill-info';
 
 /* A gallery whose items name a group is shown one group at a time, in the order the groups first appear. */
+/* Each gallery picture opens a full-size copy that the build is sure to keep. */
+const full = new Map(await Promise.all(d.gallery.map(async (g) => [g.src.src, g.src.format === 'svg' ? g.src.src : (await getImage({ src: g.src, format: 'webp', quality: 90 })).src] as const)));
 const galleryGroups = d.gallery.some((g) => g.group)
   ? [...new Set(d.gallery.map((g) => g.group ?? 'More'))].map((name) => ({
       name,
@@ -128,7 +130,7 @@ const related = d.relatedTags.length
             <div class="gallery">
               {grp.items.map((g) => (
                 <figure>
-                  <a class="frame" href={g.src.src} target="_blank" rel="noopener">
+                  <a class="frame" href={full.get(g.src.src)} target="_blank" rel="noopener">
                     <Image src={g.src} alt={g.alt} width={720} height={450} fit="cover" position="left top" densities={[1, 1.5]} />
                   </a>
                   {g.caption && <figcaption>{g.caption}</figcaption>}
@@ -140,7 +142,7 @@ const related = d.relatedTags.length
           <div class="gallery">
             {d.gallery.map((g) => (
               <figure>
-                <a class="frame" href={g.src.src} target="_blank" rel="noopener">
+                <a class="frame" href={full.get(g.src.src)} target="_blank" rel="noopener">
                   <Image src={g.src} alt={g.alt} width={720} height={450} fit="cover" position="left top" densities={[1, 1.5]} />
                 </a>
                 {g.caption && <figcaption>{g.caption}</figcaption>}

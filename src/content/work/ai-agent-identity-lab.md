@@ -2,6 +2,8 @@
 title: "AI Agent Identity Lab: An Agent With Its Own Name"
 kicker: "Identity · AI agents · Biira Bank"
 summary: "AI agents treated the way a bank treats people and service accounts: each gets its own identity, the least access that does the job, and an audit trail. Project one is an agent that answers plain questions about the lab's Wazuh SIEM under a read-only role proven by 403s, looks up machines and accounts over verified LDAPS as its own Active Directory account, and sends the model nothing that has not passed a tested secret filter."
+cardImage: ../../assets/work/ai-agent-identity-lab/agent-24-stage2-answer.png
+heroAlt: "A terminal showing the agent's answer about one address in the lab, built from an account lookup and a SIEM search"
 teaser: "AI agents given what a bank gives people: their own identity, least access proven by refusals, and an audit trail with their name on it."
 category: identity
 status: active

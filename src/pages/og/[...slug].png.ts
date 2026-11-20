@@ -10,8 +10,11 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { getCollection } from 'astro:content';
 import { SITE, postPath, categoryLabel, seriesFor } from '../../lib/site';
+import { BUILDS } from '../../data/homelab-builds';
+import { AZURE_LABS, labNo } from '../../data/azure-labs';
 
 interface Card { slug: string; kicker: string; title: string; blurb?: string; accent?: string }
+const strip = (h: string) => h.replace(/<[^>]+>/g, '');
 
 // Subject colours, the same tokens as global.css (light theme).
 const SUBJECT: Record<string, string> = {
@@ -43,6 +46,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const cards: Card[] = [
     ...pages,
     ...work.map((w) => ({ slug: `work/${w.id}`, kicker: w.data.kicker, title: w.data.title, blurb: w.data.summary, accent: SUBJECT[w.data.category] })),
+    ...BUILDS.map((b) => ({ slug: `work/enterprise-security-homelab/${b.slug}`, kicker: `Homelab · ${b.group}`, title: strip(b.title), blurb: strip(b.lead), accent: SUBJECT.detection })),
+    ...(await getCollection('azurelabs')).map((l) => {
+      const info = AZURE_LABS.find((x) => x.n === l.data.n);
+      return { slug: `work/azure-labs/${l.data.folder}`, kicker: `Azure lab ${labNo(l.data.n)} · Built twice`, title: l.data.title, blurb: info?.found ?? info?.asks, accent: SUBJECT.cloud };
+    }),
     ...posts.map((p) => {
       const s = seriesFor(p);
       return { slug: postPath(p), kicker: s ? `${categoryLabel(p.data.category)} · ${s.title}` : categoryLabel(p.data.category), title: p.data.title, blurb: p.data.description };

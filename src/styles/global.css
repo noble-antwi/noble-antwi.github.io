@@ -405,6 +405,10 @@ main { overflow-x: clip; }
 .now-grid h3 { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 0.8rem; font-weight: 500; }
 .now-grid ul { margin: 0; padding-left: 1.1rem; color: var(--ink-2); display: grid; gap: 0.45rem; }
 .now-grid li::marker { color: var(--accent); }
+.now-grid > div:first-child { grid-column: 1 / -1; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+.now-grid > div:first-child ul { display: block; columns: 2; column-gap: 3rem; }
+.now-grid > div:first-child li { break-inside: avoid; margin-bottom: 0.7rem; }
+@media (max-width: 760px) { .now-grid > div:first-child ul { columns: 1; } }
 
 /* ------------------------------------------------------------
    Work
