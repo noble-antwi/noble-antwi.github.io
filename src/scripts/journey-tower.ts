@@ -48,8 +48,20 @@ export const TOWER_KEYS: Key[] = [
   { t: 0.845, ...cam(Y[5], 6.1, 2.0) },
   { t: 0.874, ...cam(Y[0] + 2.5 * PACK, 19.5, 3.4, 0.7) },
   { t: 0.897, ...cam(Y[0] + 2.5 * PACK, 18.5, 3.2, 0.7) },
-  { t: 0.92, pos: [-0.2, 21.5, 29.5], look: [-1, -4.8, -4.4] },
+  { t: 0.92, ...cam(Y[0] + 2.5 * PACK, 18.0, 3.1, 0.7) },
 ];
+
+/* After the opening the layers stay closed up in one stack, and the case files visit them. */
+export const packedY = (i: number) => Y[0] + i * PACK;
+/** A camera on one layer of the closed-up stack. */
+export const layerCam = (i: number, r = 6.8, up = 2.0, lookUp = 0.1) => cam(packedY(i), r, up, lookUp);
+/** A camera on the whole closed-up stack. */
+export const stackCam = (r = 18.0) => cam(Y[0] + 2.5 * PACK, r, 3.1, 0.7);
+/** A point beside a layer of the stack: `side` units to the camera's right, `near` units toward the camera, `up` above the layer. */
+export const beside = (i: number, side: number, near: number, up: number): Vec =>
+  [AX + RIGHT[0] * side + SIDE[0] * near, packedY(i) + up, AZ + RIGHT[1] * side + SIDE[1] * near];
+/** The turn that makes a flat card face the camera. */
+export const FACE_CAMERA = Math.atan2(SIDE[0], SIDE[1]);
 
 /* the orb's height on the tower's axis, by the journey's clock */
 const RISE: [number, number][] = [
@@ -215,20 +227,22 @@ export function buildTower(scene: THREE.Scene, label: (text: string, sub?: strin
   }
 
   /* how much the whole tower is in view (the last panel of the opening) */
-  const whole = (tt: number) => span(tt, 0.85, 0.874) * (1 - span(tt, 0.9, 0.915));
+  const whole = (tt: number) => span(tt, 0.85, 0.874);
 
   let lastMatch = -1, lastScope = -1;
-  function update(tt: number, frame: number, shown: boolean) {
+  /* `capView` is given once the opening is over: how much the stack shows its six captions (1 in the whole view, 0 on a single layer). */
+  /* `solo` and `soloAmt` let one layer stand alone: on a phone the copy sits under the picture, and the layers below the one in view would run behind it. */
+  function update(tt: number, frame: number, shown: boolean, capView?: number, solo = -1, soloAmt = 0) {
     tower.visible = shown && tt > 0.1;
     if (!tower.visible) return;
-    const all = whole(tt);
+    const all = capView ?? whole(tt);
     /* a layer's caption shows while the camera is on that layer, and again, larger and to the side, in the whole view */
     const on = [span(tt, 0.17, 0.2) * (1 - span(tt, 0.25, 0.27)), span(tt, 0.285, 0.31) * (1 - span(tt, 0.36, 0.38)), span(tt, 0.395, 0.42) * (1 - span(tt, 0.465, 0.48)),
       span(tt, 0.5, 0.52) * (1 - span(tt, 0.59, 0.605)), span(tt, 0.63, 0.65) * (1 - span(tt, 0.715, 0.73)), span(tt, 0.755, 0.775) * (1 - span(tt, 0.84, 0.855))];
     /* in the closing view the layers close up into one stack, with each caption beside its layer */
     const packed = span(tt, 0.85, 0.874);
     const yOf = (i: number) => Y[i] + (Y[0] + i * PACK - Y[i]) * packed;
-    layers.forEach((g, i) => { if (i !== 3) g.position.y = yOf(i); });
+    layers.forEach((g, i) => { if (i !== 3) g.position.y = yOf(i); g.scale.setScalar(solo >= 0 && i !== solo ? Math.max(0.0001, 1 - soloAmt) : 1); });
     captions.forEach((s, i) => {
       (s.material as THREE.SpriteMaterial).opacity = Math.max(on[i], all);
       s.scale.copy(capScale).multiplyScalar(1 + 0.7 * all);

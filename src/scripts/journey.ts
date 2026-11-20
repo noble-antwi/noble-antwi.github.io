@@ -3,7 +3,7 @@
    a token, then a push approval to make contact. One camera, one dark
    ground, everything built in code from the lab's real layout. Three.js. */
 import * as THREE from 'three';
-import { buildTower, TOWER_KEYS } from './journey-tower';
+import { buildTower, TOWER_KEYS, AX, AZ, packedY, layerCam, stackCam, beside, FACE_CAMERA } from './journey-tower';
 import { CERTS, RUNWAY } from '../data/certifications';
 
 type Vec = [number, number, number];
@@ -349,11 +349,11 @@ export function startJourney(root: HTMLElement) {
   /* the job scout board, a satellite near Monitoring */
   const board = new THREE.Group(); board.position.set(15, 3.6, -5.5); board.rotation.y = -0.5;
   const boardTex = textTexture([
-    { text: 'IAM JOB SCOUT', size: 24, weight: 700, color: '#a78bfa', y: 44, mono: true },
-    { text: 'Three job APIs in.', size: 54, weight: 800, color: '#f8fafc', y: 110 },
-    { text: 'One de-duplicated board out.', size: 54, weight: 800, color: '#f8fafc', y: 170 },
-    { text: 'FastAPI · PostgreSQL · fuzzy matching · Prometheus · Grafana', size: 24, weight: 500, color: '#94a3b8', y: 240, mono: true },
-    { text: '12+ endpoints · 30+ metrics · 3 sources · 3 deploy targets', size: 26, weight: 600, color: '#e2e8f0', y: 300 },
+    { text: 'AI AGENT IDENTITY LAB', size: 24, weight: 700, color: '#a78bfa', y: 44, mono: true },
+    { text: 'An agent with its own name.', size: 54, weight: 800, color: '#f8fafc', y: 110 },
+    { text: 'Least access, proven by refusals.', size: 54, weight: 800, color: '#f8fafc', y: 170 },
+    { text: 'own identity · five-minute tokens · verified LDAPS · secret filter', size: 24, weight: 500, color: '#94a3b8', y: 240, mono: true },
+    { text: 'read-only in the SIEM · every question on the record', size: 26, weight: 600, color: '#e2e8f0', y: 300 },
   ], 900, 340, '#0b1220');
   const boardCard = card(boardTex, 3.2, 1.21); board.add(boardCard);
   const boardFrame = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(3.3, 1.31)), new THREE.LineBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0 }));
@@ -478,21 +478,15 @@ export function startJourney(root: HTMLElement) {
   const glowTex = new THREE.CanvasTexture(glowC);
   const hostAt = (n: string) => { const h = HOSTS.find((x) => x.name === n)!; return [h.x, h.h + 0.25, h.z] as Vec; };
   /* the order the attacker moves in: a phished workstation, then sideways toward Tier 0 */
-  const PATH: { at: Vec; t: number }[] = [
-    { at: [WKS.x, 0.6, WKS.z], t: 0.897 },
-    { at: hostAt('APP01'), t: 0.904 },
-    { at: hostAt('KALI01'), t: 0.909 },
-    { at: hostAt('SCAN01'), t: 0.914 },
-    { at: hostAt('ADM01'), t: 0.919 },
-  ];
+  const PATH: { at: Vec; t: number }[] = [5, 4, 3, 2, 1].map((layer, i) => ({ at: [AX, packedY(layer) + 0.2, AZ] as Vec, t: 0.897 + i * 0.0055 }));
   const infections = PATH.map((p) => {
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xff2d3f, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }));
     sp.position.set(...p.at); scene.add(sp); return sp;
   });
   const dcRing = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.05, 48), new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0, side: THREE.DoubleSide, toneMapped: false, depthWrite: false }));
-  dcRing.rotation.x = -Math.PI / 2; dcRing.position.set(DC[0], 0.05, DC[2]); scene.add(dcRing);
-  const playTag = label('Contain it.', 'an attacker is moving sideways');
-  playTag.position.set(4, 4.2, -1); playTag.scale.multiplyScalar(1.6); scene.add(playTag);
+  dcRing.rotation.x = -Math.PI / 2; dcRing.position.set(AX, packedY(0) - 0.5, AZ); scene.add(dcRing);
+  const playTag = label('Contain it.', 'an attacker is working toward the directory');
+  playTag.position.set(AX, packedY(5) + 2.3, AZ); playTag.scale.multiplyScalar(1.3); scene.add(playTag);
 
   root.querySelectorAll<HTMLElement>('[data-approve]').forEach((b) => b.addEventListener('click', () => { drawPhone('ok'); root.classList.add('is-approved'); }));
   root.querySelectorAll<HTMLElement>('[data-deny]').forEach((b) => b.addEventListener('click', () => { drawPhone('no'); root.classList.add('is-denied'); }));
@@ -500,22 +494,25 @@ export function startJourney(root: HTMLElement) {
   /* ---------- camera ---------- */
   const KEYS: Key[] = TOWER_KEYS;
   const hold = (c: number, pos: Vec, look: Vec, w = 0.009): Key[] => [{ t: c - w, pos, look }, { t: c + w, pos, look }];
+  const at = (c: number, v: { pos: Vec; look: Vec }) => hold(c, v.pos, v.look);
   const WKEYS: Key[] = [
-    { t: J, pos: [-0.2, 21.5, 29.5], look: [-1, -4.8, -4.4] },
-    ...hold(STOPS[0], [11.6, 2.5, 3.4], [7.8, 0.9, -1.0]),
-    ...hold(STOPS[1], [0, 9.5, 15.5], [0, 0, -3]),
-    ...hold(STOPS[2], [-4.5, 10.5, -9.5], [-10, 7.4, -17]),
-    ...hold(STOPS[3], [15.6, 3.6, -7.4], [12, 1.9, -13]),
-    ...hold(STOPS[4], [-5.0, 3.4, 5.4], [-5.1, 2.1, 0.2]),
-    ...hold(STOPS[5], [18.2, 5.0, -0.8], [15, 3.7, -5.5]),
+    { t: J, ...stackCam() },
+    /* each case file visits the layer its work belongs to: directory, the whole stack, cloud, firewall, assessment, identity provider */
+    ...at(STOPS[0], layerCam(0, 6.6, 2.1)),
+    ...at(STOPS[1], stackCam(17.2)),
+    ...at(STOPS[2], layerCam(3, 7.2, 3.0)),
+    ...at(STOPS[3], layerCam(1, 7.6, 2.6, 0.3)),
+    ...at(STOPS[4], layerCam(5, 7.6, 2.2, 0.3)),
+    ...at(STOPS[5], layerCam(2, 7.4, 1.9, 0.2)),
+    { t: 0.603, ...stackCam(19) },
     { t: 0.615, pos: [-12.2, 5.0, 7.5], look: [-12.8, 2.0, 0.5] },
     { t: 0.70, pos: [-12.6, 9.5, 10.5], look: [-13.2, 2.8, 0.8] },
     { t: 0.76, pos: [-8.6, 8, 7.5], look: [-13.4, 5.5, 0.8] },
     { t: 0.79, pos: [0.6, 6.4, 8.8], look: [0, 6.0, 1] },
     { t: 0.83, pos: [0.2, 6.1, 10.2], look: [0, 5.9, 1] },
     { t: 0.87, pos: [-0.4, 6.0, 10.8], look: [0, 5.9, 1] },
-    { t: 0.90, pos: [-1, 17, 21], look: [-0.5, 0, -1.5] },
-    { t: 0.932, pos: [-2.5, 15, 19], look: [-0.5, 0, -1.5] },
+    { t: 0.90, ...stackCam(21.5) },
+    { t: 0.932, ...stackCam(20) },
     { t: 0.955, pos: [12.4, 1.9, 3.9], look: [11.2, 0.95, 1.4] },
     { t: 1.00, pos: [12.2, 1.75, 3.6], look: [11.2, 0.9, 1.4] },
   ];
@@ -530,19 +527,20 @@ export function startJourney(root: HTMLElement) {
       // Desktop pushes some subjects right of the text; a phone has its text at the bottom, so centre them.
       // These corrections belong to the later stretches, which run on scroll units; the opening has its own clock.
       const later = keys === KEYS ? 0 : 1;
-      const dx = later * (2.5 * span(t, 0.60, 0.615) * (1 - span(t, 0.775, 0.785))
-               + 2.1 * span(t, STOPS[4] - 0.013, STOPS[4] - 0.006) * (1 - span(t, STOPS[4] + 0.006, STOPS[4] + 0.013)));
+      const dx = later * 2.5 * span(t, 0.615, 0.63) * (1 - span(t, 0.775, 0.785));
       camPos.x += dx; camLook.x += dx;
       // The token is centred and narrow, so the camera can come closer there than anywhere else.
       const tok = later * span(t, 0.775, 0.79) * (1 - span(t, 0.885, 0.9));
       // The closing view of the tower is tall: step further back so all six layers and their captions fit above the copy.
-      const stack = keys === KEYS ? tower.whole(t) : 0;
+      const stack = stackView;
       camPos.sub(camLook).multiplyScalar(1.5 - 0.28 * tok + 0.55 * stack).add(camLook);
       // Lift the subject into the top half: aim below it, by a share of the distance.
       // The swarm sits low and its rising notes climb into the text, so lift it further.
       const swarm = later * span(t, 0.60, 0.615) * (1 - span(t, 0.775, 0.785));
       const dist = camPos.distanceTo(camLook);
-      camLook.y -= dist * (0.2 + 0.12 * swarm - 0.025 * tok + 0.06 * stack);
+      // A case file's copy is the tallest on a phone, so its single layer is lifted further clear of the heading.
+      const oneLayer = later * span(t, 0.432, 0.44) * (1 - span(t, 0.596, 0.604)) * (1 - stack);
+      camLook.y -= dist * (0.2 + 0.12 * swarm - 0.025 * tok + 0.06 * stack + 0.1 * oneLayer);
     } else {
       // Narrow landscape (small windows, tablets): step back so the right-hand subject stays in frame.
       if (camera.aspect < 1.6) camPos.sub(camLook).multiplyScalar(1.6 / camera.aspect).add(camLook);
@@ -560,13 +558,16 @@ export function startJourney(root: HTMLElement) {
      the copy, and the camera steps back so the subject still fits there. A phone keeps its copy at the
      bottom and its picture centred. */
   let viewW = 1, viewH = 1, slide = 0, stepBack = 1, slideNow = -1;
+  /* how much the whole stack, not one layer, is in view: the phone camera steps further back for it */
+  let stackView = 0;
   /* How much of the slide a moment of the scroll wants: 1 is all of it. Scenes that already place their
      subject on the right (the opening laptop, the token, the phone at the end) take less. */
   function roomFor(x: number, journey: boolean) {
     if (journey) return 0.45 + 0.55 * span(x, 0.10, 0.17);
     const token = span(x, 0.772, 0.79) * (1 - span(x, 0.885, 0.9));
     const push = span(x, 0.94, 0.955);
-    return 1 - 0.85 * token - 0.6 * push - 0.45 * stopFocus(4, x);
+    /* the three stops with a card beside their layer need room on the right for it */
+    return 1 - 0.85 * token - 0.6 * push - 0.4 * (stopFocus(3, x) + stopFocus(4, x) + stopFocus(5, x));
   }
   function resize() {
     const w = root.clientWidth, h = window.innerHeight;
@@ -605,8 +606,16 @@ export function startJourney(root: HTMLElement) {
     if (wantDark !== dark) { dark = wantDark; html.dataset.theme = dark ? 'dark' : theme; }
     renderer.toneMappingExposure = 1.05 - 0.25 * d;
 
-    const est = span(g, 0.403, 0.42);
-    tower.update(tt, frame, g < J + 0.012);
+    /* The lab map has its own pages. Here the tower carries the opening, the case files and Play. */
+    const est = 0;
+    const playStack = span(g, 0.889, 0.9) * (1 - span(g, 0.932, 0.945));
+    const captionsOn = Math.max(1 - span(g, J + 0.004, J + 0.014), stopFocus(1, g), span(g, 0.597, 0.606) * (1 - span(g, 0.606, 0.612)), playStack);
+    stackView = g <= J ? tower.whole(tt) : captionsOn;
+    /* which layer each single-layer case file looks at, by stop: directory, (the whole stack), cloud, firewall, assessment, identity provider */
+    const STOP_LAYER = [0, -1, 3, 1, 5, 2];
+    let solo = -1, soloAmt = 0;
+    if (camera.aspect < 1) STOP_LAYER.forEach((layer, i) => { const f = stopFocus(i, g); if (layer >= 0 && f > soloAmt) { solo = layer; soloAmt = f; } });
+    tower.update(tt, frame, g < 0.622 || (g > 0.884 && g < 0.95), g <= J ? undefined : captionsOn, solo, soloAmt);
     for (const m of estate) m.opacity = est * ((m as THREE.LineBasicMaterial).isLineBasicMaterial ? 0.8 : 1);
 
     if (g <= J) camFrom(KEYS, tt); else camFrom(WKEYS, g);
@@ -630,7 +639,8 @@ export function startJourney(root: HTMLElement) {
     (trail.material as THREE.LineBasicMaterial).opacity = 0.55 * orbOn * span(tt, 0.11, 0.13);
 
     const lt = JMAX;
-    const fIam = stopFocus(0, g), fLab = stopFocus(1, g), fPost = stopFocus(2, g), fWeb = stopFocus(3, g), fAud = stopFocus(4, g), fScout = stopFocus(5, g);
+    /* three case files bring a card of their own; the others are told by the layer alone */
+    const fIam = 0, fLab = 0, fPost = 0, fWeb = stopFocus(3, g), fAud = stopFocus(4, g), fScout = stopFocus(5, g);
     dcMat.emissiveIntensity = 0.15 + 0.9 * span(lt, 0.22, 0.25) * (1 - span(lt, 0.48, 0.52)) + 1.1 * fIam;
     const gDC = span(lt, 0.30, 0.34) * (1 - span(lt, 0.46, 0.50));
     gateDC.frame.material.opacity = gDC; gateDC.frame.visible = gDC > 0.01; setOpacity(gateDC.tag, gDC);
@@ -638,8 +648,7 @@ export function startJourney(root: HTMLElement) {
     gateLog.frame.material.opacity = gLog; gateLog.frame.visible = gLog > 0.01; setOpacity(gateLog.tag, gLog);
     const fwOn = span(lt, 0.27, 0.32) * (1 - span(lt, 0.87, 0.92));
     denyMat.opacity = fwOn * (0.35 + 0.35 * Math.abs(Math.sin(frame * 0.07)));
-    /* the map and its labels arrive together, as the camera comes down from the tower */
-    const pull = span(g, 0.405, 0.418) * jEnd;
+    const pull = 0;
     setOpacity(fwLabel, Math.max(pull, fLab));
     const hOn = span(lt, 0.37, 0.43) * (1 - span(lt, 0.56, 0.61)) + pull * 0.5;
     halo.rotation.y = frame * 0.0025;
@@ -691,13 +700,16 @@ export function startJourney(root: HTMLElement) {
 
     /* ===== case files (g) ===== */
     const webOn = Math.max(fWeb, fLab * 0.5);
-    setMat(webScreen, webOn); (webFrame.material as THREE.LineBasicMaterial).opacity = webOn; (webSlab.material as THREE.MeshStandardMaterial).opacity = webOn;
-    setOpacity(webLabel, fWeb);
-    web.position.y = WEB[1] + Math.sin(frame * 0.015) * 0.05;
+    setMat(webScreen, webOn); (webFrame.material as THREE.LineBasicMaterial).opacity = webOn; (webSlab.material as THREE.MeshStandardMaterial).opacity = 0;
+    setOpacity(webLabel, 0);
+    /* a card sits to the right of its layer on a wide screen, and above it on a phone */
+    const wide = camera.aspect < 1 ? 0 : 1, bob = Math.sin(frame * 0.016) * 0.05;
+    const cardAt = (o: THREE.Object3D, layer: number, lift: number) => { o.position.set(...beside(layer, 3.3 * wide, 0.6, 0.3 + 1.5 * (1 - wide) + lift + bob)); o.scale.setScalar(wide ? 0.8 : 0.62); };
+    cardAt(web, 1, -1.2); web.rotation.y = FACE_CAMERA;
     setMat(dossCard, fAud); (dossFrame.material as THREE.LineBasicMaterial).opacity = fAud;
-    dossier.position.y = 2.1 + 0.5 * (1 - fAud) + Math.sin(frame * 0.02) * 0.04; dossier.rotation.y = 0.12 + (1 - fAud) * 0.6;
+    cardAt(dossier, 5, 0.4 * (1 - fAud)); dossier.rotation.y = FACE_CAMERA + (1 - fAud) * 0.6;
     setMat(boardCard, fScout); (boardFrame.material as THREE.LineBasicMaterial).opacity = fScout;
-    board.position.y = 3.6 + Math.sin(frame * 0.018) * 0.06;
+    cardAt(board, 2, 0); board.rotation.y = FACE_CAMERA;
 
     /* ===== the alert swarm (g) ===== */
     const swIn = span(g, 0.612, 0.70);
@@ -765,7 +777,7 @@ export function startJourney(root: HTMLElement) {
       sp.scale.setScalar((1.6 + 0.35 * Math.sin(frame * 0.12 + i)) * on + 0.001);
     });
     (dcRing.material as THREE.MeshBasicMaterial).opacity = playOn * (0.45 + 0.35 * Math.sin(frame * 0.09));
-    dcRing.scale.setScalar(1 + 0.12 * Math.sin(frame * 0.09));
+    dcRing.scale.setScalar(2.5 * (1 + 0.05 * Math.sin(frame * 0.09)));
     setOpacity(playTag, playOn * span(g, 0.9, 0.906));
 
     const phoneUp = span(g, 0.94, 0.962);
