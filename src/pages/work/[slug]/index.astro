@@ -104,7 +104,7 @@ const related = d.relatedTags.length
       </nav>
     )}
 
-    <Replay slug={work.id} topic={d.category} />
+    {work.id !== 'azure-labs' && <Replay slug={work.id} topic={d.category} />}
     <Visual slug={work.id} at="after-replay" />
 
     <div class="prose" id="overview">

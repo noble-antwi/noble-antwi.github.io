@@ -57,4 +57,20 @@ const homelab = defineCollection({
   schema: z.object({}),
 });
 
-export const collections = { posts, work, homelab };
+/* One Azure lab per file: the lab's own README, brought in by scripts/sync-azure-labs.mjs. Do not edit these by hand;
+   change the README in the labs repository and run the script again. */
+const azurelabs = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/azurelabs' }),
+  schema: z.object({
+    title: z.string(),
+    n: z.number(),
+    folder: z.string(),
+    motion: z.string(),
+    motionAlt: z.string(),
+    motionCaption: z.string(),
+    figure: z.string(),
+    hasVertical: z.boolean().default(false),
+  }),
+});
+
+export const collections = { posts, work, homelab, azurelabs };

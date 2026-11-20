@@ -2,7 +2,7 @@
 /* The Azure labs at a glance: a twenty-step progress strip, one card for
    each lab that is built or running, and the roadmap for the rest.
    Everything is drawn from src/data/azure-labs.ts. */
-import { AZURE_LABS, AZURE_LABS_REPO, labNo, type LabGroup } from '../data/azure-labs';
+import { AZURE_LABS, labNo, type LabGroup } from '../data/azure-labs';
 
 const built = AZURE_LABS.filter((l) => l.state === 'built');
 const running = AZURE_LABS.filter((l) => l.state === 'running');
@@ -20,7 +20,7 @@ const stateLabel = { built: 'Built twice', running: 'Running', planned: 'Planned
       <span class="kicker">The labs</span>
       <h2 class="display h2" id="labx-h">{say(built.length)} built, {say(running.length).toLowerCase()} running, {planned.length} to go.</h2>
     </div>
-    <p>Each lab answers a question I wrote down before building anything. Pick one to read it on this page, or open its full write-up with every step and screenshot.</p>
+    <p>Each lab answers a question I wrote down before building anything. Open one for the full write-up: the animated diagram, the architecture, every step and every screenshot.</p>
   </div>
 
   <ol class="labx-track" aria-label="Progress through the twenty labs">
@@ -28,31 +28,37 @@ const stateLabel = { built: 'Built twice', running: 'Running', planned: 'Planned
       <li class={`is-${l.state}`} title={`Lab ${labNo(l.n)}: ${l.title} (${stateLabel[l.state].toLowerCase()})`}>
         {l.state === 'planned'
           ? <span>{labNo(l.n)}</span>
-          : <a href={`#lab-${labNo(l.n)}`} aria-label={`Lab ${labNo(l.n)}: ${l.title}, ${stateLabel[l.state].toLowerCase()}`}>{labNo(l.n)}</a>}
+          : l.state === 'built'
+            ? <a href={`/work/azure-labs/${l.folder}/`} aria-label={`Lab ${labNo(l.n)}: ${l.title}, ${stateLabel[l.state].toLowerCase()}`}>{labNo(l.n)}</a>
+            : <span>{labNo(l.n)}</span>}
       </li>
     ))}
   </ol>
   <p class="labx-key"><span class="k is-built"></span>Built twice <span class="k is-running"></span>Running <span class="k is-planned"></span>Planned</p>
 
   <div class="labx-cards">
-    {cards.map((l) => (
+    {cards.map((l) => {
+      const href = l.state === 'built' ? `/work/azure-labs/${l.folder}/` : null;
+      return (
       <article class={`labx-card is-${l.state}`}>
         <header>
           <span class="labx-no">Lab {labNo(l.n)}</span>
           <span class={`pill ${l.state === 'built' ? 'pill-ok' : 'pill-warn'}`}>{stateLabel[l.state]}</span>
         </header>
-        <h3>{l.title}</h3>
+        <h3>{href ? <a href={href}>{l.title}</a> : l.title}</h3>
         {l.asks && <p class="labx-q"><b>Asked</b>{l.asks}</p>}
         {l.found
           ? <p class="labx-a"><b>Found</b>{l.found}</p>
           : <p class="labx-a is-wait"><b>Found</b>Still building. The answer goes here when the lab is done.</p>}
         {l.stat && <p class="labx-stat"><strong>{l.stat.value}</strong><span>{l.stat.label}</span></p>}
         <footer>
-          <a href={`#lab-${labNo(l.n)}`}>Read it here <span aria-hidden="true">↓</span></a>
-          <a href={`${AZURE_LABS_REPO}${l.folder}`} target="_blank" rel="noopener">Full write-up <span aria-hidden="true">↗</span></a>
+          {href
+            ? <a class="labx-open" href={href}>Open the lab <span aria-hidden="true">→</span></a>
+            : <span class="labx-soon">The write-up arrives when the lab is finished</span>}
         </footer>
       </article>
-    ))}
+      );
+    })}
   </div>
 
   <div class="labx-road">
@@ -106,6 +112,11 @@ const stateLabel = { built: 'Built twice', running: 'Running', planned: 'Planned
   .labx-stat + footer { margin-top: 0; }
   .labx-card footer a { color: var(--accent-ink, var(--accent)); text-decoration: none; }
   .labx-card footer a:hover { text-decoration: underline; }
+  .labx-card h3 a { color: inherit; text-decoration: none; }
+  .labx-card h3 a:hover { color: var(--accent-ink, var(--accent)); }
+  .labx-open { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.9rem; border-radius: 999px; background: var(--ink); color: var(--paper) !important; }
+  .labx-open:hover { text-decoration: none !important; background: var(--accent-ink, var(--accent)); }
+  .labx-soon { font-weight: 500; color: var(--ink-3); }
 
   .labx-road { margin-top: 2rem; border: 1px solid var(--line); border-radius: var(--radius); padding: 1.2rem 1.25rem; background: var(--paper-2); }
   .labx-road h3 { margin: 0 0 0.9rem; font: 600 0.72rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }

@@ -1,0 +1,126 @@
+---
+/* One Azure lab, in full: the animated diagram, then the whole write-up
+   with every step and screenshot, then the link to its code on GitHub.
+   The write-ups are the labs' own READMEs, brought in by
+   scripts/sync-azure-labs.mjs. */
+import { getCollection, render } from 'astro:content';
+import Base from '../../../../layouts/Base.astro';
+import Replay from '../../../../components/Replay.astro';
+import { AZURE_LABS, AZURE_LABS_REPO, labNo } from '../../../../data/azure-labs';
+
+export async function getStaticPaths() {
+  const labs = (await getCollection('azurelabs')).sort((a, b) => a.data.n - b.data.n);
+  return labs.map((lab, i) => ({ params: { lab: lab.data.folder }, props: { lab, prev: labs[i - 1] ?? null, next: labs[i + 1] ?? null } }));
+}
+const { lab, prev, next } = Astro.props;
+const d = lab.data;
+const { Content, headings } = await render(lab);
+const sections = headings.filter((h) => h.depth === 2);
+const info = AZURE_LABS.find((l) => l.n === d.n);
+const base = `/assets/work/azure-labs/${d.folder}/${d.motion}`;
+const HOME = '/work/azure-labs/';
+const no = labNo(d.n);
+/* the interactive replay has scenarios for labs 01 and 02 only */
+const replay = d.n === 1 ? { only: (l: string) => !l.startsWith('Lab '), title: 'Follow each request through the rules.' }
+  : d.n === 2 ? { only: (l: string) => l.startsWith('Lab 02'), title: 'Follow the files through the tiers.' } : null;
+---
+
+<Base title={`${d.title} · Azure lab ${no}`} description={info?.found ?? d.motionCaption}>
+  <div class="container">
+    <article class="azl">
+      <header class="azl-head" data-topic="cloud">
+        <a class="azl-back" href={HOME}><span aria-hidden="true">←</span> All Azure labs</a>
+        <div class="azl-kick"><span class="azl-no">Lab {no}</span><span class="pill pill-ok">Built twice</span><span class="azl-of">{no} of {AZURE_LABS.length}</span></div>
+        <h1 class="display h1">{d.title}</h1>
+        {info?.asks && <p class="lead"><b>The question:</b> {info.asks}</p>}
+      </header>
+
+      <figure class="azl-motion">
+        <div class="azl-stage"><img src={`${base}.svg`} alt={d.motionAlt} width="1200" height="760" decoding="async" /></div>
+        <figcaption>
+          <span><b>Figure {d.figure}</b> {d.motionCaption}</span>
+          <span class="azl-vid">
+            <a href={`${base}.mp4`} target="_blank" rel="noopener">Watch as a video <span aria-hidden="true">↗</span></a>
+            {d.hasVertical && <a href={`${base}-vertical.mp4`} target="_blank" rel="noopener">Vertical version <span aria-hidden="true">↗</span></a>}
+          </span>
+        </figcaption>
+      </figure>
+
+      <div class="azl-body">
+        <nav class="azl-toc" aria-label="On this page">
+          <details open>
+            <summary>On this page</summary>
+            <ol>{sections.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+          </details>
+        </nav>
+        <div class="prose azl-prose"><Content /></div>
+      </div>
+
+      {replay && <div class="azl-replay"><Replay slug="azure-labs" topic="cloud" only={replay.only} title={replay.title} /></div>}
+
+      <footer class="azl-foot">
+        <p>That is the whole lab. The Bicep, the scripts and the diagram sources are in the repository.</p>
+        <a class="btn" href={`${AZURE_LABS_REPO}${d.folder}`} target="_blank" rel="noopener">View this lab on GitHub <span aria-hidden="true">↗</span></a>
+      </footer>
+
+      <nav class="pager" aria-label="More labs">
+        {prev ? <a href={`${HOME}${prev.data.folder}/`}><small>← Lab {labNo(prev.data.n)}</small><span class="t">{prev.data.title}</span></a> : <a href={HOME}><small>←</small><span class="t">All Azure labs</span></a>}
+        {next ? <a class="next" href={`${HOME}${next.data.folder}/`}><small>Lab {labNo(next.data.n)} →</small><span class="t">{next.data.title}</span></a> : <a class="next" href={HOME}><small>→</small><span class="t">All Azure labs</span></a>}
+      </nav>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .azl-head { padding: 3.2rem 0 2rem; max-width: 52rem; }
+  .azl-back { display: inline-block; margin-bottom: 1.6rem; font-size: 0.9rem; font-weight: 600; text-decoration: none; color: var(--ink-2); }
+  .azl-back:hover { color: var(--accent); }
+  .azl-kick { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; margin-bottom: 1rem; }
+  .azl-no { font: 700 0.8rem/1 var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--paper); background: var(--ink); padding: 0.45rem 0.65rem; border-radius: var(--radius-sm); }
+  .azl-of { font: 500 0.72rem/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+  .azl-head .lead { margin-top: 1.1rem; }
+  .azl-head .lead b { color: var(--ink); }
+
+  .azl-motion { margin: 0 0 3rem; }
+  .azl-stage { border: 1px solid var(--line-2); border-radius: var(--radius); overflow: hidden; background: #050b18; box-shadow: var(--shadow); }
+  .azl-stage img { display: block; width: 100%; height: auto; }
+  .azl-motion figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.6rem 2rem; margin-top: 0.9rem; font-family: var(--font-mono); font-size: 0.76rem; line-height: 1.6; color: var(--ink-3); }
+  .azl-motion figcaption > span:first-child { flex: 1 1 28rem; padding-left: 0.9rem; border-left: 2px solid var(--accent-line); }
+  .azl-motion figcaption b { color: var(--ink-2); margin-right: 0.35rem; }
+  .azl-vid { display: flex; gap: 1.2rem; white-space: nowrap; }
+  .azl-vid a { color: var(--accent-ink, var(--accent)); font-weight: 600; text-decoration: none; }
+  .azl-vid a:hover { text-decoration: underline; }
+
+  /* the write-up, with its contents beside it on a wide screen */
+  .azl-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .azl-prose { min-width: 0; }
+  .azl-prose :global(h2) { scroll-margin-top: 5.5rem; padding-top: 1.6rem; border-top: 1px solid var(--line-2); }
+  .azl-prose :global(h3) { scroll-margin-top: 5.5rem; }
+  .azl-prose > :global(:first-child) { margin-top: 0; }
+  .azl-toc summary { cursor: pointer; font: 600 0.74rem/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); list-style: none; }
+  .azl-toc summary::-webkit-details-marker { display: none; }
+  .azl-toc ol { list-style: none; margin: 0.9rem 0 0; padding: 0 0 0 0.9rem; border-left: 1px solid var(--line-2); display: grid; gap: 0.45rem; }
+  .azl-toc a { font-size: 0.9rem; color: var(--ink-2); text-decoration: none; }
+  .azl-toc a:hover { color: var(--accent); }
+  @media (min-width: 1100px) {
+    .azl-body { grid-template-columns: minmax(0, 46rem) minmax(0, 1fr); gap: 4rem; align-items: start; }
+    .azl-toc { order: 2; position: sticky; top: 5.5rem; max-height: calc(100vh - 7rem); overflow: auto; }
+    .azl-toc summary { pointer-events: none; }
+  }
+  @media (max-width: 1099px) {
+    .azl-toc { border: 1px solid var(--line-2); border-radius: var(--radius); padding: 0.9rem 1.1rem; }
+    .azl-toc summary::after { content: ' +'; color: var(--accent); }
+    .azl-toc details[open] summary::after { content: ' \2212'; }
+  }
+
+  .azl-replay { margin-top: 4rem; }
+  .azl-foot { margin-top: 4rem; padding: 1.6rem 1.7rem; border: 1px solid var(--line-2); border-radius: var(--radius); background: var(--paper-2); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; }
+  .azl-foot p { margin: 0; color: var(--ink-2); max-width: 34rem; }
+  .azl .pager { margin-top: 2.5rem; }
+</style>
+
+<script>
+  /* On a phone the contents list starts closed, so the write-up is not pushed down the page. */
+  const toc = document.querySelector<HTMLDetailsElement>('.azl-toc details');
+  if (toc && window.matchMedia('(max-width: 1099px)').matches) toc.open = false;
+</script>

@@ -70,4 +70,4 @@ The deployment took 26 seconds. Reading the settings back afterwards, they match
 
 **The export is for reading, the template is for keeping.** An export shows everything Azure set. The file worth committing holds only the choices you made.
 
-The full cost table, the Bicep file and the read-back checks are in the [Lab 02 write-up](https://github.com/noble-antwi/az-104-labs/tree/master/02-storage-tiers).
+The full cost table, the Bicep file and the read-back checks are in the [Lab 02 write-up](/work/azure-labs/02-storage-tiers/).

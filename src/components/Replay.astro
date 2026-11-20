@@ -1,9 +1,12 @@
 ---
 import { REPLAYS } from '../data/replays';
 
-interface Props { slug: string; topic: string }
-const { slug, topic } = Astro.props;
-const r = REPLAYS[slug];
+/* `only` keeps the scenarios whose label passes, and `title` renames the block: a lab page shows just its own lab's scenarios. */
+interface Props { slug: string; topic: string; only?: (label: string) => boolean; title?: string }
+const { slug, topic, only, title } = Astro.props;
+const all = REPLAYS[slug];
+const picked = all && only ? all.scenarios.filter((s) => only(s.label)) : all?.scenarios;
+const r = all && picked && picked.length ? { ...all, title: title ?? all.title, scenarios: picked.map((s) => ({ ...s, label: s.label.replace(/^Lab \d+ · /, '') })) } : null;
 const MARK = { pass: '✓', block: '✕', alert: '!', quiet: '·', info: '' } as const;
 ---
 

@@ -75,4 +75,4 @@ I predicted all four outcomes correctly before testing, and still learned four t
 
 **Narrow access shows.** The operator's view had gaps in it. That is the design working, and it is better explained in advance than discovered.
 
-Every step, the role's JSON and the Bicep are in the [Lab 04 write-up](https://github.com/noble-antwi/az-104-labs/tree/master/04-custom-rbac-role).
+Every step, the role's JSON and the Bicep are in the [Lab 04 write-up](/work/azure-labs/04-custom-rbac-role/).
