@@ -144,7 +144,6 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
 <div id="after-journey"></div>
 
 <script>
-  import { startJourney } from '../scripts/journey';
   const root = document.getElementById('journey')!;
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const gl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
@@ -153,7 +152,10 @@ const marquee = ['Cloud security', 'Identity', 'Detection', 'Assessments', 'AWS'
     root.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => { el.textContent = el.dataset.count!; });
     root.querySelectorAll<HTMLElement>('[data-approve]').forEach((b) => b.addEventListener('click', () => root.classList.add('is-approved')));
     root.querySelectorAll<HTMLElement>('[data-deny]').forEach((b) => b.addEventListener('click', () => root.classList.add('is-denied')));
-  } else startJourney(root);
+  } else {
+    /* The 3D world, and the library behind it, is fetched only by visitors who will see it. */
+    import('../scripts/journey').then((m) => m.startJourney(root));
+  }
 </script>
 
 <style is:global>

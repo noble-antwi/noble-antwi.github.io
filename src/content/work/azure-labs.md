@@ -280,7 +280,7 @@ Built-in roles are broad. Virtual Machine Contributor, the obvious choice for so
 
 **The portal shows buttons it will not honour.** Delete was offered, the dialog opened, and Azure refused the call. The check is on the request, not the menu.
 
-**Two planes, two locks.** A role that can delete a VM cannot log in to it, and a role that can log in cannot delete it. A plain SSH key sits outside both, so the VM was given its own identity and the Entra login extension, which lets Entra decide who gets a shell. The extension failed until the identity existed.
+**Two planes, two locks.** A role that can delete a VM cannot log in to it, and a role that can log in cannot delete it. A plain SSH key sits outside both, so the VM was given its own identity and the Entra login extension, which lets Entra decide who gets a shell. The extension failed until the identity existed. Written up in [Two Locks on One VM](/lab-notes/2026/11/19/two-locks-on-one-vm.html).
 
 **Rebuilt as code.** Role definitions live at the subscription, so the Bicep file deploys there and hands the assignment to a module scoped to the one resource group. Role names must be unique in a tenant, so the code's copy carries its own name. It deployed first time, and both roles hold the identical five actions.
 
